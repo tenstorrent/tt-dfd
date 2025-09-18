@@ -1,0 +1,413 @@
+CrCsrCdbgmuxsel__ID_0:  # hw2, hw5, hw0
+  fields:
+    DbmId: 0x0
+    DbmMode: 0x1
+    Muxselseg0: 0x0  # Lane 0
+    Muxselseg1: 0x2  # Lane 5
+    Muxselseg2: 0x0  # Lane 2
+    Muxselseg3: 0x0  # Lane 3
+    Muxselseg4: 0x0
+    Muxselseg5: 0x0
+    Muxselseg6: 0x0
+    Muxselseg7: 0x0
+    rsvd: 0x0
+  value: 0x800001
+CrCsrCdbgmuxsel__ID_1:
+  fields:
+    DbmId: 0x1
+    DbmMode: 0x1
+    Muxselseg0: 0x0  # Lane 0
+    Muxselseg1: 0x0  # Lane 1
+    Muxselseg2: 0x0  # Lane 2
+    Muxselseg3: 0x0  # Lane 3
+    Muxselseg4: 0x0
+    Muxselseg5: 0x0
+    Muxselseg6: 0x0
+    Muxselseg7: 0x0
+    rsvd: 0x0
+  value: 0x5
+CrCsrCdbgmuxsel__ID_2:  # dbm_out_l0_0[32], dbm_out_l0_0[33], dbm_out_l0_0[34], dbm_out_l0_0[35], dbm_out_l0_0[36], dbm_out_l0_0[37], dbm_out_l0_0[38], dbm_out_l0_0[39], dbm_out_l0_0[40], dbm_out_l0_0[41], dbm_out_l0_0[42], dbm_out_l0_0[43], dbm_out_l0_0[44], dbm_out_l0_0[45], dbm_out_l0_0[46], dbm_out_l0_0[47], dbm_out_l0_0[16], dbm_out_l0_0[17], dbm_out_l0_0[18], dbm_out_l0_0[19], dbm_out_l0_0[20], dbm_out_l0_0[21], dbm_out_l0_0[22], dbm_out_l0_0[23], dbm_out_l0_0[24], dbm_out_l0_0[25], dbm_out_l0_0[26], dbm_out_l0_0[27], dbm_out_l0_0[28], dbm_out_l0_0[29], dbm_out_l0_0[30], dbm_out_l0_0[31], dbm_out_l0_0[0], dbm_out_l0_0[1], dbm_out_l0_0[2], dbm_out_l0_0[3], dbm_out_l0_0[4], dbm_out_l0_0[5], dbm_out_l0_0[6], dbm_out_l0_0[7], dbm_out_l0_0[8], dbm_out_l0_0[9], dbm_out_l0_0[10], dbm_out_l0_0[11], dbm_out_l0_0[12], dbm_out_l0_0[13], dbm_out_l0_0[14], dbm_out_l0_0[15]
+  fields:
+    DbmId: 0x2
+    DbmMode: 0x1
+    Muxselseg0: 0x0  # Lane 0
+    Muxselseg1: 0x0  # Lane 1
+    Muxselseg2: 0x0  # Lane 2
+    Muxselseg3: 0x0  # Lane 3
+    Muxselseg4: 0x0
+    Muxselseg5: 0x0
+    Muxselseg6: 0x0
+    Muxselseg7: 0x0
+    rsvd: 0x0
+  value: 0x9
+dbg_any_change:  # hw5, hw2
+  fields:
+    mask: 0xffffffff0000
+  value: 0xffffffff0000
+dbg_cla_counter0_cfg:  # EXAMPLE_COUNTER
+  fields:
+    counter: 0x0
+    reset_on_target: 0x0
+    rsvd: 0x0
+    target: 0x0
+    upper_counter: 0x0
+    upper_target: 0x0
+  value: 0x0
+dbg_cla_counter1_cfg:
+  fields:
+    counter: 0x0
+    reset_on_target: 0x0
+    rsvd: 0x0
+    target: 0x0
+    upper_counter: 0x0
+    upper_target: 0x0
+  value: 0x0
+dbg_cla_counter2_cfg:
+  fields:
+    counter: 0x0
+    reset_on_target: 0x0
+    rsvd: 0x0
+    target: 0x0
+    upper_counter: 0x0
+    upper_target: 0x0
+  value: 0x0
+dbg_cla_counter3_cfg:
+  fields:
+    counter: 0x0
+    reset_on_target: 0x0
+    rsvd: 0x0
+    target: 0x0
+    upper_counter: 0x0
+    upper_target: 0x0
+  value: 0x0
+dbg_node0_eap0:  # NODE_0.EXAMPLE_ALWAYS
+  fields:
+    action0: 0x6  # TRACE_PULSE
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x1  # NODE_1
+    event_type0: 0x1  # (ALWAYS)
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x2  # NONE
+    udf: 0xaa
+  value: 0xaa00000018019
+dbg_node0_eap1:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node0_eap2:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node0_eap3:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node1_eap0:  # NODE_1.EXAMPLE_RESP
+  fields:
+    action0: 0x1  # CLOCK_HALT
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0  # NODE_0
+    event_type0: 0xc  # (anychange(hw5)) | (anychange(hw2))
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x2  # NONE
+    udf: 0xaa
+  value: 0xaa000000c8004
+dbg_node1_eap1:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node1_eap2:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node1_eap3:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node2_eap0:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node2_eap1:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node2_eap2:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node2_eap3:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node3_eap0:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node3_eap1:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node3_eap2:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_node3_eap3:
+  fields:
+    action0: 0x0
+    action1: 0x0
+    action2: 0x0
+    action3: 0x0
+    custom_action0_enable: 0x0
+    custom_action1_enable: 0x0
+    custom_action_0: 0x0
+    custom_action_1: 0x0
+    dest_node: 0x0
+    event_type0: 0x0
+    event_type1: 0x0
+    event_type2: 0x0
+    logical_op: 0x0
+    udf: 0x0
+  value: 0x0
+dbg_ones_count_mask:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_ones_count_value:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_edge_detect_cfg:
+  fields:
+    pos_edge_signal0: 0x0
+    pos_edge_signal1: 0x0
+    signal0_select: 0x0
+    signal1_select: 0x0
+  value: 0x0
+dbg_signal_mask0:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_mask1:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_mask2:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_mask3:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_match0:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_match1:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_match2:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_signal_match3:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_transition_from_value:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_transition_mask:
+  fields:
+    value: 0x0
+  value: 0x0
+dbg_transition_to_value:
+  fields:
+    value: 0x0
+  value: 0x0

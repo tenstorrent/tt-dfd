@@ -1,0 +1,24 @@
+# Files
+*/result.json
+.nfs*
+*.dump
+*.elf
+*.hex
+*.log
+*.swp
+simv
+ucli.key
+Bender.local
+*.fsdb
+verdi_config_file
+.dvt*
+tt_dfd.f
+cust_rtl.stamp
+
+# Directories
+venv/
+__pycache__
+deps/
+.bender
+simv.daidir
+csrc/

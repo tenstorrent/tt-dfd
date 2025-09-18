@@ -1,0 +1,198 @@
+addrmap ntr {
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Trteactive[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteenable[1:1] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trteinsttracing[2:2] = 0x0;
+        field {
+            sw = r;
+            hw = w;
+        } Trteempty[3:3] = 0x1;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinstmode[6:4] = 0x6;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtecontext[9:9] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinsttriggerenable[11:11] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trteinststalloroverflow[12:12] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinststallena[13:13] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinhibitsrc[15:15] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtesyncmode[17:16] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtesyncmax[23:20] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteformat[26:24] = 0x1;
+    } Trtecontrol @ 0x20000;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Trtevermajor[3:0] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trteverminor[7:4] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trtecomptype[11:8] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trteprotocolmajor[19:16] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trteprotocolminor[23:20] = 0x0;
+        field {
+            desc = "Specify frame length. Frame Length = trTeVendorFrameLength* 64 ; Frame Length should be a multiple of Bank Data Width.";
+            sw = rw;
+            hw = r;
+        } Trtevendorframelength[27:24] = 0x1;
+        field {
+            desc = "Enable bit for consuming CLA external trace action triggers for N-trace start/stop controls";
+            sw = rw;
+            hw = r;
+        } Trteclatriggerenable[28:28] = 0x0;
+        field {
+            desc = "Enable bit for Tracing while in Patch mode";
+            sw = rw;
+            hw = r;
+        } Trtetracepatchenable[29:29] = 0x0;
+    } Trteimpl @ 0x20040;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinstnoaddrdiff[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinstnotrapaddr[1:1] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinstenrepeatedhistory[8:8] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtesrcid[27:16] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtesrcbits[31:28] = 0x4;
+    } Trteinstfeatures @ 0x20080;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Trteinstfilters[15:0] = 0x0;
+    } Trteinstfilters @ 0x200C0;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Trtefilterenable[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtefiltermatchprivilege[1:1] = 0x0;
+    } Trtefilter0Control @ 0x20100;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Trtefiltermatchchoiceprivilege[7:0] = 0x0;
+    } Trtefilter0Matchinst @ 0x20140;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            desc = "Trace Source ID (FIXME: Base Address, Tool Issue)";
+            sw = rw;
+            hw = r;
+        } TraceSourceId[3:0] = 0x0;
+        field {
+            desc = "Use \"Filler Packet\" to align a stream of trace packets within a frame boundary.";
+            sw = rw;
+            hw = r;
+        } TraceFrameFillByte[11:4] = 0xFF;
+        field {
+            desc = "Use trDstTe[trDstVendorFrameLength] for Frame Length programming. Register field ZBB-ed.";
+            sw = rw;
+            hw = r;
+        } FrameLenghtInBytes[15:12] = 0x2;
+        field {
+            desc = "Enable Frame Mode (Frame Mode: Always pack \"frame length\" number of bytes for trace transmission). If flush to memory is stalled (due to silicon bug), we can have incomplete packets in memory. Frame Mode will help SW decoder to avoid reading incomplete trasnmitted packets. In Frame Mode, SW will get a memory pointer that is aligned to Frame Length. HW will ensure  there are no incomplete packets incluced in the region pointed by memory pointer.";
+            sw = rw;
+            hw = r;
+        } FrameModeEnable[20:20] = 0x1;
+        field {
+            desc = "Closure Mode: 1: Close frame with a packet no larger than max packet size  before any overflow (due to packets crossing frame boundary). 0: Close frame when packets cross boundary. Push back packet crossing frame boundary to packet generator.";
+            sw = rw;
+            hw = r;
+        } FrameClosureMode[21:21] = 0x0;
+    } CDbgNtraceFrameCfg @ 0x21A80;
+};
+
+/*
+        THIS IS AN AUTOGENERATED ADDRESS MAP
+
+        Trtecontrol                 @ 0x2000
+        Trteimpl                    @ 0x2004
+        Trteinstfeatures            @ 0x2008
+        Trteinstfilters             @ 0x200C
+        Trtefilter0Control          @ 0x2010
+        Trtefilter0Matchinst        @ 0x2014
+        CDbgNtraceFrameCfg          @ 0x21A8
+*/
+

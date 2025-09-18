@@ -1,0 +1,114 @@
+package:
+  name: tt_dfd
+  authors:
+  - Kevin Greig <kgreig@tenstorrent.com>
+  - Joey Chen <joeychen@tenstorrent.com>
+  - Jeremy Wu <jeremywu@tenstorrent.com>
+export_include_dirs:
+- rtl/common
+- rtl/mmr
+- dv/dfd
+dependencies:
+  axi:
+    version: 0.39.8
+    git: https://github.com/pulp-platform/axi.git
+sources:
+- rtl/gen_files/mem_gen_pkg.svh
+- rtl/intf/dfd_CL_axi_pkg.vh
+- rtl/common/generic_macro_assertion.vh
+- rtl/common/generic_clkgate.sv
+- rtl/common/generic_ccg.sv
+- rtl/common/generic_dff.sv
+- rtl/common/generic_dff_clr.sv
+- rtl/common/generic_vidtopid.sv
+- rtl/common/generic_ffs.sv
+- rtl/common/generic_ffs_fast.sv
+- rtl/common/generic_ffs_N.sv
+- rtl/common/generic_mem_model.sv
+- rtl/common/generic_decoded_mux.sv
+- rtl/common/generic_onehot_detect.sv
+- rtl/common/generic_fifoMN.sv
+- rtl/common/generic_rotate.sv
+- rtl/common/generic_dff_staging.sv
+- rtl/mmr/dfd_cr_csr_pkg.svh
+- rtl/mmr/dfd_cr_4b_csr_pkg.svh
+- rtl/mmr/dfd_mcr_csr_pkg.svh
+- rtl/mmr/dfd_dst_csr_pkg.svh
+- rtl/mmr/dfd_ntr_csr_pkg.svh
+- rtl/mmr/dfd_tr_csr_pkg.svh
+- rtl/mmr/dfd_cla_csr_pkg.svh
+- rtl/mmr/dfd_mcr_csr.sv
+- rtl/mmr/dfd_dst_csr.sv
+- rtl/mmr/dfd_ntr_csr.sv
+- rtl/mmr/dfd_cla_csr.sv
+- rtl/mmr/dfd_tr_csr.sv
+- rtl/cla/dfd_dst_pkg.svh
+- rtl/cla/dfd_cla_pkg.svh
+- rtl/cla/dfd_tt_dbm_pkg.svh
+- rtl/cla/dfd_cla_action_gen.sv
+- rtl/cla/dfd_cla_counter.sv
+- rtl/cla/dfd_debug_signal_shift_mux.sv
+- rtl/cla/dfd_xtrigger_stretch_circuit.sv
+- rtl/cla/dfd_cla_debug_signals_change.sv
+- rtl/cla/dfd_cla_debug_signals_match.sv
+- rtl/cla/dfd_cla_debug_signals_ones_count.sv
+- rtl/cla/dfd_cla_debug_signals_transition.sv
+- rtl/cla/dfd_cla_edge_detect.sv
+- rtl/cla/dfd_cla_event_gen.sv
+- rtl/cla/dfd_cla_node_eap.sv
+- rtl/cla/dfd_cla_node_eap_set.sv
+- rtl/cla/dfd_core_logic_analyzer.sv
+- rtl/cla/dfd_tt_debug_bus_mux.sv
+- rtl/cla/dfd_xor_compression.sv
+- rtl/cla/dfd_vlt_packet_compression.sv
+- rtl/cla/dfd_dst_priority_mux.sv
+- rtl/cla/dfd_debug_sig_trace_gen.sv
+- rtl/trace/dfd_te_pkg_v8.svh
+- rtl/trace/dfd_tn_pkg.svh
+- rtl/trace/dfd_packetizer_pkg.svh
+- rtl/trace/dfd_trace_hop.sv
+- rtl/trace/dfd_accumulator_bank.sv
+- rtl/trace/dfd_accumulator.sv
+- rtl/trace/dfd_cross_connect.sv
+- rtl/trace/dfd_frame_filler.sv
+- rtl/trace/dfd_packetizer.sv
+- rtl/trace/dfd_tnif.sv
+- rtl/trace/dfd_trace_axi_master.sv
+- rtl/trace/dfd_trace_network.sv
+- rtl/trace/dfd_trace_sink.sv
+- rtl/trace/dfd_te_mso.sv
+- rtl/trace/dfd_te_encoder.sv
+- rtl/trace/dfd_trace_mem_sink_generic.sv
+- rtl/trace/dfd_trace_mem.sv
+- rtl/trace/dfd_trace_funnel.sv
+- rtl/trace/dfd_trace_top.sv
+- rtl/dfd/dfd_pkg.svh
+- rtl/dfd/dfd_mmrs.sv
+- rtl/dfd/dfd_mux_sel.sv
+- rtl/dfd/dfd_unit.sv
+- rtl/dfd/dfd_apb2mmr.sv
+- rtl/dfd/dfd_time_sync.sv
+- rtl/dfd/dfd_top.sv
+- target: dfd_cust_rtl
+  files:
+  - rtl/gen_files/dfd_top_cla.sv
+  - rtl/gen_files/dfd_top_dst.sv
+  - rtl/gen_files/dfd_top_ntrace.sv
+  - rtl/gen_files/dfd_top_mmr.sv
+  - rtl/gen_files/dfd_top_cla_dst.sv
+  - rtl/gen_files/dfd_top_cla_ntrace.sv
+  - rtl/gen_files/dfd_top_cla_mmr.sv
+  - rtl/gen_files/dfd_top_dst_ntrace.sv
+  - rtl/gen_files/dfd_top_dst_mmr.sv
+  - rtl/gen_files/dfd_top_ntrace_mmr.sv
+  - rtl/gen_files/dfd_top_cla_dst_ntrace.sv
+  - rtl/gen_files/dfd_top_cla_dst_mmr.sv
+  - rtl/gen_files/dfd_top_cla_ntrace_mmr.sv
+  - rtl/gen_files/dfd_top_dst_ntrace_mmr.sv
+  - rtl/gen_files/dfd_top_cla_dst_ntrace_mmr.sv
+- target: dfd_dv
+  files:
+  - dv/dfd/dfd_tb.sv
+  - dv/dfd/dfd_mmrs_tb.sv
+workspace:
+  checkout_dir: deps
