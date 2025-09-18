@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+
 // Generic fast find-first-set (priority encoder) with thermometer output
 // Optimized parallel logic implementation suitable for open-source use
 module generic_ffs_fast #(
