@@ -1,0 +1,9 @@
+tt-dfd 
+Copyright 2025 Tenstorrent AI ULC
+
+-----
+Portions of this project from third parties:
+
+dfd_trace_axi_master.sv (in tt-dfd/rtl/trace)  
+Copyright 2018 ETH Zurich and University of Bologna, using the Soldierpad 0.51 license.  Dual use license: Apache 2.0.  http://solderpad.org/licenses/SHL-0.51
+
