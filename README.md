@@ -10,7 +10,7 @@ tt-dfd is an open-source parameterizable on-chip debug and trace IP solution to 
 - `rtl/`: synthesizable RTL sources
 - `dv/`: simple DV testbenches and associated files
 - `scripts/`: tooling for CLA compiler, DocGen, and utilities
-- `Bender.yml`: source list and dependency manifest used to generate filelists
+- `Bender.yml`: source list and dependency manifest used to generate file lists
 
 ## Requirements
 
@@ -24,7 +24,7 @@ Install the following to build and run the included examples:
 
 ## Build
 
-Build custom RTL variants and update filelists:
+Build custom RTL variants and update file lists:
 
 ```bash
 make build
@@ -46,9 +46,9 @@ This generates one `.sv` top per feature combination. Note: while permutations w
 
 tt-dfd exposes internal memory-mapped registers (MMRs) for control and status. The CSR definitions live under `rtl/mmr/`. The APB access behavior is exercised in `dv/dfd/dfd_mmrs_tb.sv`.
 
-## Filelists with Bender
+## File lists with Bender
 
-This repository uses Bender to manage sources and dependencies. To refresh dependencies and regenerate the filelist:
+This repository uses Bender to manage sources and dependencies. To refresh dependencies and regenerate the file list:
 
 ```bash
 make tt_dfd.f

@@ -13,22 +13,6 @@
 // Description: AXI Lite compatible interface
 //
 
-// Louis notes:
-// This file is modified upon open source file: https://aus-gitlab.local.tenstorrent.com/riscv/forks/cva6/-/blob/master/corev_apu/clint/axi_lite_interface.sv
-// It is used as an AXI slave interface, it does: 
-
-// This open source module is used as an AXI master module, it does: 
-// Receive R/W req from Register bus
-// Send Write Req:...
-// ...
-
-// FIXME_MUSTFIX_BABYLON: Lack id allocation logic... Lack Read request generated logic.. Lack Register Bus connection to MMR...  
-// Don't forget to assign w_user = aw.id
-// Is this Request a Write request or Read request?
-// care about write request now
-
-// need to keep track of the in-flight transactions? or error out 
-
 
 module dfd_trace_axi_master #(
     parameter int unsigned AXI_ADDR_WIDTH = 64,
