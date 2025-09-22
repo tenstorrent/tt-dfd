@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 package example_dfd_pkg;
 
 localparam L0_DBG_LANE_WIDTH = 16;

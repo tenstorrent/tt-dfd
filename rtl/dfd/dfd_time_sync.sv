@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module dfd_time_sync #(
         parameter integer DFD_APB_ADDR_WIDTH = 32,
         parameter integer DFD_APB_DATA_WIDTH = 32,

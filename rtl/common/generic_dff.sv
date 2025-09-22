@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module generic_dff #(parameter WIDTH=8,
                     parameter RESET_VALUE=0,
                     parameter BYPASS=0)

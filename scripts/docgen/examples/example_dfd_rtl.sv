@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 /*
 This module is for CLA demonstration, and has no function
 */

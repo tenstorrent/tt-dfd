@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 `ifndef DBM_CSR_PKG_SVH
 `define DBM_PKG_SVH
 

@@ -13,7 +13,6 @@
 // Description: AXI Lite compatible interface
 //
 
-
 module dfd_trace_axi_master #(
     parameter int unsigned AXI_ADDR_WIDTH = 64,
     parameter int unsigned AXI_DATA_WIDTH = 64,

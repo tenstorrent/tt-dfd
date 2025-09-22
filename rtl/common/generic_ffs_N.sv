@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module generic_ffs_N#(parameter DIR_L2H    = 1,              //Direction of Priority
                 parameter WIDTH      = 8,              //Number of inputs.
                 parameter SIZE       = ($clog2(WIDTH) > 1 ? $clog2(WIDTH) : 1), //Log2 Number of inputs

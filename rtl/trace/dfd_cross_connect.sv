@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 //Align inocming packets as per current write boundary for dfd_accumulator.
 module dfd_cross_connect #(
     parameter ACCUMULATOR_DATA_WIDTH_IN_BYTES = 64,

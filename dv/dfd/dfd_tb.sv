@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module dfd_tb
   import dfd_dst_pkg::*;
   import dfd_pkg::*;

@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
 
 // Generic find-first-set (priority encoder) with data multiplexing
 // Simple, standard implementation suitable for open-source use

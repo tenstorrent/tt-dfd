@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
 
 // Trace Hop - Block that connects the TNIF to the Trace funnel
 

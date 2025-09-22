@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module generic_decoded_mux #(
     parameter DISABLE_ASSERTIONS = 0,
     parameter VALUE_WIDTH = 32,

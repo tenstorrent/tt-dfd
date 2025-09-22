@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module dfd_cla_edge_detect
 import dfd_cr_csr_pkg::*;
 import dfd_cla_pkg::*;

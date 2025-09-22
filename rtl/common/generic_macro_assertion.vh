@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 `ifndef GENERIC_MACRO_ASSERTION_VH
 `define GENERIC_MACRO_ASSERTION_VH
 

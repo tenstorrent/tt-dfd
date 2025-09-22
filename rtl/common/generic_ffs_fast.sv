@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
 
 // Generic fast find-first-set (priority encoder) with thermometer output
 // Optimized parallel logic implementation suitable for open-source use

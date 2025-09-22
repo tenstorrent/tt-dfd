@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 //Debug Bus --> VLT packets.
 module dfd_debug_sig_trace_gen
 import dfd_cr_csr_pkg::*;

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 //Generate VLT packets.
 module dfd_vlt_packet_compression
 import dfd_cr_csr_pkg::*;

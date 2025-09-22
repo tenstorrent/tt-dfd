@@ -1,5 +1,7 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
 
-// Generic, non-proprietary clock gating cell (scrubbed version)
+// Generic, non-proprietary clock gating cell
 // Functionally equivalent to a typical clock gate: o_clk is i_clk when enabled, otherwise held low.
 module generic_ccg #(
     parameter WIDTH = 1,

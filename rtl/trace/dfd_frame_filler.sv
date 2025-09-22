@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 // Frmae Filler : Generate Request adjusted to frame support, generate frame_fill data/byte-enables.
 module dfd_frame_filler
 import dfd_cr_csr_pkg::*;

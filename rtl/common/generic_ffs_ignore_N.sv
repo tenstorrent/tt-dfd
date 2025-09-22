@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
 
 // Open-source, parallel N-priority encoder (tree-based)
 // Finds the first N set bits in a request vector, outputs their data, one-hot, and encoded positions.

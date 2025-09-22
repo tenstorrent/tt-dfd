@@ -1,4 +1,6 @@
-//Note:for now, we will override the counter width as 31...
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module dfd_cla_counter
 import dfd_cr_csr_pkg::*;
 import dfd_cla_pkg::*;

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 //Module to instantiate all event generators.
 module dfd_cla_event_gen
 import dfd_cr_csr_pkg::*;

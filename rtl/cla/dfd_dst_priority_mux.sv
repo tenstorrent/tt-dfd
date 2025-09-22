@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 module dfd_dst_priority_mux #(parameter WIDTH = 8, parameter LEVELS = 4) (
   input logic [WIDTH-1:0] inputs [0:LEVELS-1], // Input signals
   input logic [LEVELS-1:0] select, // Select signal

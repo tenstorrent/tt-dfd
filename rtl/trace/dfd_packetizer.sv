@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 // Packetizer : Cross Connect + Accumlator (+ Banks) + FIFO
 module dfd_packetizer
 import dfd_cr_csr_pkg::*;

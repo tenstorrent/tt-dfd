@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+
 // Trace Top: Top Trace File - Holds dfd_trace_network, trace_funnel, and trace_mem
 
 module dfd_trace_top
