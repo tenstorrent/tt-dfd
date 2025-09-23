@@ -1,0 +1,702 @@
+addrmap tr {
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trfunnelactive[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trfunnelenable[1:1] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+        } Trfunnelempty[3:3] = 0x1;
+    } Trfunnelcontrol @ 0x40000;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Trfunnelvermajor[3:0] = 0x1;
+        field {
+            desc = "e";
+            sw = r;
+            hw = r;
+        } Trfunnelverminor[7:4] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trfunnelcomptype[11:8] = 0x8;
+    } Trfunnelimpl @ 0x40040;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            desc = "Bits 7:0 are reserved for N-trace srcs and 15:8 for Dst sources";
+            sw = rw;
+            hw = rw;
+        } Trfunneldisinput[15:0] = 0x0;
+    } Trfunneldisinput @ 0x40080;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramactive[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramenable[1:1] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+        } Trramempty[3:3] = 0x1;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trrammode[4:4] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramstoponwrap[8:8] = 0x0;
+    } Trramcontrol @ 0x50000;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Trramvermajor[3:0] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trramverminor[7:4] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trramcomptype[11:8] = 0x9;
+        field {
+            sw = r;
+            hw = r;
+        } Trramhassram[12:12] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trramhassmem[13:13] = 0x1;
+        field {
+            sw = rw;
+            hw = r;
+        } Trramvendorframelength[27:24] = 0x1;
+    } Trramimpl @ 0x50040;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trramstartlow[31:2] = 0x0;
+    } Trramstartlow @ 0x50100;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramstarthigh[31:0] = 0x0;
+    } Trramstarthigh @ 0x50140;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trramlimitlow[31:2] = 0x2000;
+    } Trramlimitlow @ 0x50180;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramlimithigh[31:0] = 0x0;
+    } Trramlimithigh @ 0x501C0;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = rw;
+        } Trramwrap[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramwplow[31:2] = 0x0;
+    } Trramwplow @ 0x50200;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramwphigh[31:0] = 0x0;
+    } Trramwphigh @ 0x50240;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trramrplow[31:2] = 0x0;
+    } Trramrplow @ 0x50280;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trramrphigh[31:0] = 0x0;
+    } Trramrphigh @ 0x502C0;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = rw;
+        } Trramdata[31:0] = 0x0;
+    } Trramdata @ 0x50400;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trcustomramsmemlimitlow[31:2] = 0x1000;
+    } Trcustomramsmemlimitlow @ 0x5E000;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramactive[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramenable[1:1] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+        } Trdstramempty[3:3] = 0x1;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstrammode[4:4] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramstoponwrap[8:8] = 0x0;
+    } Trdstramcontrol @ 0x60000;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Trdstramvermajor[3:0] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trdstramverminor[7:4] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trdstramcomptype[11:8] = 0x9;
+        field {
+            sw = r;
+            hw = r;
+        } Trdstramhassram[12:12] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trdstramhassmem[13:13] = 0x1;
+        field {
+            sw = rw;
+            hw = r;
+        } Trdstramvendorframelength[27:24] = 0x1;
+    } Trdstramimpl @ 0x60040;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trdstramstartlow[31:2] = 0x0;
+    } Trdstramstartlow @ 0x60100;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramstarthigh[31:0] = 0x0;
+    } Trdstramstarthigh @ 0x60140;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trdstramlimitlow[31:2] = 0x0;
+    } Trdstramlimitlow @ 0x60180;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramlimithigh[31:0] = 0x0;
+    } Trdstramlimithigh @ 0x601C0;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = rw;
+        } Trdstramwrap[0:0] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramwplow[31:2] = 0x0;
+    } Trdstramwplow @ 0x60200;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramwphigh[31:0] = 0x0;
+    } Trdstramwphigh @ 0x60240;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = r;
+        } Rsvd10[1:0] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+        } Trdstramrplow[31:2] = 0x0;
+    } Trdstramrplow @ 0x60280;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = rw;
+        } Trdstramrphigh[31:0] = 0x0;
+    } Trdstramrphigh @ 0x602C0;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = rw;
+        } Trdstramdata[31:0] = 0x0;
+    } Trdstramdata @ 0x60400;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        m_mask = "TrClusterFuseCfgHi";
+//         m_writes_only_mask = "T";
+        field {
+            desc = "1 bit / 4 ways (total 8 bit /32 ways possible) 1: enable 0: disabled";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } ScHarvestStrap[7:0] = 0x0;
+        field {
+            desc = "Reserved for future use";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Rsvd98[9:8] = 0x0;
+        field {
+            desc = "Use reduced FP throughput to comply with export restriction";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } ExportRestrictionEnabled[10:10] = 0x0;
+        field {
+            desc = "IO coherency disable bit used in sharedcache bridge: If 1: ACB will respond with DECERR when it receives a request outside the SC/SCB domains (MMR or SP)";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } IoCoherencyDisable[11:11] = 0x0;
+        field {
+            desc = "Reserved for future use";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Rsvd1512[15:12] = 0x0;
+        field {
+            desc = "Physical Core0 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core0Enable[16:16] = 0x0;
+        field {
+            desc = "Physical Core0 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core0Vid[19:17] = 0x0;
+        field {
+            desc = "Physical Core1 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core1Enable[20:20] = 0x0;
+        field {
+            desc = "Physical Core1 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core1Vid[23:21] = 0x0;
+        field {
+            desc = "Physical Core2 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core2Enable[24:24] = 0x0;
+        field {
+            desc = "Physical Core2 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core2Vid[27:25] = 0x0;
+        field {
+            desc = "Physical Core3 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core3Enable[28:28] = 0x0;
+        field {
+            desc = "Physical Core3 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core3Vid[31:29] = 0x0;
+    } TrClusterFuseCfgLow @ 0x7FF80;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        m_mask = "TrClusterFuseCfgHi";
+//         m_writes_only_mask = "T";
+        field {
+            desc = "Physical Core4 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core4Enable[0:0] = 0x0;
+        field {
+            desc = "Physical Core4 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core4Vid[3:1] = 0x0;
+        field {
+            desc = "Physical Core5 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core5Enable[4:4] = 0x0;
+        field {
+            desc = "Physical Core5 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core5Vid[7:5] = 0x0;
+        field {
+            desc = "Physical Core6 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core6Enable[8:8] = 0x0;
+        field {
+            desc = "Physical Core6 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core6Vid[11:9] = 0x0;
+        field {
+            desc = "Physical core7 availability";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core7Enable[12:12] = 0x0;
+        field {
+            desc = "Physical core7 vid";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Core7Vid[15:13] = 0x0;
+        field {
+            desc = "Debug enable. debug_enable[1]: AXI access to DM; debug_enable[0]: DM";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } DebugEnable[17:16] = 0x0;
+        field {
+            desc = "CLA enable";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } ClaEnable[18:18] = 0x0;
+        field {
+            desc = "Trace enable";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } TraceEnable[19:19] = 0x0;
+        field {
+            desc = "DST enable";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } DstEnable[20:20] = 0x0;
+        field {
+            desc = "JTAG to AXI enable";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Jtag2UarchEnable[21:21] = 0x0;
+        field {
+            desc = "Reserved for future use";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Rsvd3022[30:22] = 0x0;
+        field {
+            desc = "Lock bit";
+            sw = rw;
+            hw = r;
+//             m_mask = "Lock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "cold_resetn";
+        } Lock[31:31] = 0x0;
+    } TrClusterFuseCfgHi @ 0x7FFC0;
+    reg {
+        desc = "Additional scratch register for DV and potential ECO usage";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Data[31:0] = 0x0;
+    } TrScratchLo @ 0x8FE80;
+    reg {
+        desc = "Additional scratch register for DV and potential ECO usage";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Data[31:0] = 0x0;
+    } TrScratchHi @ 0x8FEC0;
+    reg {
+        desc = "Scratchpad register for DV";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Data[31:0] = 0xEFEFEFEF;
+    } TrScratchpadLo @ 0x8FF00;
+    reg {
+        desc = "Scratchpad register for DV";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Data[31:0] = 0xEFEFEFEF;
+    } TrScratchpadHi @ 0x8FF40;
+};
+
+/*
+        THIS IS AN AUTOGENERATED ADDRESS MAP
+
+        Trfunnelcontrol                @ 0x4000
+        Trfunnelimpl                   @ 0x4004
+        Trfunneldisinput               @ 0x4008
+        Trramcontrol                   @ 0x5000
+        Trramimpl                      @ 0x5004
+        Trramstartlow                  @ 0x5010
+        Trramstarthigh                 @ 0x5014
+        Trramlimitlow                  @ 0x5018
+        Trramlimithigh                 @ 0x501C
+        Trramwplow                     @ 0x5020
+        Trramwphigh                    @ 0x5024
+        Trramrplow                     @ 0x5028
+        Trramrphigh                    @ 0x502C
+        Trramdata                      @ 0x5040
+        Trcustomramsmemlimitlow        @ 0x5E00
+        Trdstramcontrol                @ 0x6000
+        Trdstramimpl                   @ 0x6004
+        Trdstramstartlow               @ 0x6010
+        Trdstramstarthigh              @ 0x6014
+        Trdstramlimitlow               @ 0x6018
+        Trdstramlimithigh              @ 0x601C
+        Trdstramwplow                  @ 0x6020
+        Trdstramwphigh                 @ 0x6024
+        Trdstramrplow                  @ 0x6028
+        Trdstramrphigh                 @ 0x602C
+        Trdstramdata                   @ 0x6040
+        TrClusterFuseCfgLow            @ 0x7FF8
+        TrClusterFuseCfgHi             @ 0x7FFC
+        TrScratchLo                    @ 0x8FE8
+        TrScratchHi                    @ 0x8FEC
+        TrScratchpadLo                 @ 0x8FF0
+        TrScratchpadHi                 @ 0x8FF4
+*/
+

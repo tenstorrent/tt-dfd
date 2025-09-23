@@ -1,0 +1,5 @@
+Debug Bus Bit Indexes,Debug Bus Lanes,Signal Name,
+[143:136],LANE_8[15] : LANE_8[8],rsvd_l1
+[135:128],LANE_8[7] : LANE_8[0],FineGrainTime
+[127:64],LANE_7[15] : LANE_4[0],dbm_out_l0_1
+[63:0],LANE_3[15] : LANE_0[0],dbm_out_l0_0

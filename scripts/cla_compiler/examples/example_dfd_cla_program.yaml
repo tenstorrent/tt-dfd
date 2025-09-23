@@ -1,0 +1,39 @@
+# Example CLA program
+# The 3rd read request from the source 0xfa on channel A is returning with an error. You want to find out what is causing the error. 
+# Once the third response for the target address is sent, or if the value of "internal_signal_C" changes, you want to:
+#   - capture the value of the internal signal "internal_signal_D"
+#   - stop the clock for a scan dump
+#   - perform a custom CLA action to block more requests from being accepted
+
+#Define counters
+COUNTERS:
+  - EXAMPLE_COUNTER
+
+#Define EAPs
+START_NODE: NODE_0  #set node 0
+NODES:
+  NODE_0:
+    EXAMPLE_ALWAYS:
+      # Always trace pulse and switch to NODE_1. 
+      event_triggers:
+        custom_event_A:
+          - ALWAYS_ON
+      event_logical_op: custom_event_A
+      actions: 
+        - TRACE_PULSE
+      next_state_node: NODE_1
+
+  NODE_1:
+    EXAMPLE_RESP:
+      # Detect when hw0 && hw1 change or hw2 && hw3 change. 
+      # Capture hw4 snapshot, stop the clock
+      event_triggers:
+        StateChange_1:
+          - anychange(hw5)
+          - anychange(hw2)
+      event_logical_op: StateChange_1
+      actions: 
+        - CLOCK_HALT
+      snapshot_signals:
+        - hw0
+      next_state_node: NODE_0

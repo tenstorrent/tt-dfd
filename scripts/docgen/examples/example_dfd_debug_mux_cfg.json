@@ -1,0 +1,55 @@
+{
+  "Package Files": [
+    "example_dfd_pkg.vh"
+  ],
+  "CLA Input": "dbm_out_l1",
+  "Debug Mux Instances": {
+      "debug_bus_mux_l1": {
+        "DbgMuxSelCsr": "CrCsrCdbgmuxsel",
+        "LANE_WIDTH": "L1_DBG_LANE_WIDTH",
+        "NUM_INPUT_LANES": "L1_DBG_NUM_INPUT_LANES",
+        "DEBUG_MUX_ID": 2,
+        "debug_signals_in": [
+          {"Name": "rsvd_l1", "Type": "logic [7:0]"},
+          {"Name": "FineGrainTime", "Type": "logic [FINE_GRAIN_TSTAMP_COUNTER_WIDTH-1:0]"},
+          {"Name": "dbm_out_l0_1", "Type": "logic [63:0]"},
+          {"Name": "dbm_out_l0_0", "Type": "logic [63:0]"}
+        ],
+        "debug_bus_out": "dbm_out_l1"
+      },
+      "debug_bus_mux_l0_1": {
+        "DbgMuxSelCsr": "CrCsrCdbgmuxsel",
+        "LANE_WIDTH": "L0_DBG_LANE_WIDTH",
+        "NUM_INPUT_LANES": "L0_DBG_NUM_INPUT_LANES",
+        "DEBUG_MUX_ID": 1,
+        "debug_signals_in": [
+          {"Name": "hw15", "Type": "hw_t"},
+          {"Name": "hw14", "Type": "hw_t"},
+          {"Name": "hw13", "Type": "hw_t"},
+          {"Name": "hw12", "Type": "hw_t"},
+          {"Name": "hw11", "Type": "hw_t"},
+          {"Name": "hw10", "Type": "hw_t"},
+          {"Name": "hw9",  "Type": "hw_t"},
+          {"Name": "hw8",  "Type": "hw_t"}
+        ],
+        "debug_bus_out": "dbm_out_l0_1"
+      },
+      "debug_bus_mux_l0_0": {
+        "DbgMuxSelCsr": "CrCsrCdbgmuxsel",
+        "LANE_WIDTH": "L0_DBG_LANE_WIDTH",
+        "NUM_INPUT_LANES": "L0_DBG_NUM_INPUT_LANES",
+        "DEBUG_MUX_ID": 0,
+        "debug_signals_in": [
+          {"Name": "hw7", "Type": "hw_t"},
+          {"Name": "hw6", "Type": "hw_t"},
+          {"Name": "hw5", "Type": "hw_t"},
+          {"Name": "hw4", "Type": "hw_t"},
+          {"Name": "hw3", "Type": "hw_t"},
+          {"Name": "hw2", "Type": "hw_t"},
+          {"Name": "hw1", "Type": "hw_t"},
+          {"Name": "hw0", "Type": "hw_t"}
+        ],
+        "debug_bus_out": "dbm_out_l0_0"
+      }
+  }
+}

@@ -1,0 +1,477 @@
+{
+  "CLA Input": "dbm_out_l1",
+  "Debug Mux Instances": {
+    "debug_bus_mux_l0_0": {
+      "DEBUG_MUX_ID": 0,
+      "DbgMuxSelCsr": "CrCsrCdbgmuxsel",
+      "Debug Bus Inputs": [
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 112,
+          "Bus Upper Index": 127,
+          "Lane Lower": 7,
+          "Lane Lower Index": 0,
+          "Lane Upper": 7,
+          "Lane Upper Index": 15,
+          "Name": "hw7",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 112,
+              "Bus Upper Index": 127,
+              "Lane Lower": 7,
+              "Lane Lower Index": 0,
+              "Lane Upper": 7,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 96,
+          "Bus Upper Index": 111,
+          "Lane Lower": 6,
+          "Lane Lower Index": 0,
+          "Lane Upper": 6,
+          "Lane Upper Index": 15,
+          "Name": "hw6",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 96,
+              "Bus Upper Index": 111,
+              "Lane Lower": 6,
+              "Lane Lower Index": 0,
+              "Lane Upper": 6,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 80,
+          "Bus Upper Index": 95,
+          "Lane Lower": 5,
+          "Lane Lower Index": 0,
+          "Lane Upper": 5,
+          "Lane Upper Index": 15,
+          "Name": "hw5",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 80,
+              "Bus Upper Index": 95,
+              "Lane Lower": 5,
+              "Lane Lower Index": 0,
+              "Lane Upper": 5,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 64,
+          "Bus Upper Index": 79,
+          "Lane Lower": 4,
+          "Lane Lower Index": 0,
+          "Lane Upper": 4,
+          "Lane Upper Index": 15,
+          "Name": "hw4",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 64,
+              "Bus Upper Index": 79,
+              "Lane Lower": 4,
+              "Lane Lower Index": 0,
+              "Lane Upper": 4,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 48,
+          "Bus Upper Index": 63,
+          "Lane Lower": 3,
+          "Lane Lower Index": 0,
+          "Lane Upper": 3,
+          "Lane Upper Index": 15,
+          "Name": "hw3",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 48,
+              "Bus Upper Index": 63,
+              "Lane Lower": 3,
+              "Lane Lower Index": 0,
+              "Lane Upper": 3,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 32,
+          "Bus Upper Index": 47,
+          "Lane Lower": 2,
+          "Lane Lower Index": 0,
+          "Lane Upper": 2,
+          "Lane Upper Index": 15,
+          "Name": "hw2",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 32,
+              "Bus Upper Index": 47,
+              "Lane Lower": 2,
+              "Lane Lower Index": 0,
+              "Lane Upper": 2,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 16,
+          "Bus Upper Index": 31,
+          "Lane Lower": 1,
+          "Lane Lower Index": 0,
+          "Lane Upper": 1,
+          "Lane Upper Index": 15,
+          "Name": "hw1",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 16,
+              "Bus Upper Index": 31,
+              "Lane Lower": 1,
+              "Lane Lower Index": 0,
+              "Lane Upper": 1,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 0,
+          "Bus Upper Index": 15,
+          "Lane Lower": 0,
+          "Lane Lower Index": 0,
+          "Lane Upper": 0,
+          "Lane Upper Index": 15,
+          "Name": "hw0",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 0,
+              "Bus Upper Index": 15,
+              "Lane Lower": 0,
+              "Lane Lower Index": 0,
+              "Lane Upper": 0,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        }
+      ],
+      "Debug Bus Output": "dbm_out_l0_0",
+      "LANE_WIDTH": 16
+    },
+    "debug_bus_mux_l0_1": {
+      "DEBUG_MUX_ID": 1,
+      "DbgMuxSelCsr": "CrCsrCdbgmuxsel",
+      "Debug Bus Inputs": [
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 112,
+          "Bus Upper Index": 127,
+          "Lane Lower": 7,
+          "Lane Lower Index": 0,
+          "Lane Upper": 7,
+          "Lane Upper Index": 15,
+          "Name": "hw15",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 112,
+              "Bus Upper Index": 127,
+              "Lane Lower": 7,
+              "Lane Lower Index": 0,
+              "Lane Upper": 7,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 96,
+          "Bus Upper Index": 111,
+          "Lane Lower": 6,
+          "Lane Lower Index": 0,
+          "Lane Upper": 6,
+          "Lane Upper Index": 15,
+          "Name": "hw14",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 96,
+              "Bus Upper Index": 111,
+              "Lane Lower": 6,
+              "Lane Lower Index": 0,
+              "Lane Upper": 6,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 80,
+          "Bus Upper Index": 95,
+          "Lane Lower": 5,
+          "Lane Lower Index": 0,
+          "Lane Upper": 5,
+          "Lane Upper Index": 15,
+          "Name": "hw13",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 80,
+              "Bus Upper Index": 95,
+              "Lane Lower": 5,
+              "Lane Lower Index": 0,
+              "Lane Upper": 5,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 64,
+          "Bus Upper Index": 79,
+          "Lane Lower": 4,
+          "Lane Lower Index": 0,
+          "Lane Upper": 4,
+          "Lane Upper Index": 15,
+          "Name": "hw12",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 64,
+              "Bus Upper Index": 79,
+              "Lane Lower": 4,
+              "Lane Lower Index": 0,
+              "Lane Upper": 4,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 48,
+          "Bus Upper Index": 63,
+          "Lane Lower": 3,
+          "Lane Lower Index": 0,
+          "Lane Upper": 3,
+          "Lane Upper Index": 15,
+          "Name": "hw11",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 48,
+              "Bus Upper Index": 63,
+              "Lane Lower": 3,
+              "Lane Lower Index": 0,
+              "Lane Upper": 3,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 32,
+          "Bus Upper Index": 47,
+          "Lane Lower": 2,
+          "Lane Lower Index": 0,
+          "Lane Upper": 2,
+          "Lane Upper Index": 15,
+          "Name": "hw10",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 32,
+              "Bus Upper Index": 47,
+              "Lane Lower": 2,
+              "Lane Lower Index": 0,
+              "Lane Upper": 2,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 16,
+          "Bus Upper Index": 31,
+          "Lane Lower": 1,
+          "Lane Lower Index": 0,
+          "Lane Upper": 1,
+          "Lane Upper Index": 15,
+          "Name": "hw9",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 16,
+              "Bus Upper Index": 31,
+              "Lane Lower": 1,
+              "Lane Lower Index": 0,
+              "Lane Upper": 1,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        },
+        {
+          "Bit Width": 16,
+          "Bus Lower Index": 0,
+          "Bus Upper Index": 15,
+          "Lane Lower": 0,
+          "Lane Lower Index": 0,
+          "Lane Upper": 0,
+          "Lane Upper Index": 15,
+          "Name": "hw8",
+          "Sub Buses": [
+            {
+              "Bit Width": 16,
+              "Bus Lower Index": 0,
+              "Bus Upper Index": 15,
+              "Lane Lower": 0,
+              "Lane Lower Index": 0,
+              "Lane Upper": 0,
+              "Lane Upper Index": 15,
+              "Name": "data",
+              "Sub Buses": [],
+              "Type": "logic [16-1:0]"
+            }
+          ],
+          "Type": "hw_t"
+        }
+      ],
+      "Debug Bus Output": "dbm_out_l0_1",
+      "LANE_WIDTH": 16
+    },
+    "debug_bus_mux_l1": {
+      "DEBUG_MUX_ID": 2,
+      "DbgMuxSelCsr": "CrCsrCdbgmuxsel",
+      "Debug Bus Inputs": [
+        {
+          "Bit Width": 8,
+          "Bus Lower Index": 136,
+          "Bus Upper Index": 143,
+          "Lane Lower": 8,
+          "Lane Lower Index": 8,
+          "Lane Upper": 8,
+          "Lane Upper Index": 15,
+          "Name": "rsvd_l1",
+          "Sub Buses": [],
+          "Type": "logic [7:0]"
+        },
+        {
+          "Bit Width": 8,
+          "Bus Lower Index": 128,
+          "Bus Upper Index": 135,
+          "Lane Lower": 8,
+          "Lane Lower Index": 0,
+          "Lane Upper": 8,
+          "Lane Upper Index": 7,
+          "Name": "FineGrainTime",
+          "Sub Buses": [],
+          "Type": "logic [8-1:0]"
+        },
+        {
+          "Bit Width": 64,
+          "Bus Lower Index": 64,
+          "Bus Upper Index": 127,
+          "Lane Lower": 4,
+          "Lane Lower Index": 0,
+          "Lane Upper": 7,
+          "Lane Upper Index": 15,
+          "Name": "dbm_out_l0_1",
+          "Sub Buses": [],
+          "Type": "logic [63:0]"
+        },
+        {
+          "Bit Width": 64,
+          "Bus Lower Index": 0,
+          "Bus Upper Index": 63,
+          "Lane Lower": 0,
+          "Lane Lower Index": 0,
+          "Lane Upper": 3,
+          "Lane Upper Index": 15,
+          "Name": "dbm_out_l0_0",
+          "Sub Buses": [],
+          "Type": "logic [63:0]"
+        }
+      ],
+      "Debug Bus Output": "dbm_out_l1",
+      "LANE_WIDTH": 16
+    }
+  }
+}

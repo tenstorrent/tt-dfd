@@ -1,0 +1,2363 @@
+addrmap cla {
+    reg {
+        desc = "Configure CLA counter0. One of the 4 counters used for counting cycles after a event match, and trigger a action on match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Counter[15:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Target[31:16] = 0x0;
+        field {
+            desc = "When Counter = {upper_target,target} reset to 0.  With this bit set, counter will provide a periodic tick w/ frequency of (target +1) if the action is set to Auto Incr. The periodic tick will continue till Stop Auto Incr or Clear Counter action.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } ResetOnTarget[32:32] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperCounter[47:33] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperTarget[62:48] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             legal_value = "0";
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd[63:63] = 0x0;
+    } CDbgClaCounter0Cfg @ 0x31000;
+    reg {
+        desc = "Configure CLA counter1. One of the 4 counters used for counting cycles after a event match, and trigger a action on match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Counter[15:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Target[31:16] = 0x0;
+        field {
+            desc = "When Counter = {upper_targe,target}, reset to 0.  With this bit set, counter will provide a periodic tick w/ frequency of (target +1) if the action is set to Auto Incr. The periodic tick will continue till Stop Auto Incr or Clear Counter action.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } ResetOnTarget[32:32] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperCounter[47:33] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperTarget[62:48] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             legal_value = "0";
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd[63:63] = 0x0;
+    } CDbgClaCounter1Cfg @ 0x31080;
+    reg {
+        desc = "Configure CLA counter2. One of the 4 counters used for counting cycles after a event match, and trigger a action on match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Counter[15:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Target[31:16] = 0x0;
+        field {
+            desc = "When Counter = {upper_target,target}, reset to 0.  With this bit set, counter will provide a periodic tick w/ frequency of (target +1) if the action is set to Auto Incr. The periodic tick will continue till Stop Auto Incr or Clear Counter action.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } ResetOnTarget[32:32] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperCounter[47:33] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperTarget[62:48] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             legal_value = "0";
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd[63:63] = 0x0;
+    } CDbgClaCounter2Cfg @ 0x31100;
+    reg {
+        desc = "Configure CLA counter3. One of the 4 counters used for counting cycles after a event match, and trigger a action on match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Counter[15:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Target[31:16] = 0x0;
+        field {
+            desc = "When Counter = {upper_target,target}, reset to 0.  With this bit set, counter will provide a periodic tick w/ frequency of (target +1) if the action is set to Auto Incr. The periodic tick will continue till Stop Auto Incr or Clear Counter action.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } ResetOnTarget[32:32] = 0x0;
+        field {
+            sw = rw;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperCounter[47:33] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } UpperTarget[62:48] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             legal_value = "0";
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd[63:63] = 0x0;
+    } CDbgClaCounter3Cfg @ 0x31180;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode0Eap0 @ 0x31200;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode0Eap1 @ 0x31280;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode1Eap0 @ 0x31300;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode1Eap1 @ 0x31380;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode2Eap0 @ 0x31400;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode2Eap1 @ 0x31480;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode3Eap0 @ 0x31500;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode3Eap1 @ 0x31580;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x2) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Mask to be applied to debug bus before match";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMask0 @ 0x31600;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x2) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value used for debug bus match.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMatch0 @ 0x31680;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x4) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Mask to be applied to debug bus before match";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMask1 @ 0x31700;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x4) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value used for debug bus match.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMatch1 @ 0x31780;
+    reg {
+        desc = "Register to configure debug bus for edge triggers.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Define which signal to select for edge detection.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Signal0Select[5:0] = 0x0;
+        field {
+            desc = "Defines which edge to detect for singal from signal0_select. 1: Pos edge, 0: Neg Edge";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } PosEdgeSignal0[6:6] = 0x0;
+        field {
+            desc = "Define which signal to select for edge detection.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Signal1Select[12:7] = 0x0;
+        field {
+            desc = "Defines which edge to detect for singal from signal1_select. 1: Pos edge, 0: Neg Edge";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } PosEdgeSignal1[13:13] = 0x0;
+    } CDbgSignalEdgeDetectCfg @ 0x31800;
+    reg {
+        desc = "Register to indicate if EAP Pair was activated. Use the corresponding w2c register to reset the status. There are 2 bits for each EAP. The bit corresponds to action-0 and action-1 of the EAP. The register is used by SW to know if an action was taken (ex: NMI ISR needs to know which of the EAP triggered the NMI)";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap0[0:0] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap1[1:1] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap2[2:2] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap3[3:3] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap0[4:4] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap1[5:5] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap2[6:6] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap3[7:7] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap0[8:8] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap1[9:9] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap2[10:10] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap3[11:11] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap0[12:12] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap1[13:13] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap2[14:14] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap3[15:15] = 0x0;
+        field {
+            sw = r;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd3116[31:16] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap0W2C[32:32] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap1W2C[33:33] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap2W2C[34:34] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node0Eap3W2C[35:35] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap0W2C[36:36] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap1W2C[37:37] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap2W2C[38:38] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node1Eap3W2C[39:39] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap0W2C[40:40] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap1W2C[41:41] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap2W2C[42:42] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node2Eap3W2C[43:43] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap0W2C[44:44] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap1W2C[45:45] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap2W2C[46:46] = 0x0;
+        field {
+            sw = rw;
+            hw = rw;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Node3Eap3W2C[47:47] = 0x0;
+    } CDbgEapStatus @ 0x31880;
+    reg {
+        desc = "Ctrl/Status register to Enable EAP after EAP programming is complete, and read the current node.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        m_mask = "CDbgClaCtrlStatus";
+        field {
+            desc = "Read the current node.";
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CurrentNode[1:0] = 0x0;
+        field {
+            desc = "Set Enable EAP to 1 after EAP programming is complete";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EnableEap[5:5] = 0x0;
+        field {
+            desc = "Set this bit to 1 to enable CLA. If this bit is set, CLA is clock gated (save pwr)";
+            sw = rw;
+            hw = r;
+            m_mask = "ClaLock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EnableCla[6:6] = 0x0;
+        field {
+            desc = "Creates a window in which we don’t forward the incoming Xtrigger and Clock_Halt signal";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } ClaChainLoopDelay[13:7] = 0x36;
+        field {
+            desc = "If this bit is set, clock halt action is not applied to global clocks";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DisableGlobalClockHalt[14:14] = 0x0;
+        field {
+            desc = "If this bit is set, clock halt action is not applied to local clocks";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DisableLocalClockHalt[15:15] = 0x0;
+        field {
+            desc = "reserved fields";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd6216[62:16] = 0x0;
+        field {
+            desc = "If this bit is set, then CLA is locked and the enbale_cla is latched forever";
+            sw = rw;
+            hw = r;
+            m_mask = "ClaLock";
+//             m_reverse_mask = "REVERSED";
+//             m_writes_only_mask = "T";
+//             reset_port_p = "reset_n_warm_ovrride";
+        } ClaLock[63:63] = 0x0;
+    } CDbgClaCtrlStatus @ 0x31900;
+    reg {
+        desc = "Reserved Register that can be changed.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value of reserved register.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgRsvd0 @ 0x31980;
+    reg {
+        desc = "Reserved Register that can be changed.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value of reserved register.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgRsvd1 @ 0x31A00;
+    reg {
+        desc = "Reserved Register that can be changed.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value of reserved register.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgRsvd2 @ 0x31A80;
+    reg {
+        desc = "3 registers to configure \"transition event\". This register is to select the signals of interest using a mask.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgTransitionMask @ 0x31B00;
+    reg {
+        desc = "3 registers to configure \"transition event\". The event is triggered on transition from Value A to Value B. This register specifies Value A.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgTransitionFromValue @ 0x31B80;
+    reg {
+        desc = "3 registers to configure \"transition event\". The event is triggered on transition from Value A to Value B. This register specifies Value B.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgTransitionToValue @ 0x31C00;
+    reg {
+        desc = "2 registers to configure \"ones count\" event. This register is to select the signals of interest using a mask.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgOnesCountMask @ 0x31C80;
+    reg {
+        desc = "2 registers to configure \"ones count\" event. Event triggered when the sum of the signals match the value specified in this register.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgOnesCountValue @ 0x31D00;
+    reg {
+        desc = "Event triggered when a subset of debug signals change. The mask is used to select the subset of the debug signals.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Mask[63:0] = 0x0;
+    } CDbgAnyChange @ 0x31D80;
+    reg {
+        desc = "debug Bus Value when Node0 Eap0 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode0Eap0 @ 0x31E00;
+    reg {
+        desc = "debug Bus Value when Node0 Eap1 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode0Eap1 @ 0x31E80;
+    reg {
+        desc = "debug Bus Value when Node1 Eap0 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode1Eap0 @ 0x31F00;
+    reg {
+        desc = "debug Bus Value when Node1 Eap0 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode1Eap1 @ 0x31F80;
+    reg {
+        desc = "debug Bus Value when Node0 Eap0 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode2Eap0 @ 0x32000;
+    reg {
+        desc = "debug Bus Value when Node0 Eap1 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode2Eap1 @ 0x32080;
+    reg {
+        desc = "debug Bus Value when Node1 Eap0 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode3Eap0 @ 0x32100;
+    reg {
+        desc = "debug Bus Value when Node1 Eap0 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode3Eap1 @ 0x32180;
+    reg {
+        desc = "This value is compared (greater than or equal to the programmed value) against the internal time register value of the core, and is used to generate a time match event for CLA. Needs to be non zero for the time match event signal to trigger. The event will only trigger an action if the EAP programming is done. Requires writing 0 to this register to stop the match event.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } TimeMatchVal[63:0] = 0x0;
+    } CDbgClaTimeMatch @ 0x32200;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x1C) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Mask to be applied to debug bus before match";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMask2 @ 0x32280;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x1C) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value used for debug bus match.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMatch2 @ 0x32300;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x1D) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Mask to be applied to debug bus before match";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMask3 @ 0x32380;
+    reg {
+        desc = "Used to define debug bus match event. Match event (0x1D) is triggered when debug_bus & mask = match.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Value used for debug bus match.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalMatch3 @ 0x32400;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode0Eap2 @ 0x32480;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode0Eap3 @ 0x32500;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode1Eap2 @ 0x32580;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode1Eap3 @ 0x32600;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode2Eap2 @ 0x32680;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode2Eap3 @ 0x32700;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode3Eap2 @ 0x32780;
+    reg {
+        desc = "CLA Action(s) are tied to events(s) using \"event-action pairing\" registers. One of he 8 EAPs (4 EAPs per Node).";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Select Destination Node";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } DestNode[1:0] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action0[7:2] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action1[13:8] = 0x0;
+        field {
+            desc = "Relation to be satisfied among events to activate the actions";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } LogicalOp[15:14] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType0[21:16] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType1[27:22] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0[31:28] = 0x0;
+        field {
+            desc = "Select the bit position of custom action bus to be set when EAP trigger is met. External blocks can define and implement the specifc action for a given bit.";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1[35:32] = 0x0;
+        field {
+            desc = "custom_action0 is valid only if custom_action0_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction0Enable[36:36] = 0x0;
+        field {
+            desc = "custom_action1 is valid only if custom_action1_enable is set";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } CustomAction1Enable[37:37] = 0x0;
+        field {
+            desc = "Select a trigger event";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } EventType2[43:38] = 0x0;
+        field {
+            desc = "User Defined Function with event type 0, 1, and 2 as arguments";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Udf[51:44] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action2[57:52] = 0x0;
+        field {
+            desc = "Select an Action";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Action3[63:58] = 0x0;
+    } CDbgNode3Eap3 @ 0x32800;
+    reg {
+        desc = "debug Bus Value when Node0 Eap2 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode0Eap2 @ 0x32880;
+    reg {
+        desc = "debug Bus Value when Node0 Eap3 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode0Eap3 @ 0x32900;
+    reg {
+        desc = "debug Bus Value when Node1 Eap2 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode1Eap2 @ 0x32980;
+    reg {
+        desc = "debug Bus Value when Node1 Eap3 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode1Eap3 @ 0x32A00;
+    reg {
+        desc = "debug Bus Value when Node2 Eap2 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode2Eap2 @ 0x32A80;
+    reg {
+        desc = "debug Bus Value when Node2 Eap3 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode2Eap3 @ 0x32B00;
+    reg {
+        desc = "debug Bus Value when Node3 Eap2 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode3Eap2 @ 0x32B80;
+    reg {
+        desc = "debug Bus Value when Node3 Eap3 Trigger is met.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = r;
+            hw = w;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Value[63:0] = 0x0;
+    } CDbgSignalSnapshotNode3Eap3 @ 0x32C00;
+    reg {
+        desc = "";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 0";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg0[1:0] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 1";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg1[3:2] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 2";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg2[5:4] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 3";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg3[7:6] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 4";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg4[9:8] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 5";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg5[11:10] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 6";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg6[13:12] = 0x0;
+        field {
+            desc = "Dbg Mux Shifted signals Select Bits for Lane 7";
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Muxselseg7[15:14] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd[63:16] = 0x0;
+    } CDbgSignalDelayMuxSel @ 0x32C80;
+    reg {
+        desc = "This value is loaded to the finegrain timestamp counter based on a cross trigger to sync the time value across the multiple cluster's CLA blocks";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Timestamp[62:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Timesyncmodeenable[63:63] = 0x0;
+    } CDbgClaTimestampsync @ 0x32D00;
+    reg {
+        desc = "This value determines the time stretched pulse duration for the cross trigger. 8 bits for each of the two triggers.";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Xtrigger0Stretch[7:0] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Xtrigger1Stretch[15:8] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+//             reset_port_p = "reset_n_warm_ovrride";
+        } Rsvd[63:16] = 0x0;
+    } CDbgClaXtriggerTimestretch @ 0x32D80;
+    reg {
+        desc = "Scratchpad register for DV";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Data[63:0] = 0xBFBFBFBFBFBFBFBF;
+    } CrScratchpad @ 0x33F00;
+    reg {
+        desc = "Additional scratch register for DV and potential ECO usage";
+        regwidth = 0x40;
+//         constraint_p = "";
+        field {
+            sw = rw;
+            hw = r;
+        } Data[63:0] = 0x0;
+    } Scratch @ 0x33F80;
+};
+
+/*
+        THIS IS AN AUTOGENERATED ADDRESS MAP
+
+        CDbgClaCounter0Cfg                 @ 0x3100
+        CDbgClaCounter1Cfg                 @ 0x3108
+        CDbgClaCounter2Cfg                 @ 0x3110
+        CDbgClaCounter3Cfg                 @ 0x3118
+        CDbgNode0Eap0                      @ 0x3120
+        CDbgNode0Eap1                      @ 0x3128
+        CDbgNode1Eap0                      @ 0x3130
+        CDbgNode1Eap1                      @ 0x3138
+        CDbgNode2Eap0                      @ 0x3140
+        CDbgNode2Eap1                      @ 0x3148
+        CDbgNode3Eap0                      @ 0x3150
+        CDbgNode3Eap1                      @ 0x3158
+        CDbgSignalMask0                    @ 0x3160
+        CDbgSignalMatch0                   @ 0x3168
+        CDbgSignalMask1                    @ 0x3170
+        CDbgSignalMatch1                   @ 0x3178
+        CDbgSignalEdgeDetectCfg            @ 0x3180
+        CDbgEapStatus                      @ 0x3188
+        CDbgClaCtrlStatus                  @ 0x3190
+        CDbgRsvd0                          @ 0x3198
+        CDbgRsvd1                          @ 0x31A0
+        CDbgRsvd2                          @ 0x31A8
+        CDbgTransitionMask                 @ 0x31B0
+        CDbgTransitionFromValue            @ 0x31B8
+        CDbgTransitionToValue              @ 0x31C0
+        CDbgOnesCountMask                  @ 0x31C8
+        CDbgOnesCountValue                 @ 0x31D0
+        CDbgAnyChange                      @ 0x31D8
+        CDbgSignalSnapshotNode0Eap0        @ 0x31E0
+        CDbgSignalSnapshotNode0Eap1        @ 0x31E8
+        CDbgSignalSnapshotNode1Eap0        @ 0x31F0
+        CDbgSignalSnapshotNode1Eap1        @ 0x31F8
+        CDbgSignalSnapshotNode2Eap0        @ 0x3200
+        CDbgSignalSnapshotNode2Eap1        @ 0x3208
+        CDbgSignalSnapshotNode3Eap0        @ 0x3210
+        CDbgSignalSnapshotNode3Eap1        @ 0x3218
+        CDbgClaTimeMatch                   @ 0x3220
+        CDbgSignalMask2                    @ 0x3228
+        CDbgSignalMatch2                   @ 0x3230
+        CDbgSignalMask3                    @ 0x3238
+        CDbgSignalMatch3                   @ 0x3240
+        CDbgNode0Eap2                      @ 0x3248
+        CDbgNode0Eap3                      @ 0x3250
+        CDbgNode1Eap2                      @ 0x3258
+        CDbgNode1Eap3                      @ 0x3260
+        CDbgNode2Eap2                      @ 0x3268
+        CDbgNode2Eap3                      @ 0x3270
+        CDbgNode3Eap2                      @ 0x3278
+        CDbgNode3Eap3                      @ 0x3280
+        CDbgSignalSnapshotNode0Eap2        @ 0x3288
+        CDbgSignalSnapshotNode0Eap3        @ 0x3290
+        CDbgSignalSnapshotNode1Eap2        @ 0x3298
+        CDbgSignalSnapshotNode1Eap3        @ 0x32A0
+        CDbgSignalSnapshotNode2Eap2        @ 0x32A8
+        CDbgSignalSnapshotNode2Eap3        @ 0x32B0
+        CDbgSignalSnapshotNode3Eap2        @ 0x32B8
+        CDbgSignalSnapshotNode3Eap3        @ 0x32C0
+        CDbgSignalDelayMuxSel              @ 0x32C8
+        CDbgClaTimestampsync               @ 0x32D0
+        CDbgClaXtriggerTimestretch         @ 0x32D8
+        CrScratchpad                       @ 0x33F0
+        Scratch                            @ 0x33F8
+*/
+
