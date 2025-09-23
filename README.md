@@ -24,7 +24,7 @@ The following information is useful for those who would like to include tt-dfd i
 - [Repository layout](#repository-layout)
 - [Register map](#register-map-mmrs)
 - [CLA tooling](#cla-tooling)
-- [File list](#file-list)
+- [Filelist](#filelist)
 
 
 ### Top-level parameters 
@@ -85,16 +85,16 @@ $ python3 dv/dfd/yamlToApbTraffic.py <path/to/value_dump.yaml> -o apb_write.txt
 
 Users are encouraged to use the tools above to program the CLA. Both CLA DocGen and the CLA Compiler contain READMEs with examples for each tool.  
 
-### File list
+### Filelist
 
-This repository uses [Bender](https://github.com/pulp-platform/bender) to manage sources and dependencies. Performing a `make build` will automatically regenerate the file list via Bender. However, users may also regenerate the file list themselves by using the following command.
+This repository uses [Bender](https://github.com/pulp-platform/bender) to manage sources and dependencies. Performing a `make build` will automatically regenerate the filelist via Bender. However, users may also regenerate the filelist themselves by using the following command.
 
 ```bash
-# Generate the file list using Bender
+# Generate the filelist using Bender
 $ make tt_dfd.f
 ```
 
-In addition to all the files contained in this repository, this project sources dependencies from an open-source repository for [AXI](https://github.com/pulp-platform/axi.git) IP. Bender will automatically populate the directory with the required files and generate the complete file list that can be used.   
+In addition to all the files contained in this repository, this project sources dependencies from an open-source repository for [AXI](https://github.com/pulp-platform/axi.git) IP. Bender will automatically populate the directory with the required files and generate the complete filelist that can be used.   
 
 ## Testbench
 
@@ -104,7 +104,7 @@ In order to run the tests, follow the steps below:
 
 ### Build
 
-To run tests and/or generate the file list for tt-dfd, follow the steps below to build the repository. 
+To run tests and/or generate the filelist for tt-dfd, follow the steps below to build the repository. 
 
 ```bash
 # Clone the repository
