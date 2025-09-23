@@ -1,16 +1,10 @@
 # tt-dfd — Trace & Debug Fabric IP
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Design for debug (dfd) is the practice of building observability and controllability into silicon and systems from day one. It enables post-silicon engineers to see internal behavior, coordinate capture across blocks, and act on issues without invasive rework.
 
-tt-dfd is an open-source parameterizable on-chip debug and trace IP solution to various dfd needs. It supports multi-CLA (Core Logic Analyzer), DST, and NTRACE, in addition to a trace funnel and trace sinks. Features can be enabled or disabled via parameters to fit your integration needs.
+tt-dfd is an open-source parameterizable on-chip debug and trace IP solution to various dfd needs. It supports multi-CLA (Core Logic Analyzer), DST, and N-Trace, in addition to a trace funnel and trace sinks. Features can be enabled or disabled via parameters to fit your integration needs.
 
-
-## Repository layout
-
-- `rtl/`: synthesizable RTL sources
-- `dv/`: simple DV testbenches and associated files
-- `scripts/`: tooling for CLA compiler, DocGen, and utilities
-- `Bender.yml`: source list and dependency manifest used to generate file lists
 
 ## Requirements
 
@@ -22,65 +16,144 @@ Install the following to build and run the included examples:
   - PyYAML
 - Simulator: the provided `Makefile` targets use Synopsys VCS. Other simulators may work with minor changes to the compile/run lines.
 
-## Build
+## Integration 
 
-Build custom RTL variants and update file lists:
+The following information is useful for those who would like to include tt-dfd in their own projects.
 
-```bash
-make build
-```
+- [Parameters](#top-level-parameters)
+- [Repository layout](#repository-layout)
+- [Register map](#register-map-mmrs)
+- [CLA programming](#cla-tooling)
+- [Fielist](#filelist)
 
-This produces `tt_dfd.f`, which can be consumed by your simulator or synthesis flow.
 
-### Build custom variants
+### Top-level parameters 
 
-`dfd_top.sv` is highly configurable via parameters. For convenience, helper targets generate trimmed-top variants with pruned I/O for cleaner integration:
+These parameters are available to be modified by users who instantiate tt-dfd via the [dfd_top](rtl/dfd/dfd_top.sv) module. See the below section on [building custom variants](#build-custom-variants) for generating and using trimmed top variants.
 
-```bash
-make cust_rtl
-```
+| Parameter             | Type              | Default | Description |
+| ---                   | ---               | ---     | ---         |
+| NUM_TRACE_INST        | int unsigned      | 1 | Number of trace/CLA/N-Trace/DST instances to instantiate. |
+| NTRACE_SUPPORT        | bit               | 1 | Set to 1'b1 to enable N-Trace features, otherwise disables and ties off related blocks |
+| DST_SUPPORT           | bit               | 1 | Set to 1'b1 to enable DST features, otherwise disables and ties off related blocks |
+| CLA_SUPPORT           | bit               | 1 | Set to 1'b1 to enable CLA features, otherwise disables and ties off related blocks |
+| INTERNAL_MMRS         | bit               | 1 | Set to 1'b1 to use internal MMR/CSR block; when 0, use external MMR interface ports. __NOTE: Only INTERNAL_MMRS = 1 is supported at the moment__|
+| DEBUGMARKER_WIDTH     | int unsigned      | 8 | Sets the width of `cla_debug_marker` . __NOTE: Output only enabled when CLA_SUPPORT = 1__ |
+| TRC_SIZE_IN_KB        | int unsigned      | 16| Trace sink size in KiB (derives `TRC_SIZE_IN_B` and `TRC_RAM_INDEX`). __NOTE: Trace sink only available when DST_SUPPORT = 1 OR NTRACE_SUPPORT = 1__|
+| TSEL_CONFIGURABLE     | bit               | 0 | Enable support for test select (TSEL) capabilities on trace sink memory cells.  By default, this is not used by the generic memory model. This has been exposed so that users may modify the `dfd_trace_mem_sink_generic.sv` file to suit their own memory model needs|
+| SINK_CELL             | mem_gen_pkg::MemCell_e | mem_gen_pkg::mem_cell_undefined | Trace sink memory cell type (technology-specific). By default, this is not used by the generic memory model. This has been exposed so that users may modify the `dfd_trace_mem_sink_generic.sv` file to suit their own memory model needs|
+| BASE_ADDR             | bit [DFD_APB_ADDR_WIDTH-1:0] | 0 | Base APB address for internal MMR/CSR block |
+| TIMESYNC_ADDR_OFFSET  | bit [DFD_APB_ADDR_WIDTH-1:0] | 'h200 | Start offset for per-instance timesync MMRs.  __NOTE: Timesync is only enabled when CLA_SUPPORT = 1__ |
 
-This generates one `.sv` top per feature combination. Note: while permutations with `INTERNAL_MMRS == 0` may be generated, the current release only supports builds with `INTERNAL_MMRS == 1`.
+Notes:
+- Types and widths such as `DFD_APB_ADDR_WIDTH` come from packages imported by [dfd_top](rtl/dfd/dfd_top.sv).
+- When instantiating [dfd_top](rtl/dfd/dfd_top.sv) instances with certain feature disabled, please tie inputs to 0 to avoid lint/compilation issues. If you would like to avoid generating the I/O of disabled features altogether, please see [building custom variants](#build-custom-variants). 
 
-## Register map (MMRs)
+### Repository layout
 
-tt-dfd exposes internal memory-mapped registers (MMRs) for control and status. The CSR definitions live under `rtl/mmr/`. The APB access behavior is exercised in `dv/dfd/dfd_mmrs_tb.sv`.
+| Top directory         | Subdirectory       | Description |
+| ---                   | ---                    | ---         |
+| [rtl/](rtl)           | [cla/](rtl/cla)         | Core Logic Analyzer (CLA) modules for debug signal monitoring and triggering |
+|                       | [common/](rtl/common)   | Generic RTL components and utilities (FIFOs, flip-flops, muxes, memory models) |
+|                       | [dfd/](rtl/dfd)         | Main DFD top-level modules and core infrastructure |
+|                       | [gen_files/](rtl/gen_files) | Auto-generated custom top-level variants with feature-specific I/O pruning |
+|                       | [intf/](rtl/intf)       | Interface struct definitions and packages |
+|                       | [mmr/](rtl/mmr)         | Memory-mapped registers (CSRs) and register definition files |
+|                       | [trace/](rtl/trace)     | Trace infrastructure including packetizers, encoders, and trace networks |
+| [dv/](dv)             | [dfd/](dv/dfd)          | Testbenches, verification code, and APB traffic generation utilities |
+| [scripts/](scripts)   | [cla_compiler/](scripts/cla_compiler) | [CLA programming tools](scripts/cla_compiler/README.md) and example programs |
+|                       | [cust_rtl/](scripts/cust_rtl) | Scripts for generating custom RTL variants |
+|                       | [docgen/](scripts/docgen) | [Documentation generation tools](scripts/docgen/README.md) for CLA. Provides CLA setup description for CLA compiler |
 
-## File lists with Bender
 
-This repository uses Bender to manage sources and dependencies. To refresh dependencies and regenerate the file list:
+### Register map (MMRs)
 
-```bash
-make tt_dfd.f
-```
+tt-dfd exposes internal memory-mapped registers (MMRs) for control and status. The CSR definitions live under [rtl/mmr/](rtl/mmr/).
 
-If you are using this project outside of the original development environment, you may need to update dependency URLs in `Bender.yml` to publicly accessible repositories providing the required packages (e.g., AXI, common cells).
+### CLA tooling
 
-## CLA tooling
+tt-dfd provides the following tools to ease and simplify the CLA programming flow. 
 
-The `scripts/` directory contains:
-
-- CLA DocGen: generates documentation for CLA muxes from a JSON description (inputs, widths, topology)
-- CLA Compiler: builds a CLA programming sequence from the mux documentation JSON and a CLA program YAML
+- [CLA DocGen](scripts/docgen/): generates documentation for CLA muxes from a JSON description (inputs, widths, topology).
+- [CLA Compiler](scripts/cla_compiler/): builds a CLA programming sequence from the mux documentation JSON (created by DocGen) and a CLA program YAML
 
 After producing a value-dump YAML of MMR fields to program, you can generate an APB write script with:
 
 ```bash
+# Generate APB write script from CLA Compiler output
 python3 dv/dfd/yamlToApbTraffic.py <path/to/value_dump.yaml> -o apb_write.txt
 ```
 
-## Running tests
+Users are encouraged to use the above provided tools to program the CLA. Both CLA DocGen and Compiler contain READMEs with examples on how to use each tool respectively.  
 
-Two simple tests are provided:
+### Filelist
+
+This repository uses [Bender](https://github.com/pulp-platform/bender) to manage sources and dependencies. Performing a `make build` will automatically regenerate the filelist via Bender. However, the user may also regenerate the filelist themselves by using the following command.
 
 ```bash
-make tests        # runs both tests
-make top_test     # basic compile/elab/heartbeat
-make apb_test     # APB read/write of MMRs
+# Generate the filelist using Bender
+$ make tt_dfd.f
 ```
 
-Notes:
-- The default `Makefile` uses Synopsys VCS. If you use a different simulator, update the compile/run lines accordingly.
+In addition to all the files contained in this repository, this project sources dependencies from an open-source repository for [AXI](https://github.com/pulp-platform/axi.git) IP. Bender will automatically populate the directory with the required files and generate the complete filelist that can be used.   
+
+## Testbench
+
+tt-dfd provides some testbenches alongside simple tests to check for basic functionality. More complex and complete tests will be provided in the future. 
+
+In order to run the tests, please follow the below steps:
+
+### Build
+
+To runs tests and/or generate the filelist for tt-dfd follow the below steps to build the repository. 
+
+```bash
+# Clone the repository
+$ git clone https://github.com/tenstorrent/tt-dfd.git
+
+# Enter tt-dfd repository 
+$ cd tt-dfd
+
+# Run make build
+$ make build
+```
+
+This produces `tt_dfd.f`, which is used by the included test flow and can be consumed by your own simulator or synthesis flow.
+
+#### Build custom variants
+
+Part of the build flow, `make build` will preprocess the top file and generate trimmed-top variants of [dfd_top](rtl/dfd/dfd_top.sv) with pruned I/O depending on the included features. Although the standard top level file can be used with selective build time parameters that are enabled/disabled, users may opt to use the custom top variants found in the [gen_files](rtl/gen_files/) directory for cleaner integration.   
+
+Users may also perform the custom variant generation flow standalone by using the below command.
+
+```bash
+# Generate custom variant top files
+$ make cust_rtl
+```
+
+Custom variants are named `dfd_top_*.sv` where one or more of the following suffixes are included in the name - indicating that the variant includes the feature.
+
+* cla : variant supports CLA 
+* dst : variant supports DST
+* ntrace : variant support N-Trace
+* mmr : variant uses internal MMRs/CSRs for configuration (__external MMRs/CSRs are currently not supported__)
+
+### Running tests
+
+After completing the above build steps, users may run the following commands to execute included tests. The script assumes that VCS is installed. 
+
+The default [Makefile](Makefile) uses Synopsys VCS. If you use a different simulator, update the compile/run lines accordingly.
+
+```bash
+# Runs all tests 
+$ make tests
+
+# Run top test which checks for correct connections and syntax errors
+$ make top_test
+
+# Run APB test that writes and reads back configuration MMRs and checks for errors
+$ make apb_test 
+```
 
 ## Contributing
 

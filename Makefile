@@ -10,28 +10,28 @@ DFD_DIR = rtl/dfd
 CUSTOM_RTL_DIR = scripts/cust_rtl
 CLAC_DIR = scripts/cla
 
-.PHONY: tests top_test apb_test clean build
+.PHONY: tests top_test apb_test clean build cust_rtl
 
 tests: top_test apb_test
 
 build: cust_rtl.stamp tt_dfd.f
 
-cust_rtl.stamp: $(DFD_DIR)/dfd_top.sv $(CUSTOM_RTL_DIR)/process_all.sh
+cust_rtl.stamp: $(DFD_DIR)/dfd_top.sv $(CUSTOM_RTL_DIR)/process_all.sh $(CUSTOM_RTL_DIR)/process_sv.py
 	./$(CUSTOM_RTL_DIR)/process_all.sh
 	touch cust_rtl.stamp
 
-cust_rtl: cust_rtl_stamp
+cust_rtl: cust_rtl.stamp
 	
-tt_dfd.f: Bender.yml Bender.lock bender-targets.mk cust_rtl.stamp
+tt_dfd.f: Bender.yml Bender.lock cust_rtl.stamp
 	bender update
 	bender script flist-plus $(BENDER_TARGETS) $(BENDER_SIMULATION_TARGETS) > tt_dfd.f
 
 
-top_test: tt_dfd.f
+top_test: build
 	vcs -timescale=1ns/1ns -full64 -f tt_dfd.f -sverilog -top dfd_tb -debug_access+all -lca -kdb
 	./simv
 
-apb_test: tt_dfd.f
+apb_test: build
 	vcs -timescale=1ns/1ns -full64 -f tt_dfd.f -sverilog -top dfd_mmrs_tb -debug_access+all -lca -kdb
 	./simv > apb_test.log
 	cat apb_test.log
