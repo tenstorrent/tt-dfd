@@ -52,7 +52,6 @@ import dfd_cla_pkg::*;
       assign snapshot_capture_per_eap[i] = eap_logic_operation_result[i];
     endgenerate
 
-    //FIXME_MUSTFIX_BABYLON: Parameterize properly for scaling to higher number of nodes
     always@(*)
       begin
         next_node_action_bus = next_node_action_bus_per_eap[3] | next_node_action_bus_per_eap[2] | next_node_action_bus_per_eap[1] | next_node_action_bus_per_eap[0] ;
