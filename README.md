@@ -1,5 +1,7 @@
 # tt-dfd — Trace & Debug Fabric IP
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/tenstorrent/tt-dfd)](CHANGELOG.md)
+
 
 Design for Debug (DfD) is a methodology that integrates on-chip instrumentation for enhanced observability and controllability in silicon. These DfD elements enable post-silicon engineers to monitor micro-architectural behavior, capture and store design traces, and trigger specific actions for comprehensive debug and workarounds.
 
@@ -160,3 +162,7 @@ $ make top_test
 # Run APB test that writes and reads back configuration MMRs and checks for errors
 $ make apb_test 
 ```
+
+## Contributing
+
+Want to contribute towards tt-dfd? There are many ways to contribute to this project. To get started, check out [CONTRIBUTING.md](CONTRIBUTING.md)
