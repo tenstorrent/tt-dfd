@@ -136,41 +136,5 @@ generate
      end
 endgenerate
 
-
- // CLA CHAIN DATA MASKING LOGIC - // DEPRECATED: CLA CHAIN DATA MASKING NO LONGER USED FROM STAR Network
-//  logic [NUM_CLA_CHAIN_SIGNALS-1:0][CLA_CHAIN_LOOP_DELAY_WIDTH:0]          cla_chain_wnd_counter;
-//  logic [NUM_CLA_CHAIN_SIGNALS-1:0]                                      cla_chain_wnd;
-//  logic [NUM_CLA_CHAIN_SIGNALS-1:0]                                      cla_chain_wnd_expired;
-//  logic [NUM_CLA_CHAIN_SIGNALS-1:0]                                      cla_chain_wnd_start;
-//  logic [NUM_CLA_CHAIN_SIGNALS-1:0]                                      cla_chain_mask;
-
- 
-
-//  for(genvar i = 0; i < 3; i=i+1) begin
-
-//    always_comb begin
-//       cla_chain_wnd_expired[i] = (cla_chain_wnd_counter[i] >= {1'b0, cla_chain_loop_delay}); // timeout
-//       cla_chain_wnd_start[i]   = (cla_chain_action_bus_triggers[i]) && (cla_chain_wnd_counter[i] == '0); // New signal sent
-//       cla_chain_mask[i] = ~cla_chain_wnd[i]; // mask based on window enable
-//    end
-
-//    always_ff@(posedge clock) 
-//    if(!reset_n)
-//       cla_chain_wnd[i] <= '0;
-//    else begin
-//       if      (cla_chain_wnd_start[i])    cla_chain_wnd[i] <= '1;
-//       else if (cla_chain_wnd_expired[i])  cla_chain_wnd[i] <= '0;
-//    end
-
-//    always_ff@(posedge clock)
-//    if(!reset_n)
-//       cla_chain_wnd_counter[i] <= '0;
-//    else begin
-//       if       (cla_chain_wnd_expired[i])                 cla_chain_wnd_counter[i] <= '0;
-//       else if  ((cla_chain_wnd[i] | cla_chain_wnd_start[i])) cla_chain_wnd_counter[i] <= cla_chain_wnd_counter[i] + (CLA_CHAIN_LOOP_DELAY_WIDTH+1)'(1'b1);
-   
-//    end
-//  end
-
 endmodule 
 

@@ -166,7 +166,6 @@ module dfd_trace_axi_master #(
                     next_axi_req_o.b_ready   = 1'b1;
                 end 
             end
-            //FIXME_MUSTFIX_BABYLON: Suppose b_ready always asserted...
             RESP_HANDSHAKE: begin
                 if (axi_resp_i.b_valid) begin
                     next_state               = AWAIT_REQUEST;

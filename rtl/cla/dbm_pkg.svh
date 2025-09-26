@@ -36,8 +36,6 @@ typedef struct packed {
     logic    [1:0]        DbmMode;    
 } DbmMuxIdMode_s;
 
-//typedef logic [LANE_WIDTH-1:0][NUMBER_OF_INPUT_LANES] HwSignalsFromBlock;
-
 endpackage
 
 `endif

@@ -419,7 +419,6 @@ always@(*)
     next_packet_lost                = packet_lost;
   end
 
-//FIXME_TIMING: MOve the fixed value add to previous clock. (Check with PD to see if this is needed)
 always@(posedge clock)
   if (!reset_n) 
     incoming_packet_length_in_bytes <= '0;

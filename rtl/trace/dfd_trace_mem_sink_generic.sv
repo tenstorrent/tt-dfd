@@ -66,7 +66,6 @@ module dfd_trace_mem_sink
         .i_mem_wr_mask_en(MemPktIn[gc].mem_wr_mask_en),
 
         .i_mem_rd_en            ('0),
-        //FIXME_MUSTFIX_NONATHENA: SRAM cell repair needed?
         .i_reg_mem_faulty_io    ('0),
         .i_reg_mem_column_repair(1'b0),
 

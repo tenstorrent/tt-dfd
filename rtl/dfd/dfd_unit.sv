@@ -165,7 +165,7 @@ module dfd_unit
 				.trace_hardware_stop	(dst_hardware_stop),
 
 				.debug_bus_in			(debug_bus),
-				.debug_bus_byte_enable	('0),  //FIXME_MUSTFIX_NONATHENA: Future optimization, if CLA implements Byte Enables.
+				.debug_bus_byte_enable	('0),  //Future optimization, if CLA implements Byte Enables.
 
 				.vlt_packet				(vlt_packet),
 				.vlt_packet_byte_enable	(vlt_packet_byte_enable),
