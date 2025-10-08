@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added proper integration guide under [doc/](doc/)
+
+### Changed
+
+- Parameter NUM_TRACE_INST changed to NUM_TRACE_AND_ANALYZER_INST for better clarity of parameter
+
 ## [0.1.0] - 2025-09-25
 
 ### Added
