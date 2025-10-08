@@ -11,7 +11,7 @@
     TR  (Trace Funnel)            - 0x4000 - 0x8FFF
 
     Some modules such as CLA, DST, and NTR have multiple MMR instances depending
-    on the number of NUM_TRACE_INST defined.
+    on the number of NUM_TRACE_AND_ANALYZER_INST defined.
 
     The base address of each ADDITIONAL instance is base address of module +
     + 0x9000 * (additional instance #).
@@ -35,7 +35,7 @@ import dfd_dst_csr_pkg::*;
     parameter NTRACE_SUPPORT = 1,
     parameter DST_SUPPORT = 1,
     parameter CLA_SUPPORT = 1,
-    parameter NUM_TRACE_INST = 1,
+    parameter NUM_TRACE_AND_ANALYZER_INST = 1,
     parameter BASE_ADDR = 23'h0,
     parameter TRC_SIZE_IN_B = 32'h8000
 ) (
@@ -91,17 +91,17 @@ import dfd_dst_csr_pkg::*;
         logic                           [64-1:0] CsrRdData8B_MCR;
 
         // DST
-        logic                          [NUM_TRACE_INST-1:0] CsrHit_DST;
-        logic  [NUM_TRACE_INST-1:0][DFD_APB_DATA_WIDTH-1:0] CsrRdData_DST;
+        logic                          [NUM_TRACE_AND_ANALYZER_INST-1:0] CsrHit_DST;
+        logic  [NUM_TRACE_AND_ANALYZER_INST-1:0][DFD_APB_DATA_WIDTH-1:0] CsrRdData_DST;
 
         // NTR
-        logic                          [NUM_TRACE_INST-1:0] CsrHit_NTR;
-        logic  [NUM_TRACE_INST-1:0][DFD_APB_DATA_WIDTH-1:0] CsrRdData_NTR;
+        logic                          [NUM_TRACE_AND_ANALYZER_INST-1:0] CsrHit_NTR;
+        logic  [NUM_TRACE_AND_ANALYZER_INST-1:0][DFD_APB_DATA_WIDTH-1:0] CsrRdData_NTR;
 
         // CLA (8B)
-        logic                          [NUM_TRACE_INST-1:0] CsrHit_CLA;
-        logic  [NUM_TRACE_INST-1:0][DFD_APB_DATA_WIDTH-1:0] CsrRdData_CLA;
-        logic                  [NUM_TRACE_INST-1:0][64-1:0] CsrRdData8B_CLA;
+        logic                          [NUM_TRACE_AND_ANALYZER_INST-1:0] CsrHit_CLA;
+        logic  [NUM_TRACE_AND_ANALYZER_INST-1:0][DFD_APB_DATA_WIDTH-1:0] CsrRdData_CLA;
+        logic                  [NUM_TRACE_AND_ANALYZER_INST-1:0][64-1:0] CsrRdData8B_CLA;
 
         // TR
         logic                                    CsrHit_TR;
@@ -116,7 +116,7 @@ import dfd_dst_csr_pkg::*;
 		generic_decoded_mux #(
 			.DISABLE_ASSERTIONS(0),
 			.VALUE_WIDTH(DFD_APB_DATA_WIDTH),
-			.MUX_WIDTH(2+3*NUM_TRACE_INST)
+			.MUX_WIDTH(2+3*NUM_TRACE_AND_ANALYZER_INST)
 		) u_csrrddata_mux (
 			.clk      (clk),
 			.rst_n  (reset_n),
@@ -126,7 +126,7 @@ import dfd_dst_csr_pkg::*;
 			.out   (CsrRdData)
 		);
 
-		generic_onehot_detect #(.WIDTH(2+3*NUM_TRACE_INST), .ZERO_ONEHOT(1)) u_csrerror_det (
+		generic_onehot_detect #(.WIDTH(2+3*NUM_TRACE_AND_ANALYZER_INST), .ZERO_ONEHOT(1)) u_csrerror_det (
 			.in   ({CsrHit_CLA, CsrHit_DST, CsrHit_NTR, CsrHit_MCR, CsrHit_TR}),
 			.out         (CsrError_n)
 		);
@@ -191,7 +191,7 @@ import dfd_dst_csr_pkg::*;
 
         if (NTRACE_SUPPORT) begin : ntr_csr_gen_blk
             for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : ntr_csr_inst
-                if (ii < NUM_TRACE_INST) begin
+                if (ii < NUM_TRACE_AND_ANALYZER_INST) begin
                     dfd_ntr_csr #(
                         .BASE_ADDR  (BASE_ADDR + 23'h9000 * ii),
                         .ADDR_W     (DFD_APB_ADDR_WIDTH)
@@ -233,7 +233,7 @@ import dfd_dst_csr_pkg::*;
 
         if (DST_SUPPORT) begin : dst_csr_gen_blk
             for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : dst_csr_inst
-                if (ii < NUM_TRACE_INST) begin
+                if (ii < NUM_TRACE_AND_ANALYZER_INST) begin
                     dfd_dst_csr #(
                         .BASE_ADDR  (BASE_ADDR + 23'h9000 * ii),
                         .ADDR_W     (DFD_APB_ADDR_WIDTH)
@@ -273,7 +273,7 @@ import dfd_dst_csr_pkg::*;
         if (CLA_SUPPORT) begin : cla_csr_gen_blk
             for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : cla_csr_inst
 
-                if (ii < NUM_TRACE_INST) begin
+                if (ii < NUM_TRACE_AND_ANALYZER_INST) begin
                     assign CsrRdData_CLA[ii] = (CsrAddr[2] == 1'b0) ? CsrRdData8B_CLA[ii][31:0] : CsrRdData8B_CLA[ii][63:32];
 
                     dfd_cla_csr #(

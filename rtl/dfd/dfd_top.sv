@@ -25,8 +25,8 @@ module dfd_top
   import dfd_tn_pkg::*;
   import dfd_CL_axi_pkg::*;
 #(
-    parameter int unsigned NUM_TRACE_INST = 1,
-    localparam int unsigned TNIF_CONNECTIONS = (NUM_TRACE_INST <= 1) ? 2 : NUM_TRACE_INST,
+    parameter int unsigned NUM_TRACE_AND_ANALYZER_INST = 1,
+    localparam int unsigned TNIF_CONNECTIONS = (NUM_TRACE_AND_ANALYZER_INST <= 1) ? 2 : NUM_TRACE_AND_ANALYZER_INST,
     parameter bit NTRACE_SUPPORT = 1,  /* @@ KEEP - (NTRACE) {\tparameter NTRACE_SUPPORT = 0,} @@ */
     parameter bit DST_SUPPORT = 1,  /* @@ KEEP - (DST) {\tparameter DST_SUPPORT = 0,} @@ */
     parameter bit CLA_SUPPORT = 1,  /* @@ KEEP - (CLA) {\tparameter CLA_SUPPORT = 0,} @@ */
@@ -47,7 +47,7 @@ module dfd_top
 
     /* @@ START - (CLA || DST) @@ */
     // DEBUG MUX SIGNALS
-    input logic [NUM_TRACE_INST-1:0][15:0] hw0,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][15:0] hw0,
     hw1,
     hw2,
     hw3,
@@ -55,7 +55,7 @@ module dfd_top
     hw5,
     hw6,
     hw7,
-    input logic [NUM_TRACE_INST-1:0][15:0] hw8,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][15:0] hw8,
     hw9,
     hw10,
     hw11,
@@ -63,57 +63,57 @@ module dfd_top
     hw13,
     hw14,
     hw15,
-    input logic [NUM_TRACE_INST-1:0]       Time_Tick, // Cluster clock reference time tick
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0]       Time_Tick, // Cluster clock reference time tick
     /* @@ END - (CLA || DST) @@ */
 
     /* @@ START - (CLA) @@ */
     // CLA
-    input logic [NUM_TRACE_INST-1:0][XTRIGGER_WIDTH-1:0] xtrigger_in,
-    input  logic [NUM_TRACE_INST-1:0]                     time_match_event,            // When time matches the time match register MMR value
-    output logic [NUM_TRACE_INST-1:0][XTRIGGER_WIDTH-1:0] xtrigger_out,
-    output logic [NUM_TRACE_INST-1:0][DEBUGMARKER_WIDTH-1:0] cla_debug_marker, // Debug marker to use in debugbus
-    output logic [NUM_TRACE_INST-1:0]  					  external_action_trace_start, // So CLA can notify other Ntrace/DSTs
-    output logic [NUM_TRACE_INST-1:0]  					  external_action_trace_stop,  // So CLA can notify other Ntrace/DSTs
-    output logic [NUM_TRACE_INST-1:0]  					  external_action_trace_pulse, // So CLA can notify other Ntrace/DSTs
-    output logic [NUM_TRACE_INST-1:0] external_action_halt_clock_out,
-    output logic [NUM_TRACE_INST-1:0] external_action_halt_clock_local_out,
-    output logic [NUM_TRACE_INST-1:0] external_action_debug_interrupt_out,
-    output logic [NUM_TRACE_INST-1:0] external_action_toggle_gpio_out,
-    output logic [NUM_TRACE_INST-1:0][CLA_NUMBER_OF_CUSTOM_ACTIONS-1:0] external_action_custom,
-    output timestamp_s [NUM_TRACE_INST-1:0] timesync_cla_timestamp,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][XTRIGGER_WIDTH-1:0] xtrigger_in,
+    input  logic [NUM_TRACE_AND_ANALYZER_INST-1:0]                     time_match_event,            // When time matches the time match register MMR value
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0][XTRIGGER_WIDTH-1:0] xtrigger_out,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0][DEBUGMARKER_WIDTH-1:0] cla_debug_marker, // Debug marker to use in debugbus
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_trace_start, // So CLA can notify other Ntrace/DSTs
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_trace_stop,  // So CLA can notify other Ntrace/DSTs
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_trace_pulse, // So CLA can notify other Ntrace/DSTs
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_action_halt_clock_out,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_action_halt_clock_local_out,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_action_debug_interrupt_out,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_action_toggle_gpio_out,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0][CLA_NUMBER_OF_CUSTOM_ACTIONS-1:0] external_action_custom,
+    output timestamp_s [NUM_TRACE_AND_ANALYZER_INST-1:0] timesync_cla_timestamp,
     /* @@ ELSE @@ */
     // EXTERNAL CLA
     // verilint W240 off
-    input logic [NUM_TRACE_INST-1:0] external_cla_action_trace_start,
-    input logic [NUM_TRACE_INST-1:0] external_cla_action_trace_stop,
-    input logic [NUM_TRACE_INST-1:0] external_cla_action_trace_pulse,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_cla_action_trace_start,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_cla_action_trace_stop,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_cla_action_trace_pulse,
     // verilint W240 on
     /* @@ END - (CLA) @@ */
 
     /* @@ START - (NTRACE) @@ */
     // NTRACE
-    input logic [NUM_TRACE_INST-1:0][  NUM_BLOCKS-1:0][IRETIRE_WIDTH-1:0] IRetire,
-    input logic [NUM_TRACE_INST-1:0][  NUM_BLOCKS-1:0][  ITYPE_WIDTH-1:0] IType,
-    input logic [NUM_TRACE_INST-1:0][  NUM_BLOCKS-1:0][     PC_WIDTH-1:1] IAddr,
-    input logic [NUM_TRACE_INST-1:0][  NUM_BLOCKS-1:0]                    ILastSize,
-    input logic [NUM_TRACE_INST-1:0][TSTAMP_WIDTH-1:0]                    Tstamp,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][  NUM_BLOCKS-1:0][IRETIRE_WIDTH-1:0] IRetire,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][  NUM_BLOCKS-1:0][  ITYPE_WIDTH-1:0] IType,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][  NUM_BLOCKS-1:0][     PC_WIDTH-1:1] IAddr,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][  NUM_BLOCKS-1:0]                    ILastSize,
+    input logic [NUM_TRACE_AND_ANALYZER_INST-1:0][TSTAMP_WIDTH-1:0]                    Tstamp,
 
-    input PrivMode_e [NUM_TRACE_INST-1:0]                    Priv,
-    input logic      [NUM_TRACE_INST-1:0][CONTEXT_WIDTH-1:0] Context,
-    input logic      [NUM_TRACE_INST-1:0][   TVAL_WIDTH-1:0] Tval,
+    input PrivMode_e [NUM_TRACE_AND_ANALYZER_INST-1:0]                    Priv,
+    input logic      [NUM_TRACE_AND_ANALYZER_INST-1:0][CONTEXT_WIDTH-1:0] Context,
+    input logic      [NUM_TRACE_AND_ANALYZER_INST-1:0][   TVAL_WIDTH-1:0] Tval,
 
-    input  logic [NUM_TRACE_INST-1:0] Error,
-    output logic [NUM_TRACE_INST-1:0] Active,
-    output logic [NUM_TRACE_INST-1:0] StallModeEn,
-    output logic [NUM_TRACE_INST-1:0] StartStop,
-    output logic [NUM_TRACE_INST-1:0] Backpressure,
+    input  logic [NUM_TRACE_AND_ANALYZER_INST-1:0] Error,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] Active,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] StallModeEn,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] StartStop,
+    output logic [NUM_TRACE_AND_ANALYZER_INST-1:0] Backpressure,
 
-    input TrigTraceControl_e [NUM_TRACE_INST-1:0] TrigControl,
+    input TrigTraceControl_e [NUM_TRACE_AND_ANALYZER_INST-1:0] TrigControl,
     /* @@ END - (NTRACE) @@ */
 
     /* @@ START - (DST) @@ */
     // DST
-    input timestamp_s [NUM_TRACE_INST-1:0] CoreTime,  // Timestamp value for DST
+    input timestamp_s [NUM_TRACE_AND_ANALYZER_INST-1:0] CoreTime,  // Timestamp value for DST
     /* @@ END - (DST) @@ */
 
     /* @@ START - (DST || NTRACE) @@ */
@@ -152,54 +152,54 @@ module dfd_top
 
   // Unused Signals - START
   /* @@ START_UNC - (!(CLA || DST)) @@ */
-  //logic [NUM_TRACE_INST-1:0][15:0] hw0,hw1,hw2,hw3,hw4,hw5,hw6,hw7;
-  //logic [NUM_TRACE_INST-1:0][15:0] hw8,hw9,hw10,hw11,hw12,hw13,hw14,hw15;
-  //logic [NUM_TRACE_INST-1:0]       Time_Tick;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][15:0] hw0,hw1,hw2,hw3,hw4,hw5,hw6,hw7;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][15:0] hw8,hw9,hw10,hw11,hw12,hw13,hw14,hw15;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]       Time_Tick;
   //assign {hw0,hw1,hw2,hw3,hw4,hw5,hw6,hw7,hw8,hw9,hw10,hw11,hw12,hw13,hw14,hw15} = '0;
   //assign Time_Tick = '0;
   /* @@ END_UNC - (!(CLA || DST)) @@ */
   /* @@ START_UNC - (!CLA) @@ */
-  //logic [NUM_TRACE_INST-1:0][XTRIGGER_WIDTH-1:0] xtrigger_in;
-  //logic [NUM_TRACE_INST-1:0]                     time_match_event;
-  //logic [NUM_TRACE_INST-1:0][DEBUGMARKER_WIDTH-1:0] cla_debug_marker;
-  //timestamp_s [NUM_TRACE_INST-1:0] timesync_cla_timestamp;
-  //logic [NUM_TRACE_INST-1:0][XTRIGGER_WIDTH-1:0]  xtrigger_out;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_trace_start;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_trace_stop;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_trace_pulse;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_halt_clock_out;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_halt_clock_local_out;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_debug_interrupt_out;
-  //logic [NUM_TRACE_INST-1:0]  					  external_action_toggle_gpio_out;
-  //logic [NUM_TRACE_INST-1:0][CLA_NUMBER_OF_CUSTOM_ACTIONS-1:0] external_action_custom;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][XTRIGGER_WIDTH-1:0] xtrigger_in;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]                     time_match_event;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][DEBUGMARKER_WIDTH-1:0] cla_debug_marker;
+  //timestamp_s [NUM_TRACE_AND_ANALYZER_INST-1:0] timesync_cla_timestamp;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][XTRIGGER_WIDTH-1:0]  xtrigger_out;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_trace_start;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_trace_stop;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_trace_pulse;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_halt_clock_out;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_halt_clock_local_out;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_debug_interrupt_out;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0]  					  external_action_toggle_gpio_out;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][CLA_NUMBER_OF_CUSTOM_ACTIONS-1:0] external_action_custom;
   //assign xtrigger_in = '0;
   //assign time_match_event = '0;
   /* @@ ELSE @@ */
-  //logic [NUM_TRACE_INST-1:0] external_cla_action_trace_start;
-  //logic [NUM_TRACE_INST-1:0] external_cla_action_trace_stop;
-  //logic [NUM_TRACE_INST-1:0] external_cla_action_trace_pulse;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_cla_action_trace_start;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_cla_action_trace_stop;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] external_cla_action_trace_pulse;
   //assign external_cla_action_trace_start = '0;
   //assign external_cla_action_trace_stop = '0;
   //assign external_cla_action_trace_pulse = '0;
   /* @@ END_UNC - (!CLA) @@ */
   /* @@ START_UNC - (!NTRACE) @@ */
-  //logic [NUM_TRACE_INST-1:0][NUM_BLOCKS-1:0][IRETIRE_WIDTH-1:0] IRetire;
-  //logic [NUM_TRACE_INST-1:0][NUM_BLOCKS-1:0][  ITYPE_WIDTH-1:0] IType;
-  //logic [NUM_TRACE_INST-1:0][NUM_BLOCKS-1:0][     PC_WIDTH-1:1] IAddr;
-  //logic [NUM_TRACE_INST-1:0][NUM_BLOCKS-1:0]                    ILastSize;
-  //logic [NUM_TRACE_INST-1:0][TSTAMP_WIDTH-1:0]                  Tstamp;
-  //PrivMode_e [NUM_TRACE_INST-1:0]                    Priv;
-  //logic [NUM_TRACE_INST-1:0][CONTEXT_WIDTH-1:0] Context;
-  //logic [NUM_TRACE_INST-1:0][TVAL_WIDTH-1:0]    Tval;
-  //logic [NUM_TRACE_INST-1:0] Error;
-  //logic [NUM_TRACE_INST-1:0] Active;
-  //logic [NUM_TRACE_INST-1:0] StallModeEn;
-  //logic [NUM_TRACE_INST-1:0] StartStop;
-  //logic [NUM_TRACE_INST-1:0] Backpressure;
-  //TrigTraceControl_e    [NUM_TRACE_INST-1:0] TrigControl;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][NUM_BLOCKS-1:0][IRETIRE_WIDTH-1:0] IRetire;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][NUM_BLOCKS-1:0][  ITYPE_WIDTH-1:0] IType;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][NUM_BLOCKS-1:0][     PC_WIDTH-1:1] IAddr;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][NUM_BLOCKS-1:0]                    ILastSize;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][TSTAMP_WIDTH-1:0]                  Tstamp;
+  //PrivMode_e [NUM_TRACE_AND_ANALYZER_INST-1:0]                    Priv;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][CONTEXT_WIDTH-1:0] Context;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0][TVAL_WIDTH-1:0]    Tval;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] Error;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] Active;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] StallModeEn;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] StartStop;
+  //logic [NUM_TRACE_AND_ANALYZER_INST-1:0] Backpressure;
+  //TrigTraceControl_e    [NUM_TRACE_AND_ANALYZER_INST-1:0] TrigControl;
   //assign {IRetire,IType,IAddr,ILastSize,Tstamp,Context,Tval,Error} = '0;
-  //assign Priv = {NUM_TRACE_INST{PRIVMODE_USER}};
-  //assign TrigControl = {NUM_TRACE_INST{TRIG_TRACE_NONE}};
+  //assign Priv = {NUM_TRACE_AND_ANALYZER_INST{PRIVMODE_USER}};
+  //assign TrigControl = {NUM_TRACE_AND_ANALYZER_INST{TRIG_TRACE_NONE}};
   /* @@ END_UNC - (!NTRACE) @@ */
   /* @@ START_UNC - (!(DST || NTRACE)) @@ */
   //dfd_slv_axi_req_t	TR_EXT_SlvReq;
@@ -226,13 +226,13 @@ module dfd_top
   logic [TNIF_CONNECTIONS-1:0][DATA_WIDTH_IN_BYTES*8-1:0] tnif_tr_data_out;
 
   // Debug Bus
-  logic [NUM_TRACE_INST-1:0][DEBUG_SIGNALS_WIDTH-1:0] debug_bus, debug_bus_aligned;
+  logic [NUM_TRACE_AND_ANALYZER_INST-1:0][DEBUG_SIGNALS_WIDTH-1:0] debug_bus, debug_bus_aligned;
 
   // DFD TimeSync
-  logic       [    NUM_TRACE_INST-1:0]                         timesync_pready;
-  logic       [    NUM_TRACE_INST-1:0]                         timesync_pslverr;
-  logic       [    NUM_TRACE_INST-1:0][DFD_APB_DATA_WIDTH-1:0] timesync_prdata;
-  logic       [    NUM_TRACE_INST-1:0]                         timesync_reghit;
+  logic       [    NUM_TRACE_AND_ANALYZER_INST-1:0]                         timesync_pready;
+  logic       [    NUM_TRACE_AND_ANALYZER_INST-1:0]                         timesync_pslverr;
+  logic       [    NUM_TRACE_AND_ANALYZER_INST-1:0][DFD_APB_DATA_WIDTH-1:0] timesync_prdata;
+  logic       [    NUM_TRACE_AND_ANALYZER_INST-1:0]                         timesync_reghit;
 
   // DFD MMRs
   DfdCsrs_s                                                    DfdCsrs;
@@ -246,7 +246,7 @@ module dfd_top
       .NTRACE_SUPPORT(NTRACE_SUPPORT),
       .DST_SUPPORT(DST_SUPPORT),
       .CLA_SUPPORT(CLA_SUPPORT),
-      .NUM_TRACE_INST(NUM_TRACE_INST),
+      .NUM_TRACE_AND_ANALYZER_INST(NUM_TRACE_AND_ANALYZER_INST),
       .TRC_SIZE_IN_B(TRC_SIZE_IN_B),
       .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0])
   ) u_dfd_mmrs (
@@ -274,7 +274,7 @@ module dfd_top
       pready  = dfdmmr_pready;
       prdata  = dfdmmr_prdata;
       pslverr = dfdmmr_pslverr;
-      for (int ii = 0; ii < NUM_TRACE_INST; ii++) begin
+      for (int ii = 0; ii < NUM_TRACE_AND_ANALYZER_INST; ii++) begin
         if (timesync_reghit[ii]) begin
           pready  = timesync_pready[ii];
           prdata  = timesync_prdata[ii];
@@ -289,7 +289,7 @@ module dfd_top
   end
 
   if ((CLA_SUPPORT == 1) || (DST_SUPPORT == 1)) begin : dbm_gen_blk
-    for (genvar ii = 0; ii < NUM_TRACE_INST; ii++) begin : dbm_gen_inst_blk
+    for (genvar ii = 0; ii < NUM_TRACE_AND_ANALYZER_INST; ii++) begin : dbm_gen_inst_blk
       dfd_mux_sel #(
           .DEBUG_BUS_WIDTH(DEBUG_SIGNALS_WIDTH),
           .ID_INDEX(ii)
@@ -324,7 +324,7 @@ module dfd_top
 
   if (CLA_SUPPORT == 1) begin : cla_gen_blk
     for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : cla_gen_inst_blk
-      if (ii < NUM_TRACE_INST) begin
+      if (ii < NUM_TRACE_AND_ANALYZER_INST) begin
         dfd_time_sync #(
             .DFD_APB_ADDR_WIDTH(DFD_APB_ADDR_WIDTH),
             .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0] + 23'h9000 * ii ), // .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0])
@@ -455,7 +455,7 @@ module dfd_top
 
 
   for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : dfd_unit_gen_blk
-    if (ii < NUM_TRACE_INST) begin : dfd_unit_real
+    if (ii < NUM_TRACE_AND_ANALYZER_INST) begin : dfd_unit_real
       dfd_unit #(
           .DATA_WIDTH_IN_BYTES(DATA_WIDTH_IN_BYTES),
           .NTRACE_SUPPORT(NTRACE_SUPPORT),
@@ -512,7 +512,7 @@ module dfd_top
   if ((DST_SUPPORT == 1) || (NTRACE_SUPPORT == 1)) begin : trace_top_gen_blk
     dfd_trace_top #(
         .NUM_CORES(TNIF_CONNECTIONS),  // Minimum 2 TNIFs
-        .NUM_ACTIVE_CORES(NUM_TRACE_INST),
+        .NUM_ACTIVE_CORES(NUM_TRACE_AND_ANALYZER_INST),
         .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0]),
         .DATA_WIDTH_IN_BYTES(DATA_WIDTH_IN_BYTES),
         .TRC_RAM_INDEX(TRC_RAM_INDEX),

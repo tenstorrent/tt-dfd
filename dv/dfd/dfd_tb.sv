@@ -16,7 +16,7 @@ module dfd_tb
   import dfd_CL_axi_pkg::*;
 #(
     parameter TEST = 1,
-    parameter NUM_TRACE_INST = 2
+    parameter NUM_TRACE_AND_ANALYZER_INST = 2
 ) ();
 
   // Clock and reset
@@ -129,7 +129,7 @@ module dfd_tb
 
   dfd_top #(
       .BASE_ADDR(0),
-      .NUM_TRACE_INST(NUM_TRACE_INST),
+      .NUM_TRACE_AND_ANALYZER_INST(NUM_TRACE_AND_ANALYZER_INST),
       .NTRACE_SUPPORT(1),
       .DST_SUPPORT(1),
       .CLA_SUPPORT(1),
@@ -196,7 +196,7 @@ module dfd_tb
       .IAddr('0),
       .ILastSize('0),
       .Tstamp('0),
-      .Priv({NUM_TRACE_INST{PRIVMODE_USER}}),
+      .Priv({NUM_TRACE_AND_ANALYZER_INST{PRIVMODE_USER}}),
       .Context('0),
       .Tval('0),
       .Error('0),
@@ -204,7 +204,7 @@ module dfd_tb
       .StallModeEn(),
       .StartStop(),
       .Backpressure(),
-      .TrigControl({NUM_TRACE_INST{TRIG_TRACE_OFF}}),
+      .TrigControl({NUM_TRACE_AND_ANALYZER_INST{TRIG_TRACE_OFF}}),
 
       // DST Interface
       .CoreTime('0),
@@ -222,7 +222,7 @@ module dfd_tb
 
   dfd_top_cla_dst_mmr #(
       .BASE_ADDR(64'HC0160000),
-      .NUM_TRACE_INST(1),
+      .NUM_TRACE_AND_ANALYZER_INST(1),
       .NTRACE_SUPPORT(0),
       .DST_SUPPORT(1),
       .CLA_SUPPORT(1),
