@@ -42,7 +42,7 @@ These parameters are available to be modified by users who instantiate tt-dfd vi
 
 | Parameter             | Type              | Default | Description |
 | ---                   | ---               | ---     | ---         |
-| NUM_TRACE_INST        | int unsigned      | 1 | Number of trace/CLA/N-Trace/DST instances to instantiate. |
+| NUM_TRACE_AND_ANALYZER_INST        | int unsigned      | 1 | Number of trace/CLA/N-Trace/DST instances to instantiate. |
 | NTRACE_SUPPORT        | bit               | 1 | Set to 1'b1 to enable N-Trace features, otherwise disable and tie off related blocks |
 | DST_SUPPORT           | bit               | 1 | Set to 1'b1 to enable DST features, otherwise disable and tie off related blocks |
 | CLA_SUPPORT           | bit               | 1 | Set to 1'b1 to enable CLA features, otherwise disable and tie off related blocks |
