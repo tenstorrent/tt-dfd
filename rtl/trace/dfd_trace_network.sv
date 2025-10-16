@@ -3,16 +3,18 @@
 
 // Trace Network - Connects all the trace hops as per the Cluster Organization
 
+/*
+  Even Channel: Previously known as North Channel (Even cores/dfd units)
+  Odd Channel: Previously known as South Channel (Odd cores/dfd units)
+*/
+
 module dfd_trace_network
   import dfd_tn_pkg::*;
 #(
   parameter NUM_CORES = 8,
   localparam NUM_CORES_IN_PATH = NUM_CORES >> 1,
   parameter DATA_WIDTH_IN_BYTES = 16,
-  parameter DATA_WIDTH = DATA_WIDTH_IN_BYTES*8,
-  localparam logic [4-1:0][31:0] NUM_REPEATER_STAGES = '{32'h1,32'h2,32'h1,32'h3},
-  localparam logic [4-1:0][31:0] NUM_UPSTREAM_REPEATERS = '{32'h0,32'h0,32'h1,32'h1},
-  localparam logic [4-1:0][31:0] NUM_HOPS_TO_TAIL = '{32'h0,32'h1,32'h3,32'h4}
+  parameter DATA_WIDTH = DATA_WIDTH_IN_BYTES*8
 ) (
   input  logic                                            clk,
   input  logic                                            reset_n,
@@ -27,12 +29,12 @@ module dfd_trace_network
   input  logic [NUM_CORES-1:0]                            MS_TN_Src,
   input  logic [NUM_CORES-1:0] [DATA_WIDTH-1:0]           MS_TN_Data,
 
-  // North branch data interface
+  // Even branch data interface
   output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_North_Vld,
   output logic                                            TN_TR_North_Src,
   output logic [DATA_WIDTH-1:0]                           TN_TR_North_Data,
 
-  // South branch data interface
+  // Odd branch data interface
   output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_South_Vld,
   output logic                                            TN_TR_South_Src,
   output logic [DATA_WIDTH-1:0]                           TN_TR_South_Data,
@@ -45,8 +47,13 @@ module dfd_trace_network
   input  logic [NUM_CORES-1:0]                            TN_TR_Enabled_Srcs
 
 );
+  
+  // Default values for the number of repeater stages, upstream repeaters, and hops to tail (max 8 cores)
+  localparam logic [8-1:0][31:0] NUM_REPEATER_STAGES = '{32'h1,32'h2,32'h1,32'h3,32'h1,32'h2,32'h1,32'h3};
+  localparam logic [8-1:0][31:0] NUM_UPSTREAM_REPEATERS = '{32'h0,32'h0,32'h1,32'h1,32'h0,32'h0,32'h1,32'h1};
+  localparam logic [8-1:0][31:0] NUM_HOPS_TO_TAIL = '{32'h0,32'h1,32'h3,32'h4,32'h0,32'h1,32'h3,32'h4};
 
-  // North Branch Signals
+  // Even Branch Signals
   logic [NUM_CORES_IN_PATH:0] [NUM_CORES_IN_PATH-1:0] rep_core_tr_vld_north;
   logic [NUM_CORES_IN_PATH:0]                         rep_core_tr_src_north;
   logic [NUM_CORES_IN_PATH:0] [DATA_WIDTH-1:0]        rep_core_tr_data_north;
@@ -59,7 +66,7 @@ module dfd_trace_network
   logic [NUM_CORES_IN_PATH-1:0]                         core_rep_tr_src_north;
   logic [NUM_CORES_IN_PATH-1:0] [DATA_WIDTH-1:0]        core_rep_tr_data_north;
 
-  // South Branch Signals
+  // Odd Branch Signals
   logic [NUM_CORES_IN_PATH:0] [NUM_CORES_IN_PATH-1:0] rep_core_tr_vld_south;
   logic [NUM_CORES_IN_PATH:0]                         rep_core_tr_src_south;
   logic [NUM_CORES_IN_PATH:0] [DATA_WIDTH-1:0]        rep_core_tr_data_south;
@@ -110,7 +117,7 @@ module dfd_trace_network
 
 
   // ----------------
-  // North Channel
+  // Even Channel
   // ----------------
   for (genvar i=(NUM_CORES_IN_PATH-1); i>=0; i--) begin
     dfd_trace_hop #(
@@ -120,7 +127,7 @@ module dfd_trace_network
       .RELATIVE_CORE_IDX(i),
       .NUM_UPSTREAM_REPEATERS(NUM_UPSTREAM_REPEATERS[i]),
       .NUM_HOPS_TO_TAIL(NUM_HOPS_TO_TAIL[i])
-    ) trace_hop_north_core_inst (
+    ) trace_hop_even_core_inst (
       .clk(clk),
       .reset_n(reset_n),
 
@@ -158,17 +165,17 @@ module dfd_trace_network
   end
 
   // ----------------
-  // South Channel
+  // Odd Channel
   // ----------------
   for (genvar i=(NUM_CORES_IN_PATH-1); i>=0; i--) begin
     dfd_trace_hop #(
       .IS_REPEATER(0),
-      .NUM_REPEATER_STAGES(NUM_REPEATER_STAGES[i]),
+      .NUM_REPEATER_STAGES(NUM_REPEATER_STAGES[i+4]),
       .NUM_CORES_IN_PATH(NUM_CORES_IN_PATH),
       .RELATIVE_CORE_IDX(i),
-      .NUM_UPSTREAM_REPEATERS(NUM_UPSTREAM_REPEATERS[i]),
-      .NUM_HOPS_TO_TAIL(NUM_HOPS_TO_TAIL[i])
-    ) trace_hop_south_core_inst (
+      .NUM_UPSTREAM_REPEATERS(NUM_UPSTREAM_REPEATERS[i+4]),
+      .NUM_HOPS_TO_TAIL(NUM_HOPS_TO_TAIL[i+4])
+    ) trace_hop_odd_core_inst (
       .clk(clk),
       .reset_n(reset_n),
 
