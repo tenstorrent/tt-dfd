@@ -30,14 +30,14 @@ module dfd_trace_network
   input  logic [NUM_CORES-1:0] [DATA_WIDTH-1:0]           MS_TN_Data,
 
   // Even branch data interface
-  output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_North_Vld,
-  output logic                                            TN_TR_North_Src,
-  output logic [DATA_WIDTH-1:0]                           TN_TR_North_Data,
+  output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_Even_Vld,
+  output logic                                            TN_TR_Even_Src,
+  output logic [DATA_WIDTH-1:0]                           TN_TR_Even_Data,
 
   // Odd branch data interface
-  output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_South_Vld,
-  output logic                                            TN_TR_South_Src,
-  output logic [DATA_WIDTH-1:0]                           TN_TR_South_Data,
+  output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_Odd_Vld,
+  output logic                                            TN_TR_Odd_Src,
+  output logic [DATA_WIDTH-1:0]                           TN_TR_Odd_Data,
   
   // Funnel interface for the Backpressure and one-core mode control signals
   input  logic                                            TN_TR_Ntrace_Bp,
@@ -92,13 +92,13 @@ module dfd_trace_network
   // -----------------------------------------------
   // Funnel ports connections 
   // ----------------------------------------------- 
-  assign TN_TR_North_Vld = rep_core_tr_vld_north[0];
-  assign TN_TR_North_Src = rep_core_tr_src_north[0];
-  assign TN_TR_North_Data = rep_core_tr_data_north[0];
+  assign TN_TR_Even_Vld = rep_core_tr_vld_north[0];
+  assign TN_TR_Even_Src = rep_core_tr_src_north[0];
+  assign TN_TR_Even_Data = rep_core_tr_data_north[0];
 
-  assign TN_TR_South_Vld = rep_core_tr_vld_south[0];
-  assign TN_TR_South_Src = rep_core_tr_src_south[0];
-  assign TN_TR_South_Data = rep_core_tr_data_south[0];
+  assign TN_TR_Odd_Vld = rep_core_tr_vld_south[0];
+  assign TN_TR_Odd_Src = rep_core_tr_src_south[0];
+  assign TN_TR_Odd_Data = rep_core_tr_data_south[0];
 
   assign core_rep_tr_ntrace_bp_north[0] = TN_TR_Ntrace_Bp;
   assign core_rep_tr_dst_bp_north[0] = TN_TR_Dst_Bp;
