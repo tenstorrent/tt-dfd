@@ -33,14 +33,14 @@ module dfd_trace_funnel
   output logic                                            trfunnelfuselock,
 
   // North branch data interface
-  input  logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_North_Vld,
-  input  logic                                            TN_TR_North_Src,
-  input  logic [DATA_WIDTH-1:0]                           TN_TR_North_Data,
+  input  logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_Even_Vld,
+  input  logic                                            TN_TR_Even_Src,
+  input  logic [DATA_WIDTH-1:0]                           TN_TR_Even_Data,
 
   // South branch data interface
-  input  logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_South_Vld,
-  input  logic                                            TN_TR_South_Src,
-  input  logic [DATA_WIDTH-1:0]                           TN_TR_South_Data,
+  input  logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_Odd_Vld,
+  input  logic                                            TN_TR_Odd_Src,
+  input  logic [DATA_WIDTH-1:0]                           TN_TR_Odd_Data,
 
   // Funnel interface for the Backpressure
   output logic                                            TN_TR_Ntrace_Bp,TN_TR_Dst_Bp,
@@ -124,16 +124,16 @@ module dfd_trace_funnel
     .clk                                      (clk),
     .reset_n                                  (reset_n),
 
-    .TR_TS_North_Src                          (TN_TR_North_Src),
-    .TR_TS_North_Data                         (TN_TR_North_Data),
-    .TR_TS_North_Vld                          (TN_TR_North_Vld),
+    .TR_TS_Even_Src                          (TN_TR_Even_Src),
+    .TR_TS_Even_Data                         (TN_TR_Even_Data),
+    .TR_TS_Even_Vld                          (TN_TR_Even_Vld),
 
     .TR_TS_Ntrace_NumEnabled_Srcs             (TR_TS_Ntrace_NumEnabled_Srcs),
     .TR_TS_Dst_NumEnabled_Srcs                (TR_TS_Dst_NumEnabled_Srcs),
 
-    .TR_TS_South_Src                          (TN_TR_South_Src),
-    .TR_TS_South_Data                         (TN_TR_South_Data),
-    .TR_TS_South_Vld                          (TN_TR_South_Vld), 
+    .TR_TS_Odd_Src                          (TN_TR_Odd_Src),
+    .TR_TS_Odd_Data                         (TN_TR_Odd_Data),
+    .TR_TS_Odd_Vld                          (TN_TR_Odd_Vld), 
 
     .TS_TR_Ntrace_Bp                          (TN_TR_Ntrace_Bp),
     .TS_TR_Dst_Bp                             (TN_TR_Dst_Bp),
