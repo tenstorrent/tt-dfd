@@ -36,13 +36,13 @@ module dfd_trace_sink
 
   // Trace Funnel Interface
   // North Branch
-  input   logic                                                 TR_TS_North_Src,
-  input   logic [DATA_WIDTH-1:0]                                TR_TS_North_Data,
-  input   logic [NUM_CORES_IN_PATH-1:0]                         TR_TS_North_Vld,
+  input   logic                                                 TR_TS_Even_Src,
+  input   logic [DATA_WIDTH-1:0]                                TR_TS_Even_Data,
+  input   logic [NUM_CORES_IN_PATH-1:0]                         TR_TS_Even_Vld,
   // South Branch
-  input   logic                                                 TR_TS_South_Src,
-  input   logic [DATA_WIDTH-1:0]                                TR_TS_South_Data,
-  input   logic [NUM_CORES_IN_PATH-1:0]                         TR_TS_South_Vld,
+  input   logic                                                 TR_TS_Odd_Src,
+  input   logic [DATA_WIDTH-1:0]                                TR_TS_Odd_Data,
+  input   logic [NUM_CORES_IN_PATH-1:0]                         TR_TS_Odd_Vld,
   // Funnel interface for the Backpressure
   output  logic                                                 TS_TR_Ntrace_Bp,
   output  logic                                                 TS_TR_Dst_Bp,
@@ -124,9 +124,9 @@ module dfd_trace_sink
 
   // Timing staging flops
   logic [31:2]                                                                    trnorthcoreRamWpLow_ANY_stg, trsouthcoreRamWpLow_ANY_stg;
-  logic [DATA_WIDTH-1:0]                                                          TR_TS_North_Data_stg, TR_TS_South_Data_stg;
-  logic                                                                           TR_TS_North_Src_stg, TR_TS_South_Src_stg;
-  logic [NUM_CORES_IN_PATH-1:0]                                                   Eff_TR_TS_North_Vld_stg, Eff_TR_TS_South_Vld_stg;
+  logic [DATA_WIDTH-1:0]                                                          TR_TS_Even_Data_stg, TR_TS_Odd_Data_stg;
+  logic                                                                           TR_TS_Even_Src_stg, TR_TS_Odd_Src_stg;
+  logic [NUM_CORES_IN_PATH-1:0]                                                   Eff_TR_TS_Even_Vld_stg, Eff_TR_TS_Odd_Vld_stg;
   logic                                                                           trntrnextlocaltoupdateRamWpWrap_ANY_stg, trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1, trntrnextlocaltoupdateRamWpWrap_ANY_stg_d2;
   logic                                                                           trdstnextlocaltoupdateRamWpWrap_ANY_stg, trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1, trdstnextlocaltoupdateRamWpWrap_ANY_stg_d2;
 
@@ -337,7 +337,7 @@ module dfd_trace_sink
 
   // SRAM Overflow Mask blocked Frames write
   logic [NUM_CORES-1:0]                                                           Eff_InsnTraceWrEnPerCore_TS0, Eff_DataTraceWrEnPerCore_TS0;
-  logic [NUM_CORES_IN_PATH-1:0]                                                   Eff_TR_TS_North_Vld, Eff_TR_TS_South_Vld;
+  logic [NUM_CORES_IN_PATH-1:0]                                                   Eff_TR_TS_Even_Vld, Eff_TR_TS_Odd_Vld;
   logic [NUM_CORES-1:0]                                                           trntrcoreframefillpendingwhileoverflow_ANY, trdstcoreframefillpendingwhileoverflow_ANY;
   logic [NUM_CORES-1:0][NUM_CORES-1:0]                                            trntrcoreptrmatchesanypendingframeafteroverflow_ANY, trdstcoreptrmatchesanypendingframeafteroverflow_ANY;
 
@@ -370,24 +370,24 @@ module dfd_trace_sink
   assign Eff_DataTraceWrEnPerCore_TS0 = trdstRamMode_ANY?DataTraceWrEnPerCore_TS0:(DataTraceWrEnPerCore_TS0 & ~trdstcoreframefillpendingwhileoverflow_ANY);
 
   for (genvar i=0; i<NUM_CORES_IN_PATH; i++) begin
-    assign Eff_TR_TS_North_Vld[i] = ((TR_TS_North_Src & Eff_InsnTraceWrEnPerCore_TS0[i << 1]) | (~TR_TS_North_Src & Eff_DataTraceWrEnPerCore_TS0[i << 1]));
-    assign Eff_TR_TS_South_Vld[i] = ((TR_TS_South_Src & Eff_InsnTraceWrEnPerCore_TS0[(i << 1) + 1]) | (~TR_TS_South_Src & Eff_DataTraceWrEnPerCore_TS0[(i << 1) + 1]));
+    assign Eff_TR_TS_Even_Vld[i] = ((TR_TS_Even_Src & Eff_InsnTraceWrEnPerCore_TS0[i << 1]) | (~TR_TS_Even_Src & Eff_DataTraceWrEnPerCore_TS0[i << 1]));
+    assign Eff_TR_TS_Odd_Vld[i] = ((TR_TS_Odd_Src & Eff_InsnTraceWrEnPerCore_TS0[(i << 1) + 1]) | (~TR_TS_Odd_Src & Eff_DataTraceWrEnPerCore_TS0[(i << 1) + 1]));
   end
 
   // --------------------------------------------------------------------------
   // Timing Staging flops
   // -------------------------------------------------------------------------- 
-  generic_dff #(.WIDTH(1)) TR_TS_North_Src_stg_ff (.out(TR_TS_North_Src_stg), .in(TR_TS_North_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) TR_TS_South_Src_stg_ff (.out(TR_TS_South_Src_stg), .in(TR_TS_South_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(1)) TR_TS_Even_Src_stg_ff (.out(TR_TS_Even_Src_stg), .in(TR_TS_Even_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(1)) TR_TS_Odd_Src_stg_ff (.out(TR_TS_Odd_Src_stg), .in(TR_TS_Odd_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_North_Data_stg_ff (.out(TR_TS_North_Data_stg), .in(TR_TS_North_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_South_Data_stg_ff (.out(TR_TS_South_Data_stg), .in(TR_TS_South_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_Even_Data_stg_ff (.out(TR_TS_Even_Data_stg), .in(TR_TS_Even_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_Odd_Data_stg_ff (.out(TR_TS_Odd_Data_stg), .in(TR_TS_Odd_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
   generic_dff #(.WIDTH(30)) trnorthcoreRamWpLow_ANY_stg_ff (.out(trnorthcoreRamWpLow_ANY_stg), .in(trnorthcoreRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
   generic_dff #(.WIDTH(30)) trsouthcoreRamWpLow_ANY_stg_ff (.out(trsouthcoreRamWpLow_ANY_stg), .in(trsouthcoreRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_North_Vld_stg_ff (.out(Eff_TR_TS_North_Vld_stg), .in(Eff_TR_TS_North_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_South_Vld_stg_ff (.out(Eff_TR_TS_South_Vld_stg), .in(Eff_TR_TS_South_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_Even_Vld_stg_ff (.out(Eff_TR_TS_Even_Vld_stg), .in(Eff_TR_TS_Even_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_Odd_Vld_stg_ff (.out(Eff_TR_TS_Odd_Vld_stg), .in(Eff_TR_TS_Odd_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
   generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .in(trntrnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
   generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
@@ -405,36 +405,36 @@ module dfd_trace_sink
     trsouthcoreRamWpLow_ANY = '0;
 
     for (int i=0; i<NUM_CORES_IN_PATH; i++) begin
-      trnorthcoreRamWpLow_ANY |= (TR_TS_North_Src?({30{Eff_TR_TS_North_Vld[i]}} & trntrcoreRamWpLow_ANY[i << 1]):({30{Eff_TR_TS_North_Vld[i]}} & trdstcoreRamWpLow_ANY[i << 1]));
-      trsouthcoreRamWpLow_ANY |= (TR_TS_South_Src?({30{Eff_TR_TS_South_Vld[i]}} & trntrcoreRamWpLow_ANY[(i << 1) + 1]):({30{Eff_TR_TS_South_Vld[i]}} & trdstcoreRamWpLow_ANY[(i << 1) + 1]));  
+      trnorthcoreRamWpLow_ANY |= (TR_TS_Even_Src?({30{Eff_TR_TS_Even_Vld[i]}} & trntrcoreRamWpLow_ANY[i << 1]):({30{Eff_TR_TS_Even_Vld[i]}} & trdstcoreRamWpLow_ANY[i << 1]));
+      trsouthcoreRamWpLow_ANY |= (TR_TS_Odd_Src?({30{Eff_TR_TS_Odd_Vld[i]}} & trntrcoreRamWpLow_ANY[(i << 1) + 1]):({30{Eff_TR_TS_Odd_Vld[i]}} & trdstcoreRamWpLow_ANY[(i << 1) + 1]));  
     end
   end
 
   for (genvar i=0; i<NUM_CORES_IN_PATH; i++) begin
-    assign DataTraceWrEnPerCore_TS0[i << 1] = (TR_TS_North_Vld[i] & ~TR_TS_North_Src);
-    assign DataTraceWrEnPerCore_TS0[(i << 1) + 1] = (TR_TS_South_Vld[i] & ~TR_TS_South_Src);
+    assign DataTraceWrEnPerCore_TS0[i << 1] = (TR_TS_Even_Vld[i] & ~TR_TS_Even_Src);
+    assign DataTraceWrEnPerCore_TS0[(i << 1) + 1] = (TR_TS_Odd_Vld[i] & ~TR_TS_Odd_Src);
 
-    assign InsnTraceWrEnPerCore_TS0[i << 1] = (TR_TS_North_Vld[i] & TR_TS_North_Src);
-    assign InsnTraceWrEnPerCore_TS0[(i << 1) + 1] = (TR_TS_South_Vld[i] & TR_TS_South_Src);
+    assign InsnTraceWrEnPerCore_TS0[i << 1] = (TR_TS_Even_Vld[i] & TR_TS_Even_Src);
+    assign InsnTraceWrEnPerCore_TS0[(i << 1) + 1] = (TR_TS_Odd_Vld[i] & TR_TS_Odd_Src);
   end
 
-  assign TrRamNorthTraceWrEn_TS0 = ~TrRamPendPktNorthWrEn_TS0 & |Eff_TR_TS_North_Vld_stg;
+  assign TrRamNorthTraceWrEn_TS0 = ~TrRamPendPktNorthWrEn_TS0 & |Eff_TR_TS_Even_Vld_stg;
   assign TrRamNorthTraceWrWay_TS0 = trnorthcoreRamWpLow_ANY_stg[5:4]; 
   assign TrRamNorthTraceWrAddr_TS0 = trnorthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH];
-  assign TrRamNorthTraceWrData_TS0 = TR_TS_North_Data_stg;
-  assign TrRamNorthTraceWrSrc_TS0 = TR_TS_North_Src_stg;
+  assign TrRamNorthTraceWrData_TS0 = TR_TS_Even_Data_stg;
+  assign TrRamNorthTraceWrSrc_TS0 = TR_TS_Even_Src_stg;
 
-  assign TrRamSouthTraceWrEn_TS0 = ~TrRamPendPktSouthWrEn_TS0 & |Eff_TR_TS_South_Vld_stg;
+  assign TrRamSouthTraceWrEn_TS0 = ~TrRamPendPktSouthWrEn_TS0 & |Eff_TR_TS_Odd_Vld_stg;
   assign TrRamSouthTraceWrWay_TS0 = trsouthcoreRamWpLow_ANY_stg[5:4];
   assign TrRamSouthTraceWrAddr_TS0 = trsouthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH];
-  assign TrRamSouthTraceWrData_TS0 = TR_TS_South_Data_stg;
-  assign TrRamSouthTraceWrSrc_TS0 = TR_TS_South_Src_stg;
+  assign TrRamSouthTraceWrData_TS0 = TR_TS_Odd_Data_stg;
+  assign TrRamSouthTraceWrSrc_TS0 = TR_TS_Odd_Src_stg;
 
-  assign TrRamPendPktNorthWrEn_TS0 = ((|Eff_TR_TS_North_Vld_stg & |Eff_TR_TS_South_Vld_stg) & (TrRamNorthTraceWrWay_TS0 == TrRamSouthTraceWrWay_TS0) & |TrRamPerWayPendToWriteCnt_TS1[TrRamNorthTraceWrWay_TS0]) | (|Eff_TR_TS_North_Vld_stg & |TrRamPerWayPendToWriteCnt_TS1[TrRamNorthTraceWrWay_TS0]);
-  assign TrRamPendPktSouthWrEn_TS0 = ((|Eff_TR_TS_North_Vld_stg & |Eff_TR_TS_South_Vld_stg) & (TrRamNorthTraceWrWay_TS0 == TrRamSouthTraceWrWay_TS0)) | (|Eff_TR_TS_South_Vld_stg & |TrRamPerWayPendToWriteCnt_TS1[TrRamSouthTraceWrWay_TS0]);
+  assign TrRamPendPktNorthWrEn_TS0 = ((|Eff_TR_TS_Even_Vld_stg & |Eff_TR_TS_Odd_Vld_stg) & (TrRamNorthTraceWrWay_TS0 == TrRamSouthTraceWrWay_TS0) & |TrRamPerWayPendToWriteCnt_TS1[TrRamNorthTraceWrWay_TS0]) | (|Eff_TR_TS_Even_Vld_stg & |TrRamPerWayPendToWriteCnt_TS1[TrRamNorthTraceWrWay_TS0]);
+  assign TrRamPendPktSouthWrEn_TS0 = ((|Eff_TR_TS_Even_Vld_stg & |Eff_TR_TS_Odd_Vld_stg) & (TrRamNorthTraceWrWay_TS0 == TrRamSouthTraceWrWay_TS0)) | (|Eff_TR_TS_Odd_Vld_stg & |TrRamPerWayPendToWriteCnt_TS1[TrRamSouthTraceWrWay_TS0]);
 
-  assign TrRamPendPktNorthWr_TS0 = {trnorthcoreRamWpLow_ANY_stg[5:4], trnorthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH], TR_TS_North_Data_stg, TR_TS_North_Src_stg};
-  assign TrRamPendPktSouthWr_TS0 = {trsouthcoreRamWpLow_ANY_stg[5:4], trsouthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH], TR_TS_South_Data_stg, TR_TS_South_Src_stg};
+  assign TrRamPendPktNorthWr_TS0 = {trnorthcoreRamWpLow_ANY_stg[5:4], trnorthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH], TR_TS_Even_Data_stg, TR_TS_Even_Src_stg};
+  assign TrRamPendPktSouthWr_TS0 = {trsouthcoreRamWpLow_ANY_stg[5:4], trsouthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH], TR_TS_Odd_Data_stg, TR_TS_Odd_Src_stg};
 
   for (genvar i=0; i<TRC_RAM_WAYS; i++) begin
     generic_dff #(.WIDTH(3)) TrRamPerWayPendToWriteCnt_ff (.out(TrRamPerWayPendToWriteCnt_TS1[i]), .in(TrRamPerWayNextPendToWriteCnt_TS0[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));

@@ -75,14 +75,14 @@ module dfd_trace_top
   // Signal Declaration
 
   // North branch data interface
-  logic            [NUM_CORES_IN_PATH-1:0]                 TN_TR_North_Vld;
-  logic                                                    TN_TR_North_Src;
-  logic            [       DATA_WIDTH-1:0]                 TN_TR_North_Data;
+  logic            [NUM_CORES_IN_PATH-1:0]                 TN_TR_Even_Vld;
+  logic                                                    TN_TR_Even_Src;
+  logic            [       DATA_WIDTH-1:0]                 TN_TR_Even_Data;
 
   // South branch data interface
-  logic            [NUM_CORES_IN_PATH-1:0]                 TN_TR_South_Vld;
-  logic                                                    TN_TR_South_Src;
-  logic            [       DATA_WIDTH-1:0]                 TN_TR_South_Data;
+  logic            [NUM_CORES_IN_PATH-1:0]                 TN_TR_Odd_Vld;
+  logic                                                    TN_TR_Odd_Src;
+  logic            [       DATA_WIDTH-1:0]                 TN_TR_Odd_Data;
 
   // Funnel interface for the Backpressure
   logic                                                    TN_TR_Ntrace_Bp;
@@ -152,12 +152,12 @@ module dfd_trace_top
       .MS_TN_Vld(MS_TN_Vld_Internal_Active_Cores),
       .MS_TN_Src(MS_TN_Src_Internal_Active_Cores),
       .MS_TN_Data(MS_TN_Data_Internal_Active_Cores),
-      .TN_TR_North_Vld(TN_TR_North_Vld),
-      .TN_TR_North_Src(TN_TR_North_Src),
-      .TN_TR_North_Data(TN_TR_North_Data),
-      .TN_TR_South_Vld(TN_TR_South_Vld),
-      .TN_TR_South_Src(TN_TR_South_Src),
-      .TN_TR_South_Data(TN_TR_South_Data),
+      .TN_TR_Even_Vld(TN_TR_Even_Vld),
+      .TN_TR_Even_Src(TN_TR_Even_Src),
+      .TN_TR_Even_Data(TN_TR_Even_Data),
+      .TN_TR_Odd_Vld(TN_TR_Odd_Vld),
+      .TN_TR_Odd_Src(TN_TR_Odd_Src),
+      .TN_TR_Odd_Data(TN_TR_Odd_Data),
       .TN_TR_Ntrace_Bp(TN_TR_Ntrace_Bp),
       .TN_TR_Dst_Bp(TN_TR_Dst_Bp),
       .TN_TR_Ntrace_Flush(TN_TR_Ntrace_Flush),
@@ -183,12 +183,12 @@ module dfd_trace_top
       .trfunnelactive(trfunnelactive),
       .trfunnelfuse(trfunnelfuse),
       .trfunnelfuselock(trfunnelfuselock),
-      .TN_TR_North_Vld(TN_TR_North_Vld),
-      .TN_TR_North_Src(TN_TR_North_Src),
-      .TN_TR_North_Data(TN_TR_North_Data),
-      .TN_TR_South_Vld(TN_TR_South_Vld),
-      .TN_TR_South_Src(TN_TR_South_Src),
-      .TN_TR_South_Data(TN_TR_South_Data),
+      .TN_TR_Even_Vld(TN_TR_Even_Vld),
+      .TN_TR_Even_Src(TN_TR_Even_Src),
+      .TN_TR_Even_Data(TN_TR_Even_Data),
+      .TN_TR_Odd_Vld(TN_TR_Odd_Vld),
+      .TN_TR_Odd_Src(TN_TR_Odd_Src),
+      .TN_TR_Odd_Data(TN_TR_Odd_Data),
       .TN_TR_Ntrace_Bp(TN_TR_Ntrace_Bp),
       .TN_TR_Dst_Bp(TN_TR_Dst_Bp),
       .TN_TR_Ntrace_Flush(TN_TR_Ntrace_Flush),
