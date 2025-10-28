@@ -181,7 +181,7 @@ module dfd_trace_sink
   logic                                                                           TrdstMemRamRdAddrWrap_ANY;
   logic                                                                           TrdstMemRdBufferFull_ANY;
   logic                                                                           TrdstMemAxiWrVld_ANY;
-  logic [AXI_ADDR_WIDTH-1:0]                                                      TrdstMemAxiWrAddr_ANY;
+  logic [AXI_ADDR_WIDTH-1:0]                                                      TrdstMemAxiWrAddr_ANY, TrdstMemAxiWrAddr_WpUpdate_ANY;
   logic                                                                           TrdstMemAxiWrAddrWrap_ANY;
   logic [AXI_ADDR_WIDTH-1:0]                                                      trdstMemSMEMStartAddr_ANY, trdstMemSMEMLimitAddr_ANY;
   logic [AXI_DATA_WIDTH-1:0]                                                      TrdstMemAxiWrData_ANY;
@@ -201,7 +201,7 @@ module dfd_trace_sink
   logic                                                                           TrntrMemRamRdAddrWrap_ANY;
   logic                                                                           TrntrMemRdBufferFull_ANY;
   logic                                                                           TrntrMemAxiWrVld_ANY;
-  logic [AXI_ADDR_WIDTH-1:0]                                                      TrntrMemAxiWrAddr_ANY;
+  logic [AXI_ADDR_WIDTH-1:0]                                                      TrntrMemAxiWrAddr_ANY, TrntrMemAxiWrAddr_WpUpdate_ANY;
   logic                                                                           TrntrMemAxiWrAddrWrap_ANY;
   logic [AXI_ADDR_WIDTH-1:0]                                                      trntrMemSMEMStartAddr_ANY, trntrMemSMEMLimitAddr_ANY;
   logic [AXI_DATA_WIDTH-1:0]                                                      TrntrMemAxiWrData_ANY;
@@ -499,7 +499,7 @@ module dfd_trace_sink
   generic_dff #(.WIDTH(30)) trdstnextlocaltoupdateRamWpLow_ANY_ff (.out(trdstnextlocaltoupdateRamWpLow_ANY_stg), .in(trdstnextlocaltoupdateRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY), .in(((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2])) >= trdstRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY), .in(((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2]*2)) >= trdstRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY), .in((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2]*2)) >= trdstRamLimitLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   /* verilator lint_off WIDTHEXPAND */
   assign trdstnextlocaltoupdateRamWpWrap_ANY = (trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY & ((|trdstnorthcoresNewFrameStart_ANY_d1) | (|trdstsouthcoresNewFrameStart_ANY_d1))) | (trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY & ((|trdstnorthcoresNewFrameStart_ANY_d1) & (|trdstsouthcoresNewFrameStart_ANY_d1)));
@@ -606,7 +606,7 @@ module dfd_trace_sink
     .out          (TrdstMemModeRamFlush_ANY),
     .in          (1'b1),
     .clr        (&trdstcoretoFlushClear_ANY),
-    .en         (|trdstcoretoFlushEnable_ANY),
+    .en         (|(trdstcoretoFlushEnable_ANY & ~trdstcoretoFlushClear_ANY)),
     .clk        (clk),
     .rst_n    (reset_n)
   );
@@ -815,7 +815,7 @@ module dfd_trace_sink
     .out          (TrntrMemModeRamFlush_ANY),
     .in          (1'b1),
     .clr        (&trntrcoretoFlushClear_ANY),
-    .en         (|trntrcoretoFlushEnable_ANY),
+    .en         (|(trntrcoretoFlushEnable_ANY & ~trntrcoretoFlushClear_ANY)),
     .clk        (clk),
     .rst_n    (reset_n)
   );
@@ -1167,8 +1167,8 @@ module dfd_trace_sink
   assign trdstRamModeBP_ANY = (trdstRamLimitLow_ANY - TrCsrTrdstramwplow.Trdstramwplow)*4 <= DataTrace_InFlightData_BackPressure_Threshold_ANY*64;
 
   // SMEM Mode
-  assign trntrMemAvailableSpace_ANY = $bits(trntrMemAvailableSpace_ANY)'(trntrMemSMEMLimitAddr_ANY - TrntrMemAxiWrAddr_ANY); 
-  assign trdstMemAvailableSpace_ANY = $bits(trdstMemAvailableSpace_ANY)'(trdstMemSMEMLimitAddr_ANY - TrdstMemAxiWrAddr_ANY); 
+  assign trntrMemAvailableSpace_ANY = $bits(trntrMemAvailableSpace_ANY)'(trntrMemSMEMLimitAddr_ANY - /*TrntrMemAxiWrAddr_ANY*/ {trntrRamWpHigh_ANY[AXI_ADDR_WIDTH-33:0], trntrRamWpLow_ANY , 2'b00}); 
+  assign trdstMemAvailableSpace_ANY = $bits(trdstMemAvailableSpace_ANY)'(trdstMemSMEMLimitAddr_ANY - /*TrdstMemAxiWrAddr_ANY*/ {trdstRamWpHigh_ANY[AXI_ADDR_WIDTH-33:0], trdstRamWpLow_ANY , 2'b00}); 
 
   assign trntrMemBytestoWrite_ANY = ((trntrnextlocaltoupdateRamWpLow_ANY_stg - trntrRamSMEMStartLow_ANY)*4 - (TrntrMemRamRdAddr_TS1 - $bits(TrntrMemRamRdAddr_TS1)'(trntrRamSMEMStartAddr_ANY))*64);
   assign trdstMemBytestoWrite_ANY = ((trdstnextlocaltoupdateRamWpLow_ANY_stg - trdstRamSMEMStartLow_ANY)*4 - (TrdstMemRamRdAddr_TS1 - $bits(TrdstMemRamRdAddr_TS1)'(trdstRamSMEMStartAddr_ANY))*64);
@@ -1284,7 +1284,7 @@ module dfd_trace_sink
 
   generic_dff #(.WIDTH(AXI_ADDR_WIDTH)) TrdstMemAxiWrAddr_ff (
     .out          (TrdstMemAxiWrAddr_ANY),
-    .in          ((trdstRamEnableStart_ANY_d1 | ($bits(trdstMemSMEMLimitAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40) >= trdstMemSMEMLimitAddr_ANY))?trdstMemSMEMStartAddr_ANY:$bits(TrdstMemAxiWrAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40)),
+    .in          ((trdstRamEnableStart_ANY_d1 | ($bits(trdstMemSMEMLimitAddr_ANY)'(TrdstMemAxiWrAddr_ANY) == trdstMemSMEMLimitAddr_ANY))?trdstMemSMEMStartAddr_ANY:$bits(TrdstMemAxiWrAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40)),
     .en         (trdstRamEnableStart_ANY_d1 | (trdstMemModeEnable_ANY & TrdstMemAxiWrVld_ANY)),
     .clk        (clk),
     .rst_n    (reset_n)
@@ -1292,7 +1292,7 @@ module dfd_trace_sink
 
   generic_dff #(.WIDTH(1)) TrdstMemAxiWrAddrWrap_ff (
     .out          (TrdstMemAxiWrAddrWrap_ANY),
-    .in          (($bits(trdstMemSMEMLimitAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40) >= trdstMemSMEMLimitAddr_ANY)),
+    .in          (($bits(trdstMemSMEMLimitAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40) == trdstMemSMEMLimitAddr_ANY)),
     .en         (trdstRamEnableStart_ANY_d1 | (trdstMemModeEnable_ANY & TrdstMemAxiWrVld_ANY)),
     .clk        (clk),
     .rst_n    (reset_n)
@@ -1375,7 +1375,7 @@ module dfd_trace_sink
 
   generic_dff #(.WIDTH(AXI_ADDR_WIDTH)) TrntrMemAxiWrAddr_ff (
     .out          (TrntrMemAxiWrAddr_ANY),
-    .in          ((trntrRamEnableStart_ANY_d1 | ($bits(trntrMemSMEMLimitAddr_ANY)' (TrntrMemAxiWrAddr_ANY + 'h40) >= trntrMemSMEMLimitAddr_ANY))?trntrMemSMEMStartAddr_ANY:$bits(TrntrMemAxiWrAddr_ANY)'(TrntrMemAxiWrAddr_ANY + 'h40)),
+    .in          ((trntrRamEnableStart_ANY_d1 | ($bits(trntrMemSMEMLimitAddr_ANY)' (TrntrMemAxiWrAddr_ANY) == trntrMemSMEMLimitAddr_ANY))?trntrMemSMEMStartAddr_ANY:$bits(TrntrMemAxiWrAddr_ANY)'(TrntrMemAxiWrAddr_ANY + 'h40)),
     .en         (trntrRamEnableStart_ANY_d1 | (trntrMemModeEnable_ANY & TrntrMemAxiWrVld_ANY)),
     .clk        (clk),
     .rst_n    (reset_n)
@@ -1383,7 +1383,7 @@ module dfd_trace_sink
 
   generic_dff #(.WIDTH(1)) TrntrMemAxiWrAddrWrap_ff (
     .out          (TrntrMemAxiWrAddrWrap_ANY),
-    .in          (($bits(trntrMemSMEMLimitAddr_ANY)'(TrntrMemAxiWrAddr_ANY + 'h40) >= trntrMemSMEMLimitAddr_ANY)),
+    .in          (($bits(trntrMemSMEMLimitAddr_ANY)'(TrntrMemAxiWrAddr_ANY + 'h40) == trntrMemSMEMLimitAddr_ANY)),
     .en         (trntrRamEnableStart_ANY_d1 | (trntrMemModeEnable_ANY & TrntrMemAxiWrVld_ANY)),
     .clk        (clk),
     .rst_n    (reset_n)
@@ -1406,6 +1406,9 @@ module dfd_trace_sink
   assign TrMemAxiWrVld_ANY = TrntrMemAxiWrVld_ANY | TrdstMemAxiWrVld_ANY;
   assign TrMemAxiWrAddr_ANY = TrntrMemAxiWrVld_ANY?TrntrMemAxiWrAddr_ANY:TrdstMemAxiWrAddr_ANY;
   assign TrMemAxiWrData_ANY = TrntrMemAxiWrVld_ANY?TrntrMemAxiWrData_ANY:TrdstMemAxiWrData_ANY;
+
+  assign TrdstMemAxiWrAddr_WpUpdate_ANY = $bits(TrdstMemAxiWrAddr_WpUpdate_ANY)'((TrdstMemAxiWrAddr_ANY == trdstMemSMEMLimitAddr_ANY)?trdstMemSMEMStartAddr_ANY:(TrdstMemAxiWrAddr_ANY + 'h40));
+  assign TrntrMemAxiWrAddr_WpUpdate_ANY = $bits(TrntrMemAxiWrAddr_WpUpdate_ANY)'((TrntrMemAxiWrAddr_ANY == trntrMemSMEMLimitAddr_ANY)?trntrMemSMEMStartAddr_ANY:(TrntrMemAxiWrAddr_ANY + 'h40));
 
   // --------------------------------------------------------------------------
   // Trace RAM Control Interface MMRs
@@ -1497,7 +1500,7 @@ module dfd_trace_sink
 
   // Ram Write Pointer Low
   assign trntrramwplowSRAMWrdata = /*((trntrlocalRamWpLow_ANY == trntrRamLimitLow_ANY) & ~trntrStoponWrap_ANY)?trntrRamStartLow_ANY:*/(trntrlocalRamWpLow_ANY);
-  assign trntrramwplowSMEMWrdata = TrntrMemAxiWrAddr_ANY[31:2];
+  assign trntrramwplowSMEMWrdata = TrntrMemAxiWrAddr_WpUpdate_ANY[31:2];
   always_comb begin
     TrCsrTrramwplowWr = '0;
     TrCsrTrramwphighWr = '0;
@@ -1506,14 +1509,14 @@ module dfd_trace_sink
     TrCsrTrramwplowWr.TrramwrapWrEn = (trntrRamEnable_ANY | trntrStoponWrap_ANY) & ~TrCsrTrramwplow.Trramwrap & ((~trntrRamMode_ANY & trntrRamWrEn_TS0 /*TraceRamWrEn_TS0*/) | (trntrRamMode_ANY & TrntrMemAxiWrVld_ANY));
     TrCsrTrramwplowWr.Data.Trramwrap = ((~trntrRamMode_ANY & trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1) | (trntrRamMode_ANY & TrntrMemAxiWrAddrWrap_ANY/*((TrntrMemAxiWrAddr_ANY + 'h40) >= trntrMemSMEMLimitAddr_ANY)*/));
     TrCsrTrramwphighWr.TrramwphighWrEn = (trntrRamMode_ANY & TrntrMemAxiWrVld_ANY);
-    TrCsrTrramwphighWr.Data.Trramwphigh = $bits(TrCsrTrramwphighWr.Data.Trramwphigh)'(TrntrMemAxiWrAddr_ANY[AXI_ADDR_WIDTH-1:32]);
+    TrCsrTrramwphighWr.Data.Trramwphigh = $bits(TrCsrTrramwphighWr.Data.Trramwphigh)'(TrntrMemAxiWrAddr_WpUpdate_ANY[AXI_ADDR_WIDTH-1:32]);
   end
 
   // Ram Read Pointer Low
   always_comb begin
     TrCsrTrramrplowWr = '0;
     TrCsrTrramrplowWr.TrramrplowWrEn = InsnTraceRdEn_TS2;
-    TrCsrTrramrplowWr.Data.Trramrplow  = trntrRamRpLow_ANY[31:2] + 30'h1;
+    TrCsrTrramrplowWr.Data.Trramrplow  = (trntrRamRpLow_ANY[31:2] == trntrRamLimitLow_ANY[31:2])?trntrRamStartLow_ANY[31:2]:(trntrRamRpLow_ANY[31:2] + 30'h1);
   end
   assign TrCsrTrramrphighWr = '0;
 
@@ -1584,7 +1587,7 @@ module dfd_trace_sink
 
   // Ram Write Pointer Low
   assign trdstramwplowSRAMWrdata = /*((trdstlocalRamWpLow_ANY == trdstRamLimitLow_ANY) & ~trdstStoponWrap_ANY)?trdstRamStartLow_ANY:*/(trdstlocalRamWpLow_ANY);
-  assign trdstramwplowSMEMWrdata = TrdstMemAxiWrAddr_ANY[31:2];
+  assign trdstramwplowSMEMWrdata = TrdstMemAxiWrAddr_WpUpdate_ANY[31:2];
   always_comb begin
     TrCsrTrdstramwplowWr = '0;
     TrCsrTrdstramwphighWr = '0;
@@ -1593,14 +1596,14 @@ module dfd_trace_sink
     TrCsrTrdstramwplowWr.TrdstramwrapWrEn = (trdstRamEnable_ANY | trdstStoponWrap_ANY) & ~TrCsrTrdstramwplow.Trdstramwrap & ((~trdstRamMode_ANY & trdstRamWrEn_TS0 /*TraceRamWrEn_TS0*/) | (trdstRamMode_ANY & TrdstMemAxiWrVld_ANY));
     TrCsrTrdstramwplowWr.Data.Trdstramwrap = ((~trdstRamMode_ANY & trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1) | (trdstRamMode_ANY & TrdstMemAxiWrAddrWrap_ANY/*((TrdstMemAxiWrAddr_ANY + 'h40) >= trdstMemSMEMLimitAddr_ANY)*/));
     TrCsrTrdstramwphighWr.TrdstramwphighWrEn = (trdstRamMode_ANY & TrdstMemAxiWrVld_ANY);
-    TrCsrTrdstramwphighWr.Data.Trdstramwphigh = $bits(TrCsrTrdstramwphighWr.Data.Trdstramwphigh)'(TrdstMemAxiWrAddr_ANY[AXI_ADDR_WIDTH-1:32]);
+    TrCsrTrdstramwphighWr.Data.Trdstramwphigh = $bits(TrCsrTrdstramwphighWr.Data.Trdstramwphigh)'(TrdstMemAxiWrAddr_WpUpdate_ANY[AXI_ADDR_WIDTH-1:32]);
   end
 
   // Ram Read Pointer Low
   always_comb begin
     TrCsrTrdstramrplowWr = '0;
     TrCsrTrdstramrplowWr.TrdstramrplowWrEn = DataTraceRdEn_TS2;
-    TrCsrTrdstramrplowWr.Data.Trdstramrplow  = trdstRamRpLow_ANY[31:2] + 30'h1;
+    TrCsrTrdstramrplowWr.Data.Trdstramrplow  = (trdstRamRpLow_ANY[31:2] == trdstRamLimitLow_ANY[31:2])?trdstRamStartLow_ANY[31:2]:(trdstRamRpLow_ANY[31:2] + 30'h1);
   end
   assign TrCsrTrdstramrphighWr = '0;
 
