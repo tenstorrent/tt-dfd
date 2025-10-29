@@ -8,7 +8,7 @@
  *  Compatible with the instantiation in dfd_trace_mem_sink_smc.sv:
  *   - Single RW port via i_mem_chip_en/i_mem_wr_en/i_mem_addr
  *   - Write masking via i_mem_wr_mask_en
- *   - Registered read (3-cycle) to o_mem_rd_data when not writing
+ *   - Registered read (1-cycle) to o_mem_rd_data when not writing
  *   - All DFT/TSEL/scan outputs are tied off; other inputs ignored
  */
 
@@ -88,8 +88,8 @@ module generic_mem_model #(
   // RW ports pipeline (per port)
   localparam int RwpArr = (Rwp != 0 ? Rwp : 1);
   localparam int RopArr = (Rop != 0 ? Rop : 1);
-  logic [RwpArr-1:0][Dw-1:0] rw_pipe0, rw_pipe1;
-  logic [RwpArr-1:0] rw_valid0, rw_valid1;
+  logic [RwpArr-1:0][Dw-1:0] rw_pipe0;
+  logic [RwpArr-1:0] rw_valid0;
 
   // RO ports pipeline (per port)
   logic [RopArr-1:0][Dw-1:0] ro_pipe0, ro_pipe1;
@@ -122,9 +122,7 @@ module generic_mem_model #(
       end
       // Clear read pipelines and valids
       rw_pipe0  <= '{default: '0};
-      rw_pipe1  <= '{default: '0};
       rw_valid0 <= '0;
-      rw_valid1 <= '0;
 
       ro_pipe0  <= '{default: '0};
       ro_pipe1  <= '{default: '0};
@@ -132,8 +130,6 @@ module generic_mem_model #(
       ro_valid1 <= '0;
     end else begin
       // Default: shift read pipelines each cycle
-      rw_pipe1  <= rw_pipe0;
-      rw_valid1 <= rw_valid0;
       rw_valid0 <= '0;  // will be set per-port when a new read is launched
 
       ro_pipe1  <= ro_pipe0;
@@ -158,8 +154,8 @@ module generic_mem_model #(
           end
         end
         // Update output when pipeline matures (3 cycles after launch)
-        if (rw_valid1[p]) begin
-          o_mem_rd_data[p] <= rw_pipe1[p];
+        if (rw_valid0[p]) begin
+          o_mem_rd_data[p] <= rw_pipe0[p];
         end else begin
           o_mem_rd_data[p] <= o_mem_rd_data[p];
         end
