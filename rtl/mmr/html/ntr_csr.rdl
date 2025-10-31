@@ -230,6 +230,7 @@ addrmap ntr {
         Trteinstfilters             @ 0x200C
         Trtefilter0Control          @ 0x2010
         Trtefilter0Matchinst        @ 0x2014
+        Trtscontrol                 @ 0x2040
         CDbgNtraceFrameCfg          @ 0x21A8
 */
 
