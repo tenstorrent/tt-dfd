@@ -24,6 +24,7 @@ Install the following to build and run the included examples:
 - [Python](https://www.python.org/) 3.9.6+
   - [PyYAML](https://pypi.org/project/PyYAML/)
 - Simulator: The provided [Makefile](Makefile) targets use Synopsys VCS. Other simulators may work with minor changes to the compile/run lines.
+- Linter : The provided [Makefile](Makefile) targets use Synopsys SpyGlass. Other linters may be used with equivalent waivers.
 
 ## Integration 
 
@@ -73,6 +74,7 @@ Notes:
 | [scripts/](scripts)   | [cla_compiler/](scripts/cla_compiler) | [CLA programming tools](scripts/cla_compiler/README.md) and example programs |
 |                       | [cust_rtl/](scripts/cust_rtl) | Scripts for generating custom RTL variants |
 |                       | [docgen/](scripts/docgen) | [Documentation generation tools](scripts/docgen/README.md) and example programs
+| [lint/](lint)         |                           | Spyglass project, run configs and lint waivers.
 
 ### Register map (MMRs)
 
@@ -161,6 +163,12 @@ $ make top_test
 
 # Run APB test that writes and reads back configuration MMRs and checks for errors
 $ make apb_test 
+
+# Run SpyGlass lint (uses lint/lint_rtl goal)
+$ make tt_dfd_lint
+
+# Run SpyGlass enhanced lint (uses lint/lint_rtl_enhanced goal)
+$ make tt_dfd_lint_enhanced
 ```
 
 ## Contributing
