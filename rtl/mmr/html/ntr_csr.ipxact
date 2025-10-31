@@ -73,18 +73,18 @@
               </ipxact:reset>
             </ipxact:resets>
             <ipxact:bitWidth>3</ipxact:bitWidth>
-            <ipxact:access>read-write</ipxact:access>
+            <ipxact:access>read-only</ipxact:access>
           </ipxact:field>
           <ipxact:field>
             <ipxact:name>Trtecontext</ipxact:name>
             <ipxact:bitOffset>9</ipxact:bitOffset>
             <ipxact:resets>
               <ipxact:reset>
-                <ipxact:value>'h0</ipxact:value>
+                <ipxact:value>'h1</ipxact:value>
               </ipxact:reset>
             </ipxact:resets>
             <ipxact:bitWidth>1</ipxact:bitWidth>
-            <ipxact:access>read-write</ipxact:access>
+            <ipxact:access>read-only</ipxact:access>
           </ipxact:field>
           <ipxact:field>
             <ipxact:name>Trteinsttriggerenable</ipxact:name>
@@ -276,7 +276,7 @@
               </ipxact:reset>
             </ipxact:resets>
             <ipxact:bitWidth>1</ipxact:bitWidth>
-            <ipxact:access>read-write</ipxact:access>
+            <ipxact:access>read-only</ipxact:access>
           </ipxact:field>
           <ipxact:field>
             <ipxact:name>Trteinstnotrapaddr</ipxact:name>
@@ -287,7 +287,7 @@
               </ipxact:reset>
             </ipxact:resets>
             <ipxact:bitWidth>1</ipxact:bitWidth>
-            <ipxact:access>read-write</ipxact:access>
+            <ipxact:access>read-only</ipxact:access>
           </ipxact:field>
           <ipxact:field>
             <ipxact:name>Trteinstenrepeatedhistory</ipxact:name>
@@ -298,7 +298,7 @@
               </ipxact:reset>
             </ipxact:resets>
             <ipxact:bitWidth>1</ipxact:bitWidth>
-            <ipxact:access>read-write</ipxact:access>
+            <ipxact:access>read-only</ipxact:access>
           </ipxact:field>
           <ipxact:field>
             <ipxact:name>Trtesrcid</ipxact:name>
@@ -383,6 +383,100 @@
             </ipxact:resets>
             <ipxact:bitWidth>8</ipxact:bitWidth>
             <ipxact:access>read-write</ipxact:access>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>Trtscontrol</ipxact:name>
+          <ipxact:description></ipxact:description>
+          <ipxact:addressOffset>'h20400</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:field>
+            <ipxact:name>Trtsactive</ipxact:name>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtscount</ipxact:name>
+            <ipxact:bitOffset>1</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtsreset</ipxact:name>
+            <ipxact:bitOffset>2</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtsrunindebug</ipxact:name>
+            <ipxact:bitOffset>3</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtstype</ipxact:name>
+            <ipxact:bitOffset>4</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>3</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtsprescale</ipxact:name>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>2</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtsenable</ipxact:name>
+            <ipxact:bitOffset>15</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>Trtswidth</ipxact:name>
+            <ipxact:bitOffset>24</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h37</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>6</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
           </ipxact:field>
         </ipxact:register>
         <ipxact:register>

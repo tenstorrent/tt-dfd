@@ -219,6 +219,7 @@ module dfd_unit
 
 			// Ntrace MMR
 			Cr4BTrtecontrolCsr_s                     Cr4BCsrTrtecontrol;
+			Cr4BTrtscontrolCsr_s                     Cr4BCsrTrtscontrol;
 			Cr4BTrteimplCsr_s                        Cr4BCsrTrteimpl;
 			Cr4BTrteinstfeaturesCsr_s                Cr4BCsrTrteinstfeatures;
 			Cr4BTrteinstfiltersCsr_s                 Cr4BCsrTrteinstfilters;
@@ -228,6 +229,7 @@ module dfd_unit
 			Cr4BTrtecontrolCsrWr_s                   Cr4BCsrTrtecontrolWr;
 
 			assign Cr4BCsrTrtecontrol = NtrCsrs.Cr4BCsrTrtecontrol;
+			assign Cr4BCsrTrtscontrol = NtrCsrs.Cr4BCsrTrtscontrol;
 			assign Cr4BCsrTrteimpl = NtrCsrs.Cr4BCsrTrteimpl;
 			assign Cr4BCsrTrteinstfeatures = NtrCsrs.Cr4BCsrTrteinstfeatures;
 			assign Cr4BCsrTrteinstfilters = NtrCsrs.Cr4BCsrTrteinstfilters;
@@ -266,6 +268,7 @@ module dfd_unit
 					.MC_MS_trTrigControl_ANY	(TrigControl),
 
 					.Cr4BTrtecontrol			(Cr4BCsrTrtecontrol),
+					.Cr4BTrtscontrol			(Cr4BCsrTrtscontrol),
 					.Cr4BTrteimpl				(Cr4BCsrTrteimpl),
 					.Cr4BTrteinstfeatures		(Cr4BCsrTrteinstfeatures),
 					.Cr4BTrteinstfilters		(Cr4BCsrTrteinstfilters),

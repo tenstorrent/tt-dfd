@@ -42,6 +42,8 @@ localparam CR_4B_TRTEFILTER0CONTROL_REG_OFFSET                         = 23'h201
 localparam CR_4B_TRTEFILTER0CONTROL_REG_ADDR                           = 23'h2010;
 localparam CR_4B_TRTEFILTER0MATCHINST_REG_OFFSET                       = 23'h2014;
 localparam CR_4B_TRTEFILTER0MATCHINST_REG_ADDR                         = 23'h2014;
+localparam CR_4B_TRTSCONTROL_REG_OFFSET                                = 23'h2040;
+localparam CR_4B_TRTSCONTROL_REG_ADDR                                  = 23'h2040;
 localparam CR_4B_CDBGNTRACEFRAMECFG_REG_OFFSET                         = 23'h21A8;
 localparam CR_4B_CDBGNTRACEFRAMECFG_REG_ADDR                           = 23'h21A8;
 
@@ -231,6 +233,54 @@ localparam CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_LOW   = 0;
 localparam CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_HIGH   = 7;
 localparam CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH   = 8;
 
+localparam CR_4B_TRTSCONTROL_TRTSACTIVE_MASK                            = 32'h1;
+localparam CR_4B_TRTSCONTROL_TRTSACTIVE_SHIFT                           = 0;
+localparam CR_4B_TRTSCONTROL_TRTSACTIVE_LOW                             = 0;
+localparam CR_4B_TRTSCONTROL_TRTSACTIVE_HIGH                            = 0;
+localparam CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH                           = 1;
+
+localparam CR_4B_TRTSCONTROL_TRTSCOUNT_MASK                             = 32'h2;
+localparam CR_4B_TRTSCONTROL_TRTSCOUNT_SHIFT                            = 1;
+localparam CR_4B_TRTSCONTROL_TRTSCOUNT_LOW                              = 1;
+localparam CR_4B_TRTSCONTROL_TRTSCOUNT_HIGH                             = 1;
+localparam CR_4B_TRTSCONTROL_TRTSCOUNT_WIDTH                            = 1;
+
+localparam CR_4B_TRTSCONTROL_TRTSRESET_MASK                             = 32'h4;
+localparam CR_4B_TRTSCONTROL_TRTSRESET_SHIFT                            = 2;
+localparam CR_4B_TRTSCONTROL_TRTSRESET_LOW                              = 2;
+localparam CR_4B_TRTSCONTROL_TRTSRESET_HIGH                             = 2;
+localparam CR_4B_TRTSCONTROL_TRTSRESET_WIDTH                            = 1;
+
+localparam CR_4B_TRTSCONTROL_TRTSRUNINDEBUG_MASK                        = 32'h8;
+localparam CR_4B_TRTSCONTROL_TRTSRUNINDEBUG_SHIFT                       = 3;
+localparam CR_4B_TRTSCONTROL_TRTSRUNINDEBUG_LOW                         = 3;
+localparam CR_4B_TRTSCONTROL_TRTSRUNINDEBUG_HIGH                        = 3;
+localparam CR_4B_TRTSCONTROL_TRTSRUNINDEBUG_WIDTH                       = 1;
+
+localparam CR_4B_TRTSCONTROL_TRTSTYPE_MASK                              = 32'h70;
+localparam CR_4B_TRTSCONTROL_TRTSTYPE_SHIFT                             = 4;
+localparam CR_4B_TRTSCONTROL_TRTSTYPE_LOW                               = 4;
+localparam CR_4B_TRTSCONTROL_TRTSTYPE_HIGH                              = 6;
+localparam CR_4B_TRTSCONTROL_TRTSTYPE_WIDTH                             = 3;
+
+localparam CR_4B_TRTSCONTROL_TRTSPRESCALE_MASK                          = 32'h300;
+localparam CR_4B_TRTSCONTROL_TRTSPRESCALE_SHIFT                         = 8;
+localparam CR_4B_TRTSCONTROL_TRTSPRESCALE_LOW                           = 8;
+localparam CR_4B_TRTSCONTROL_TRTSPRESCALE_HIGH                          = 9;
+localparam CR_4B_TRTSCONTROL_TRTSPRESCALE_WIDTH                         = 2;
+
+localparam CR_4B_TRTSCONTROL_TRTSENABLE_MASK                            = 32'h8000;
+localparam CR_4B_TRTSCONTROL_TRTSENABLE_SHIFT                           = 15;
+localparam CR_4B_TRTSCONTROL_TRTSENABLE_LOW                             = 15;
+localparam CR_4B_TRTSCONTROL_TRTSENABLE_HIGH                            = 15;
+localparam CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH                           = 1;
+
+localparam CR_4B_TRTSCONTROL_TRTSWIDTH_MASK                             = 32'h3F000000;
+localparam CR_4B_TRTSCONTROL_TRTSWIDTH_SHIFT                            = 24;
+localparam CR_4B_TRTSCONTROL_TRTSWIDTH_LOW                              = 24;
+localparam CR_4B_TRTSCONTROL_TRTSWIDTH_HIGH                             = 29;
+localparam CR_4B_TRTSCONTROL_TRTSWIDTH_WIDTH                            = 6;
+
 localparam CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_MASK                  = 32'hF;
 localparam CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_SHIFT                 = 0;
 localparam CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_LOW                   = 0;
@@ -261,7 +311,7 @@ localparam CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_LOW                = 21;
 localparam CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_HIGH               = 21;
 localparam CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_WIDTH              = 1;
 
-localparam CR_4B_NUM_REGISTERS                                          = 7;
+localparam CR_4B_NUM_REGISTERS                                          = 8;
 
 
 typedef struct packed {
@@ -271,6 +321,7 @@ typedef struct packed {
   logic               Cr4BCsrTrteinstfiltersHit;
   logic               Cr4BCsrTrtefilter0ControlHit;
   logic               Cr4BCsrTrtefilter0MatchinstHit;
+  logic               Cr4BCsrTrtscontrolHit;
   logic               Cr4BCsrCdbgntraceframecfgHit;
 } NtrCsrHit_s;
 
@@ -336,6 +387,19 @@ typedef struct packed {
 typedef struct packed {
     logic    [7:0]        Trtefiltermatchchoiceprivilege ;
 } Cr4BTrtefilter0MatchinstCsr_s;
+
+
+
+typedef struct packed {
+    logic    [5:0]        Trtswidth ;
+    logic    [0:0]        Trtsenable ;
+    logic    [1:0]        Trtsprescale ;
+    logic    [2:0]        Trtstype ;
+    logic    [0:0]        Trtsrunindebug ;
+    logic    [0:0]        Trtsreset ;
+    logic    [0:0]        Trtscount ;
+    logic    [0:0]        Trtsactive ;
+} Cr4BTrtscontrolCsr_s;
 
 
 
@@ -423,6 +487,23 @@ typedef struct packed {
 
 
 typedef struct packed {
+    logic    [1:0]        rsvd_3 ;
+    logic    [5:0]        Trtswidth ;
+    logic    [7:0]        rsvd_2 ;
+    logic    [0:0]        Trtsenable ;
+    logic    [4:0]        rsvd_1 ;
+    logic    [1:0]        Trtsprescale ;
+    logic    [0:0]        rsvd_0 ;
+    logic    [2:0]        Trtstype ;
+    logic    [0:0]        Trtsrunindebug ;
+    logic    [0:0]        Trtsreset ;
+    logic    [0:0]        Trtscount ;
+    logic    [0:0]        Trtsactive ;
+} Cr4BTrtscontrolCsrUnpack_s;
+
+
+
+typedef struct packed {
     logic    [9:0]        rsvd_1 ;
     logic    [0:0]        FrameClosureMode ;
     logic    [0:0]        FrameModeEnable ;
@@ -454,12 +535,25 @@ typedef struct packed {
 
 
 typedef struct packed {
+    Cr4BTrteinstfeaturesCsr_s Data;
+} Cr4BTrteinstfeaturesCsrWr_s;
+
+
+
+typedef struct packed {
+    Cr4BTrtscontrolCsr_s  Data;
+} Cr4BTrtscontrolCsrWr_s;
+
+
+
+typedef struct packed {
     Cr4BTrtecontrolCsr_s  Cr4BCsrTrtecontrol;
     Cr4BTrteimplCsr_s     Cr4BCsrTrteimpl;
     Cr4BTrteinstfeaturesCsr_s Cr4BCsrTrteinstfeatures;
     Cr4BTrteinstfiltersCsr_s Cr4BCsrTrteinstfilters;
     Cr4BTrtefilter0ControlCsr_s Cr4BCsrTrtefilter0Control;
     Cr4BTrtefilter0MatchinstCsr_s Cr4BCsrTrtefilter0Matchinst;
+    Cr4BTrtscontrolCsr_s  Cr4BCsrTrtscontrol;
     Cr4BCdbgntraceframecfgCsr_s Cr4BCsrCdbgntraceframecfg;
 } NtrCsrs_s;
 
@@ -467,6 +561,8 @@ typedef struct packed {
 typedef struct packed {
     Cr4BTrtecontrolCsrWr_s Cr4BCsrTrtecontrolWr;
     Cr4BTrteimplCsrWr_s   Cr4BCsrTrteimplWr;
+    Cr4BTrteinstfeaturesCsrWr_s Cr4BCsrTrteinstfeaturesWr;
+    Cr4BTrtscontrolCsrWr_s Cr4BCsrTrtscontrolWr;
 } NtrCsrsWr_s;
 
 
@@ -545,6 +641,22 @@ input Cr4BTrtefilter0MatchinstCsr_s packed_csr;
 begin
     unpack_Cr4BTrtefilter0MatchinstCsr = '0;
     unpack_Cr4BTrtefilter0MatchinstCsr.Trtefiltermatchchoiceprivilege = packed_csr.Trtefiltermatchchoiceprivilege;
+end
+endfunction
+
+
+function automatic Cr4BTrtscontrolCsrUnpack_s unpack_Cr4BTrtscontrolCsr;
+input Cr4BTrtscontrolCsr_s packed_csr;
+begin
+    unpack_Cr4BTrtscontrolCsr = '0;
+    unpack_Cr4BTrtscontrolCsr.Trtsactive = packed_csr.Trtsactive;
+    unpack_Cr4BTrtscontrolCsr.Trtscount = packed_csr.Trtscount;
+    unpack_Cr4BTrtscontrolCsr.Trtsreset = packed_csr.Trtsreset;
+    unpack_Cr4BTrtscontrolCsr.Trtsrunindebug = packed_csr.Trtsrunindebug;
+    unpack_Cr4BTrtscontrolCsr.Trtstype = packed_csr.Trtstype;
+    unpack_Cr4BTrtscontrolCsr.Trtsprescale = packed_csr.Trtsprescale;
+    unpack_Cr4BTrtscontrolCsr.Trtsenable = packed_csr.Trtsenable;
+    unpack_Cr4BTrtscontrolCsr.Trtswidth = packed_csr.Trtswidth;
 end
 endfunction
 
@@ -631,6 +743,21 @@ function automatic Cr4BTrtefilter0MatchinstCsr_s pack_Cr4BTrtefilter0MatchinstCs
 input Cr4BTrtefilter0MatchinstCsrUnpack_s unpacked_csr;
 begin
     pack_Cr4BTrtefilter0MatchinstCsr.Trtefiltermatchchoiceprivilege = unpacked_csr.Trtefiltermatchchoiceprivilege;
+end
+endfunction
+
+
+function automatic Cr4BTrtscontrolCsr_s pack_Cr4BTrtscontrolCsr;
+input Cr4BTrtscontrolCsrUnpack_s unpacked_csr;
+begin
+    pack_Cr4BTrtscontrolCsr.Trtsactive = unpacked_csr.Trtsactive;
+    pack_Cr4BTrtscontrolCsr.Trtscount = unpacked_csr.Trtscount;
+    pack_Cr4BTrtscontrolCsr.Trtsreset = unpacked_csr.Trtsreset;
+    pack_Cr4BTrtscontrolCsr.Trtsrunindebug = unpacked_csr.Trtsrunindebug;
+    pack_Cr4BTrtscontrolCsr.Trtstype = unpacked_csr.Trtstype;
+    pack_Cr4BTrtscontrolCsr.Trtsprescale = unpacked_csr.Trtsprescale;
+    pack_Cr4BTrtscontrolCsr.Trtsenable = unpacked_csr.Trtsenable;
+    pack_Cr4BTrtscontrolCsr.Trtswidth = unpacked_csr.Trtswidth;
 end
 endfunction
 

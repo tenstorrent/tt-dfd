@@ -51,6 +51,7 @@ output Cr4BTrteinstfeaturesCsr_s                Cr4BCsrTrteinstfeatures,
 output Cr4BTrteinstfiltersCsr_s                 Cr4BCsrTrteinstfilters,
 output Cr4BTrtefilter0ControlCsr_s              Cr4BCsrTrtefilter0Control,
 output Cr4BTrtefilter0MatchinstCsr_s            Cr4BCsrTrtefilter0Matchinst,
+output Cr4BTrtscontrolCsr_s                     Cr4BCsrTrtscontrol,
 output Cr4BCdbgntraceframecfgCsr_s              Cr4BCsrCdbgntraceframecfg,
 
 // HW Write Ports
@@ -74,6 +75,7 @@ localparam   [ADDR_W-1:0] ADDR_CSR_TRTEINSTFEATURES      = ADDR_W'(BASE_ADDR + '
 localparam   [ADDR_W-1:0] ADDR_CSR_TRTEINSTFILTERS       = ADDR_W'(BASE_ADDR + 'h200C);
 localparam   [ADDR_W-1:0] ADDR_CSR_TRTEFILTER0CONTROL    = ADDR_W'(BASE_ADDR + 'h2010);
 localparam   [ADDR_W-1:0] ADDR_CSR_TRTEFILTER0MATCHINST  = ADDR_W'(BASE_ADDR + 'h2014);
+localparam   [ADDR_W-1:0] ADDR_CSR_TRTSCONTROL           = ADDR_W'(BASE_ADDR + 'h2040);
 localparam   [ADDR_W-1:0] ADDR_CSR_CDBGNTRACEFRAMECFG    = ADDR_W'(BASE_ADDR + 'h21A8);
 
 
@@ -110,6 +112,7 @@ logic                [31:0] CSR_Trteinstfeatures;
 logic                [31:0] CSR_Trteinstfilters;
 logic                [31:0] CSR_Trtefilter0Control;
 logic                [31:0] CSR_Trtefilter0Matchinst;
+logic                [31:0] CSR_Trtscontrol;
 logic                [31:0] CSR_CDbgNtraceFrameCfg;
 
 // Fields
@@ -143,6 +146,14 @@ logic                [15:0] CSR_Trteinstfilters_F_Trteinstfilters;
 logic                 [0:0] CSR_Trtefilter0Control_F_Trtefiltermatchprivilege;
 logic                 [0:0] CSR_Trtefilter0Control_F_Trtefilterenable;
 logic                 [7:0] CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege;
+logic                 [5:0] CSR_Trtscontrol_F_Trtswidth;
+logic                 [0:0] CSR_Trtscontrol_F_Trtsenable;
+logic                 [1:0] CSR_Trtscontrol_F_Trtsprescale;
+logic                 [2:0] CSR_Trtscontrol_F_Trtstype;
+logic                 [0:0] CSR_Trtscontrol_F_Trtsrunindebug;
+logic                 [0:0] CSR_Trtscontrol_F_Trtsreset;
+logic                 [0:0] CSR_Trtscontrol_F_Trtscount;
+logic                 [0:0] CSR_Trtscontrol_F_Trtsactive;
 logic                 [0:0] CSR_CDbgNtraceFrameCfg_F_FrameClosureMode;
 logic                 [0:0] CSR_CDbgNtraceFrameCfg_F_FrameModeEnable;
 logic                 [3:0] CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes;
@@ -250,21 +261,9 @@ assign CSR_Trtecontrol_F_Trteinsttriggerenable_Data = (CR_4B_TRTECONTROL_TRTEINS
 assign CSR_Trtecontrol_F_Trteinsttriggerenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
 generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTTRIGGERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinsttriggerenable_ff   (.out(CSR_Trtecontrol_F_Trteinsttriggerenable), .in(CSR_Trtecontrol_F_Trteinsttriggerenable_Data), .en(CSR_Trtecontrol_F_Trteinsttriggerenable_WrEn), .clk(clk), .rst_n(reset_n));
 
-logic                                           CSR_Trtecontrol_F_Trtecontext_WrEn;
-logic [CR_4B_TRTECONTROL_TRTECONTEXT_WIDTH-1:0] CSR_Trtecontrol_F_Trtecontext_Data;
-logic [CR_4B_TRTECONTROL_TRTECONTEXT_WIDTH-1:0] CSR_Trtecontrol_F_Trtecontext_DataEff;
-assign CSR_Trtecontrol_F_Trtecontext_DataEff = {reg_wr_data[9:9]};
-assign CSR_Trtecontrol_F_Trtecontext_Data = (CR_4B_TRTECONTROL_TRTECONTEXT_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trtecontext), 64'(CSR_Trtecontrol_F_Trtecontext_DataEff[0:0]), reg_wr_instr_type)));
-assign CSR_Trtecontrol_F_Trtecontext_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTECONTEXT_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trtecontext_ff   (.out(CSR_Trtecontrol_F_Trtecontext), .in(CSR_Trtecontrol_F_Trtecontext_Data), .en(CSR_Trtecontrol_F_Trtecontext_WrEn), .clk(clk), .rst_n(reset_n));
+assign CSR_Trtecontrol_F_Trtecontext = 1'h1;
 
-logic                                           CSR_Trtecontrol_F_Trteinstmode_WrEn;
-logic [CR_4B_TRTECONTROL_TRTEINSTMODE_WIDTH-1:0] CSR_Trtecontrol_F_Trteinstmode_Data;
-logic [CR_4B_TRTECONTROL_TRTEINSTMODE_WIDTH-1:0] CSR_Trtecontrol_F_Trteinstmode_DataEff;
-assign CSR_Trtecontrol_F_Trteinstmode_DataEff = {reg_wr_data[6:4]};
-assign CSR_Trtecontrol_F_Trteinstmode_Data = (CR_4B_TRTECONTROL_TRTEINSTMODE_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteinstmode), 64'(CSR_Trtecontrol_F_Trteinstmode_DataEff[2:0]), reg_wr_instr_type)));
-assign CSR_Trtecontrol_F_Trteinstmode_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTMODE_WIDTH), .RESET_VALUE(3'h6)) CSR_Trtecontrol_F_Trteinstmode_ff   (.out(CSR_Trtecontrol_F_Trteinstmode), .in(CSR_Trtecontrol_F_Trteinstmode_Data), .en(CSR_Trtecontrol_F_Trteinstmode_WrEn), .clk(clk), .rst_n(reset_n));
+assign CSR_Trtecontrol_F_Trteinstmode = 3'h6;
 
 logic                                           CSR_Trtecontrol_F_Trteempty_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEEMPTY_WIDTH  -1:0] CSR_Trtecontrol_F_Trteempty_Data;
@@ -350,29 +349,11 @@ assign CSR_Trteinstfeatures_F_Trtesrcid_Data = (CR_4B_TRTEINSTFEATURES_TRTESRCID
 assign CSR_Trteinstfeatures_F_Trtesrcid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFEATURES))));
 generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTESRCID_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfeatures_F_Trtesrcid_ff   (.out(CSR_Trteinstfeatures_F_Trtesrcid), .in(CSR_Trteinstfeatures_F_Trtesrcid_Data), .en(CSR_Trteinstfeatures_F_Trtesrcid_WrEn), .clk(clk), .rst_n(reset_n));
 
-logic                                           CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_WrEn;
-logic [CR_4B_TRTEINSTFEATURES_TRTEINSTENREPEATEDHISTORY_WIDTH-1:0] CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_Data;
-logic [CR_4B_TRTEINSTFEATURES_TRTEINSTENREPEATEDHISTORY_WIDTH-1:0] CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_DataEff;
-assign CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_DataEff = {reg_wr_data[8:8]};
-assign CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_Data = (CR_4B_TRTEINSTFEATURES_TRTEINSTENREPEATEDHISTORY_WIDTH'(update_value(64'(CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory), 64'(CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_DataEff[0:0]), reg_wr_instr_type)));
-assign CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFEATURES))));
-generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTEINSTENREPEATEDHISTORY_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_ff   (.out(CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory), .in(CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_Data), .en(CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory_WrEn), .clk(clk), .rst_n(reset_n));
+assign CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory = 1'h0;
 
-logic                                           CSR_Trteinstfeatures_F_Trteinstnotrapaddr_WrEn;
-logic [CR_4B_TRTEINSTFEATURES_TRTEINSTNOTRAPADDR_WIDTH-1:0] CSR_Trteinstfeatures_F_Trteinstnotrapaddr_Data;
-logic [CR_4B_TRTEINSTFEATURES_TRTEINSTNOTRAPADDR_WIDTH-1:0] CSR_Trteinstfeatures_F_Trteinstnotrapaddr_DataEff;
-assign CSR_Trteinstfeatures_F_Trteinstnotrapaddr_DataEff = {reg_wr_data[1:1]};
-assign CSR_Trteinstfeatures_F_Trteinstnotrapaddr_Data = (CR_4B_TRTEINSTFEATURES_TRTEINSTNOTRAPADDR_WIDTH'(update_value(64'(CSR_Trteinstfeatures_F_Trteinstnotrapaddr), 64'(CSR_Trteinstfeatures_F_Trteinstnotrapaddr_DataEff[0:0]), reg_wr_instr_type)));
-assign CSR_Trteinstfeatures_F_Trteinstnotrapaddr_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFEATURES))));
-generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTEINSTNOTRAPADDR_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfeatures_F_Trteinstnotrapaddr_ff   (.out(CSR_Trteinstfeatures_F_Trteinstnotrapaddr), .in(CSR_Trteinstfeatures_F_Trteinstnotrapaddr_Data), .en(CSR_Trteinstfeatures_F_Trteinstnotrapaddr_WrEn), .clk(clk), .rst_n(reset_n));
+assign CSR_Trteinstfeatures_F_Trteinstnotrapaddr = 1'h0;
 
-logic                                           CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_WrEn;
-logic [CR_4B_TRTEINSTFEATURES_TRTEINSTNOADDRDIFF_WIDTH-1:0] CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_Data;
-logic [CR_4B_TRTEINSTFEATURES_TRTEINSTNOADDRDIFF_WIDTH-1:0] CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_DataEff;
-assign CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_DataEff = {reg_wr_data[0:0]};
-assign CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_Data = (CR_4B_TRTEINSTFEATURES_TRTEINSTNOADDRDIFF_WIDTH'(update_value(64'(CSR_Trteinstfeatures_F_Trteinstnoaddrdiff), 64'(CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_DataEff[0:0]), reg_wr_instr_type)));
-assign CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFEATURES))));
-generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTEINSTNOADDRDIFF_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_ff   (.out(CSR_Trteinstfeatures_F_Trteinstnoaddrdiff), .in(CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_Data), .en(CSR_Trteinstfeatures_F_Trteinstnoaddrdiff_WrEn), .clk(clk), .rst_n(reset_n));
+assign CSR_Trteinstfeatures_F_Trteinstnoaddrdiff = 1'h0;
 
 //Register: CSR_TRTEINSTFILTERS
 logic                                           CSR_Trteinstfilters_F_Trteinstfilters_WrEn;
@@ -408,6 +389,35 @@ assign CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_DataEff = {reg_
 assign CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_Data = (CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH'(update_value(64'(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege), 64'(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_DataEff[7:0]), reg_wr_instr_type)));
 assign CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEFILTER0MATCHINST))));
 generic_dff #(.WIDTH(CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_ff   (.out(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege), .in(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_Data), .en(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_WrEn), .clk(clk), .rst_n(reset_n));
+
+//Register: CSR_TRTSCONTROL
+assign CSR_Trtscontrol_F_Trtswidth = 6'h37;
+
+logic                                           CSR_Trtscontrol_F_Trtsenable_WrEn;
+logic [CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH -1:0] CSR_Trtscontrol_F_Trtsenable_Data;
+logic [CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH -1:0] CSR_Trtscontrol_F_Trtsenable_DataEff;
+assign CSR_Trtscontrol_F_Trtsenable_DataEff = {reg_wr_data[15:15]};
+assign CSR_Trtscontrol_F_Trtsenable_Data = (CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH'(update_value(64'(CSR_Trtscontrol_F_Trtsenable), 64'(CSR_Trtscontrol_F_Trtsenable_DataEff[0:0]), reg_wr_instr_type)));
+assign CSR_Trtscontrol_F_Trtsenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTSCONTROL))));
+generic_dff #(.WIDTH(CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtscontrol_F_Trtsenable_ff   (.out(CSR_Trtscontrol_F_Trtsenable), .in(CSR_Trtscontrol_F_Trtsenable_Data), .en(CSR_Trtscontrol_F_Trtsenable_WrEn), .clk(clk), .rst_n(reset_n));
+
+assign CSR_Trtscontrol_F_Trtsprescale = 2'h0;
+
+assign CSR_Trtscontrol_F_Trtstype = 3'h1;
+
+assign CSR_Trtscontrol_F_Trtsrunindebug = 1'h0;
+
+assign CSR_Trtscontrol_F_Trtsreset = 1'h0;
+
+assign CSR_Trtscontrol_F_Trtscount = 1'h0;
+
+logic                                           CSR_Trtscontrol_F_Trtsactive_WrEn;
+logic [CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH -1:0] CSR_Trtscontrol_F_Trtsactive_Data;
+logic [CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH -1:0] CSR_Trtscontrol_F_Trtsactive_DataEff;
+assign CSR_Trtscontrol_F_Trtsactive_DataEff = {reg_wr_data[0:0]};
+assign CSR_Trtscontrol_F_Trtsactive_Data = (CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH'(update_value(64'(CSR_Trtscontrol_F_Trtsactive), 64'(CSR_Trtscontrol_F_Trtsactive_DataEff[0:0]), reg_wr_instr_type)));
+assign CSR_Trtscontrol_F_Trtsactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTSCONTROL))));
+generic_dff #(.WIDTH(CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trtscontrol_F_Trtsactive_ff   (.out(CSR_Trtscontrol_F_Trtsactive), .in(CSR_Trtscontrol_F_Trtsactive_Data), .en(CSR_Trtscontrol_F_Trtsactive_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_CDBGNTRACEFRAMECFG
 logic                                           CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_WrEn;
@@ -509,6 +519,20 @@ assign CSR_Trtefilter0Matchinst = {
     24'h0,
     CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege
 };
+assign CSR_Trtscontrol = {
+    2'h0,
+    CSR_Trtscontrol_F_Trtswidth,
+    8'h0,
+    CSR_Trtscontrol_F_Trtsenable,
+    5'h0,
+    CSR_Trtscontrol_F_Trtsprescale,
+    1'h0,
+    CSR_Trtscontrol_F_Trtstype,
+    CSR_Trtscontrol_F_Trtsrunindebug,
+    CSR_Trtscontrol_F_Trtsreset,
+    CSR_Trtscontrol_F_Trtscount,
+    CSR_Trtscontrol_F_Trtsactive
+};
 assign CSR_CDbgNtraceFrameCfg = {
     10'h0,
     CSR_CDbgNtraceFrameCfg_F_FrameClosureMode,
@@ -530,6 +554,7 @@ always_comb begin
         ADDR_CSR_TRTEINSTFILTERS                : begin reg_prehit.Cr4BCsrTrteinstfiltersHit = 1'b1; reg_rd_data = {CSR_Trteinstfilters}; end
         ADDR_CSR_TRTEFILTER0CONTROL             : begin reg_prehit.Cr4BCsrTrtefilter0ControlHit = 1'b1; reg_rd_data = {CSR_Trtefilter0Control}; end
         ADDR_CSR_TRTEFILTER0MATCHINST           : begin reg_prehit.Cr4BCsrTrtefilter0MatchinstHit = 1'b1; reg_rd_data = {CSR_Trtefilter0Matchinst}; end
+        ADDR_CSR_TRTSCONTROL                    : begin reg_prehit.Cr4BCsrTrtscontrolHit = 1'b1; reg_rd_data = {CSR_Trtscontrol}; end
         ADDR_CSR_CDBGNTRACEFRAMECFG             : begin reg_prehit.Cr4BCsrCdbgntraceframecfgHit = 1'b1; reg_rd_data = {CSR_CDbgNtraceFrameCfg}; end
         default:  begin
             reg_prehit  = '0;
@@ -549,6 +574,7 @@ always_comb begin
         ADDR_CSR_TRTEINSTFILTERS                : begin reg_rd_data_d1 = {CSR_Trteinstfilters}; end
         ADDR_CSR_TRTEFILTER0CONTROL             : begin reg_rd_data_d1 = {CSR_Trtefilter0Control}; end
         ADDR_CSR_TRTEFILTER0MATCHINST           : begin reg_rd_data_d1 = {CSR_Trtefilter0Matchinst}; end
+        ADDR_CSR_TRTSCONTROL                    : begin reg_rd_data_d1 = {CSR_Trtscontrol}; end
         ADDR_CSR_CDBGNTRACEFRAMECFG             : begin reg_rd_data_d1 = {CSR_CDbgNtraceFrameCfg}; end
         default:  begin
             reg_rd_data_d1 = '0;
@@ -606,6 +632,14 @@ assign Cr4BCsrTrteinstfilters.Trteinstfilters   = CSR_Trteinstfilters_F_Trteinst
 assign Cr4BCsrTrtefilter0Control.Trtefiltermatchprivilege = CSR_Trtefilter0Control_F_Trtefiltermatchprivilege;
 assign Cr4BCsrTrtefilter0Control.Trtefilterenable = CSR_Trtefilter0Control_F_Trtefilterenable;
 assign Cr4BCsrTrtefilter0Matchinst.Trtefiltermatchchoiceprivilege = CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege;
+assign Cr4BCsrTrtscontrol.Trtswidth             = CSR_Trtscontrol_F_Trtswidth;
+assign Cr4BCsrTrtscontrol.Trtsenable            = CSR_Trtscontrol_F_Trtsenable;
+assign Cr4BCsrTrtscontrol.Trtsprescale          = CSR_Trtscontrol_F_Trtsprescale;
+assign Cr4BCsrTrtscontrol.Trtstype              = CSR_Trtscontrol_F_Trtstype;
+assign Cr4BCsrTrtscontrol.Trtsrunindebug        = CSR_Trtscontrol_F_Trtsrunindebug;
+assign Cr4BCsrTrtscontrol.Trtsreset             = CSR_Trtscontrol_F_Trtsreset;
+assign Cr4BCsrTrtscontrol.Trtscount             = CSR_Trtscontrol_F_Trtscount;
+assign Cr4BCsrTrtscontrol.Trtsactive            = CSR_Trtscontrol_F_Trtsactive;
 assign Cr4BCsrCdbgntraceframecfg.FrameClosureMode = CSR_CDbgNtraceFrameCfg_F_FrameClosureMode;
 assign Cr4BCsrCdbgntraceframecfg.FrameModeEnable = CSR_CDbgNtraceFrameCfg_F_FrameModeEnable;
 assign Cr4BCsrCdbgntraceframecfg.FrameLenghtInBytes = CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes;

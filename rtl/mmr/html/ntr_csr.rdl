@@ -20,13 +20,13 @@ addrmap ntr {
             hw = w;
         } Trteempty[3:3] = 0x1;
         field {
-            sw = rw;
+            sw = r;
             hw = r;
         } Trteinstmode[6:4] = 0x6;
         field {
-            sw = rw;
+            sw = r;
             hw = r;
-        } Trtecontext[9:9] = 0x0;
+        } Trtecontext[9:9] = 0x1;
         field {
             sw = rw;
             hw = r;
@@ -101,15 +101,15 @@ addrmap ntr {
         regwidth = 0x20;
 //         constraint_p = "";
         field {
-            sw = rw;
+            sw = r;
             hw = r;
         } Trteinstnoaddrdiff[0:0] = 0x0;
         field {
-            sw = rw;
+            sw = r;
             hw = r;
         } Trteinstnotrapaddr[1:1] = 0x0;
         field {
-            sw = rw;
+            sw = r;
             hw = r;
         } Trteinstenrepeatedhistory[8:8] = 0x0;
         field {
@@ -157,6 +157,43 @@ addrmap ntr {
         regwidth = 0x20;
 //         constraint_p = "";
         field {
+            sw = rw;
+            hw = r;
+        } Trtsactive[0:0] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trtscount[1:1] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trtsreset[2:2] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trtsrunindebug[3:3] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trtstype[6:4] = 0x1;
+        field {
+            sw = r;
+            hw = r;
+        } Trtsprescale[9:8] = 0x0;
+        field {
+            sw = rw;
+            hw = r;
+        } Trtsenable[15:15] = 0x0;
+        field {
+            sw = r;
+            hw = r;
+        } Trtswidth[29:24] = 0x37;
+    } Trtscontrol @ 0x20400;
+    reg {
+        desc = "";
+        regwidth = 0x20;
+//         constraint_p = "";
+        field {
             desc = "Trace Source ID (FIXME: Base Address, Tool Issue)";
             sw = rw;
             hw = r;
@@ -193,6 +230,7 @@ addrmap ntr {
         Trteinstfilters             @ 0x200C
         Trtefilter0Control          @ 0x2010
         Trtefilter0Matchinst        @ 0x2014
+        Trtscontrol                 @ 0x2040
         CDbgNtraceFrameCfg          @ 0x21A8
 */
 

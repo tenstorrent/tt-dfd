@@ -5,7 +5,7 @@ module generic_fifoMN #(
     parameter integer DATA_WIDTH  = 4,
     parameter integer ENTRIES     = 8,
     parameter bit     ALLOW_CLEAR = 1,
-    parameter bit     CLEAR_ALL   = ALLOW_CLEAR ? 1 : 0,                   //FE clears all
+    parameter bit     CLEAR_ALL   = ALLOW_CLEAR ? 1 : 0,
     parameter integer ADDR_SIZE   = (ENTRIES == 1) ? 1 : $clog2(ENTRIES),
     parameter integer NUM_WR      = 2,
     parameter integer NUM_RD      = 2
@@ -27,6 +27,8 @@ module generic_fifoMN #(
 
   logic [ADDR_SIZE:0] nxt_rd_ptr, rd_ptr;
   logic [ADDR_SIZE:0] nxt_wr_ptr, wr_ptr;
+  logic [NUM_RD-1:0] [ADDR_SIZE:0] rd_ptr_wrap;
+  logic [NUM_WR-1:0] [ADDR_SIZE:0] wr_ptr_wrap;
   logic [ENTRIES-1:0][DATA_WIDTH-1:0] nxt_mem, mem;
   logic [ENTRIES-1:0] wr_en;
   logic [NUM_WR-1:0] int_psh;
@@ -90,7 +92,8 @@ module generic_fifoMN #(
   // Data
   always_comb begin
     for (int i = 0; i < NUM_RD; i++) begin
-      data[i] = mem[ADDR_SIZE'(rd_ptr+i)];
+      rd_ptr_wrap[i] = (rd_ptr+i >= ENTRIES) ? (rd_ptr+i - ENTRIES) : (rd_ptr+i);
+      data[i] = mem[rd_ptr_wrap[i]];
     end
   end
 
@@ -109,26 +112,27 @@ module generic_fifoMN #(
     for (int i = 0; i < NUM_WR; i++) begin
       if (i_psh[i]) begin
         int_psh[i] = {(NUM_WR) {1'b1}} >> (NUM_WR - 1 - i);
-        nxt_cnt = nxt_cnt + 4'd1;
+        nxt_cnt = (ADDR_SIZE)'(nxt_cnt + 'd1);
       end
     end
 
     for (int i = 0; i < NUM_WR; i++) begin
       if (int_psh[i]) begin
-        nxt_mem[ADDR_SIZE'(wr_ptr+i)] = i_data[i];
-        nxt_wr_ptr = nxt_wr_ptr + 4'd1;
+        wr_ptr_wrap[i] = (wr_ptr+i >= ENTRIES) ? (wr_ptr+i - ENTRIES) : (wr_ptr+i);
+        nxt_mem[wr_ptr_wrap[i]] = i_data[i];
+        nxt_wr_ptr = (nxt_wr_ptr + 1 >= ENTRIES) ? 0 : (nxt_wr_ptr + 1);
       end
     end
 
     if (ALLOW_CLEAR && (|i_clear)) begin
       nxt_wr_ptr = rd_ptr;
-      nxt_cnt = '0;
+      nxt_cnt = (ADDR_SIZE)'(0);
     end else begin
       // For Reads
       for (int i = 0; i < NUM_RD; i++) begin
         if (i_pop[i]) begin
-          nxt_rd_ptr = nxt_rd_ptr + 4'd1;
-          nxt_cnt = nxt_cnt - 4'd1;
+          nxt_rd_ptr = (nxt_rd_ptr + 1 >= ENTRIES) ? 0 : (nxt_rd_ptr + 1);
+          nxt_cnt = (ADDR_SIZE)'(nxt_cnt - 'd1);
         end
       end
     end

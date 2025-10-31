@@ -210,6 +210,7 @@ import dfd_dst_csr_pkg::*;
                         .CsrHitList                 (), // Unused
                         .CsrRdData                  (CsrRdData_NTR[ii]),
                         .Cr4BCsrTrtecontrol			(DfdCsrs.NtrCsrs[ii].Cr4BCsrTrtecontrol),
+                        .Cr4BCsrTrtscontrol			(DfdCsrs.NtrCsrs[ii].Cr4BCsrTrtscontrol),
                         .Cr4BCsrTrteimpl			(DfdCsrs.NtrCsrs[ii].Cr4BCsrTrteimpl),
                         .Cr4BCsrTrteinstfeatures	(DfdCsrs.NtrCsrs[ii].Cr4BCsrTrteinstfeatures),
                         .Cr4BCsrTrteinstfilters		(DfdCsrs.NtrCsrs[ii].Cr4BCsrTrteinstfilters),
