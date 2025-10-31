@@ -1,0 +1,14 @@
+# Read in a file list containing all design files
+read_file -type sourcelist tt_dfd.f
+
+# Define a waiver file to put EXCEPTIONS INTO and a default waiver file.
+read_file -type awl lint/dfd_top_waiver_file.awl
+set_option default_waiver_file lint/dfd_top_waiver_file.awl
+
+# Set the Top of the Design Tree
+set_option top dfd_top
+
+# Ignored as Spyglass reports syntax errors in this file.
+set_option ignorefile deps/axi/src/axi_test.sv
+
+source lint/spyglass.tcl

@@ -44,5 +44,11 @@ apb_test: build
 		exit 0; \
 	fi
 
+tt_dfd_lint: build
+	spyglass -project lint/tt_dfd.prj -batch -goals lint/lint_rtl
+
+tt_dfd_lint_enhanced: build
+	spyglass -project lint/tt_dfd.prj -batch -goals lint/lint_rtl_enhanced
+
 clean:
 	git clean -fXd
