@@ -93,7 +93,9 @@ module generic_fifoMN #(
   always_comb begin
     for (int i = 0; i < NUM_RD; i++) begin
       rd_ptr_wrap[i] = (rd_ptr+i >= ENTRIES) ? (rd_ptr+i - ENTRIES) : (rd_ptr+i);
+      //spyglass disable_block ImproperRangeIndex-ML
       data[i] = mem[rd_ptr_wrap[i]];
+      //spyglass enable_block ImproperRangeIndex-ML
     end
   end
 
@@ -117,11 +119,13 @@ module generic_fifoMN #(
     end
 
     for (int i = 0; i < NUM_WR; i++) begin
+      //spyglass disable_block ImproperRangeIndex-ML
       if (int_psh[i]) begin
         wr_ptr_wrap[i] = (wr_ptr+i >= ENTRIES) ? (wr_ptr+i - ENTRIES) : (wr_ptr+i);
         nxt_mem[wr_ptr_wrap[i]] = i_data[i];
         nxt_wr_ptr = (nxt_wr_ptr + 1 >= ENTRIES) ? 0 : (nxt_wr_ptr + 1);
       end
+      //spyglass enable_block ImproperRangeIndex-ML
     end
 
     if (ALLOW_CLEAR && (|i_clear)) begin
