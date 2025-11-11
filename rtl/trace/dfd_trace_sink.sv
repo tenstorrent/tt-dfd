@@ -127,8 +127,8 @@ module dfd_trace_sink
   logic [DATA_WIDTH-1:0]                                                          TR_TS_Even_Data_stg, TR_TS_Odd_Data_stg;
   logic                                                                           TR_TS_Even_Src_stg, TR_TS_Odd_Src_stg;
   logic [NUM_CORES_IN_PATH-1:0]                                                   Eff_TR_TS_Even_Vld_stg, Eff_TR_TS_Odd_Vld_stg;
-  logic                                                                           trntrnextlocaltoupdateRamWpWrap_ANY_stg, trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1, trntrnextlocaltoupdateRamWpWrap_ANY_stg_d2;
-  logic                                                                           trdstnextlocaltoupdateRamWpWrap_ANY_stg, trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1, trdstnextlocaltoupdateRamWpWrap_ANY_stg_d2;
+  logic                                                                           trntrnextlocaltoupdateRamWpWrap_ANY_stg, trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1;
+  logic                                                                           trdstnextlocaltoupdateRamWpWrap_ANY_stg, trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1;
 
   // Multiple core handling pointers
   logic [9:0]                                                                     trntrFrameLength_ANY, trdstFrameLength_ANY; // Supported frame_lengths are {1-64,2-128,3-256,4-512} bytes
@@ -241,8 +241,6 @@ module dfd_trace_sink
   logic  [TRC_RAM_INSTANCES-1:0]                                                  DataTraceRdEn_TS1;
   logic                                                                           InsnTraceRdEn_TS2;
   logic                                                                           DataTraceRdEn_TS2;
-  logic                                                                           InsnTraceRdEn_TS3;
-  logic                                                                           DataTraceRdEn_TS3;
   logic  [TRC_RAM_INSTANCES-1:0]                                                  TraceRdEn_TS1;
   logic  [TRC_RAM_INDEX_WIDTH-1:0]                                                TraceRdAddr_TS1;
   logic  [TRC_RAM_INDEX_WIDTH-1:0]                                                TraceMemRdAddr_TS1, TraceMemRdAddr_TS1_stg;
@@ -391,11 +389,9 @@ module dfd_trace_sink
   
   generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .in(trntrnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
   generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_d2_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg_d2), .in(trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
   generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg), .in(trdstnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
   generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trdstnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_d2_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg_d2), .in(trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // --------------------------------------------------------------------------
   // Incoming Data Capture
@@ -1109,8 +1105,6 @@ module dfd_trace_sink
   generic_dff #(.WIDTH(1)) InsnTraceRdEnTS2_ff (.out(InsnTraceRdEn_TS2), .in(trRamDataRdEn_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
   generic_dff #(.WIDTH(1)) DstTraceRdEnTS2_ff (.out(DataTraceRdEn_TS2), .in(trdstRamDataRdEn_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) InsnTraceRdEnTS3_ff (.out(InsnTraceRdEn_TS3), .in(InsnTraceRdEn_TS2), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) DstTraceRdEnTS3_ff (.out(DataTraceRdEn_TS3), .in(DataTraceRdEn_TS2), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // --------------------------------------------------------------------------
   // Trace Control : Backpressure the grants
