@@ -71,6 +71,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   logic [CONTEXT_WIDTH-1:0]                                     trContext_TE0;
   logic [TVAL_WIDTH-1:0]                                        trTval_TE0;
   logic [TSTAMP_WIDTH-1:0]                                      trTstamp_TE0;
+  logic                                                         trtsenable;
 
   // Pipe valid signals for the TE0 and TE1 stages
   logic [NUM_BLOCKS-1:0]                                        pipe_vld_RE6, pipe_vld_TE0;
@@ -518,6 +519,8 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff_clr #(.WIDTH(1)) trTracingInProgress_flop_ANY_ff (.out(trTracingInProgress_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] == PROGTRACECORRELATION) | (curr_pkt_TE1[1] == PROGTRACECORRELATION) | (curr_pkt_TE0[0] == ERROR)), .en((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0]), .clk(clock), .rst_n(reset_n));
 
   assign trCorrelationMessageSent_ANY = (curr_pkt_TE0[0] == PROGTRACECORRELATION & packet_pipe_vld_TE0[0]) | (curr_pkt_TE0[1] == PROGTRACECORRELATION & packet_pipe_vld_TE0[1]);
+
+  assign trtsenable = (Cr4BTrtscontrol.Trtsactive & Cr4BTrtscontrol.Trtsenable);
   // ----------------------------------------------------------------------------------------------
   // Find first logics for all the variable length fields (TE0)
   // ----------------------------------------------------------------------------------------------
@@ -733,23 +736,23 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({'0,trTeResyncAfterError_ANY?RESTART_FIFO_OVERFLOW:(trTeReStartAfterDebugMode_ANY?EXIT_FROM_DEBUG:(trReEnable_ANY?TRACE_ENABLE:EXIT_FROM_RESET)),Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACESYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACESYNC}}); 
-          mso_data_in_len_TE0[i][0] = Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({'0,trTeResyncAfterError_ANY?RESTART_FIFO_OVERFLOW:(trTeReStartAfterDebugMode_ANY?EXIT_FROM_DEBUG:(trReEnable_ANY?TRACE_ENABLE:EXIT_FROM_RESET)),(Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACESYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACESYNC})}); 
+          mso_data_in_len_TE0[i][0] = (Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he);
           mso_data_is_var_TE0[i][0] = 'h1;
           mso_data_is_last_TE0[i][0] = (faddr_len_TE0[i] == 0) & (tstamp_len_TE0 == 0); 
 
           mso_data_in_TE0[i][1] = MSO_DATA_IN_WIDTH'(trIAddr_TE0[i]); 
           mso_data_in_len_TE0[i][1] = faddr_len_TE0[i];  
           mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = (tstamp_len_TE0 == 0);  
+          mso_data_is_last_TE0[i][1] = ~trtsenable | (tstamp_len_TE0 == 0);  
 
-          mso_data_in_TE0[i][2] = MSO_DATA_IN_WIDTH'(trTstamp_TE0); 
-          mso_data_in_len_TE0[i][2] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0); 
-          mso_data_is_var_TE0[i][2] = '1;
-          mso_data_is_last_TE0[i][2] = '1;
+          mso_data_in_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0); 
+          mso_data_in_len_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0); 
+          mso_data_is_var_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?'1:'0;
+          mso_data_is_last_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?'1:'0;
 
-          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP}});
-          mso_data_in_len_TE0[i][3] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((process_context_len_TE0) + Cr4BTrtecontrol.Trteinhibitsrc? 6'h7 : 6'hb);
+          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,(Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP})});
+          mso_data_in_len_TE0[i][3] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((process_context_len_TE0) + (Cr4BTrtecontrol.Trteinhibitsrc? 6'h7 : 6'hb));
           mso_data_is_var_TE0[i][3] = '1;
           mso_data_is_last_TE0[i][3] = '1; 
 
@@ -768,10 +771,10 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay:(pipe_vld_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]))),2'b01,((trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1 | ~trTeTraceInPatchEnable_ANY) & ((trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY) & ~(trSwControlStop_PTC_pending_ANY | trSwControlStop_ANY)))?DEBUG_ENTRY:((trace_stop_after_error_wo_sync | (trStop_ANY & trTeResyncAfterError_ANY & isProgTraceSync_Pending))?TRACE_STOP_WITHOUT_SYNC_AFTER_ERROR:PROG_TRACE_DISABLE),Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACECORRELATION:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACECORRELATION}});          
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay:(pipe_vld_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]))),2'b01,((trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1 | ~trTeTraceInPatchEnable_ANY) & ((trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY) & ~(trSwControlStop_PTC_pending_ANY | trSwControlStop_ANY)))?DEBUG_ENTRY:((trace_stop_after_error_wo_sync | (trStop_ANY & trTeResyncAfterError_ANY & isProgTraceSync_Pending))?TRACE_STOP_WITHOUT_SYNC_AFTER_ERROR:PROG_TRACE_DISABLE),(Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACECORRELATION:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACECORRELATION})});          
           
           /* verilator lint_off WIDTHEXPAND */
-          mso_data_in_len_TE0[i][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay_len:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay_len:(pipe_vld_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0])))) + Cr4BTrtecontrol.Trteinhibitsrc? 'hc :'h10;
+          mso_data_in_len_TE0[i][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay_len:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay_len:(pipe_vld_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0])))) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'hc :'h10);
           /* verilator lint_on WIDTHEXPAND */
           mso_data_is_var_TE0[i][0] = '1;
           mso_data_is_last_TE0[i][0] = '0; 
@@ -781,12 +784,12 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           mso_data_in_len_TE0[i][1] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h1:(trStart_ANY?pend_hist_to_report_delay_len:(seq_icnt_overflow_delay?pend_ptc_hist_overflow_to_report_delay_len:hist_report_len_TE0[i])));
           /* verilator lint_on WIDTHEXPAND */
           mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = '0;
+          mso_data_is_last_TE0[i][1] = ~(trtsenable);
 
-          mso_data_in_TE0[i][2] = MSO_DATA_IN_WIDTH'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)?trTstamp_TE0:trStop_tstamp_TE0); 
-          mso_data_in_len_TE0[i][2] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)?tstamp_len_TE0:trStop_tstamp_len_TE0); 
-          mso_data_is_var_TE0[i][2] = '1;
-          mso_data_is_last_TE0[i][2] = '1;
+          mso_data_in_TE0[i][2] = (trtsenable?MSO_DATA_IN_WIDTH'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)? trTstamp_TE0 : trStop_tstamp_TE0):MSO_DATA_IN_WIDTH'(0));
+          mso_data_in_len_TE0[i][2] = (trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)? tstamp_len_TE0 : trStop_tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
+          mso_data_is_var_TE0[i][2] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][2] = trtsenable?'1:'0;
 
           mso_data_in_TE0[i][3] = '0;
           mso_data_in_len_TE0[i][3] = '0;
@@ -809,28 +812,28 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           ibh_btype_reported_TE0[i] = '0;
 
           /* verilator lint_off WIDTH */
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[0]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[0]?4'b1:4'b0),Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL}}); 
-          mso_data_in_len_TE0[i][0] = (rsfull_msg_icnt_or_hist_TE0[0]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[0]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[0]?4'b1:4'b0),(Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL})}); 
+          mso_data_in_len_TE0[i][0] = (rsfull_msg_icnt_or_hist_TE0[0]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'ha : 'he);
           /* verilator lint_on WIDTH */
           mso_data_is_var_TE0[i][0] = '1;
-          mso_data_is_last_TE0[i][0] = '0; 
+          mso_data_is_last_TE0[i][0] = ~(trtsenable); 
 
-          mso_data_in_TE0[i][1] = MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-          mso_data_in_len_TE0[i][1] =($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
-          mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = '1;
+          mso_data_in_TE0[i][1] = trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][1] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0);
+          mso_data_is_var_TE0[i][1] = trtsenable;
+          mso_data_is_last_TE0[i][1] = trtsenable;
 
           /* verilator lint_off WIDTH */
-          mso_data_in_TE0[i][2] = rsfull_msg_vld_ANY[1]?(MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[1]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[1]?4'b1:4'b0),Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL}})):(MSO_DATA_IN_WIDTH'('b0));
-          mso_data_in_len_TE0[i][2] = rsfull_msg_vld_ANY[1]?((rsfull_msg_icnt_or_hist_TE0[1]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0));
+          mso_data_in_TE0[i][2] = rsfull_msg_vld_ANY[1]?(MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[1]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[1]?4'b1:4'b0),(Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL})})):(MSO_DATA_IN_WIDTH'('b0));
+          mso_data_in_len_TE0[i][2] = rsfull_msg_vld_ANY[1]?((rsfull_msg_icnt_or_hist_TE0[1]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + (Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he)):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0));
           /* verilator lint_on WIDTH */ 
           mso_data_is_var_TE0[i][2] = rsfull_msg_vld_ANY[1];
-          mso_data_is_last_TE0[i][2] = '0;
+          mso_data_is_last_TE0[i][2] = ~(trtsenable & rsfull_msg_vld_ANY[1]);
 
-          mso_data_in_TE0[i][3] = rsfull_msg_vld_ANY[1]?(MSO_DATA_IN_WIDTH'(trTstamp_TE0)):(MSO_DATA_IN_WIDTH'('b0));
-          mso_data_in_len_TE0[i][3] = rsfull_msg_vld_ANY[1]?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0)):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0));
-          mso_data_is_var_TE0[i][3] = rsfull_msg_vld_ANY[1];
-          mso_data_is_last_TE0[i][3] = rsfull_msg_vld_ANY[1];
+          mso_data_in_TE0[i][3] = (trtsenable & rsfull_msg_vld_ANY[1])?(MSO_DATA_IN_WIDTH'(trTstamp_TE0)):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][3] = ((trtsenable & rsfull_msg_vld_ANY[1])?(rsfull_msg_vld_ANY[1]?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0)):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0))):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
+          mso_data_is_var_TE0[i][3] = (trtsenable & rsfull_msg_vld_ANY[1]);
+          mso_data_is_last_TE0[i][3] = (trtsenable & rsfull_msg_vld_ANY[1]);
 
           mso_data_in_TE0[i][4] = '0;
           mso_data_in_len_TE0[i][4] = '0;
@@ -847,8 +850,8 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]]; 
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({aux_ibh_packet_pipe_vld_TE0?(aux_ibh_packet_icount_TE0):(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHIST:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHIST}});
-          mso_data_in_len_TE0[i][0] = (aux_ibh_packet_pipe_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(aux_ibh_packet_icount_len_TE0)):(use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]]))) + Cr4BTrtecontrol.Trteinhibitsrc? 'h8 :'hc;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({aux_ibh_packet_pipe_vld_TE0?(aux_ibh_packet_icount_TE0):(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],(Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHIST:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHIST})});
+          mso_data_in_len_TE0[i][0] = (aux_ibh_packet_pipe_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(aux_ibh_packet_icount_len_TE0)):(use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]]))) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'h8 :'hc);
           mso_data_is_var_TE0[i][0] = 1'b1;
           mso_data_is_last_TE0[i][0] = '0;
 
@@ -860,12 +863,12 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           mso_data_in_TE0[i][2] = aux_ibh_packet_pipe_vld_TE0?(MSO_DATA_IN_WIDTH'(1'b1)):(use_pend_addr[i]?MSO_DATA_IN_WIDTH'(pend_hist_to_report_delay):MSO_DATA_IN_WIDTH'(hist_to_report_TE0[dataBlock[i]]));
           mso_data_in_len_TE0[i][2] =  aux_ibh_packet_pipe_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(1'b1)):(use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_hist_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_report_len_TE0[dataBlock[i]]));
           mso_data_is_var_TE0[i][2] = 1'b1;
-          mso_data_is_last_TE0[i][2] = '0; 
+          mso_data_is_last_TE0[i][2] = ~(trtsenable); 
 
-          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay:trTstamp_TE0);
-          mso_data_in_len_TE0[i][3] =($clog2(MSO_DATA_IN_WIDTH)+1)'(((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay_len:tstamp_len_TE0));
-          mso_data_is_var_TE0[i][3] = '1;
-          mso_data_is_last_TE0[i][3] = '1;
+          mso_data_in_TE0[i][3] = (trtsenable?(MSO_DATA_IN_WIDTH'((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay:trTstamp_TE0)):MSO_DATA_IN_WIDTH'(0));
+          mso_data_in_len_TE0[i][3] = (trtsenable?(($clog2(MSO_DATA_IN_WIDTH)+1)'((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay_len:tstamp_len_TE0)):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
+          mso_data_is_var_TE0[i][3] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][3] = trtsenable?'1:'0;
 
           mso_data_in_TE0[i][4] = '0; 
           mso_data_in_len_TE0[i][4] = '0;
@@ -882,8 +885,8 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],(use_pend_addr[i]?seq_icnt_overflow_delay:seq_icnt_overflow_TE0[dataBlock[i]])?SEQ_INCT_OVERFLOW:((trNotifyIBHS_ANY | trNotifyIBHS_ANY_delay)?TRACE_EVENT:PERIODIC_SYNC),Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHISTSYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHISTSYNC}});
-          mso_data_in_len_TE0[i][0] = (use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]])) + Cr4BTrtecontrol.Trteinhibitsrc? 'hc : 'h10;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],(use_pend_addr[i]?seq_icnt_overflow_delay:seq_icnt_overflow_TE0[dataBlock[i]])?SEQ_INCT_OVERFLOW:((trNotifyIBHS_ANY | trNotifyIBHS_ANY_delay)?TRACE_EVENT:PERIODIC_SYNC),(Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHISTSYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHISTSYNC})});
+          mso_data_in_len_TE0[i][0] = (use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]])) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'hc : 'h10);
           mso_data_is_var_TE0[i][0] = 1'b1; 
           mso_data_is_last_TE0[i][0] = '0; 
 
@@ -895,12 +898,13 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           mso_data_in_TE0[i][2] = use_pend_addr[i]?MSO_DATA_IN_WIDTH'(pend_hist_to_report_delay):MSO_DATA_IN_WIDTH'(hist_to_report_TE0[dataBlock[i]]);
           mso_data_in_len_TE0[i][2] = use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_hist_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_report_len_TE0[dataBlock[i]]);
           mso_data_is_var_TE0[i][2] = 1'b1; 
-          mso_data_is_last_TE0[i][2] = '0; 
+          mso_data_is_last_TE0[i][2] = ~trtsenable; 
 
-          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-          mso_data_in_len_TE0[i][3] =($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
-          mso_data_is_var_TE0[i][3] = '1;
-          mso_data_is_last_TE0[i][3] = '1;
+          mso_data_in_TE0[i][3] = trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][3] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('b0);
+          mso_data_is_var_TE0[i][3] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][3] = trtsenable?'1:'0;
+
 
           mso_data_in_TE0[i][4] = '0;
           mso_data_in_len_TE0[i][4] = '0;
@@ -918,15 +922,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({8'h04,4'h0,Cr4BTrtecontrol.Trteinhibitsrc?ERROR:{Cr4BTrteinstfeatures.Trtesrcid[3:0],ERROR}});
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({8'h04,4'h0,(Cr4BTrtecontrol.Trteinhibitsrc?ERROR:{Cr4BTrteinstfeatures.Trtesrcid[3:0],ERROR})});
           mso_data_in_len_TE0[i][0] = Cr4BTrtecontrol.Trteinhibitsrc? 'h12 : 'h16;
           mso_data_is_var_TE0[i][0] = '1;
-          mso_data_is_last_TE0[i][0] = '0; 
+          mso_data_is_last_TE0[i][0] = ~(trtsenable); 
 
-          mso_data_in_TE0[i][1] = MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-          mso_data_in_len_TE0[i][1] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
-          mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = '1;
+          mso_data_in_TE0[i][1] = trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][1] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0);
+          mso_data_is_var_TE0[i][1] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][1] = trtsenable?'1:'0;
 
           mso_data_in_TE0[i][2] = '0;
           mso_data_in_len_TE0[i][2] = '0;
@@ -1110,15 +1114,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff_clr #(.WIDTH(1)) bcnt_TE2_overflowed_ff (.out(bcnt_TE2_overflowed), .in(1'b1), .clr(isErrorClear_ANY | (|next_bcnt_TE1) | inbrhist_ibh_pkt_clr_after_bcnt_overflow), .en(bcnt_overflow_TE1 & rb_packet_pipe_vld_TE1), .clk(clock), .rst_n(reset_n));
 
   // RepeatBranch Packet framing
-  assign rb_mso_data_in_TE1[0] = MSO_DATA_IN_WIDTH'({bcnt_to_report_TE1,Cr4BTrtecontrol.Trteinhibitsrc?REPEATBRANCH:{Cr4BTrteinstfeatures.Trtesrcid[3:0],REPEATBRANCH}});
+  assign rb_mso_data_in_TE1[0] = MSO_DATA_IN_WIDTH'({bcnt_to_report_TE1,(Cr4BTrtecontrol.Trteinhibitsrc?REPEATBRANCH:{Cr4BTrteinstfeatures.Trtesrcid[3:0],REPEATBRANCH})});
   assign rb_mso_data_in_len_TE1[0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(bcnt_len_TE1) + ($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc? 'h6 :'ha);
   assign rb_mso_data_is_var_TE1[0] = '1;
-  assign rb_mso_data_is_last_TE1[0] = '0;
+  assign rb_mso_data_is_last_TE1[0] = ~trtsenable;
 
-  assign rb_mso_data_in_TE1[1] = MSO_DATA_IN_WIDTH'(rb_tstamp_to_report); 
-  assign rb_mso_data_in_len_TE1[1] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(rb_tstamp_to_report_len); 
-  assign rb_mso_data_is_var_TE1[1] = '1;
-  assign rb_mso_data_is_last_TE1[1] = '1;
+  assign rb_mso_data_in_TE1[1] = trtsenable?MSO_DATA_IN_WIDTH'(rb_tstamp_to_report):MSO_DATA_IN_WIDTH'(0); 
+  assign rb_mso_data_in_len_TE1[1] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(rb_tstamp_to_report_len):($clog2(MSO_DATA_IN_WIDTH)+1)'('0); 
+  assign rb_mso_data_is_var_TE1[1] = trtsenable?'1:'0;
+  assign rb_mso_data_is_last_TE1[1] = trtsenable?'1:'0;
 
   assign rb_packet_pipe_vld_TE1 = ((inbrhist_pkt_repeat_clr_TE1 & (bcnt_TE2!=0)) | inbrhist_pkt_repeat_reset_TE1) & ~(isErrorGeneration_TE0 & ~isBTHBOverflow_TE0);
 
@@ -1154,45 +1158,45 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign own_vdm_packet_pipe_is_vdm_vld_TE0 = is_tval_to_report_pend & ~((curr_pkt_TE0[0] == INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[0] & ~(pend_btype_to_report_delay inside {2'h2, 2'h3}));
 
   // Packet framing
-  assign own_vdm_mso_data_in_TE0[0][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP});
-  assign own_vdm_mso_data_in_len_TE0[0][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + 6'ha);
+  assign own_vdm_mso_data_in_TE0[0][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,(Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP})});
+  assign own_vdm_mso_data_in_len_TE0[0][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + (Cr4BTrtecontrol.Trteinhibitsrc? 6'h6 : 6'ha));
   assign own_vdm_mso_data_is_var_TE0[0][0] = '1;
-  assign own_vdm_mso_data_is_last_TE0[0][0] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[0][0] = (own_vdm_packet_pipe_is_vdm_vld_TE0?'1:(trtsenable?'0:'1));
 
-  assign own_vdm_mso_data_in_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED}}):MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-  assign own_vdm_mso_data_in_len_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
+  assign own_vdm_mso_data_in_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, (Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED})}):(trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0));
+  assign own_vdm_mso_data_in_len_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):(trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
   assign own_vdm_mso_data_is_var_TE0[0][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
   assign own_vdm_mso_data_is_last_TE0[0][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0; 
 
   assign own_vdm_mso_data_in_TE0[0][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(tval_to_report_TE0):MSO_DATA_IN_WIDTH'('b0);
   assign own_vdm_mso_data_in_len_TE0[0][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tval_to_report_len_TE0)):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
   assign own_vdm_mso_data_is_var_TE0[0][2] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[0][2] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[0][2] = ~(own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  assign own_vdm_mso_data_in_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
-  assign own_vdm_mso_data_in_len_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
-  assign own_vdm_mso_data_is_var_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_in_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
+  assign own_vdm_mso_data_in_len_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
+  assign own_vdm_mso_data_is_var_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
+  assign own_vdm_mso_data_is_last_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  assign own_vdm_mso_data_in_TE0[1][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP}});
-  assign own_vdm_mso_data_in_len_TE0[1][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + Cr4BTrtecontrol.Trteinhibitsrc? 6'h6 : 6'ha);
+  assign own_vdm_mso_data_in_TE0[1][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,(Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP})});
+  assign own_vdm_mso_data_in_len_TE0[1][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + (Cr4BTrtecontrol.Trteinhibitsrc? 6'h6 : 6'ha));
   assign own_vdm_mso_data_is_var_TE0[1][0] = '1;
-  assign own_vdm_mso_data_is_last_TE0[1][0] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[1][0] = own_vdm_packet_pipe_is_vdm_vld_TE0?'1:trtsenable?'0:'1;
 
-  assign own_vdm_mso_data_in_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED}}):MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-  assign own_vdm_mso_data_in_len_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
+  assign own_vdm_mso_data_in_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, (Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED})}):(trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0));
+  assign own_vdm_mso_data_in_len_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):(trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
   assign own_vdm_mso_data_is_var_TE0[1][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
   assign own_vdm_mso_data_is_last_TE0[1][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0; 
 
   assign own_vdm_mso_data_in_TE0[1][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(tval_to_report_TE0):MSO_DATA_IN_WIDTH'('b0);
   assign own_vdm_mso_data_in_len_TE0[1][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tval_to_report_len_TE0)):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
   assign own_vdm_mso_data_is_var_TE0[1][2] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[1][2] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[1][2] = ~(own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  assign own_vdm_mso_data_in_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
-  assign own_vdm_mso_data_in_len_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
-  assign own_vdm_mso_data_is_var_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_in_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
+  assign own_vdm_mso_data_in_len_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
+  assign own_vdm_mso_data_is_var_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
+  assign own_vdm_mso_data_is_last_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
   generic_dff #(.WIDTH(NUM_BLOCKS)) own_vdm_packet_pipe_vld_TE1_ff (.out(own_vdm_packet_pipe_vld_TE1), .in(own_vdm_packet_pipe_vld_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
