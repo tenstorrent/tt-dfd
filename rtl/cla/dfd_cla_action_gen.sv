@@ -72,9 +72,11 @@ always_comb begin
    next_action_bus = '0;
    next_custom_action_bus = '0;
 
+   if (enable_eap) begin
    for(int k=0;k<CLA_NUMBER_OF_NODES;k=k+1) begin
       next_action_bus |= (current_node_id == ($clog2(CLA_NUMBER_OF_NODES))'(k))?next_node_action_bus[k]:{CLA_NUMBER_OF_ACTIONS{1'b0}};
       next_custom_action_bus |= (current_node_id == ($clog2(CLA_NUMBER_OF_NODES))'(k))?next_node_custom_action_bus[k]:{CLA_NUMBER_OF_CUSTOM_ACTIONS{1'b0}};
+      end
    end
 end
 

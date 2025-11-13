@@ -71,9 +71,10 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   logic [CONTEXT_WIDTH-1:0]                                     trContext_TE0;
   logic [TVAL_WIDTH-1:0]                                        trTval_TE0;
   logic [TSTAMP_WIDTH-1:0]                                      trTstamp_TE0;
+  logic                                                         trtsenable;
 
   // Pipe valid signals for the TE0 and TE1 stages
-  logic [NUM_BLOCKS-1:0]                                        pipe_vld_RE6, pipe_vld_TE0, pipe_vld_TE1;
+  logic [NUM_BLOCKS-1:0]                                        pipe_vld_RE6, pipe_vld_TE0;
   logic [NUM_BLOCKS-1:0]                                        packet_pipe_vld_TE0, packet_pipe_vld_TE1;
   logic                                                         rb_packet_pipe_vld_TE1, rb_packet_pipe_vld_TE2;
   logic [NUM_BLOCKS-1:0]                                        own_vdm_packet_pipe_vld_TE0, own_vdm_packet_pipe_vld_TE1;
@@ -92,19 +93,19 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   logic                                                         trTeEnable_ANY, trTeEnable_ANY_d1;
   logic                                                         trTeSwEnable_ANY;
   logic                                                         trTeInsttracing_Enable_ANY, trTeInsttracing_Enable_ANY_d1;
-  logic                                                         trTeEnable_Trace_ANY, trTeEnable_Trace_ANY_d1;
+
   logic                                                         trFlush_ANY; 
   logic                                                         trReEnable_ANY;
   logic                                                         trTeTrigEnable_ANY;
   logic                                                         trStartfromTrig_ANY, trStopfromTrig_ANY, trNotifyfromTrig_ANY;
   logic                                                         trNotifySyncfromTrig_ANY;
-  logic                                                         trTeTracingStartfromTrigger_ANY;
-  logic                                                         trTracingInProgress_ANY, trTracingInProgress_ANY_d1;
+
+  logic                                                         trTracingInProgress_ANY;
   logic                                                         trBackpressure_ANY;
   logic                                                         trace_stop_after_error_wo_sync;
 
   logic                                                         trace_hardware_flush_d1;
-  logic                                                         trace_hardware_flush_pulse, trace_hardware_flush_pulse_valid;
+  logic                                                         trace_hardware_flush_pulse;
   logic                                                         trace_hw_flush_in_progress;
   logic                                                         trPacketizer_Flushmode_enable_ANY;
 
@@ -123,7 +124,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // Entry and Exit from Debug Debug mode
   logic                                                         trPrivisDebug_RE6, trPrivisDebug_TE0, trPrivisDebug_TE1;
   logic                                                         trPrivDebugModeEntry_ANY, trPrivDebugEntry_PTC_pending_ANY;
-  logic                                                         trPrivDebugModeExit_ANY, trPrivDebugModeExit_ANY_d1;
+  logic                                                         trPrivDebugModeExit_ANY;
   logic                                                         trTeReStartAfterDebugMode_ANY;
 
   // Internal HIST register
@@ -196,7 +197,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   logic [PERIODIC_SYNC_COUNT_WIDTH:0]                           periodic_sync_max_count, periodic_sync_pkt_count, periodic_sync_iretire_count, periodic_sync_cycle_count;
   logic [PERIODIC_SYNC_COUNT_WIDTH-1:0]                         next_periodic_sync_count, next_periodic_sync_pkt_count, next_periodic_sync_iretire_count, next_periodic_sync_cycle_count;
   logic                                                         periodic_sync_pkt_count_overflow, periodic_sync_cycle_count_overflow, periodic_sync_iretire_count_overflow;
-  logic                                                         periodic_sync_count_overflow, periodic_sync_count_overflow_delay, periodic_sync_count_overflow_stg;
+  logic                                                         periodic_sync_count_overflow, periodic_sync_count_overflow_stg;
   logic                                                         periodic_sync_count_clr;
   logic                                                         trIBHS_trig_psync_ANY, trIBHS_trig_psync_ANY_delay;
 
@@ -217,34 +218,34 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   // Pending data's for Addr on the next block
   logic [NUM_BLOCKS-1:0]                                        isAddrPending_TE0, isAddrPending_delay;
-  logic [NUM_BLOCKS-1:0]                                        is_sic_AddrPending_TE0, is_sic_AddrPending_delay; 
+  logic [NUM_BLOCKS-1:0]                                        is_sic_AddrPending_TE0; 
   logic                                                         pend_addr_available;
   logic [ICOUNT_WIDTH-1:0]                                      pend_iCount_to_report_delay, pend_ptc_iCount_to_report_delay;
   logic [HIST_WIDTH-1:0]                                        pend_hist_to_report_delay;
   logic [HIST_WIDTH-1:0]                                        pend_ptc_hist_overflow_to_report_delay;
   logic [TSTAMP_WIDTH-1:0]                                      pend_tstamp_to_report_delay, rb_tstamp_to_report, pend_trstart_tstamp_to_report_delay;
-  logic [PC_WIDTH-1:1]                                          pend_uaddr_to_report_delay, pend_faddr_to_report_delay;
+  logic [PC_WIDTH-1:1]                                          pend_faddr_to_report_delay;
 
   logic [$clog2(ICOUNT_WIDTH):0]                                pend_iCount_to_report_delay_len, pend_ptc_iCount_to_report_delay_len;
   logic [$clog2(TSTAMP_WIDTH):0]                                pend_tstamp_to_report_delay_len, rb_tstamp_to_report_len, pend_trstart_tstamp_to_report_delay_len;
   logic [$clog2(HIST_WIDTH):0]                                  pend_hist_to_report_delay_len;
   logic [$clog2(HIST_WIDTH):0]                                  pend_ptc_hist_overflow_to_report_delay_len;
-  logic [$clog2(PC_WIDTH):0]                                    pend_uaddr_to_report_delay_len, pend_faddr_to_report_delay_len; 
+  logic [$clog2(PC_WIDTH):0]                                    pend_faddr_to_report_delay_len; 
 
   // Pending signals _ff & _clr for each of the packet
   logic                                                         isProgTraceSync_Pending, isProgTraceSync_Pending_clr;
-  logic                                                         isOwnership_Pending, isOwnership_Pending_clr;
+  logic                                                         isOwnership_Pending_clr;
   logic                                                         isProgTraceCorrelation_Pending, isProgTraceCorrelation_Pending_clr;
   logic                                                         isIndirectBranchHist_Pending, isIndirectBranchHist_Pending_clr;
   logic                                                         isIndirectBranchHistSync_Pending, isIndirectBranchHistSync_Pending_clr;
   logic                                                         isResourceFull_Packet_TE0, isResourceFull_Packet_TE1;
 
   // Error packet control signals
-  logic                                                         isErrorGeneration_TE0, isErrorGeneration_TE1;
+  logic                                                         isErrorGeneration_TE0;
   logic                                                         isBTHBOverflow_TE0;
   logic                                                         isErrorClear_ANY, isEncoderBufferOverflow_ANY, isEncoderBufferOverflowflop_ANY;
   logic                                                         isErrorPacketPushed_ANY, isErrorPacketPushed_d1_ANY, isErrorPacketPushed_TE1;
-  logic                                                         isBTHBOverflowErrorPushed_TE0, isBTHBOverflowErrorPushed_TE1;
+
   logic                                                         trTeResyncAfterEncOverflowError_ANY, trTeResyncAfterBTHBOverflowError_ANY, trTeResyncAfterError_ANY;
 
   // Outputs of the FF's for the variable length fields
@@ -485,7 +486,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   // Flops the reporting conditional signals
   generic_dff_clr #(.WIDTH(NUM_BLOCKS)) isAddrPending_delay_ff (.out(isAddrPending_delay), .in(isAddrPending_TE0 | is_sic_AddrPending_TE0), .clr(isErrorClear_ANY | trStop_iCount_Hist_to_report_TE0 | trStop_ANY), .en(|pipe_vld_TE0), .clk(clock), .rst_n(reset_n));
-  generic_dff_clr #(.WIDTH(NUM_BLOCKS)) is_sic_AddrPending_delay_ff (.out(is_sic_AddrPending_delay), .in(is_sic_AddrPending_TE0), .clr(isErrorClear_ANY | trStop_iCount_Hist_to_report_TE0), .en(|pipe_vld_TE0), .clk(clock), .rst_n(reset_n));
+
   generic_dff_clr #(.WIDTH(1)) seq_icnt_overflow_delay_ff (.out(seq_icnt_overflow_delay), .in(1'b1), .clr(isIndirectBranchHistSync_Pending_clr | trStart_ANY), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n)); 
 
   // Flops to store the data to be used in the next cycle or when the next address block is available
@@ -494,7 +495,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff #(.WIDTH(ICOUNT_WIDTH)) pend_iCount_to_report_delay_ff (.out(pend_iCount_to_report_delay), .in(aux_ibh_packet_tgt_pending_TE0?aux_ibh_packet_icount_TE0:((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?iCount_to_report_TE0[0]:iCount_to_report_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
   generic_dff #(.WIDTH(TSTAMP_WIDTH)) pend_tstamp_to_report_delay_ff (.out(pend_tstamp_to_report_delay), .in(trTstamp_TE0), .en(((|is_sic_AddrPending_TE0) | (|isAddrPending_TE0) | (|inbrhist_pkt_repeat_TE1)) & (trStartStop_ANY | trStop_ANY)), .clk(clock), .rst_n(reset_n));
   generic_dff #(.WIDTH(TSTAMP_WIDTH)) rb_tstamp_to_report_ff (.out(rb_tstamp_to_report), .in((|inbrhist_pkt_repeat_TE1 & (trStartStop_ANY | trStop_ANY))?trTstamp_TE1:pend_tstamp_to_report_delay), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(PC_WIDTH-1)) pend_uaddr_to_report_delay_ff (.out(pend_uaddr_to_report_delay), .in(isAddrPending_TE0[0]?u_addr_TE0[0]:u_addr_TE0[1]), .en(|isAddrPending_TE0), .clk(clock), .rst_n(reset_n));
+
 
   generic_dff #(.WIDTH(ICOUNT_WIDTH)) pend_ptc_iCount_to_report_delay_ff (.out(pend_ptc_iCount_to_report_delay), .in(seq_icnt_overflow_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
   generic_dff #(.WIDTH($clog2(ICOUNT_WIDTH)+1)) pend_ptc_iCount_to_report_delay_len_ff (.out(pend_ptc_iCount_to_report_delay_len), .in(seq_icnt_overflow_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
@@ -506,7 +507,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff #(.WIDTH($clog2(ICOUNT_WIDTH)+1)) pend_iCount_to_report_delay_len_ff (.out(pend_iCount_to_report_delay_len), .in(aux_ibh_packet_tgt_pending_TE0?aux_ibh_packet_icount_len_TE0:((trStop_ANY | isAddrPending_TE0[0] | is_sic_AddrPending_TE0[0])?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
   generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) pend_tstamp_to_report_delay_len_ff (.out(pend_tstamp_to_report_delay_len), .in(tstamp_len_TE0), .en(((|is_sic_AddrPending_TE0) | (|isAddrPending_TE0) | (|inbrhist_pkt_repeat_TE1)) & (trStartStop_ANY | trStop_ANY)), .clk(clock), .rst_n(reset_n));
   generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) rb_tstamp_to_report_len_ff (.out(rb_tstamp_to_report_len), .in((|inbrhist_pkt_repeat_TE1 & (trStartStop_ANY | trStop_ANY))?tstamp_len_TE0:pend_tstamp_to_report_delay_len), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) pend_uaddr_to_report_delay_len_ff (.out(pend_uaddr_to_report_delay_len), .in(isAddrPending_TE0[0]?uaddr_len_TE0[0]:uaddr_len_TE0[1]), .en(|isAddrPending_TE0), .clk(clock), .rst_n(reset_n)); 
+
 
   // Flop the Computed HIST, I-CNT field after the TE0 stage
   generic_dff #(.WIDTH(HIST_WIDTH), .RESET_VALUE(1)) hist_TE1_ff (.out(hist_TE1), .in((trCorrelationMessageSent_ANY | isErrorClear_ANY)?HIST_WIDTH'('h1):next_hist_TE0), .en(isErrorClear_ANY | trCorrelationMessageSent_ANY | (|pipe_vld_TE0) | hist_TE1[HIST_WIDTH-1] | |trStart_ANY), .clk(clock), .rst_n(reset_n));
@@ -516,9 +517,10 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff #(.WIDTH(1)) context_switch_IBH_reported_TE1_ff (.out(context_switch_IBH_reported_TE1), .in(context_switch_IBH_reported_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   generic_dff_clr #(.WIDTH(1)) trTracingInProgress_flop_ANY_ff (.out(trTracingInProgress_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] == PROGTRACECORRELATION) | (curr_pkt_TE1[1] == PROGTRACECORRELATION) | (curr_pkt_TE0[0] == ERROR)), .en((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0]), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trTracingInProgress_ANY_d1_ff (.out(trTracingInProgress_ANY_d1), .in(trTracingInProgress_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   assign trCorrelationMessageSent_ANY = (curr_pkt_TE0[0] == PROGTRACECORRELATION & packet_pipe_vld_TE0[0]) | (curr_pkt_TE0[1] == PROGTRACECORRELATION & packet_pipe_vld_TE0[1]);
+
+  assign trtsenable = (Cr4BTrtscontrol.Trtsactive & Cr4BTrtscontrol.Trtsenable);
   // ----------------------------------------------------------------------------------------------
   // Find first logics for all the variable length fields (TE0)
   // ----------------------------------------------------------------------------------------------
@@ -734,23 +736,23 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({'0,trTeResyncAfterError_ANY?RESTART_FIFO_OVERFLOW:(trTeReStartAfterDebugMode_ANY?EXIT_FROM_DEBUG:(trReEnable_ANY?TRACE_ENABLE:EXIT_FROM_RESET)),Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACESYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACESYNC}}); 
-          mso_data_in_len_TE0[i][0] = Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({'0,trTeResyncAfterError_ANY?RESTART_FIFO_OVERFLOW:(trTeReStartAfterDebugMode_ANY?EXIT_FROM_DEBUG:(trReEnable_ANY?TRACE_ENABLE:EXIT_FROM_RESET)),(Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACESYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACESYNC})}); 
+          mso_data_in_len_TE0[i][0] = (Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he);
           mso_data_is_var_TE0[i][0] = 'h1;
           mso_data_is_last_TE0[i][0] = (faddr_len_TE0[i] == 0) & (tstamp_len_TE0 == 0); 
 
           mso_data_in_TE0[i][1] = MSO_DATA_IN_WIDTH'(trIAddr_TE0[i]); 
           mso_data_in_len_TE0[i][1] = faddr_len_TE0[i];  
           mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = (tstamp_len_TE0 == 0);  
+          mso_data_is_last_TE0[i][1] = ~trtsenable | (tstamp_len_TE0 == 0);  
 
-          mso_data_in_TE0[i][2] = MSO_DATA_IN_WIDTH'(trTstamp_TE0); 
-          mso_data_in_len_TE0[i][2] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0); 
-          mso_data_is_var_TE0[i][2] = '1;
-          mso_data_is_last_TE0[i][2] = '1;
+          mso_data_in_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0); 
+          mso_data_in_len_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0); 
+          mso_data_is_var_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?'1:'0;
+          mso_data_is_last_TE0[i][2] = (trtsenable & ~(tstamp_len_TE0 == 0))?'1:'0;
 
-          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP}});
-          mso_data_in_len_TE0[i][3] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((process_context_len_TE0) + Cr4BTrtecontrol.Trteinhibitsrc? 6'h7 : 6'hb);
+          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,(Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP})});
+          mso_data_in_len_TE0[i][3] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((process_context_len_TE0) + (Cr4BTrtecontrol.Trteinhibitsrc? 6'h7 : 6'hb));
           mso_data_is_var_TE0[i][3] = '1;
           mso_data_is_last_TE0[i][3] = '1; 
 
@@ -769,10 +771,10 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay:(pipe_vld_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]))),2'b01,((trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1 | ~trTeTraceInPatchEnable_ANY) & ((trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY) & ~(trSwControlStop_PTC_pending_ANY | trSwControlStop_ANY)))?DEBUG_ENTRY:((trace_stop_after_error_wo_sync | (trStop_ANY & trTeResyncAfterError_ANY & isProgTraceSync_Pending))?TRACE_STOP_WITHOUT_SYNC_AFTER_ERROR:PROG_TRACE_DISABLE),Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACECORRELATION:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACECORRELATION}});          
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay:(pipe_vld_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]))),2'b01,((trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1 | ~trTeTraceInPatchEnable_ANY) & ((trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY) & ~(trSwControlStop_PTC_pending_ANY | trSwControlStop_ANY)))?DEBUG_ENTRY:((trace_stop_after_error_wo_sync | (trStop_ANY & trTeResyncAfterError_ANY & isProgTraceSync_Pending))?TRACE_STOP_WITHOUT_SYNC_AFTER_ERROR:PROG_TRACE_DISABLE),(Cr4BTrtecontrol.Trteinhibitsrc?PROGTRACECORRELATION:{Cr4BTrteinstfeatures.Trtesrcid[3:0],PROGTRACECORRELATION})});          
           
           /* verilator lint_off WIDTHEXPAND */
-          mso_data_in_len_TE0[i][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay_len:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay_len:(pipe_vld_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0])))) + Cr4BTrtecontrol.Trteinhibitsrc? 'hc :'h10;
+          mso_data_in_len_TE0[i][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h0:(trStart_ANY?pend_iCount_to_report_delay_len:(seq_icnt_overflow_delay?pend_ptc_iCount_to_report_delay_len:(pipe_vld_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0])))) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'hc :'h10);
           /* verilator lint_on WIDTHEXPAND */
           mso_data_is_var_TE0[i][0] = '1;
           mso_data_is_last_TE0[i][0] = '0; 
@@ -782,12 +784,12 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           mso_data_in_len_TE0[i][1] = ($clog2(MSO_DATA_IN_WIDTH)+1)'((trSwControlStop_ANY & ~trTracingInProgress_ANY)?'h1:(trStart_ANY?pend_hist_to_report_delay_len:(seq_icnt_overflow_delay?pend_ptc_hist_overflow_to_report_delay_len:hist_report_len_TE0[i])));
           /* verilator lint_on WIDTHEXPAND */
           mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = '0;
+          mso_data_is_last_TE0[i][1] = ~(trtsenable);
 
-          mso_data_in_TE0[i][2] = MSO_DATA_IN_WIDTH'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)?trTstamp_TE0:trStop_tstamp_TE0); 
-          mso_data_in_len_TE0[i][2] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)?tstamp_len_TE0:trStop_tstamp_len_TE0); 
-          mso_data_is_var_TE0[i][2] = '1;
-          mso_data_is_last_TE0[i][2] = '1;
+          mso_data_in_TE0[i][2] = (trtsenable?MSO_DATA_IN_WIDTH'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)? trTstamp_TE0 : trStop_tstamp_TE0):MSO_DATA_IN_WIDTH'(0));
+          mso_data_in_len_TE0[i][2] = (trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(((trStop_iCount_Hist_to_report_TE0) & ~isProgTraceCorrelation_Pending)? tstamp_len_TE0 : trStop_tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
+          mso_data_is_var_TE0[i][2] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][2] = trtsenable?'1:'0;
 
           mso_data_in_TE0[i][3] = '0;
           mso_data_in_len_TE0[i][3] = '0;
@@ -810,28 +812,28 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           ibh_btype_reported_TE0[i] = '0;
 
           /* verilator lint_off WIDTH */
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[0]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[0]?4'b1:4'b0),Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL}}); 
-          mso_data_in_len_TE0[i][0] = (rsfull_msg_icnt_or_hist_TE0[0]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[0]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[0]?4'b1:4'b0),(Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL})}); 
+          mso_data_in_len_TE0[i][0] = (rsfull_msg_icnt_or_hist_TE0[0]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'ha : 'he);
           /* verilator lint_on WIDTH */
           mso_data_is_var_TE0[i][0] = '1;
-          mso_data_is_last_TE0[i][0] = '0; 
+          mso_data_is_last_TE0[i][0] = ~(trtsenable); 
 
-          mso_data_in_TE0[i][1] = MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-          mso_data_in_len_TE0[i][1] =($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
-          mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = '1;
+          mso_data_in_TE0[i][1] = trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][1] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0);
+          mso_data_is_var_TE0[i][1] = trtsenable;
+          mso_data_is_last_TE0[i][1] = trtsenable;
 
           /* verilator lint_off WIDTH */
-          mso_data_in_TE0[i][2] = rsfull_msg_vld_ANY[1]?(MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[1]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[1]?4'b1:4'b0),Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL}})):(MSO_DATA_IN_WIDTH'('b0));
-          mso_data_in_len_TE0[i][2] = rsfull_msg_vld_ANY[1]?((rsfull_msg_icnt_or_hist_TE0[1]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0));
+          mso_data_in_TE0[i][2] = rsfull_msg_vld_ANY[1]?(MSO_DATA_IN_WIDTH'({rsfull_msg_icnt_or_hist_TE0[1]?hist_overflow_to_report_TE0:(is_iCount_overflow_TE0[0]?iCount_to_report_TE0[0]:iCount_to_report_TE0[1]),(rsfull_msg_icnt_or_hist_TE0[1]?4'b1:4'b0),(Cr4BTrtecontrol.Trteinhibitsrc?RESOURCEFULL:{Cr4BTrteinstfeatures.Trtesrcid[3:0],RESOURCEFULL})})):(MSO_DATA_IN_WIDTH'('b0));
+          mso_data_in_len_TE0[i][2] = rsfull_msg_vld_ANY[1]?((rsfull_msg_icnt_or_hist_TE0[1]?($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_overflow_to_report_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'((is_iCount_overflow_TE0[0]?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1]))) + (Cr4BTrtecontrol.Trteinhibitsrc? 'ha : 'he)):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0));
           /* verilator lint_on WIDTH */ 
           mso_data_is_var_TE0[i][2] = rsfull_msg_vld_ANY[1];
-          mso_data_is_last_TE0[i][2] = '0;
+          mso_data_is_last_TE0[i][2] = ~(trtsenable & rsfull_msg_vld_ANY[1]);
 
-          mso_data_in_TE0[i][3] = rsfull_msg_vld_ANY[1]?(MSO_DATA_IN_WIDTH'(trTstamp_TE0)):(MSO_DATA_IN_WIDTH'('b0));
-          mso_data_in_len_TE0[i][3] = rsfull_msg_vld_ANY[1]?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0)):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0));
-          mso_data_is_var_TE0[i][3] = rsfull_msg_vld_ANY[1];
-          mso_data_is_last_TE0[i][3] = rsfull_msg_vld_ANY[1];
+          mso_data_in_TE0[i][3] = (trtsenable & rsfull_msg_vld_ANY[1])?(MSO_DATA_IN_WIDTH'(trTstamp_TE0)):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][3] = ((trtsenable & rsfull_msg_vld_ANY[1])?(rsfull_msg_vld_ANY[1]?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0)):(($clog2(MSO_DATA_IN_WIDTH)+1)'('b0))):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
+          mso_data_is_var_TE0[i][3] = (trtsenable & rsfull_msg_vld_ANY[1]);
+          mso_data_is_last_TE0[i][3] = (trtsenable & rsfull_msg_vld_ANY[1]);
 
           mso_data_in_TE0[i][4] = '0;
           mso_data_in_len_TE0[i][4] = '0;
@@ -848,8 +850,8 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]]; 
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({aux_ibh_packet_pipe_vld_TE0?(aux_ibh_packet_icount_TE0):(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHIST:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHIST}});
-          mso_data_in_len_TE0[i][0] = (aux_ibh_packet_pipe_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(aux_ibh_packet_icount_len_TE0)):(use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]]))) + Cr4BTrtecontrol.Trteinhibitsrc? 'h8 :'hc;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({aux_ibh_packet_pipe_vld_TE0?(aux_ibh_packet_icount_TE0):(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],(Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHIST:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHIST})});
+          mso_data_in_len_TE0[i][0] = (aux_ibh_packet_pipe_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(aux_ibh_packet_icount_len_TE0)):(use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]]))) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'h8 :'hc);
           mso_data_is_var_TE0[i][0] = 1'b1;
           mso_data_is_last_TE0[i][0] = '0;
 
@@ -861,12 +863,12 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           mso_data_in_TE0[i][2] = aux_ibh_packet_pipe_vld_TE0?(MSO_DATA_IN_WIDTH'(1'b1)):(use_pend_addr[i]?MSO_DATA_IN_WIDTH'(pend_hist_to_report_delay):MSO_DATA_IN_WIDTH'(hist_to_report_TE0[dataBlock[i]]));
           mso_data_in_len_TE0[i][2] =  aux_ibh_packet_pipe_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(1'b1)):(use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_hist_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_report_len_TE0[dataBlock[i]]));
           mso_data_is_var_TE0[i][2] = 1'b1;
-          mso_data_is_last_TE0[i][2] = '0; 
+          mso_data_is_last_TE0[i][2] = ~(trtsenable); 
 
-          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay:trTstamp_TE0);
-          mso_data_in_len_TE0[i][3] =($clog2(MSO_DATA_IN_WIDTH)+1)'(((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay_len:tstamp_len_TE0));
-          mso_data_is_var_TE0[i][3] = '1;
-          mso_data_is_last_TE0[i][3] = '1;
+          mso_data_in_TE0[i][3] = (trtsenable?(MSO_DATA_IN_WIDTH'((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay:trTstamp_TE0)):MSO_DATA_IN_WIDTH'(0));
+          mso_data_in_len_TE0[i][3] = (trtsenable?(($clog2(MSO_DATA_IN_WIDTH)+1)'((use_pend_addr[i] & ~isProgTraceSync_Pending)?pend_tstamp_to_report_delay_len:tstamp_len_TE0)):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
+          mso_data_is_var_TE0[i][3] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][3] = trtsenable?'1:'0;
 
           mso_data_in_TE0[i][4] = '0; 
           mso_data_in_len_TE0[i][4] = '0;
@@ -883,8 +885,8 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],(use_pend_addr[i]?seq_icnt_overflow_delay:seq_icnt_overflow_TE0[dataBlock[i]])?SEQ_INCT_OVERFLOW:((trNotifyIBHS_ANY | trNotifyIBHS_ANY_delay)?TRACE_EVENT:PERIODIC_SYNC),Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHISTSYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHISTSYNC}});
-          mso_data_in_len_TE0[i][0] = (use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]])) + Cr4BTrtecontrol.Trteinhibitsrc? 'hc : 'h10;
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({(use_pend_addr[i]?pend_iCount_to_report_delay:iCount_to_report_TE0[dataBlock[i]]),use_pend_btype[i]?pend_btype_to_report_delay:bType_to_report_TE0[dataBlock[i]],(use_pend_addr[i]?seq_icnt_overflow_delay:seq_icnt_overflow_TE0[dataBlock[i]])?SEQ_INCT_OVERFLOW:((trNotifyIBHS_ANY | trNotifyIBHS_ANY_delay)?TRACE_EVENT:PERIODIC_SYNC),(Cr4BTrtecontrol.Trteinhibitsrc?INDIRECTBRANCHHISTSYNC:{Cr4BTrteinstfeatures.Trtesrcid[3:0],INDIRECTBRANCHHISTSYNC})});
+          mso_data_in_len_TE0[i][0] = (use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_iCount_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(iCount_to_report_len_TE0[dataBlock[i]])) + ((Cr4BTrtecontrol.Trteinhibitsrc)? 'hc : 'h10);
           mso_data_is_var_TE0[i][0] = 1'b1; 
           mso_data_is_last_TE0[i][0] = '0; 
 
@@ -896,12 +898,13 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
           mso_data_in_TE0[i][2] = use_pend_addr[i]?MSO_DATA_IN_WIDTH'(pend_hist_to_report_delay):MSO_DATA_IN_WIDTH'(hist_to_report_TE0[dataBlock[i]]);
           mso_data_in_len_TE0[i][2] = use_pend_addr[i]?($clog2(MSO_DATA_IN_WIDTH)+1)'(pend_hist_to_report_delay_len):($clog2(MSO_DATA_IN_WIDTH)+1)'(hist_report_len_TE0[dataBlock[i]]);
           mso_data_is_var_TE0[i][2] = 1'b1; 
-          mso_data_is_last_TE0[i][2] = '0; 
+          mso_data_is_last_TE0[i][2] = ~trtsenable; 
 
-          mso_data_in_TE0[i][3] = MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-          mso_data_in_len_TE0[i][3] =($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
-          mso_data_is_var_TE0[i][3] = '1;
-          mso_data_is_last_TE0[i][3] = '1;
+          mso_data_in_TE0[i][3] = trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][3] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('b0);
+          mso_data_is_var_TE0[i][3] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][3] = trtsenable?'1:'0;
+
 
           mso_data_in_TE0[i][4] = '0;
           mso_data_in_len_TE0[i][4] = '0;
@@ -919,15 +922,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
           ibh_btype_reported_TE0[i] = '0;
 
-          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({8'h04,4'h0,Cr4BTrtecontrol.Trteinhibitsrc?ERROR:{Cr4BTrteinstfeatures.Trtesrcid[3:0],ERROR}});
+          mso_data_in_TE0[i][0] = MSO_DATA_IN_WIDTH'({8'h04,4'h0,(Cr4BTrtecontrol.Trteinhibitsrc?ERROR:{Cr4BTrteinstfeatures.Trtesrcid[3:0],ERROR})});
           mso_data_in_len_TE0[i][0] = Cr4BTrtecontrol.Trteinhibitsrc? 'h12 : 'h16;
           mso_data_is_var_TE0[i][0] = '1;
-          mso_data_is_last_TE0[i][0] = '0; 
+          mso_data_is_last_TE0[i][0] = ~(trtsenable); 
 
-          mso_data_in_TE0[i][1] = MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-          mso_data_in_len_TE0[i][1] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
-          mso_data_is_var_TE0[i][1] = '1;
-          mso_data_is_last_TE0[i][1] = '1;
+          mso_data_in_TE0[i][1] = trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0);
+          mso_data_in_len_TE0[i][1] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0);
+          mso_data_is_var_TE0[i][1] = trtsenable?'1:'0;
+          mso_data_is_last_TE0[i][1] = trtsenable?'1:'0;
 
           mso_data_in_TE0[i][2] = '0;
           mso_data_in_len_TE0[i][2] = '0;
@@ -989,7 +992,6 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // Flop the pipe valid signal to TE1
   // Flop the current packet to TE1 cycle
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
-    generic_dff #(.WIDTH(1)) pipe_vld_TE1_ff (.out(pipe_vld_TE1[i]), .in(pipe_vld_TE0[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
     generic_dff #(.WIDTH($bits(Pkt_TCode_e))) curr_pkt_TE1_ff (.out({curr_pkt_TE1[i]}), .in(packet_pipe_vld_TE0[i]?curr_pkt_TE0[i]:PKT_UNKNOWN), .en(1'b1), .clk(clock), .rst_n(reset_n));
   end
   // Flop the time stamp to TE1 cycle to compute the cycle_count
@@ -1112,15 +1114,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff_clr #(.WIDTH(1)) bcnt_TE2_overflowed_ff (.out(bcnt_TE2_overflowed), .in(1'b1), .clr(isErrorClear_ANY | (|next_bcnt_TE1) | inbrhist_ibh_pkt_clr_after_bcnt_overflow), .en(bcnt_overflow_TE1 & rb_packet_pipe_vld_TE1), .clk(clock), .rst_n(reset_n));
 
   // RepeatBranch Packet framing
-  assign rb_mso_data_in_TE1[0] = MSO_DATA_IN_WIDTH'({bcnt_to_report_TE1,Cr4BTrtecontrol.Trteinhibitsrc?REPEATBRANCH:{Cr4BTrteinstfeatures.Trtesrcid[3:0],REPEATBRANCH}});
+  assign rb_mso_data_in_TE1[0] = MSO_DATA_IN_WIDTH'({bcnt_to_report_TE1,(Cr4BTrtecontrol.Trteinhibitsrc?REPEATBRANCH:{Cr4BTrteinstfeatures.Trtesrcid[3:0],REPEATBRANCH})});
   assign rb_mso_data_in_len_TE1[0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(bcnt_len_TE1) + ($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc? 'h6 :'ha);
   assign rb_mso_data_is_var_TE1[0] = '1;
-  assign rb_mso_data_is_last_TE1[0] = '0;
+  assign rb_mso_data_is_last_TE1[0] = ~trtsenable;
 
-  assign rb_mso_data_in_TE1[1] = MSO_DATA_IN_WIDTH'(rb_tstamp_to_report); 
-  assign rb_mso_data_in_len_TE1[1] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(rb_tstamp_to_report_len); 
-  assign rb_mso_data_is_var_TE1[1] = '1;
-  assign rb_mso_data_is_last_TE1[1] = '1;
+  assign rb_mso_data_in_TE1[1] = trtsenable?MSO_DATA_IN_WIDTH'(rb_tstamp_to_report):MSO_DATA_IN_WIDTH'(0); 
+  assign rb_mso_data_in_len_TE1[1] = trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(rb_tstamp_to_report_len):($clog2(MSO_DATA_IN_WIDTH)+1)'('0); 
+  assign rb_mso_data_is_var_TE1[1] = trtsenable?'1:'0;
+  assign rb_mso_data_is_last_TE1[1] = trtsenable?'1:'0;
 
   assign rb_packet_pipe_vld_TE1 = ((inbrhist_pkt_repeat_clr_TE1 & (bcnt_TE2!=0)) | inbrhist_pkt_repeat_reset_TE1) & ~(isErrorGeneration_TE0 & ~isBTHBOverflow_TE0);
 
@@ -1156,45 +1158,45 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign own_vdm_packet_pipe_is_vdm_vld_TE0 = is_tval_to_report_pend & ~((curr_pkt_TE0[0] == INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[0] & ~(pend_btype_to_report_delay inside {2'h2, 2'h3}));
 
   // Packet framing
-  assign own_vdm_mso_data_in_TE0[0][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP});
-  assign own_vdm_mso_data_in_len_TE0[0][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + 6'ha);
+  assign own_vdm_mso_data_in_TE0[0][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,(Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP})});
+  assign own_vdm_mso_data_in_len_TE0[0][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + (Cr4BTrtecontrol.Trteinhibitsrc? 6'h6 : 6'ha));
   assign own_vdm_mso_data_is_var_TE0[0][0] = '1;
-  assign own_vdm_mso_data_is_last_TE0[0][0] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[0][0] = (own_vdm_packet_pipe_is_vdm_vld_TE0?'1:(trtsenable?'0:'1));
 
-  assign own_vdm_mso_data_in_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED}}):MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-  assign own_vdm_mso_data_in_len_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
+  assign own_vdm_mso_data_in_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, (Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED})}):(trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0));
+  assign own_vdm_mso_data_in_len_TE0[0][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):(trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
   assign own_vdm_mso_data_is_var_TE0[0][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
   assign own_vdm_mso_data_is_last_TE0[0][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0; 
 
   assign own_vdm_mso_data_in_TE0[0][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(tval_to_report_TE0):MSO_DATA_IN_WIDTH'('b0);
   assign own_vdm_mso_data_in_len_TE0[0][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tval_to_report_len_TE0)):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
   assign own_vdm_mso_data_is_var_TE0[0][2] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[0][2] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[0][2] = ~(own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  assign own_vdm_mso_data_in_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
-  assign own_vdm_mso_data_in_len_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
-  assign own_vdm_mso_data_is_var_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[0][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_in_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
+  assign own_vdm_mso_data_in_len_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
+  assign own_vdm_mso_data_is_var_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
+  assign own_vdm_mso_data_is_last_TE0[0][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  assign own_vdm_mso_data_in_TE0[1][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP}});
-  assign own_vdm_mso_data_in_len_TE0[1][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + Cr4BTrtecontrol.Trteinhibitsrc? 6'h6 : 6'ha);
+  assign own_vdm_mso_data_in_TE0[1][0] = MSO_DATA_IN_WIDTH'({context_to_report_TE0,(Cr4BTrtecontrol.Trteinhibitsrc?OWNERSHIP:{Cr4BTrteinstfeatures.Trtesrcid[3:0],OWNERSHIP})});
+  assign own_vdm_mso_data_in_len_TE0[1][0] = ($clog2(MSO_DATA_IN_WIDTH)+1)'(process_context_len_TE0 + (Cr4BTrtecontrol.Trteinhibitsrc? 6'h6 : 6'ha));
   assign own_vdm_mso_data_is_var_TE0[1][0] = '1;
-  assign own_vdm_mso_data_is_last_TE0[1][0] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[1][0] = own_vdm_packet_pipe_is_vdm_vld_TE0?'1:trtsenable?'0:'1;
 
-  assign own_vdm_mso_data_in_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED}}):MSO_DATA_IN_WIDTH'(trTstamp_TE0);
-  assign own_vdm_mso_data_in_len_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0);
+  assign own_vdm_mso_data_in_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'({2'b00, (Cr4BTrtecontrol.Trteinhibitsrc?VENDORDEFINED:{Cr4BTrteinstfeatures.Trtesrcid[3:0],VENDORDEFINED})}):(trtsenable?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'(0));
+  assign own_vdm_mso_data_in_len_TE0[1][1] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(Cr4BTrtecontrol.Trteinhibitsrc?4'h8 :4'hc)):(trtsenable?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'(0));
   assign own_vdm_mso_data_is_var_TE0[1][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
   assign own_vdm_mso_data_is_last_TE0[1][1] = ~own_vdm_packet_pipe_is_vdm_vld_TE0; 
 
   assign own_vdm_mso_data_in_TE0[1][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(tval_to_report_TE0):MSO_DATA_IN_WIDTH'('b0);
   assign own_vdm_mso_data_in_len_TE0[1][2] = own_vdm_packet_pipe_is_vdm_vld_TE0?(($clog2(MSO_DATA_IN_WIDTH)+1)'(tval_to_report_len_TE0)):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
   assign own_vdm_mso_data_is_var_TE0[1][2] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[1][2] = ~own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_is_last_TE0[1][2] = ~(own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  assign own_vdm_mso_data_in_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
-  assign own_vdm_mso_data_in_len_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
-  assign own_vdm_mso_data_is_var_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
-  assign own_vdm_mso_data_is_last_TE0[1][3] = own_vdm_packet_pipe_is_vdm_vld_TE0;
+  assign own_vdm_mso_data_in_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?MSO_DATA_IN_WIDTH'(trTstamp_TE0):MSO_DATA_IN_WIDTH'('b0);
+  assign own_vdm_mso_data_in_len_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable)?($clog2(MSO_DATA_IN_WIDTH)+1)'(tstamp_len_TE0):($clog2(MSO_DATA_IN_WIDTH)+1)'('0);
+  assign own_vdm_mso_data_is_var_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
+  assign own_vdm_mso_data_is_last_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
   generic_dff #(.WIDTH(NUM_BLOCKS)) own_vdm_packet_pipe_vld_TE1_ff (.out(own_vdm_packet_pipe_vld_TE1), .in(own_vdm_packet_pipe_vld_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
@@ -1261,7 +1263,6 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // ----------------------------------------------------------------------------------------------
   // Error Packet Conditions:
   // ----------------------------------------------------------------------------------------------
-  generic_dff #(.WIDTH(1)) isErrorGeneration_TE1_ff (.out(isErrorGeneration_TE1), .in(isErrorGeneration_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
 
   generic_dff_clr #(.WIDTH(1)) isEncoderBufferOverflowflop_ANY_ff (.out(isEncoderBufferOverflowflop_ANY), .in(1'b1), .clr(pkt_fifo_cnt_TE2 < 2), .en(pkt_fifo_cnt_TE2 >= 4), .clk(clock), .rst_n(reset_n)); 
   assign isEncoderBufferOverflow_ANY = isEncoderBufferOverflowflop_ANY; 
@@ -1273,8 +1274,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   assign isErrorClear_ANY = (isEncoderBufferOverflow_ANY | isBTHBOverflow_TE0) & trStartStop_ANY; 
 
-  assign isBTHBOverflowErrorPushed_TE0 = (curr_pkt_TE0[0] == ERROR) & packet_pipe_vld_TE0[0] & isBTHBOverflow_TE0;
-  generic_dff_clr #(.WIDTH(1)) isBTHBOverflowErrorPushed_TE1_ff (.out(isBTHBOverflowErrorPushed_TE1), .in(isBTHBOverflowErrorPushed_TE0), .clr((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0]), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+
 
   assign trTeResyncAfterEncOverflowError_ANY = (~isErrorPacketPushed_ANY & isErrorPacketPushed_d1_ANY);
   generic_dff_clr #(.WIDTH(1)) trTeResyncAfterBTHBOverflowError_ANY_ff (.out(trTeResyncAfterBTHBOverflowError_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] inside {PROGTRACESYNC, PROGTRACECORRELATION}) & packet_pipe_vld_TE0[0]), .en((~isErrorPacketPushed_ANY & isErrorPacketPushed_d1_ANY) | (isBTHBOverflow_TE0 & trStartStop_ANY)), .clk(clock), .rst_n(reset_n)); 
@@ -1324,7 +1324,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   assign trBthbStartStop_ANY = trTeSwEnable_ANY; 
 
-  assign trTeEnable_Trace_ANY = trTeInsttracing_Enable_ANY & trPrivFiltered_TE0;
+
   assign trStartStop_ANY = trTeInsttracing_Enable_ANY & trPrivFiltered_TE0 & ~trPrivisDebug_TE0;
 
   assign trStart_ANY = trStartStop_ANY & ~trStartStop_ANY_d1;
@@ -1365,9 +1365,9 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   assign trNotifyIBHS_ANY = trTracingInProgress_ANY & trNotifySyncfromTrig_ANY; 
 
-  generic_dff_clr #(.WIDTH(1)) trTeTracingStartfromTrigger_ANY_ff (.out(trTeTracingStartfromTrigger_ANY), .in(1'b1), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACESYNC) & packet_pipe_vld_TE0[0] & ~trTeResyncAfterError_ANY)), .en(trStartfromTrig_ANY), .clk(clock), .rst_n(reset_n));
   generic_dff_clr #(.WIDTH(1)) trNotifyIBHS_ANY_delay_ff (.out(trNotifyIBHS_ANY_delay), .in(1'b1), .clr(~trNotifyIBHS_ANY & (trStart_ANY | ((curr_pkt_TE1[0]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE1[0]) | ((curr_pkt_TE1[1]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE1[1]))), .en(trTracingInProgress_ANY & trNotifyIBHS_ANY), .clk(clock), .rst_n(reset_n)); //trStartStop_ANY
  
+
   generic_dff_clr #(.WIDTH(1)) trIBHS_trig_psync_ANY_ff (.out(trIBHS_trig_psync_ANY), .in(1'b1), .en(periodic_sync_count_overflow | trNotifyIBHS_ANY), .clr(trStart_ANY |((curr_pkt_TE0[0]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[0]) | ((curr_pkt_TE0[1]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[1])), .clk(clock), .rst_n(reset_n));
 
   generic_dff #(.WIDTH(1)) trIBHS_trig_psync_ANY_delay_ff (.out(trIBHS_trig_psync_ANY_delay), .in(trIBHS_trig_psync_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
@@ -1385,11 +1385,9 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff #(.WIDTH(1)) trTeInsttracing_Enable_ANY_d1_ff (.out(trTeInsttracing_Enable_ANY_d1), .in(trTeInsttracing_Enable_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   generic_dff #(.WIDTH(1)) trSwControlStop_ANY_ff (.out(trSwControlStop_ANY), .in(trSwControlStop_ANY_m1), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trPrivDebugModeExit_ANY_d1_ff (.out(trPrivDebugModeExit_ANY_d1), .in(trPrivDebugModeExit_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   generic_dff_clr #(.WIDTH(1)) trProgressed_after_DebugEntry_ANY_ff (.out(trProgressed_after_DebugEntry_ANY), .in(1'b1), .clr((trSwControlStop_ANY & ~trPrivDebugModeEntry_ANY) | ((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0])), .en(Cr4BTrtecontrol.Trteactive & (trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1) & (trTracingInProgress_ANY) & (trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY)), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trTeEnable_Trace_ANY_d1_ff (.out(trTeEnable_Trace_ANY_d1), .in(trTeEnable_Trace_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
   generic_dff_clr #(.WIDTH(1)) trReEnable_ANY_ff (.out(trReEnable_ANY), .in((~trTeInsttracing_Enable_ANY & trTeInsttracing_Enable_ANY_d1) | trReEnable_ANY), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACESYNC) & packet_pipe_vld_TE0[0] & ~trTeResyncAfterError_ANY)), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   generic_dff_clr #(.WIDTH(1)) trFlush_ANY_ff (.out(trFlush_ANY), .in(1'b1), .clr(~|pkt_fifo_cnt_TE2 & flush_mode_exit & flush_mode_enable), .en(~trTeEnable_ANY & trTeEnable_ANY_d1), .clk(clock), .rst_n(reset_n));
@@ -1400,7 +1398,6 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   generic_dff #(.WIDTH(1)) trace_hardware_flush_d1_ff (.out(trace_hardware_flush_d1), .in(trace_hardware_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
   assign trace_hardware_flush_pulse = ~trace_hardware_flush_d1 & trace_hardware_flush; 
 
-  generic_dff_clr #(.WIDTH(1)) trace_hardware_flush_pulse_valid_ff (.out(trace_hardware_flush_pulse_valid), .in(1'b1), .clr((flush_mode_enable & ~trace_hardware_flush_pulse) | flush_mode_exit), .en(trace_hardware_flush_pulse), .clk(clock), .rst_n(reset_n));
   generic_dff_clr #(.WIDTH(1)) trace_hw_flush_in_progress_ff (.out(trace_hw_flush_in_progress), .in(1'b1), .clr(~trTracingInProgress_ANY & ~|pkt_fifo_push_TE1 & ~|pkt_fifo_cnt_TE2 & ~flush_mode_enable & flush_mode_exit & packetizer_empty /*& ~trace_hardware_flush*/), .en(trace_hardware_flush_pulse & trTeEnable_ANY), .clk(clock), .rst_n(reset_n));
 
   generic_dff #(.WIDTH(1)) trace_hardware_stop_d1_ff (.out(trace_hardware_stop_d1), .in(trace_hardware_stop), .en(1'b1), .clk(clock), .rst_n(reset_n));
@@ -1414,7 +1411,6 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   assign periodic_sync_count_clr = trIBHS_trig_psync_ANY | (|seq_icnt_overflow_TE0) | trStop_ANY | isErrorClear_ANY | trTeResyncAfterError_ANY;
 
-  generic_dff #(.WIDTH(1)) periodic_sync_count_overflow_delay_ff (.out(periodic_sync_count_overflow_delay), .in(periodic_sync_count_overflow), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
   generic_dff_clr #(.WIDTH(1)) periodic_sync_count_overflow_ff (.out(periodic_sync_count_overflow), .in(1'b1), .clr(periodic_sync_count_clr/*periodic_sync_count_overflow*/), .en(periodic_sync_count_overflow_stg), .clk(clock), .rst_n(reset_n));
 
   // Compute the next value of the periodic sync counter based on the SYNC mode
@@ -1442,7 +1438,6 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // ---------------------------------------------------------------------------------------------- 
   // Flop for the SyncPending conditions
   generic_dff_clr #(.WIDTH(1)) isProgTraceSync_Pending_TE0_ff (.out(isProgTraceSync_Pending), .in(trStart_ANY | isErrorGeneration_TE0 | isProgTraceSync_Pending), .clr((isProgTraceSync_Pending_clr | trStop_ANY) & ~isErrorGeneration_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
-  generic_dff_clr #(.WIDTH(1)) isOwnership_Pending_TE0_ff (.out(isOwnership_Pending), .in(curr_pkt_TE0[0] == INDIRECTBRANCHHISTSYNC | curr_pkt_TE0[1] == INDIRECTBRANCHHISTSYNC | context_switch_TE0 | isOwnership_Pending), .clr(isOwnership_Pending_clr), .en(1'b1), .clk(clock), .rst_n(reset_n));
   generic_dff_clr #(.WIDTH(1)) isProgTraceCorrelation_Pending_TE0_ff (.out(isProgTraceCorrelation_Pending), .in(isProgTraceCorrelation_Pending | (trStop_ANY & ~(packet_pipe_vld_TE0[0] & (curr_pkt_TE0[0] == PROGTRACECORRELATION)))), .clr(isProgTraceCorrelation_Pending_clr | trStart_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
   generic_dff_clr #(.WIDTH(1)) isIndirectBranchHist_Pending_TE0_ff (.out(isIndirectBranchHist_Pending), .in(isIndirectBranchHist_Pending | (is_hist_to_report_TE0[0] & (~trIBHS_trig_psync_ANY | isAddrPending_TE0[0])) | is_hist_to_report_TE0[1] | aux_ibh_packet_tgt_pending_TE0), .clr((isIndirectBranchHist_Pending_clr | isIndirectBranchHistSync_Pending_clr | trIBHS_trig_psync_ANY) & ~((is_hist_to_report_TE0[0] & isAddrPending_TE0[0]) | is_hist_to_report_TE0[1] | aux_ibh_packet_tgt_pending_TE0)), .en(1'b1), .clk(clock), .rst_n(reset_n));
   generic_dff_clr #(.WIDTH(1)) isIndirectBranchHistSync_Pending_TE0_ff (.out(isIndirectBranchHistSync_Pending), .in((isIndirectBranchHistSync_Pending | trIBHS_trig_psync_ANY | (|seq_icnt_overflow_TE0)) & ~trSwControlStop_ANY), .clr(isIndirectBranchHistSync_Pending_clr | trStart_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));

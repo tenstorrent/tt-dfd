@@ -1,3 +1,6 @@
 ####################################################################################################
 ######## Waiver File for Spyglass
 ####################################################################################################
+waive -rule { {AutomaticFuncTask-ML} } -file { {rand_id_queue.sv} } -regexp -comment {Raises error in enhanced lint}
+waive -rule { {W164b} } -file { {axi_id_prepend.sv} } -regexp -comment {Raises error in enhanced lint}
+waive -rule { {W416} } -file { {ecc_pkg.sv} } -regexp -comment {Raises error in enhanced lint}

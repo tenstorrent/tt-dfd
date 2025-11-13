@@ -255,7 +255,7 @@ assign trace_stop_in_next_xmitted_vlt_packet  = next_vlt_packet_trace_info[TRACE
 always@(posedge clock)
   if (!reset_n)
     trace_start_xmt_pending <= 1'b0;
-  else if ( trace_stop_to_xmt )
+  else if ( trace_stop_to_xmt & ~trace_start_to_xmt)
     trace_start_xmt_pending <= 1'b0; // If trace stop comes while this is pending, clear it.
   else if (trace_start_to_xmt & ~trace_start_in_next_xmitted_vlt_packet) 
     trace_start_xmt_pending <= 1'b1;
@@ -265,7 +265,7 @@ always@(posedge clock)
 always@(posedge clock)
   if (!reset_n)
     trace_stop_xmt_pending <= 1'b0;
-  else if ( trace_start_to_xmt )
+  else if ( trace_start_to_xmt & ~trace_stop_to_xmt )
     trace_stop_xmt_pending <= 1'b0;  // If trace start comes while this is pending, clear it.
   else if (trace_stop_to_xmt & ~trace_stop_in_next_xmitted_vlt_packet)
     trace_stop_xmt_pending <= 1'b1;
