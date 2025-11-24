@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Parameter NUM_TRACE_INST changed to NUM_TRACE_AND_ANALYZER_INST for better clarity of parameter
+- Changed module names for all common cells to have a tt_dfd_ prefix
 
 ### Removed
 
