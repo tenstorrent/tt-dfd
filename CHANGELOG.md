@@ -9,10 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Fixed 
+
+### Changed
+
+### Removed
+
+
+## [0.2.0] - 2025-10-24
+
+### Added
+
 - Added proper integration guide under [doc/](doc/)
 - added missing element in rdl file
 - Updated README.md with lint target information
 - Added lint waivers for spyglass enhanced lint
+- Make cust_rtl support for MacOS (older bash)
 
 ### Fixed 
 

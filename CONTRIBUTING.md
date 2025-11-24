@@ -8,7 +8,8 @@ When opening a PR, please keep in mind the following policies:
 * Name branches as `<feature/bugfix/hotfix>/<short-description>` (e.g., `bugfix/fix_dfd_counter_mechanism`)
 * Make sure the title and description of the PR are appropriate and descriptive - if the change is related to an ongoing issue, please link the issue in the PR description
 * Squash commits before merging; commit messages should clearly describe the changes
-* We highly recommend following the [lowRISC Verilog Coding Style Guide](https://github.com/lowRISC/style-guides/blob/master/VerilogCodingStyle.md#use-logic-for-synthesis) for any SystemVerilog contributions  
+* We highly recommend following the [lowRISC Verilog Coding Style Guide](https://github.com/lowRISC/style-guides/blob/master/VerilogCodingStyle.md#use-logic-for-synthesis) for any SystemVerilog contributions
+* For any updates, please update the [CHANGELOG.MD's](CHANGELOG.MD) Unreleased section alongside the PR.  
 
 The team will make an effort to regularly review PRs and may give feedback to contributors. 
 
