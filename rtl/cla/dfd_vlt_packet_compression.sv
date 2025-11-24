@@ -116,12 +116,12 @@ assign periodic_sync_count_en = (Cr4BCsrTrdstcontrol.Trdstsyncmode != COUNT_OFF_
 
 // Denotes periodic counter overflow
 assign next_periodic_sync_count_match = (next_periodic_sync_counter == (periodic_sync_max_count - PERIODIC_SYNC_CTR_MAX_WIDTH'(1)));
-generic_dff #(.WIDTH(1)) periodic_sync_count_match_ff (.out(periodic_sync_count_match), .in(next_periodic_sync_count_match), .en(1'b1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1)) periodic_sync_count_match_ff (.out(periodic_sync_count_match), .in(next_periodic_sync_count_match), .en(1'b1), .clk(clock), .rst_n(reset_n));
 // Generates a clear signal when the counter overflows or when the dst is not enabled
 assign periodic_sync_count_clr = periodic_sync_count_match | !trace_in_progress;
 // Compute the next value of the periodic sync counter; periodic counter gets updated only when the enable is asserted to the following can be done unconditionally
 assign next_periodic_sync_counter = periodic_sync_counter + 1'b1;
-generic_dff_clr #(.WIDTH(PERIODIC_SYNC_CTR_MAX_WIDTH)) periodic_sync_count_ff (.out(periodic_sync_counter), .in(next_periodic_sync_counter), .clr(periodic_sync_count_clr), .en(periodic_sync_count_en), .clk(clock), .rst_n(reset_n)); 
+tt_dfd_generic_dff_clr #(.WIDTH(PERIODIC_SYNC_CTR_MAX_WIDTH)) periodic_sync_count_ff (.out(periodic_sync_counter), .in(next_periodic_sync_counter), .clr(periodic_sync_count_clr), .en(periodic_sync_count_en), .clk(clock), .rst_n(reset_n)); 
 
 // Enable for sending timestamp packets
 assign ts_packet_enable = (Cr4BCsrTrdstcontrol.Trdstsyncmode == CYCLE_COUNT_DST_MODE) && periodic_sync_count_match & trace_in_progress;
@@ -147,10 +147,10 @@ always @(*) begin
 end
     
 // Stream full handling
-generic_dff_clr #(.WIDTH(1)) stream_full_till_next_input_packet_ff (.out(stream_full_till_next_input_packet), .in(stream_full_till_next_input_packet_next), .clr(trace_info == 2'h2), .en(trace_in_progress), .clk(clock), .rst_n(reset_n));
-generic_dff #(.WIDTH(1)) stream_full_ff (.out(stream_full_d1), .in(stream_full), .en(1'b1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff_clr #(.WIDTH(1)) stream_full_till_next_input_packet_ff (.out(stream_full_till_next_input_packet), .in(stream_full_till_next_input_packet_next), .clr(trace_info == 2'h2), .en(trace_in_progress), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1)) stream_full_ff (.out(stream_full_d1), .in(stream_full), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-generic_dff_clr #(.WIDTH(1)) trace_in_progress_ff (.out(trace_in_progress_flop), .in(1'b1), .clr(trace_info == 2'h2), .en(trace_info == 2'h1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff_clr #(.WIDTH(1)) trace_in_progress_ff (.out(trace_in_progress_flop), .in(1'b1), .clr(trace_info == 2'h2), .en(trace_info == 2'h1), .clk(clock), .rst_n(reset_n));
 
 assign trace_in_progress = ((trace_info == 2'h1) | trace_in_progress_flop) & ~(trace_info == 2'h2); 
 

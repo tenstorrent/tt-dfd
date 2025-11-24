@@ -208,7 +208,7 @@ module dfd_trace_funnel
   assign tr_jt_mmr_rsp_data_i = {32'b0, CsrRdData};
   assign tr_jt_mmr_rsp_vld_i = tr_jt_mmr_wr_rsp_vld | (jt_tr_mmr_rd_req_pend & CsrCs_d3);
 
-  generic_dff_clr #(.WIDTH(1)) tr_jt_mmr_wr_rsp_vld_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) tr_jt_mmr_wr_rsp_vld_ff (
     .out(tr_jt_mmr_wr_rsp_vld), 
     .in(1'b1),
     .clr(tr_jt_mmr_wr_rsp_vld),
@@ -217,7 +217,7 @@ module dfd_trace_funnel
     .rst_n(reset_n)
   );
   
-  generic_dff_clr #(.WIDTH(1)) jt_tr_mmr_rd_req_pend_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) jt_tr_mmr_rd_req_pend_ff (
     .out          (jt_tr_mmr_rd_req_pend),
     .in          (1'b1),
     .clr        (tr_jt_mmr_rsp_vld_i),
@@ -248,7 +248,7 @@ module dfd_trace_funnel
     Core_fuse_enable_map_vector[7] = TrCsrs.TrCsrTrclusterfusecfghi.Core7Enable;
 end
 
-  generic_vidtopid #(.NumHarts(NUM_CORES)) i_vidtopid_ntrace_disinput (
+  tt_dfd_generic_vidtopid #(.NumHarts(NUM_CORES)) i_vidtopid_ntrace_disinput (
     .fuse_map(Core_fuse_enable_map_vector[NUM_CORES-1:0]),
     .vid_map(Core_fuse_vid_map_vector[NUM_CORES-1:0]),
     .vid('0),
@@ -258,7 +258,7 @@ end
     .map_avail()
   );
 
-  generic_vidtopid #(.NumHarts(NUM_CORES)) i_vidtopid_dst_disinput (
+  tt_dfd_generic_vidtopid #(.NumHarts(NUM_CORES)) i_vidtopid_dst_disinput (
     .fuse_map(Core_fuse_enable_map_vector[NUM_CORES-1:0]),
     .vid_map(Core_fuse_vid_map_vector[NUM_CORES-1:0]),
     .vid('0),
@@ -275,7 +275,7 @@ end
   assign trfunnelntracefuse = TrCsrs.TrCsrTrclusterfusecfghi.TraceEnable && TrCsrs.TrCsrTrclusterfusecfghi.Lock;
   assign trfunneldstfuse = TrCsrs.TrCsrTrclusterfusecfghi.DstEnable && TrCsrs.TrCsrTrclusterfusecfghi.Lock;
 
-  generic_dff #(.WIDTH(NUM_CORES)) TN_TR_Enabled_Srcs_ff (
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES)) TN_TR_Enabled_Srcs_ff (
     .out          (TN_TR_Enabled_Srcs),
     .in          (TN_TR_Enabled_Srcs_stg),
     .en         (1'b1),
@@ -283,7 +283,7 @@ end
     .rst_n    (reset_n)
   ); 
 
-  generic_dff #(.WIDTH(16)) Trfunneldisinput_Pid_vector_ff (
+  tt_dfd_generic_dff #(.WIDTH(16)) Trfunneldisinput_Pid_vector_ff (
     .out          (Trfunneldisinput_Pid_vector),
     .in          (Trfunneldisinput_Pid_vector_stg),
     .en         (1'b1),
@@ -308,7 +308,7 @@ end
     end
   end
 
-  generic_dff #(.WIDTH($clog2(8)+1)) TR_TS_Ntrace_NumEnabled_Srcs_ff (
+  tt_dfd_generic_dff #(.WIDTH($clog2(8)+1)) TR_TS_Ntrace_NumEnabled_Srcs_ff (
     .out          (TR_TS_Ntrace_NumEnabled_Srcs),
     .in          (TR_TS_Ntrace_NumEnabled_Srcs_stg),
     .en         (1'b1),
@@ -316,7 +316,7 @@ end
     .rst_n    (reset_n)
   ); 
 
-  generic_dff #(.WIDTH($clog2(8)+1)) TR_TS_Dst_NumEnabled_Srcs_ff (
+  tt_dfd_generic_dff #(.WIDTH($clog2(8)+1)) TR_TS_Dst_NumEnabled_Srcs_ff (
     .out          (TR_TS_Dst_NumEnabled_Srcs),
     .in          (TR_TS_Dst_NumEnabled_Srcs_stg),
     .en         (1'b1),
@@ -346,7 +346,7 @@ end
   // ramdata register reads
   assign NxtCsrCs = (CsrCs & ~CsrWrEn); // | ((jt_tr_eff_mmr_req_vld_with_fuse_chk & ~jt_tr_mmr_req_we_o) | jt_tr_mmr_rd_req_pend);
 
-  generic_dff #(.WIDTH(1)) CsrCsd1_ff (
+  tt_dfd_generic_dff #(.WIDTH(1)) CsrCsd1_ff (
     .out          (CsrCs_d1),
     .in          (NxtCsrCs),
     .en         (~|TraceRamWrEn_TS0 | ~NxtCsrCs), // Ensre no writes is enabled in this cycle
@@ -354,7 +354,7 @@ end
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(1)) CsrCsd2_ff (
+  tt_dfd_generic_dff #(.WIDTH(1)) CsrCsd2_ff (
     .out          (CsrCs_d2),
     .in          (CsrCs_d1),
     .en         (1'b1),
@@ -362,7 +362,7 @@ end
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(1)) CsrCsd3_ff (
+  tt_dfd_generic_dff #(.WIDTH(1)) CsrCsd3_ff (
     .out          (CsrCs_d3),
     .in          (CsrCs_d2),
     .en         (1'b1),

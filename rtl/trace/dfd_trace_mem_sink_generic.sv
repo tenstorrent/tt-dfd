@@ -50,7 +50,7 @@ module dfd_trace_mem_sink
   // 	end 
   // end else begin: HS_SRAM
   for (genvar gc = 0; gc < TRC_RAM_INSTANCES; gc++) begin : TrcSinkCells
-    generic_mem_model #(
+    tt_dfd_generic_mem_model #(
         .TSEL_CONFIGURABLE(TSEL_CONFIGURABLE),
         .ADDR_WIDTH(TRC_RAM_INDEX_WIDTH),
         .DATA_WIDTH(TRC_RAM_DATA_WIDTH),

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
-module generic_rotate #(
+module tt_dfd_generic_rotate #(
     parameter int unsigned NUM_IN   = 6,
     parameter int unsigned NUM_OUT  = 8,
     parameter int unsigned ROT_LEFT = 1,

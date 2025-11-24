@@ -92,25 +92,25 @@ import dfd_dst_pkg::*;
    // If requested packet space is not granted, retain original.
    logic retain_original_input;
 
-  generic_dff #(.WIDTH(1)) trace_hardware_stop_d1_ff (.out(trace_hardware_stop_d1), .in(trace_hardware_stop), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trace_hardware_flush_d1_ff (.out(trace_hardware_flush_d1), .in(trace_hardware_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trace_hardware_stop_d1_ff (.out(trace_hardware_stop_d1), .in(trace_hardware_stop), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trace_hardware_flush_d1_ff (.out(trace_hardware_flush_d1), .in(trace_hardware_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
   
   assign trace_stop_from_hw_overflow = trace_hardware_stop & ~trace_hardware_stop_d1;  
   assign trace_hardware_flush_pulse = trace_hardware_flush & ~trace_hardware_flush_d1; 
  
-  generic_dff_clr #(.WIDTH(1)) trace_hardware_flush_inprogress_ff (.out(trace_hw_flush_inprogress), .in(1'b1), .clr(flush_mode_enable & flush_mode_exit), .en(sw_tracing_in_progress & trace_hardware_flush_pulse), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trace_hardware_flush_inprogress_d1_ff (.out(trace_hw_flush_inprogress_d1), .in(trace_hw_flush_inprogress), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trace_hardware_flush_inprogress_ff (.out(trace_hw_flush_inprogress), .in(1'b1), .clr(flush_mode_enable & flush_mode_exit), .en(sw_tracing_in_progress & trace_hardware_flush_pulse), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trace_hardware_flush_inprogress_d1_ff (.out(trace_hw_flush_inprogress_d1), .in(trace_hw_flush_inprogress), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trace_stop_from_sw_when_flush_inprogress_ff (.out(trace_stop_from_sw_when_hw_flush_inprogress), .in(1'b1), .clr(trace_hw_flush_inprogress_d1 & ~trace_hw_flush_inprogress), .en(trace_hw_flush_inprogress & trace_stop), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trace_stop_from_sw_when_flush_inprogress_ff (.out(trace_stop_from_sw_when_hw_flush_inprogress), .in(1'b1), .clr(trace_hw_flush_inprogress_d1 & ~trace_hw_flush_inprogress), .en(trace_hw_flush_inprogress & trace_stop), .clk(clock), .rst_n(reset_n)); 
   
   assign trace_start_after_hw_flush = ~trace_hw_flush_inprogress & trace_hw_flush_inprogress_d1 & ~trace_stop_from_sw_when_hw_flush_inprogress & ~trace_stop; 
   assign trace_stop_from_hw_flush = trace_hw_flush_inprogress & ~trace_hw_flush_inprogress_d1; 
 
-  generic_dff #(.WIDTH(1)) trace_stop_from_hw_flush_d1_ff (.out(trace_stop_from_hw_flush_d1), .in(trace_stop_from_hw_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trace_stop_from_hw_flush_d1_ff (.out(trace_stop_from_hw_flush_d1), .in(trace_stop_from_hw_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
   
   assign trace_disable_due_to_hw_flush = ~trace_stop_from_hw_flush & trace_stop_from_hw_flush_d1; 
 
-  generic_dff_clr #(.WIDTH(1)) tracing_in_progress_flop_ff (.out(tracing_in_progress_flop), .in(1'b1), .clr(trace_stop), .en(trace_start_effective), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) tracing_in_progress_flop_ff (.out(tracing_in_progress_flop), .in(1'b1), .clr(trace_stop), .en(trace_start_effective), .clk(clock), .rst_n(reset_n));
   assign sw_tracing_in_progress = (tracing_in_progress_flop | trace_start_effective) & ~trace_stop;
 
   assign trace_start_effective = trace_start & ~trace_hardware_stop; 

@@ -3,7 +3,7 @@
 
 // Generic fast find-first-set (priority encoder) with thermometer output
 // Optimized parallel logic implementation suitable for open-source use
-module generic_ffs_fast #(
+module tt_dfd_generic_ffs_fast #(
     parameter DIR_L2H    = 1,              // Direction: 1=Low-to-High (LSB first), 0=High-to-Low (MSB first)
     parameter WIDTH      = 8,              // Number of request inputs
     parameter SIZE       = $clog2(WIDTH),  // Encoded output width

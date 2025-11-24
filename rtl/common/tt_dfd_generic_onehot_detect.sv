@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
-module generic_onehot_detect #(
+module tt_dfd_generic_onehot_detect #(
       parameter WIDTH       = 8,      
       parameter ZERO_ONEHOT = 0                                         // Detect one-hot instead of zero-one-hot
 	)           		  

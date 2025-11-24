@@ -53,7 +53,7 @@ import dfd_tr_csr_pkg::*;
     assign apb_delay = psel && ~penable && ~pwrite &&
                        ((paddr == (BASE_ADDR + TR_TRRAMDATA_REG_OFFSET)) || (paddr == (BASE_ADDR + TR_TRDSTRAMDATA_REG_OFFSET)));
 
-    generic_dff #(.WIDTH(1), .RESET_VALUE(1'b0), .BYPASS(0)) u_apb_delay (
+    tt_dfd_generic_dff #(.WIDTH(1), .RESET_VALUE(1'b0), .BYPASS(0)) u_apb_delay (
         .clk(clk),
         .rst_n(reset_n),
         .en(1'b1),
@@ -87,7 +87,7 @@ import dfd_tr_csr_pkg::*;
         assign CsrWrStrb8B = CsrWrStrb;
     end
 
-    generic_dff #(.WIDTH(1), .RESET_VALUE(1'b0), .BYPASS(0)) u_dff_pready (
+    tt_dfd_generic_dff #(.WIDTH(1), .RESET_VALUE(1'b0), .BYPASS(0)) u_dff_pready (
         .clk(clk),
         .rst_n(reset_n),
         .en(1'b1),
@@ -95,7 +95,7 @@ import dfd_tr_csr_pkg::*;
         .out(pready)
     );
 
-    generic_dff #(.WIDTH(1), .RESET_VALUE(1'b0), .BYPASS(0)) u_dff_reg_xfer_d1 (
+    tt_dfd_generic_dff #(.WIDTH(1), .RESET_VALUE(1'b0), .BYPASS(0)) u_dff_reg_xfer_d1 (
         .clk(clk),
         .rst_n(reset_n),
         .en(1'b1),

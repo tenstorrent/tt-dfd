@@ -56,7 +56,7 @@ module dfd_time_sync #(
     logic reg_wr_ready, reg_rd_ready;
     logic reg_hit;
 
-    generic_dff #(.WIDTH(1))  xtrigger_edge_det  ( .clk(i_clk), .rst_n(i_reset_n), .en(1'b1), .in(i_xtrigger), .out(i_xtrigger_ff));
+    tt_dfd_generic_dff #(.WIDTH(1))  xtrigger_edge_det  ( .clk(i_clk), .rst_n(i_reset_n), .en(1'b1), .in(i_xtrigger), .out(i_xtrigger_ff));
     assign xtrigger_posedge = i_xtrigger && ~i_xtrigger_ff;
 
     assign o_pready = reg_wr_ready | reg_rd_ready;
@@ -66,12 +66,12 @@ module dfd_time_sync #(
 
     assign i_cs = i_psel & ~i_penable;
 
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_psel_ff           (.out(reg_psel),     .in(i_psel)            , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_strb_ff        (.out(reg_wr_strb),  .in(&i_pstrb)          , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
-    generic_dff #(.WIDTH(ADDR_W)      , .RESET_VALUE(0)) reg_addr_ff           (.out(reg_addr),     .in(i_paddr)           , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
-    generic_dff #(.WIDTH(DATA_W)      , .RESET_VALUE(0)) reg_wr_data_ff        (.out(reg_wr_data),  .in(i_pwdata)          , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_sel_ff         (.out(reg_rd_en),    .in(i_cs && ~i_pwrite) , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_sel_ff         (.out(reg_wr_en),    .in(i_cs && i_pwrite)  , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_psel_ff           (.out(reg_psel),     .in(i_psel)            , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_strb_ff        (.out(reg_wr_strb),  .in(&i_pstrb)          , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(ADDR_W)      , .RESET_VALUE(0)) reg_addr_ff           (.out(reg_addr),     .in(i_paddr)           , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(DATA_W)      , .RESET_VALUE(0)) reg_wr_data_ff        (.out(reg_wr_data),  .in(i_pwdata)          , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_sel_ff         (.out(reg_rd_en),    .in(i_cs && ~i_pwrite) , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_sel_ff         (.out(reg_wr_en),    .in(i_cs && i_pwrite)  , .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
 
 
     // Register write logic
@@ -100,7 +100,7 @@ module dfd_time_sync #(
                                         timestamp_load      ? timestamp_sync_low_reg :
                                         i_time_tick         ? timestamp_nxt[31:0] :
                                                               timestamp_low_reg;
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_low_reg_ff   (.out(timestamp_low_reg), .in(timestamp_low_reg_nxt), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n_warm));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_low_reg_ff   (.out(timestamp_low_reg), .in(timestamp_low_reg_nxt), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n_warm));
 
 
     assign timestamp_high_reg_wr_en = (reg_wr_en & reg_wr_strb & (reg_addr[ADDR_W-1:3] == ADDR_CSR_TIMESTAMP[ADDR_W-1:3]) && (reg_addr[2] == 1'b1));
@@ -108,27 +108,27 @@ module dfd_time_sync #(
                                         timestamp_load        ? timestamp_sync_high_reg :
                                         i_time_tick           ? timestamp_nxt[63:32] :
                                                                 timestamp_high_reg;
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_high_reg_ff   (.out(timestamp_high_reg), .in(timestamp_high_reg_nxt), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n_warm));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_high_reg_ff   (.out(timestamp_high_reg), .in(timestamp_high_reg_nxt), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n_warm));
 
 
     assign timestamp_sync_low_reg_wr_en = (reg_wr_en & reg_wr_strb & (reg_addr[ADDR_W-1:3] == ADDR_CSR_TIMESTAMP_SYNC[ADDR_W-1:3]) && (reg_addr[2] == 1'b0));
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_sync_low_reg_ff   (.out(timestamp_sync_low_reg), .in(reg_wr_data), .en(timestamp_sync_low_reg_wr_en), .clk(i_clk), .rst_n(i_reset_n_warm));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_sync_low_reg_ff   (.out(timestamp_sync_low_reg), .in(reg_wr_data), .en(timestamp_sync_low_reg_wr_en), .clk(i_clk), .rst_n(i_reset_n_warm));
 
 
     assign timestamp_sync_high_reg_wr_en = (reg_wr_en & reg_wr_strb & (reg_addr[ADDR_W-1:3] == ADDR_CSR_TIMESTAMP_SYNC[ADDR_W-1:3]) && (reg_addr[2] == 1'b1));
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_sync_high_reg_ff   (.out(timestamp_sync_high_reg), .in(reg_wr_data), .en(timestamp_sync_high_reg_wr_en), .clk(i_clk), .rst_n(i_reset_n_warm));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_sync_high_reg_ff   (.out(timestamp_sync_high_reg), .in(reg_wr_data), .en(timestamp_sync_high_reg_wr_en), .clk(i_clk), .rst_n(i_reset_n_warm));
 
 
     assign timestamp_config_reg_wr_en = (reg_wr_en & reg_wr_strb & (reg_addr[ADDR_W-1:3] == ADDR_CSR_TIMESTAMP_CONFIG[ADDR_W-1:3]) && (reg_addr[2] == 1'b0));
     assign timestamp_config_reg_nxt   = timestamp_config_reg_wr_en  ? reg_wr_data :
                                         timestamp_load              ? {timestamp_config_reg[31:1],1'b0} :
                                                                       timestamp_config_reg;
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_config_reg_ff   (.out(timestamp_config_reg), .in(timestamp_config_reg_nxt), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n_warm));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) timestamp_config_reg_ff   (.out(timestamp_config_reg), .in(timestamp_config_reg_nxt), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n_warm));
 
 
     // ready goes high 1 cycle after reg_hit
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_ready_ff       (.out(reg_wr_ready),  .in(reg_wr_en && reg_hit), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_ready_ff       (.out(reg_rd_ready),  .in(reg_rd_en && reg_hit), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_ready_ff       (.out(reg_wr_ready),  .in(reg_wr_en && reg_hit), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_ready_ff       (.out(reg_rd_ready),  .in(reg_rd_en && reg_hit), .en(1'b1), .clk(i_clk), .rst_n(i_reset_n));
 
     // Register read logic
     always_comb begin

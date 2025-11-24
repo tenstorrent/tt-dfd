@@ -113,7 +113,7 @@ import dfd_dst_csr_pkg::*;
 
         assign CsrHit = |{CsrHit_CLA, CsrHit_DST, CsrHit_NTR, CsrHit_MCR, CsrHit_TR};
 
-		generic_decoded_mux #(
+		tt_dfd_generic_decoded_mux #(
 			.DISABLE_ASSERTIONS(0),
 			.VALUE_WIDTH(DFD_APB_DATA_WIDTH),
 			.MUX_WIDTH(2+3*NUM_TRACE_AND_ANALYZER_INST)
@@ -126,7 +126,7 @@ import dfd_dst_csr_pkg::*;
 			.out   (CsrRdData)
 		);
 
-		generic_onehot_detect #(.WIDTH(2+3*NUM_TRACE_AND_ANALYZER_INST), .ZERO_ONEHOT(1)) u_csrerror_det (
+		tt_dfd_generic_onehot_detect #(.WIDTH(2+3*NUM_TRACE_AND_ANALYZER_INST), .ZERO_ONEHOT(1)) u_csrerror_det (
 			.in   ({CsrHit_CLA, CsrHit_DST, CsrHit_NTR, CsrHit_MCR, CsrHit_TR}),
 			.out         (CsrError_n)
 		);

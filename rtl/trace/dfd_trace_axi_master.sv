@@ -45,7 +45,7 @@ module dfd_trace_axi_master #(
     //     end
     // end
 
-    generic_dff #(.WIDTH(AXI_TXID_WIDTH), .RESET_VALUE(0)) tx_id_ff (
+    tt_dfd_generic_dff #(.WIDTH(AXI_TXID_WIDTH), .RESET_VALUE(0)) tx_id_ff (
         .out          (tx_id),
         .in          ($bits(tx_id)'(tx_id + 1'b1)), 
         .en         (valid_i),
@@ -67,7 +67,7 @@ module dfd_trace_axi_master #(
     logic next_ready_o;
     axi_req_t next_axi_req_o;
 
-    generic_dff #(.WIDTH($bits(state_t)), .RESET_VALUE(AWAIT_REQUEST)) state_ff (
+    tt_dfd_generic_dff #(.WIDTH($bits(state_t)), .RESET_VALUE(AWAIT_REQUEST)) state_ff (
         .out          ({state}),
         .in          (next_state), 
         .en         (1'b1),
@@ -75,7 +75,7 @@ module dfd_trace_axi_master #(
         .rst_n    (rst_ni)
     );
     
-    generic_dff #(.WIDTH(1), .RESET_VALUE(1)) ready_o_ff (
+    tt_dfd_generic_dff #(.WIDTH(1), .RESET_VALUE(1)) ready_o_ff (
         .out          (ready_o),
         .in          (next_ready_o), 
         .en         (1'b1),
@@ -83,7 +83,7 @@ module dfd_trace_axi_master #(
         .rst_n    (rst_ni)
     );
 
-    generic_dff #(.WIDTH($bits(axi_req_t)), .RESET_VALUE(0)) axi_req_o_ff (
+    tt_dfd_generic_dff #(.WIDTH($bits(axi_req_t)), .RESET_VALUE(0)) axi_req_o_ff (
         .out          (axi_req_o),
         .in          (next_axi_req_o), 
         .en         (1'b1),

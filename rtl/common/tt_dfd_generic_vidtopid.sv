@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
-module generic_vidtopid #(
+module tt_dfd_generic_vidtopid #(
     parameter int NumHarts = 8,
     parameter int NumHartsIdx = (NumHarts == 1) ? 1 : $clog2(NumHarts)
 ) (

@@ -5,7 +5,7 @@
 // Finds the first N set bits in a request vector, outputs their data, one-hot, and encoded positions.
 // Generic, synthesizable SystemVerilog.
 
-module generic_ffs_ignore_N #(
+module tt_dfd_generic_ffs_ignore_N #(
     parameter DIR_L2H    = 1,              // Direction of Priority (1 = LSB first, 0 = MSB first)
     parameter WIDTH      = 8,              // Number of inputs
     parameter SIZE       = ($clog2(WIDTH) > 1 ? $clog2(WIDTH) : 1), // Log2 Number of inputs

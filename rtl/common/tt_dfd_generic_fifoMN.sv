@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
-module generic_fifoMN #(
+module tt_dfd_generic_fifoMN #(
     parameter integer DATA_WIDTH  = 4,
     parameter integer ENTRIES     = 8,
     parameter bit     ALLOW_CLEAR = 1,
@@ -46,7 +46,7 @@ module generic_fifoMN #(
   assign o_rdptr = rd_ptr;
   assign o_wrptr = wr_ptr;
 
-  generic_dff #(
+  tt_dfd_generic_dff #(
       .WIDTH(ADDR_SIZE + 1),
       .RESET_VALUE(0),
       .BYPASS(0)
@@ -58,7 +58,7 @@ module generic_fifoMN #(
       .out(rd_ptr)
   );
 
-  generic_dff #(
+  tt_dfd_generic_dff #(
       .WIDTH(ADDR_SIZE + 1),
       .RESET_VALUE(0),
       .BYPASS(0)
@@ -77,7 +77,7 @@ module generic_fifoMN #(
     end
   end
 
-  generic_dff #(
+  tt_dfd_generic_dff #(
       .WIDTH(ADDR_SIZE + 1),
       .RESET_VALUE(0),
       .BYPASS(0)
