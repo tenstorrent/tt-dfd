@@ -257,8 +257,8 @@ module dfd_unit
 					.trILastSize_RE6(ILastSize),
 					.trPriv_RE6		(Priv),
 					.trContext_RE6	(Context),
-					.trTstamp_RE6	(Tval),
-					.trTval_RE6		(Tstamp),
+					.trTstamp_RE6	(Tstamp),
+					.trTval_RE6		(Tval),
 
 					.MC_MS_trError_RE6			(Error),
 					.MS_MC_trActive_ANY			(Active),

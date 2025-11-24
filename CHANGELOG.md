@@ -10,10 +10,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added proper integration guide under [doc/](doc/)
+- added missing element in rdl file
+- Updated README.md with lint target information
+- Added lint waivers for spyglass enhanced lint
+
+### Fixed 
+
+- Fix the read latency cycle in mem_model
+- Bug fixes on Sink pointer updates
+- Bug fixes on Encoder Priv mode logic, Cleanup code
+- Fixed wrap around in FIFO being limited to powers of 2. 
+- Fixed te_encoder ignoring inhibitsrc mmr. NTR MMR changes. Added lint targets to make.
+- Fixes to trace encoder
+- Fixes for cla
+- Swap Tval and Tstamp connections that were previously incorrectly set
 
 ### Changed
 
 - Parameter NUM_TRACE_INST changed to NUM_TRACE_AND_ANALYZER_INST for better clarity of parameter
+
+### Removed
+
+- Removed unused dffs
 
 ## [0.1.0] - 2025-09-25
 
