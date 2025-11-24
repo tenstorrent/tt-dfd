@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
-module generic_dff_clr #(parameter WIDTH=8,
+module tt_dfd_generic_dff_clr #(parameter WIDTH=8,
                     parameter RESET_VALUE=0)
 (
    input  logic		     clk,
@@ -16,7 +16,7 @@ module generic_dff_clr #(parameter WIDTH=8,
     logic [WIDTH-1:0] new_in;
     assign new_in = {WIDTH{~clr}} & (en ? in : out);
 
-    generic_dff #(.WIDTH(WIDTH), .RESET_VALUE(RESET_VALUE)) u_dff (
+    tt_dfd_generic_dff #(.WIDTH(WIDTH), .RESET_VALUE(RESET_VALUE)) u_dff (
         .clk(clk),
         .rst_n(rst_n),
         .en(en | clr),

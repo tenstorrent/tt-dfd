@@ -63,7 +63,7 @@ module dfd_trace_hop
   // --------------------------------------------------------------------------
   // Initial setup delay counter to enable the grant shift register
   // --------------------------------------------------------------------------
-  generic_dff_clr #(.WIDTH(6)) tr_init_setup_cnt_ff (.out(tr_init_setup_cnt), .in($bits(tr_init_setup_cnt)'(tr_init_setup_cnt+1'b1)), .clr(~|upstrm_tr_enabled_srcs), .en(|upstrm_tr_enabled_srcs & ~tr_init_setup_done), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(6)) tr_init_setup_cnt_ff (.out(tr_init_setup_cnt), .in($bits(tr_init_setup_cnt)'(tr_init_setup_cnt+1'b1)), .clr(~|upstrm_tr_enabled_srcs), .en(|upstrm_tr_enabled_srcs & ~tr_init_setup_done), .clk(clk), .rst_n(reset_n));
   assign tr_init_setup_done = (tr_init_setup_cnt == ($bits(tr_init_setup_cnt)'(NUM_UPSTREAM_REPEATERS + NUM_HOPS_TO_TAIL) + $bits(tr_init_setup_cnt)'(num_disabled_cores_as_repeaters))) & |upstrm_tr_enabled_srcs;
 
   always_comb begin
@@ -83,7 +83,7 @@ module dfd_trace_hop
     end
   end
 
-  generic_dff #(.WIDTH(1)) tr_init_setup_done_d1_ff (.out(tr_init_setup_done_d1), .in(tr_init_setup_done), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) tr_init_setup_done_d1_ff (.out(tr_init_setup_done_d1), .in(tr_init_setup_done), .en(1'b1), .clk(clk), .rst_n(reset_n));
   assign tr_init_setup_done_posedge = tr_init_setup_done & ~tr_init_setup_done_d1;
   
   // --------------------------------------------------------------------------
@@ -91,23 +91,23 @@ module dfd_trace_hop
   // --------------------------------------------------------------------------
   assign next_tr_gnt_to_fblk = {tr_gnt_to_fblk[10:0],tr_gnt_to_fblk[11]};
   assign tr_gnt_reset = (num_cores_enabled == 3'h4)?12'b000100010001:((num_cores_enabled == 3'h3)?12'b001001001001:((num_cores_enabled == 3'h2)?12'b010101010101:12'b111111111111));
-  generic_dff #(.WIDTH(12)) tr_gnt_to_fblk_ff (.out(tr_gnt_to_fblk), .in(tr_init_setup_done_posedge?tr_gnt_reset:next_tr_gnt_to_fblk), .en(tr_init_setup_done), .clk(clk), .rst_n(reset_n));  
+  tt_dfd_generic_dff #(.WIDTH(12)) tr_gnt_to_fblk_ff (.out(tr_gnt_to_fblk), .in(tr_init_setup_done_posedge?tr_gnt_reset:next_tr_gnt_to_fblk), .en(tr_init_setup_done), .clk(clk), .rst_n(reset_n));  
   
   // --------------------------------------------------------------------------
   // Flops with Mux-ed inputs combining the upstream and the functional-block
   // --------------------------------------------------------------------------
-  generic_dff_staging #(.WIDTH(NUM_CORES_IN_PATH), .DEPTH(NUM_REPEATER_STAGES)) tr_vld_stg_ff (.out(dnstrm_tr_vld), .in((~IS_REPEATER & fblk_tr_gnt_d2) ? {{(NUM_CORES_IN_PATH-RELATIVE_CORE_IDX-1){1'b0}}, fblk_tr_vld, {RELATIVE_CORE_IDX{1'b0}}} : upstrm_tr_vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_src_stg_ff (.out(dnstrm_tr_src), .in((~IS_REPEATER & fblk_tr_gnt_d2) ? fblk_tr_src : upstrm_tr_src), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff_staging #(.WIDTH(DATA_WIDTH), .DEPTH(NUM_REPEATER_STAGES)) tr_data_stg_ff (.out(dnstrm_tr_data), .in((~IS_REPEATER & fblk_tr_gnt_d2) ? (fblk_tr_data & {DATA_WIDTH{fblk_tr_vld}}) : upstrm_tr_data), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(NUM_CORES_IN_PATH), .DEPTH(NUM_REPEATER_STAGES)) tr_vld_stg_ff (.out(dnstrm_tr_vld), .in((~IS_REPEATER & fblk_tr_gnt_d2) ? {{(NUM_CORES_IN_PATH-RELATIVE_CORE_IDX-1){1'b0}}, fblk_tr_vld, {RELATIVE_CORE_IDX{1'b0}}} : upstrm_tr_vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_src_stg_ff (.out(dnstrm_tr_src), .in((~IS_REPEATER & fblk_tr_gnt_d2) ? fblk_tr_src : upstrm_tr_src), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(DATA_WIDTH), .DEPTH(NUM_REPEATER_STAGES)) tr_data_stg_ff (.out(dnstrm_tr_data), .in((~IS_REPEATER & fblk_tr_gnt_d2) ? (fblk_tr_data & {DATA_WIDTH{fblk_tr_vld}}) : upstrm_tr_data), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_ntrace_bp_stg_ff (.out(upstrm_tr_ntrace_bp), .in(dnstrm_tr_ntrace_bp), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_dst_bp_stg_ff (.out(upstrm_tr_dst_bp), .in(dnstrm_tr_dst_bp), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_ntrace_flush_stg_ff (.out(upstrm_tr_ntrace_flush), .in(dnstrm_tr_ntrace_flush), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_dst_flush_stg_ff (.out(upstrm_tr_dst_flush), .in(dnstrm_tr_dst_flush), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff_staging #(.WIDTH(NUM_CORES_IN_PATH), .DEPTH(NUM_REPEATER_STAGES)) tr_enabled_srcs_stg_ff (.out(upstrm_tr_enabled_srcs), .in(dnstrm_tr_enabled_srcs), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_ntrace_bp_stg_ff (.out(upstrm_tr_ntrace_bp), .in(dnstrm_tr_ntrace_bp), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_dst_bp_stg_ff (.out(upstrm_tr_dst_bp), .in(dnstrm_tr_dst_bp), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_ntrace_flush_stg_ff (.out(upstrm_tr_ntrace_flush), .in(dnstrm_tr_ntrace_flush), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(1), .DEPTH(NUM_REPEATER_STAGES)) tr_dst_flush_stg_ff (.out(upstrm_tr_dst_flush), .in(dnstrm_tr_dst_flush), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff_staging #(.WIDTH(NUM_CORES_IN_PATH), .DEPTH(NUM_REPEATER_STAGES)) tr_enabled_srcs_stg_ff (.out(upstrm_tr_enabled_srcs), .in(dnstrm_tr_enabled_srcs), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) fblk_tr_gnt_d1_ff(.out(fblk_tr_gnt_d1), .in(fblk_tr_gnt), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) fblk_tr_gnt_d2_ff(.out(fblk_tr_gnt_d2), .in(fblk_tr_gnt_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) fblk_tr_gnt_d1_ff(.out(fblk_tr_gnt_d1), .in(fblk_tr_gnt), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) fblk_tr_gnt_d2_ff(.out(fblk_tr_gnt_d2), .in(fblk_tr_gnt_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // --------------------------------------------------------------------------
   // Grant and Select signals

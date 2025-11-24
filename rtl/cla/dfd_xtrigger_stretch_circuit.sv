@@ -34,7 +34,7 @@ assign xtrigger_stretch[1] = CrCsrCdbgclaxtriggertimestretch.Xtrigger1Stretch;
 // Stretch circuit
 for (genvar i=0; i<XTRIGGER_WIDTH; i++) begin: stretch_circuit
   // Posedge detection
-  generic_dff #(.WIDTH(1)) xtrigger_in_d1_ff (.out(xtrigger_stretch_in_d1[i]), .in(xtrigger_in[i]), .clk(clock), .rst_n(reset_n), .en(1'b1));
+  tt_dfd_generic_dff #(.WIDTH(1)) xtrigger_in_d1_ff (.out(xtrigger_stretch_in_d1[i]), .in(xtrigger_in[i]), .clk(clock), .rst_n(reset_n), .en(1'b1));
 
   // Detect new pulse (posedge)
   logic xtrigger_posedge;
@@ -46,7 +46,7 @@ for (genvar i=0; i<XTRIGGER_WIDTH; i++) begin: stretch_circuit
   assign xtrigger_stretch_clear = (xtrigger_stretch_cntr[i] == xtrigger_stretch[i]) && (xtrigger_stretch[i] != 0);
   assign xtrigger_stretch_d_next = xtrigger_posedge | (xtrigger_stretch_out[i] & ~xtrigger_stretch_clear);
   
-  generic_dff_clr #(.WIDTH(1)) xtrigger_stretch_out_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) xtrigger_stretch_out_ff (
     .out(xtrigger_stretch_out[i]), 
     .in(xtrigger_stretch_d_next), 
     .clr(1'b0), 
@@ -67,7 +67,7 @@ for (genvar i=0; i<XTRIGGER_WIDTH; i++) begin: stretch_circuit
   assign xtrigger_stretch_cntr_clr[i] = xtrigger_posedge || xtrigger_stretch_clear;
 
   // Counter
-  generic_dff_clr #(.WIDTH(XTRIGGER_STRETCH_CNTR_WIDTH)) xtrigger_stretch_cntr_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(XTRIGGER_STRETCH_CNTR_WIDTH)) xtrigger_stretch_cntr_ff (
     .out(xtrigger_stretch_cntr[i]), 
     .in(xtrigger_stretch_cntr_nxt[i]), 
     .clr(xtrigger_stretch_cntr_clr[i]), 

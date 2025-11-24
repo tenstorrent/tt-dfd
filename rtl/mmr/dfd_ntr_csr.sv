@@ -171,15 +171,15 @@ logic                 [3:0] CSR_CDbgNtraceFrameCfg_F_TraceSourceId;
 //------------------------------------------------------------------------------
 
 if (FLOP_IN_REQ) begin : flop_in_req
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_cs_ff             (.out(reg_cs)   , .in(CsrCs)    , .en(CsrCs|reg_cs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_en_ff          (.out(reg_wr_en), .in(CsrWrEn)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(2)           , .RESET_VALUE(0)) reg_wr_strb_ff        (.out(reg_wr_strb), .in(CsrWrStrb)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(ADDR_W)      , .RESET_VALUE(0)) reg_addr_ff           (.out(reg_addr) , .in(CsrAddr)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(32)          , .RESET_VALUE(0)) reg_wr_data_ff        (.out(reg_wr_data), .in(CsrWrData), .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_sel_ff         (.out(reg_rd_sel)  , .in(~CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_sel_ff         (.out(reg_wr_sel)  , .in(CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));    
-    generic_dff #(.WIDTH(INSTR_TYPE_W), .RESET_VALUE(0)) reg_wr_instr_type_ff  (.out(reg_wr_instr_type), .in(CsrWrInstrType), .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_ready_ff       (.out(reg_wr_ready), .in(CsrCs & CsrWrEn), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_cs_ff             (.out(reg_cs)   , .in(CsrCs)    , .en(CsrCs|reg_cs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_en_ff          (.out(reg_wr_en), .in(CsrWrEn)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(2)           , .RESET_VALUE(0)) reg_wr_strb_ff        (.out(reg_wr_strb), .in(CsrWrStrb)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(ADDR_W)      , .RESET_VALUE(0)) reg_addr_ff           (.out(reg_addr) , .in(CsrAddr)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(32)          , .RESET_VALUE(0)) reg_wr_data_ff        (.out(reg_wr_data), .in(CsrWrData), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_sel_ff         (.out(reg_rd_sel)  , .in(~CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_sel_ff         (.out(reg_wr_sel)  , .in(CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));    
+    tt_dfd_generic_dff #(.WIDTH(INSTR_TYPE_W), .RESET_VALUE(0)) reg_wr_instr_type_ff  (.out(reg_wr_instr_type), .in(CsrWrInstrType), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_ready_ff       (.out(reg_wr_ready), .in(CsrCs & CsrWrEn), .en(CsrCs), .clk(clk), .rst_n(reset_n));
 end else begin
     assign reg_cs             = CsrCs;
     assign reg_wr_en          = CsrWrEn;
@@ -195,8 +195,8 @@ end
 assign reg_write    = reg_cs &  reg_wr_en;
 assign reg_read     = reg_cs;
 
-generic_dff #(.WIDTH(ADDR_W), .RESET_VALUE(0)) reg_addr_d1_ff (.out(reg_addr_d1) , .in(reg_addr) , .en(reg_cs), .clk(clk), .rst_n(reset_n));
-generic_dff #(.WIDTH(1)     , .RESET_VALUE(0)) reg_wren_d1_ff (.out(reg_write_d1), .in(reg_write), .en(reg_cs | reg_write_d1), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(ADDR_W), .RESET_VALUE(0)) reg_addr_d1_ff (.out(reg_addr_d1) , .in(reg_addr) , .en(reg_cs), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1)     , .RESET_VALUE(0)) reg_wren_d1_ff (.out(reg_write_d1), .in(reg_write), .en(reg_cs | reg_write_d1), .clk(clk), .rst_n(reset_n));
 
 
 //------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ logic [CR_4B_TRTECONTROL_TRTEFORMAT_WIDTH -1:0] CSR_Trtecontrol_F_Trteformat_Dat
 assign CSR_Trtecontrol_F_Trteformat_DataEff = {reg_wr_data[26:24]};
 assign CSR_Trtecontrol_F_Trteformat_Data = (CR_4B_TRTECONTROL_TRTEFORMAT_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteformat), 64'(CSR_Trtecontrol_F_Trteformat_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trteformat_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEFORMAT_WIDTH), .RESET_VALUE(1)) CSR_Trtecontrol_F_Trteformat_ff   (.out(CSR_Trtecontrol_F_Trteformat), .in(CSR_Trtecontrol_F_Trteformat_Data), .en(CSR_Trtecontrol_F_Trteformat_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEFORMAT_WIDTH), .RESET_VALUE(1)) CSR_Trtecontrol_F_Trteformat_ff   (.out(CSR_Trtecontrol_F_Trteformat), .in(CSR_Trtecontrol_F_Trteformat_Data), .en(CSR_Trtecontrol_F_Trteformat_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trtesyncmax_WrEn;
 logic [CR_4B_TRTECONTROL_TRTESYNCMAX_WIDTH-1:0] CSR_Trtecontrol_F_Trtesyncmax_Data;
@@ -219,7 +219,7 @@ logic [CR_4B_TRTECONTROL_TRTESYNCMAX_WIDTH-1:0] CSR_Trtecontrol_F_Trtesyncmax_Da
 assign CSR_Trtecontrol_F_Trtesyncmax_DataEff = {reg_wr_data[23:20]};
 assign CSR_Trtecontrol_F_Trtesyncmax_Data = (CR_4B_TRTECONTROL_TRTESYNCMAX_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trtesyncmax), 64'(CSR_Trtecontrol_F_Trtesyncmax_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trtesyncmax_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTESYNCMAX_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trtesyncmax_ff   (.out(CSR_Trtecontrol_F_Trtesyncmax), .in(CSR_Trtecontrol_F_Trtesyncmax_Data), .en(CSR_Trtecontrol_F_Trtesyncmax_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTESYNCMAX_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trtesyncmax_ff   (.out(CSR_Trtecontrol_F_Trtesyncmax), .in(CSR_Trtecontrol_F_Trtesyncmax_Data), .en(CSR_Trtecontrol_F_Trtesyncmax_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trtesyncmode_WrEn;
 logic [CR_4B_TRTECONTROL_TRTESYNCMODE_WIDTH-1:0] CSR_Trtecontrol_F_Trtesyncmode_Data;
@@ -227,7 +227,7 @@ logic [CR_4B_TRTECONTROL_TRTESYNCMODE_WIDTH-1:0] CSR_Trtecontrol_F_Trtesyncmode_
 assign CSR_Trtecontrol_F_Trtesyncmode_DataEff = {reg_wr_data[17:16]};
 assign CSR_Trtecontrol_F_Trtesyncmode_Data = (CR_4B_TRTECONTROL_TRTESYNCMODE_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trtesyncmode), 64'(CSR_Trtecontrol_F_Trtesyncmode_DataEff[1:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trtesyncmode_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTESYNCMODE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trtesyncmode_ff   (.out(CSR_Trtecontrol_F_Trtesyncmode), .in(CSR_Trtecontrol_F_Trtesyncmode_Data), .en(CSR_Trtecontrol_F_Trtesyncmode_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTESYNCMODE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trtesyncmode_ff   (.out(CSR_Trtecontrol_F_Trtesyncmode), .in(CSR_Trtecontrol_F_Trtesyncmode_Data), .en(CSR_Trtecontrol_F_Trtesyncmode_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteinhibitsrc_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEINHIBITSRC_WIDTH-1:0] CSR_Trtecontrol_F_Trteinhibitsrc_Data;
@@ -235,7 +235,7 @@ logic [CR_4B_TRTECONTROL_TRTEINHIBITSRC_WIDTH-1:0] CSR_Trtecontrol_F_Trteinhibit
 assign CSR_Trtecontrol_F_Trteinhibitsrc_DataEff = {reg_wr_data[15:15]};
 assign CSR_Trtecontrol_F_Trteinhibitsrc_Data = (CR_4B_TRTECONTROL_TRTEINHIBITSRC_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteinhibitsrc), 64'(CSR_Trtecontrol_F_Trteinhibitsrc_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trteinhibitsrc_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINHIBITSRC_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinhibitsrc_ff   (.out(CSR_Trtecontrol_F_Trteinhibitsrc), .in(CSR_Trtecontrol_F_Trteinhibitsrc_Data), .en(CSR_Trtecontrol_F_Trteinhibitsrc_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINHIBITSRC_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinhibitsrc_ff   (.out(CSR_Trtecontrol_F_Trteinhibitsrc), .in(CSR_Trtecontrol_F_Trteinhibitsrc_Data), .en(CSR_Trtecontrol_F_Trteinhibitsrc_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteinststallena_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEINSTSTALLENA_WIDTH-1:0] CSR_Trtecontrol_F_Trteinststallena_Data;
@@ -243,7 +243,7 @@ logic [CR_4B_TRTECONTROL_TRTEINSTSTALLENA_WIDTH-1:0] CSR_Trtecontrol_F_Trteinsts
 assign CSR_Trtecontrol_F_Trteinststallena_DataEff = {reg_wr_data[13:13]};
 assign CSR_Trtecontrol_F_Trteinststallena_Data = (CR_4B_TRTECONTROL_TRTEINSTSTALLENA_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteinststallena), 64'(CSR_Trtecontrol_F_Trteinststallena_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trteinststallena_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTSTALLENA_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinststallena_ff   (.out(CSR_Trtecontrol_F_Trteinststallena), .in(CSR_Trtecontrol_F_Trteinststallena_Data), .en(CSR_Trtecontrol_F_Trteinststallena_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTSTALLENA_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinststallena_ff   (.out(CSR_Trtecontrol_F_Trteinststallena), .in(CSR_Trtecontrol_F_Trteinststallena_Data), .en(CSR_Trtecontrol_F_Trteinststallena_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteinststalloroverflow_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEINSTSTALLOROVERFLOW_WIDTH-1:0] CSR_Trtecontrol_F_Trteinststalloroverflow_Data;
@@ -251,7 +251,7 @@ logic [CR_4B_TRTECONTROL_TRTEINSTSTALLOROVERFLOW_WIDTH-1:0] CSR_Trtecontrol_F_Tr
 assign CSR_Trtecontrol_F_Trteinststalloroverflow_DataEff = {reg_wr_data[12:12]};
 assign CSR_Trtecontrol_F_Trteinststalloroverflow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL)) ? CR_4B_TRTECONTROL_TRTEINSTSTALLOROVERFLOW_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteinststalloroverflow), 64'(CSR_Trtecontrol_F_Trteinststalloroverflow_DataEff[0:0]), reg_wr_instr_type)) : Cr4BCsrTrtecontrolWr.Data.Trteinststalloroverflow);
 assign CSR_Trtecontrol_F_Trteinststalloroverflow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL)) | Cr4BCsrTrtecontrolWr.TrteinststalloroverflowWrEn));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTSTALLOROVERFLOW_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinststalloroverflow_ff   (.out(CSR_Trtecontrol_F_Trteinststalloroverflow), .in(CSR_Trtecontrol_F_Trteinststalloroverflow_Data), .en(CSR_Trtecontrol_F_Trteinststalloroverflow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTSTALLOROVERFLOW_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinststalloroverflow_ff   (.out(CSR_Trtecontrol_F_Trteinststalloroverflow), .in(CSR_Trtecontrol_F_Trteinststalloroverflow_Data), .en(CSR_Trtecontrol_F_Trteinststalloroverflow_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteinsttriggerenable_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEINSTTRIGGERENABLE_WIDTH-1:0] CSR_Trtecontrol_F_Trteinsttriggerenable_Data;
@@ -259,7 +259,7 @@ logic [CR_4B_TRTECONTROL_TRTEINSTTRIGGERENABLE_WIDTH-1:0] CSR_Trtecontrol_F_Trte
 assign CSR_Trtecontrol_F_Trteinsttriggerenable_DataEff = {reg_wr_data[11:11]};
 assign CSR_Trtecontrol_F_Trteinsttriggerenable_Data = (CR_4B_TRTECONTROL_TRTEINSTTRIGGERENABLE_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteinsttriggerenable), 64'(CSR_Trtecontrol_F_Trteinsttriggerenable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trteinsttriggerenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTTRIGGERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinsttriggerenable_ff   (.out(CSR_Trtecontrol_F_Trteinsttriggerenable), .in(CSR_Trtecontrol_F_Trteinsttriggerenable_Data), .en(CSR_Trtecontrol_F_Trteinsttriggerenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTTRIGGERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinsttriggerenable_ff   (.out(CSR_Trtecontrol_F_Trteinsttriggerenable), .in(CSR_Trtecontrol_F_Trteinsttriggerenable_Data), .en(CSR_Trtecontrol_F_Trteinsttriggerenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trtecontrol_F_Trtecontext = 1'h1;
 
@@ -271,7 +271,7 @@ logic [CR_4B_TRTECONTROL_TRTEEMPTY_WIDTH  -1:0] CSR_Trtecontrol_F_Trteempty_Data
 assign CSR_Trtecontrol_F_Trteempty_DataEff = {reg_wr_data[3:3]};
 assign CSR_Trtecontrol_F_Trteempty_Data = (Cr4BCsrTrtecontrolWr.Data.Trteempty);
 assign CSR_Trtecontrol_F_Trteempty_WrEn = ((Cr4BCsrTrtecontrolWr.TrteemptyWrEn));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trtecontrol_F_Trteempty_ff   (.out(CSR_Trtecontrol_F_Trteempty), .in(CSR_Trtecontrol_F_Trteempty_Data), .en(CSR_Trtecontrol_F_Trteempty_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trtecontrol_F_Trteempty_ff   (.out(CSR_Trtecontrol_F_Trteempty), .in(CSR_Trtecontrol_F_Trteempty_Data), .en(CSR_Trtecontrol_F_Trteempty_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteinsttracing_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEINSTTRACING_WIDTH-1:0] CSR_Trtecontrol_F_Trteinsttracing_Data;
@@ -279,7 +279,7 @@ logic [CR_4B_TRTECONTROL_TRTEINSTTRACING_WIDTH-1:0] CSR_Trtecontrol_F_Trteinsttr
 assign CSR_Trtecontrol_F_Trteinsttracing_DataEff = {reg_wr_data[2:2]};
 assign CSR_Trtecontrol_F_Trteinsttracing_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL)) ? CR_4B_TRTECONTROL_TRTEINSTTRACING_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteinsttracing), 64'(CSR_Trtecontrol_F_Trteinsttracing_DataEff[0:0]), reg_wr_instr_type)) : Cr4BCsrTrtecontrolWr.Data.Trteinsttracing);
 assign CSR_Trtecontrol_F_Trteinsttracing_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL)) | Cr4BCsrTrtecontrolWr.TrteinsttracingWrEn));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTTRACING_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinsttracing_ff   (.out(CSR_Trtecontrol_F_Trteinsttracing), .in(CSR_Trtecontrol_F_Trteinsttracing_Data), .en(CSR_Trtecontrol_F_Trteinsttracing_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEINSTTRACING_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteinsttracing_ff   (.out(CSR_Trtecontrol_F_Trteinsttracing), .in(CSR_Trtecontrol_F_Trteinsttracing_Data), .en(CSR_Trtecontrol_F_Trteinsttracing_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteenable_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEENABLE_WIDTH -1:0] CSR_Trtecontrol_F_Trteenable_Data;
@@ -287,7 +287,7 @@ logic [CR_4B_TRTECONTROL_TRTEENABLE_WIDTH -1:0] CSR_Trtecontrol_F_Trteenable_Dat
 assign CSR_Trtecontrol_F_Trteenable_DataEff = {reg_wr_data[1:1]};
 assign CSR_Trtecontrol_F_Trteenable_Data = (CR_4B_TRTECONTROL_TRTEENABLE_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteenable), 64'(CSR_Trtecontrol_F_Trteenable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trteenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteenable_ff   (.out(CSR_Trtecontrol_F_Trteenable), .in(CSR_Trtecontrol_F_Trteenable_Data), .en(CSR_Trtecontrol_F_Trteenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteenable_ff   (.out(CSR_Trtecontrol_F_Trteenable), .in(CSR_Trtecontrol_F_Trteenable_Data), .en(CSR_Trtecontrol_F_Trteenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtecontrol_F_Trteactive_WrEn;
 logic [CR_4B_TRTECONTROL_TRTEACTIVE_WIDTH -1:0] CSR_Trtecontrol_F_Trteactive_Data;
@@ -295,7 +295,7 @@ logic [CR_4B_TRTECONTROL_TRTEACTIVE_WIDTH -1:0] CSR_Trtecontrol_F_Trteactive_Dat
 assign CSR_Trtecontrol_F_Trteactive_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trtecontrol_F_Trteactive_Data = (CR_4B_TRTECONTROL_TRTEACTIVE_WIDTH'(update_value(64'(CSR_Trtecontrol_F_Trteactive), 64'(CSR_Trtecontrol_F_Trteactive_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtecontrol_F_Trteactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTECONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteactive_ff   (.out(CSR_Trtecontrol_F_Trteactive), .in(CSR_Trtecontrol_F_Trteactive_Data), .en(CSR_Trtecontrol_F_Trteactive_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTECONTROL_TRTEACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trtecontrol_F_Trteactive_ff   (.out(CSR_Trtecontrol_F_Trteactive), .in(CSR_Trtecontrol_F_Trteactive_Data), .en(CSR_Trtecontrol_F_Trteactive_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRTEIMPL
 logic                                           CSR_Trteimpl_F_Trtetracepatchenable_WrEn;
@@ -304,7 +304,7 @@ logic [CR_4B_TRTEIMPL_TRTETRACEPATCHENABLE_WIDTH-1:0] CSR_Trteimpl_F_Trtetracepa
 assign CSR_Trteimpl_F_Trtetracepatchenable_DataEff = {reg_wr_data[29:29]};
 assign CSR_Trteimpl_F_Trtetracepatchenable_Data = (CR_4B_TRTEIMPL_TRTETRACEPATCHENABLE_WIDTH'(update_value(64'(CSR_Trteimpl_F_Trtetracepatchenable), 64'(CSR_Trteimpl_F_Trtetracepatchenable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trteimpl_F_Trtetracepatchenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEIMPL))));
-generic_dff #(.WIDTH(CR_4B_TRTEIMPL_TRTETRACEPATCHENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trteimpl_F_Trtetracepatchenable_ff   (.out(CSR_Trteimpl_F_Trtetracepatchenable), .in(CSR_Trteimpl_F_Trtetracepatchenable_Data), .en(CSR_Trteimpl_F_Trtetracepatchenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEIMPL_TRTETRACEPATCHENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trteimpl_F_Trtetracepatchenable_ff   (.out(CSR_Trteimpl_F_Trtetracepatchenable), .in(CSR_Trteimpl_F_Trtetracepatchenable_Data), .en(CSR_Trteimpl_F_Trtetracepatchenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trteimpl_F_Trteclatriggerenable_WrEn;
 logic [CR_4B_TRTEIMPL_TRTECLATRIGGERENABLE_WIDTH-1:0] CSR_Trteimpl_F_Trteclatriggerenable_Data;
@@ -312,7 +312,7 @@ logic [CR_4B_TRTEIMPL_TRTECLATRIGGERENABLE_WIDTH-1:0] CSR_Trteimpl_F_Trteclatrig
 assign CSR_Trteimpl_F_Trteclatriggerenable_DataEff = {reg_wr_data[28:28]};
 assign CSR_Trteimpl_F_Trteclatriggerenable_Data = (CR_4B_TRTEIMPL_TRTECLATRIGGERENABLE_WIDTH'(update_value(64'(CSR_Trteimpl_F_Trteclatriggerenable), 64'(CSR_Trteimpl_F_Trteclatriggerenable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trteimpl_F_Trteclatriggerenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEIMPL))));
-generic_dff #(.WIDTH(CR_4B_TRTEIMPL_TRTECLATRIGGERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trteimpl_F_Trteclatriggerenable_ff   (.out(CSR_Trteimpl_F_Trteclatriggerenable), .in(CSR_Trteimpl_F_Trteclatriggerenable_Data), .en(CSR_Trteimpl_F_Trteclatriggerenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEIMPL_TRTECLATRIGGERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trteimpl_F_Trteclatriggerenable_ff   (.out(CSR_Trteimpl_F_Trteclatriggerenable), .in(CSR_Trteimpl_F_Trteclatriggerenable_Data), .en(CSR_Trteimpl_F_Trteclatriggerenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trteimpl_F_Trtevendorframelength_WrEn;
 logic [CR_4B_TRTEIMPL_TRTEVENDORFRAMELENGTH_WIDTH-1:0] CSR_Trteimpl_F_Trtevendorframelength_Data;
@@ -320,7 +320,7 @@ logic [CR_4B_TRTEIMPL_TRTEVENDORFRAMELENGTH_WIDTH-1:0] CSR_Trteimpl_F_Trtevendor
 assign CSR_Trteimpl_F_Trtevendorframelength_DataEff = {reg_wr_data[27:24]};
 assign CSR_Trteimpl_F_Trtevendorframelength_Data = (CR_4B_TRTEIMPL_TRTEVENDORFRAMELENGTH_WIDTH'(update_value(64'(CSR_Trteimpl_F_Trtevendorframelength), 64'(CSR_Trteimpl_F_Trtevendorframelength_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_Trteimpl_F_Trtevendorframelength_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEIMPL))));
-generic_dff #(.WIDTH(CR_4B_TRTEIMPL_TRTEVENDORFRAMELENGTH_WIDTH), .RESET_VALUE(1)) CSR_Trteimpl_F_Trtevendorframelength_ff   (.out(CSR_Trteimpl_F_Trtevendorframelength), .in(CSR_Trteimpl_F_Trtevendorframelength_Data), .en(CSR_Trteimpl_F_Trtevendorframelength_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEIMPL_TRTEVENDORFRAMELENGTH_WIDTH), .RESET_VALUE(1)) CSR_Trteimpl_F_Trtevendorframelength_ff   (.out(CSR_Trteimpl_F_Trtevendorframelength), .in(CSR_Trteimpl_F_Trtevendorframelength_Data), .en(CSR_Trteimpl_F_Trtevendorframelength_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trteimpl_F_Trteprotocolminor = 4'h0;
 
@@ -339,7 +339,7 @@ logic [CR_4B_TRTEINSTFEATURES_TRTESRCBITS_WIDTH-1:0] CSR_Trteinstfeatures_F_Trte
 assign CSR_Trteinstfeatures_F_Trtesrcbits_DataEff = {reg_wr_data[31:28]};
 assign CSR_Trteinstfeatures_F_Trtesrcbits_Data = (CR_4B_TRTEINSTFEATURES_TRTESRCBITS_WIDTH'(update_value(64'(CSR_Trteinstfeatures_F_Trtesrcbits), 64'(CSR_Trteinstfeatures_F_Trtesrcbits_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_Trteinstfeatures_F_Trtesrcbits_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFEATURES))));
-generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTESRCBITS_WIDTH), .RESET_VALUE(4'h4)) CSR_Trteinstfeatures_F_Trtesrcbits_ff   (.out(CSR_Trteinstfeatures_F_Trtesrcbits), .in(CSR_Trteinstfeatures_F_Trtesrcbits_Data), .en(CSR_Trteinstfeatures_F_Trtesrcbits_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTESRCBITS_WIDTH), .RESET_VALUE(4'h4)) CSR_Trteinstfeatures_F_Trtesrcbits_ff   (.out(CSR_Trteinstfeatures_F_Trtesrcbits), .in(CSR_Trteinstfeatures_F_Trtesrcbits_Data), .en(CSR_Trteinstfeatures_F_Trtesrcbits_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trteinstfeatures_F_Trtesrcid_WrEn;
 logic [CR_4B_TRTEINSTFEATURES_TRTESRCID_WIDTH-1:0] CSR_Trteinstfeatures_F_Trtesrcid_Data;
@@ -347,7 +347,7 @@ logic [CR_4B_TRTEINSTFEATURES_TRTESRCID_WIDTH-1:0] CSR_Trteinstfeatures_F_Trtesr
 assign CSR_Trteinstfeatures_F_Trtesrcid_DataEff = {reg_wr_data[27:16]};
 assign CSR_Trteinstfeatures_F_Trtesrcid_Data = (CR_4B_TRTEINSTFEATURES_TRTESRCID_WIDTH'(update_value(64'(CSR_Trteinstfeatures_F_Trtesrcid), 64'(CSR_Trteinstfeatures_F_Trtesrcid_DataEff[11:0]), reg_wr_instr_type)));
 assign CSR_Trteinstfeatures_F_Trtesrcid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFEATURES))));
-generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTESRCID_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfeatures_F_Trtesrcid_ff   (.out(CSR_Trteinstfeatures_F_Trtesrcid), .in(CSR_Trteinstfeatures_F_Trtesrcid_Data), .en(CSR_Trteinstfeatures_F_Trtesrcid_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEINSTFEATURES_TRTESRCID_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfeatures_F_Trtesrcid_ff   (.out(CSR_Trteinstfeatures_F_Trtesrcid), .in(CSR_Trteinstfeatures_F_Trtesrcid_Data), .en(CSR_Trteinstfeatures_F_Trtesrcid_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trteinstfeatures_F_Trteinstenrepeatedhistory = 1'h0;
 
@@ -362,7 +362,7 @@ logic [CR_4B_TRTEINSTFILTERS_TRTEINSTFILTERS_WIDTH-1:0] CSR_Trteinstfilters_F_Tr
 assign CSR_Trteinstfilters_F_Trteinstfilters_DataEff = {reg_wr_data[15:0]};
 assign CSR_Trteinstfilters_F_Trteinstfilters_Data = (CR_4B_TRTEINSTFILTERS_TRTEINSTFILTERS_WIDTH'(update_value(64'(CSR_Trteinstfilters_F_Trteinstfilters), 64'(CSR_Trteinstfilters_F_Trteinstfilters_DataEff[15:0]), reg_wr_instr_type)));
 assign CSR_Trteinstfilters_F_Trteinstfilters_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEINSTFILTERS))));
-generic_dff #(.WIDTH(CR_4B_TRTEINSTFILTERS_TRTEINSTFILTERS_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfilters_F_Trteinstfilters_ff   (.out(CSR_Trteinstfilters_F_Trteinstfilters), .in(CSR_Trteinstfilters_F_Trteinstfilters_Data), .en(CSR_Trteinstfilters_F_Trteinstfilters_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEINSTFILTERS_TRTEINSTFILTERS_WIDTH), .RESET_VALUE(0)) CSR_Trteinstfilters_F_Trteinstfilters_ff   (.out(CSR_Trteinstfilters_F_Trteinstfilters), .in(CSR_Trteinstfilters_F_Trteinstfilters_Data), .en(CSR_Trteinstfilters_F_Trteinstfilters_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRTEFILTER0CONTROL
 logic                                           CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_WrEn;
@@ -371,7 +371,7 @@ logic [CR_4B_TRTEFILTER0CONTROL_TRTEFILTERMATCHPRIVILEGE_WIDTH-1:0] CSR_Trtefilt
 assign CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_DataEff = {reg_wr_data[1:1]};
 assign CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_Data = (CR_4B_TRTEFILTER0CONTROL_TRTEFILTERMATCHPRIVILEGE_WIDTH'(update_value(64'(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege), 64'(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEFILTER0CONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTEFILTER0CONTROL_TRTEFILTERMATCHPRIVILEGE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_ff   (.out(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege), .in(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_Data), .en(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEFILTER0CONTROL_TRTEFILTERMATCHPRIVILEGE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_ff   (.out(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege), .in(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_Data), .en(CSR_Trtefilter0Control_F_Trtefiltermatchprivilege_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trtefilter0Control_F_Trtefilterenable_WrEn;
 logic [CR_4B_TRTEFILTER0CONTROL_TRTEFILTERENABLE_WIDTH-1:0] CSR_Trtefilter0Control_F_Trtefilterenable_Data;
@@ -379,7 +379,7 @@ logic [CR_4B_TRTEFILTER0CONTROL_TRTEFILTERENABLE_WIDTH-1:0] CSR_Trtefilter0Contr
 assign CSR_Trtefilter0Control_F_Trtefilterenable_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trtefilter0Control_F_Trtefilterenable_Data = (CR_4B_TRTEFILTER0CONTROL_TRTEFILTERENABLE_WIDTH'(update_value(64'(CSR_Trtefilter0Control_F_Trtefilterenable), 64'(CSR_Trtefilter0Control_F_Trtefilterenable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtefilter0Control_F_Trtefilterenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEFILTER0CONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTEFILTER0CONTROL_TRTEFILTERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Control_F_Trtefilterenable_ff   (.out(CSR_Trtefilter0Control_F_Trtefilterenable), .in(CSR_Trtefilter0Control_F_Trtefilterenable_Data), .en(CSR_Trtefilter0Control_F_Trtefilterenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEFILTER0CONTROL_TRTEFILTERENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Control_F_Trtefilterenable_ff   (.out(CSR_Trtefilter0Control_F_Trtefilterenable), .in(CSR_Trtefilter0Control_F_Trtefilterenable_Data), .en(CSR_Trtefilter0Control_F_Trtefilterenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRTEFILTER0MATCHINST
 logic                                           CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_WrEn;
@@ -388,7 +388,7 @@ logic [CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH-1:0] CSR_
 assign CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_DataEff = {reg_wr_data[7:0]};
 assign CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_Data = (CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH'(update_value(64'(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege), 64'(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_DataEff[7:0]), reg_wr_instr_type)));
 assign CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTEFILTER0MATCHINST))));
-generic_dff #(.WIDTH(CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_ff   (.out(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege), .in(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_Data), .en(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTEFILTER0MATCHINST_TRTEFILTERMATCHCHOICEPRIVILEGE_WIDTH), .RESET_VALUE(0)) CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_ff   (.out(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege), .in(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_Data), .en(CSR_Trtefilter0Matchinst_F_Trtefiltermatchchoiceprivilege_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRTSCONTROL
 assign CSR_Trtscontrol_F_Trtswidth = 6'h37;
@@ -399,7 +399,7 @@ logic [CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH -1:0] CSR_Trtscontrol_F_Trtsenable_Dat
 assign CSR_Trtscontrol_F_Trtsenable_DataEff = {reg_wr_data[15:15]};
 assign CSR_Trtscontrol_F_Trtsenable_Data = (CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH'(update_value(64'(CSR_Trtscontrol_F_Trtsenable), 64'(CSR_Trtscontrol_F_Trtsenable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtscontrol_F_Trtsenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTSCONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtscontrol_F_Trtsenable_ff   (.out(CSR_Trtscontrol_F_Trtsenable), .in(CSR_Trtscontrol_F_Trtsenable_Data), .en(CSR_Trtscontrol_F_Trtsenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTSCONTROL_TRTSENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trtscontrol_F_Trtsenable_ff   (.out(CSR_Trtscontrol_F_Trtsenable), .in(CSR_Trtscontrol_F_Trtsenable_Data), .en(CSR_Trtscontrol_F_Trtsenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trtscontrol_F_Trtsprescale = 2'h0;
 
@@ -417,7 +417,7 @@ logic [CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH -1:0] CSR_Trtscontrol_F_Trtsactive_Dat
 assign CSR_Trtscontrol_F_Trtsactive_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trtscontrol_F_Trtsactive_Data = (CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH'(update_value(64'(CSR_Trtscontrol_F_Trtsactive), 64'(CSR_Trtscontrol_F_Trtsactive_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_Trtscontrol_F_Trtsactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRTSCONTROL))));
-generic_dff #(.WIDTH(CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trtscontrol_F_Trtsactive_ff   (.out(CSR_Trtscontrol_F_Trtsactive), .in(CSR_Trtscontrol_F_Trtsactive_Data), .en(CSR_Trtscontrol_F_Trtsactive_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_TRTSCONTROL_TRTSACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trtscontrol_F_Trtsactive_ff   (.out(CSR_Trtscontrol_F_Trtsactive), .in(CSR_Trtscontrol_F_Trtsactive_Data), .en(CSR_Trtscontrol_F_Trtsactive_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_CDBGNTRACEFRAMECFG
 logic                                           CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_WrEn;
@@ -426,7 +426,7 @@ logic [CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_WIDTH-1:0] CSR_CDbgNtraceFrameC
 assign CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_DataEff = {reg_wr_data[21:21]};
 assign CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_Data = (CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_WIDTH'(update_value(64'(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode), 64'(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_CDBGNTRACEFRAMECFG))));
-generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_WIDTH), .RESET_VALUE(0)) CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_ff   (.out(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode), .in(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_Data), .en(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_FRAMECLOSUREMODE_WIDTH), .RESET_VALUE(0)) CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_ff   (.out(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode), .in(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_Data), .en(CSR_CDbgNtraceFrameCfg_F_FrameClosureMode_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_WrEn;
 logic [CR_4B_CDBGNTRACEFRAMECFG_FRAMEMODEENABLE_WIDTH-1:0] CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_Data;
@@ -434,7 +434,7 @@ logic [CR_4B_CDBGNTRACEFRAMECFG_FRAMEMODEENABLE_WIDTH-1:0] CSR_CDbgNtraceFrameCf
 assign CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_DataEff = {reg_wr_data[20:20]};
 assign CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_Data = (CR_4B_CDBGNTRACEFRAMECFG_FRAMEMODEENABLE_WIDTH'(update_value(64'(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable), 64'(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_CDBGNTRACEFRAMECFG))));
-generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_FRAMEMODEENABLE_WIDTH), .RESET_VALUE(1)) CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_ff   (.out(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable), .in(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_Data), .en(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_FRAMEMODEENABLE_WIDTH), .RESET_VALUE(1)) CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_ff   (.out(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable), .in(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_Data), .en(CSR_CDbgNtraceFrameCfg_F_FrameModeEnable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_WrEn;
 logic [CR_4B_CDBGNTRACEFRAMECFG_FRAMELENGHTINBYTES_WIDTH-1:0] CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_Data;
@@ -442,7 +442,7 @@ logic [CR_4B_CDBGNTRACEFRAMECFG_FRAMELENGHTINBYTES_WIDTH-1:0] CSR_CDbgNtraceFram
 assign CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_DataEff = {reg_wr_data[15:12]};
 assign CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_Data = (CR_4B_CDBGNTRACEFRAMECFG_FRAMELENGHTINBYTES_WIDTH'(update_value(64'(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes), 64'(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_CDBGNTRACEFRAMECFG))));
-generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_FRAMELENGHTINBYTES_WIDTH), .RESET_VALUE(4'h2)) CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_ff   (.out(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes), .in(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_Data), .en(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_FRAMELENGHTINBYTES_WIDTH), .RESET_VALUE(4'h2)) CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_ff   (.out(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes), .in(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_Data), .en(CSR_CDbgNtraceFrameCfg_F_FrameLenghtInBytes_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_WrEn;
 logic [CR_4B_CDBGNTRACEFRAMECFG_TRACEFRAMEFILLBYTE_WIDTH-1:0] CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_Data;
@@ -450,7 +450,7 @@ logic [CR_4B_CDBGNTRACEFRAMECFG_TRACEFRAMEFILLBYTE_WIDTH-1:0] CSR_CDbgNtraceFram
 assign CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_DataEff = {reg_wr_data[11:4]};
 assign CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_Data = (CR_4B_CDBGNTRACEFRAMECFG_TRACEFRAMEFILLBYTE_WIDTH'(update_value(64'(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte), 64'(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_DataEff[7:0]), reg_wr_instr_type)));
 assign CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_CDBGNTRACEFRAMECFG))));
-generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_TRACEFRAMEFILLBYTE_WIDTH), .RESET_VALUE(8'hFF)) CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_ff   (.out(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte), .in(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_Data), .en(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_TRACEFRAMEFILLBYTE_WIDTH), .RESET_VALUE(8'hFF)) CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_ff   (.out(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte), .in(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_Data), .en(CSR_CDbgNtraceFrameCfg_F_TraceFrameFillByte_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_CDbgNtraceFrameCfg_F_TraceSourceId_WrEn;
 logic [CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_WIDTH-1:0] CSR_CDbgNtraceFrameCfg_F_TraceSourceId_Data;
@@ -458,7 +458,7 @@ logic [CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_WIDTH-1:0] CSR_CDbgNtraceFrameCfg_
 assign CSR_CDbgNtraceFrameCfg_F_TraceSourceId_DataEff = {reg_wr_data[3:0]};
 assign CSR_CDbgNtraceFrameCfg_F_TraceSourceId_Data = (CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_WIDTH'(update_value(64'(CSR_CDbgNtraceFrameCfg_F_TraceSourceId), 64'(CSR_CDbgNtraceFrameCfg_F_TraceSourceId_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_CDbgNtraceFrameCfg_F_TraceSourceId_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_CDBGNTRACEFRAMECFG))));
-generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_WIDTH), .RESET_VALUE(0)) CSR_CDbgNtraceFrameCfg_F_TraceSourceId_ff   (.out(CSR_CDbgNtraceFrameCfg_F_TraceSourceId), .in(CSR_CDbgNtraceFrameCfg_F_TraceSourceId_Data), .en(CSR_CDbgNtraceFrameCfg_F_TraceSourceId_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CR_4B_CDBGNTRACEFRAMECFG_TRACESOURCEID_WIDTH), .RESET_VALUE(0)) CSR_CDbgNtraceFrameCfg_F_TraceSourceId_ff   (.out(CSR_CDbgNtraceFrameCfg_F_TraceSourceId), .in(CSR_CDbgNtraceFrameCfg_F_TraceSourceId_Data), .en(CSR_CDbgNtraceFrameCfg_F_TraceSourceId_WrEn), .clk(clk), .rst_n(reset_n));
 
 //------------------------------------------------------------------------------
 // Register Reads
@@ -589,9 +589,9 @@ end
 assign CsrWrReady = reg_wr_ready;
 
 if (FLOP_RD_DATA) begin : flop_rd_data
-    generic_dff #(.WIDTH(1) , .RESET_VALUE(0)) Csr_Hit_ff    (.out(CsrHit)   , .in(reg_hit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(CR_4B_NUM_REGISTERS) , .RESET_VALUE(0)) Csr_Hit_List_ff    (.out(CsrHitList)   , .in(reg_prehit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) Csr_RdData_ff (.out(CsrRdData), .in(reg_rd_data), .en(reg_cs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1) , .RESET_VALUE(0)) Csr_Hit_ff    (.out(CsrHit)   , .in(reg_hit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(CR_4B_NUM_REGISTERS) , .RESET_VALUE(0)) Csr_Hit_List_ff    (.out(CsrHitList)   , .in(reg_prehit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) Csr_RdData_ff (.out(CsrRdData), .in(reg_rd_data), .en(reg_cs), .clk(clk), .rst_n(reset_n));
 end else begin
     assign CsrHit     = reg_hit;
     assign CsrHitList = reg_prehit;

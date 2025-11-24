@@ -12,7 +12,7 @@
  *   - All DFT/TSEL/scan outputs are tied off; other inputs ignored
  */
 
-module generic_mem_model #(
+module tt_dfd_generic_mem_model #(
     // Commonly used parameters in the sink
     parameter int ADDR_WIDTH = 9,
     parameter int DATA_WIDTH = 64,

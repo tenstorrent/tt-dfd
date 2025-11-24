@@ -84,11 +84,11 @@ assign debug_clken         = (enable_mode == 2'b01); // one clock cycle before i
 assign enable_set_sel      = id_match & (enable_mode == 2'b01); // 2'b01 is functional mode
 
 // enable_mode ff operates with the input clock, without any gating
-generic_dff     #(.WIDTH(2)) enable_mode_ff    (.out(enable_mode),    .in(DbgMuxSelCsr.DbmMode), .en(id_match),                      .clk(clk),     .rst_n(reset_n));
-generic_dff     #(.WIDTH(2)) enable_mode_d1_ff (.out(enable_mode_d1), .in(enable_mode),          .en(1'b1),                          .clk(ccg_clk), .rst_n(reset_n));
-generic_dff_clr #(.WIDTH(2)) enable_mode_d2_ff (.out(enable_mode_d2), .in(enable_mode_d1),       .en(1'b1),     .clr(~dbm_active), .clk(ccg_clk), .rst_n(reset_n));
+tt_dfd_generic_dff     #(.WIDTH(2)) enable_mode_ff    (.out(enable_mode),    .in(DbgMuxSelCsr.DbmMode), .en(id_match),                      .clk(clk),     .rst_n(reset_n));
+tt_dfd_generic_dff     #(.WIDTH(2)) enable_mode_d1_ff (.out(enable_mode_d1), .in(enable_mode),          .en(1'b1),                          .clk(ccg_clk), .rst_n(reset_n));
+tt_dfd_generic_dff_clr #(.WIDTH(2)) enable_mode_d2_ff (.out(enable_mode_d2), .in(enable_mode_d1),       .en(1'b1),     .clr(~dbm_active), .clk(ccg_clk), .rst_n(reset_n));
 
-      generic_ccg #(.HYST_EN(0)) DbmGatedClock (.out_clk(ccg_clk), .clk(clk), .en(dbm_active), .rst_n(reset_n), .force_en('0), .hyst('0), .te('0));   
+      tt_dfd_generic_ccg #(.HYST_EN(0)) DbmGatedClock (.out_clk(ccg_clk), .clk(clk), .en(dbm_active), .rst_n(reset_n), .force_en('0), .hyst('0), .te('0));   
 
 //unpack mux selects
 ////today the struct has 8 segments of width 8 bits. those could probably both be parameterized in the future
@@ -103,7 +103,7 @@ assign mux_sel_in[7][MUX_SEL_WIDTH-1:0] = DbgMuxSelCsr.Muxselseg7;
 
 //mux debug signals
 for(genvar lane=0; lane<NUM_OUTPUT_LANES; lane++) begin
-   generic_dff #(.WIDTH(MUX_SEL_WIDTH)) mux_sel_ff (.out(mux_sel_q[lane]), .in(mux_sel_in[lane]), .en(enable_set_sel), .clk(ccg_clk), .rst_n(reset_n));
+   tt_dfd_generic_dff #(.WIDTH(MUX_SEL_WIDTH)) mux_sel_ff (.out(mux_sel_q[lane]), .in(mux_sel_in[lane]), .en(enable_set_sel), .clk(ccg_clk), .rst_n(reset_n));
 
    always_comb begin
       debug_mux_out[lane] = {LANE_WIDTH{(mux_sel_q[lane] == MUX_SEL_WIDTH'(0))}} & debug_signals_in[lane];
@@ -135,7 +135,7 @@ generate
       //if we are not instantiating the 64 (OUTPUT_WIDTH) output flops, then instantiate a single flop instead for toggle mode
       assign toggle_state_en = (enable_mode == 2'b11) | (enable_mode_d1 == 2'b11);
       assign toggle_state_in = (enable_mode == 2'b11) & ~toggle_state_q;
-      generic_dff #(.WIDTH(1)) toggle_state_ff (.out(toggle_state_q), .in(toggle_state_in), .en(toggle_state_en), .clk(ccg_clk), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(1)) toggle_state_ff (.out(toggle_state_q), .in(toggle_state_in), .en(toggle_state_en), .clk(ccg_clk), .rst_n(reset_n));
    end else begin
       assign toggle_state_en = '0;
       assign toggle_state_in = '0;
@@ -145,7 +145,7 @@ generate
       if (DISABLE_OUTPUT_FLOP) begin
          assign debug_bus_q[lane] = debug_bus[lane] ^ {LANE_WIDTH{toggle_state_q}}; //if DISABLE_OUTPUT_FLOP=1, use the toggle_state_ff for toggle mode
       end else begin
-         generic_dff #(.WIDTH(LANE_WIDTH)) debug_bus_ff (.out(debug_bus_q[lane]), .in(debug_bus[lane]), .en(1'b1), .clk(ccg_clk), .rst_n(reset_n));
+         tt_dfd_generic_dff #(.WIDTH(LANE_WIDTH)) debug_bus_ff (.out(debug_bus_q[lane]), .in(debug_bus[lane]), .en(1'b1), .clk(ccg_clk), .rst_n(reset_n));
       end
       `ifndef SYNTHESIS // Added to prevent x-prop in simulations; done to fix issue described in RVDE-21945
          for(genvar i=0; i<LANE_WIDTH; i++) begin

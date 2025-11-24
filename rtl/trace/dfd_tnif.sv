@@ -43,7 +43,7 @@ module dfd_tnif import dfd_tn_pkg::*; # (
     assign ntr_pull_out = tr_gnt_in & ~(ntr_bp_in & ~ntr_flush_in) & ntr_req_in & ((dst_req_in & ~(dst_bp_in & ~dst_flush_in))?(prev_gnt == tnifState_e'(NTR_GNT)):1'b1);
 
     // Prev grant tracking
-    generic_dff #(.WIDTH($bits(tnifState_e)), .RESET_VALUE(NTR_GNT)) prev_gnt_ff (.out({prev_gnt}), .in(~prev_gnt), .en(tr_gnt_in & (ntr_req_in & dst_req_in)), .clk(clock), .rst_n(reset_n)); 
+    tt_dfd_generic_dff #(.WIDTH($bits(tnifState_e)), .RESET_VALUE(NTR_GNT)) prev_gnt_ff (.out({prev_gnt}), .in(~prev_gnt), .en(tr_gnt_in & (ntr_req_in & dst_req_in)), .clk(clock), .rst_n(reset_n)); 
 
     assign tr_data_out = {(DATA_WIDTH_IN_BYTES*8){1'b1}} & (dst_pull_out?dst_data_in:ntr_data_in); 
     assign tr_valid_out = dst_pull_out | ntr_pull_out;

@@ -335,21 +335,21 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // --------------------------------------------------------------------------
   // Flop the incoming RE6 signals
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
-    generic_dff #(.WIDTH(IRETIRE_WIDTH)) trIRetireTE0_ff (.out(trIRetire_TE0[i]), .in(trIRetire_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
-    generic_dff #(.WIDTH(ITYPE_WIDTH)) trItypeTE0_ff (.out(trIType_TE0[i]), .in(trIType_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
-    generic_dff #(.WIDTH(PC_WIDTH-1)) trIAddrTE0_ff (.out(trIAddr_TE0[i]), .in(trIAddr_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)) trILastSizeTE0_ff (.out(trILastSize_TE0[i]), .in(trILastSize_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(IRETIRE_WIDTH)) trIRetireTE0_ff (.out(trIRetire_TE0[i]), .in(trIRetire_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(ITYPE_WIDTH)) trItypeTE0_ff (.out(trIType_TE0[i]), .in(trIType_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(PC_WIDTH-1)) trIAddrTE0_ff (.out(trIAddr_TE0[i]), .in(trIAddr_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) trILastSizeTE0_ff (.out(trILastSize_TE0[i]), .in(trILastSize_RE6[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
     assign pipe_vld_TE0[i] = (|trIRetire_TE0[i]) | (trIType_TE0[i] inside {ITYPE_EXCEPTION, ITYPE_INTERRUPT});
   end   
 
-  generic_dff #(.WIDTH(TSTAMP_WIDTH)) trTstampTE0_ff (.out(trTstamp_TE0), .in(trTstamp_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH($bits(PrivMode_e))) trPriv_TE0_ff (.out({trPriv_TE0}), .in(trPriv_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TSTAMP_WIDTH)) trTstampTE0_ff (.out(trTstamp_TE0), .in(trTstamp_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH($bits(PrivMode_e))) trPriv_TE0_ff (.out({trPriv_TE0}), .in(trPriv_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(CONTEXT_WIDTH)) trContext_TE0_ff (.out(trContext_TE0), .in(trContext_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(TVAL_WIDTH)) trTval_TE0_ff (.out(trTval_TE0), .in(trTval_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(CONTEXT_WIDTH)) trContext_TE0_ff (.out(trContext_TE0), .in(trContext_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TVAL_WIDTH)) trTval_TE0_ff (.out(trTval_TE0), .in(trTval_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
   
-  generic_dff #(.WIDTH(1)) trBTHBError_TE0_ff (.out(isBTHBOverflow_TE0), .in(MC_MS_trError_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trBTHBError_TE0_ff (.out(isBTHBOverflow_TE0), .in(MC_MS_trError_RE6), .en(1'b1), .clk(clock), .rst_n(reset_n));
   
   assign trEncPriv_TE0 = trPriv_RE6;
 
@@ -368,15 +368,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign context_switch_TE0 = trStartStop_ANY_d1 & pipe_vld_TE0[0] & ((trIType_TE0[0]==ITYPE_EXCEPTION) | (trIType_TE0[0]==ITYPE_INTERRUPT) | (trIType_TE0[0] == ITYPE_EXCEPTION_INTERRUPT_RETURN)); 
   assign context_to_report_TE0 = {trContext_TE0,trEncPriv_TE0,2'b00};
 
-  generic_dff #(.WIDTH(1)) context_switch_TE1_ff (.out(context_switch_TE1), .in(context_switch_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) is_tval_to_report_TE1_ff (.out(is_tval_to_report_TE1), .in(is_tval_to_report_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) context_switch_TE1_ff (.out(context_switch_TE1), .in(context_switch_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) is_tval_to_report_TE1_ff (.out(is_tval_to_report_TE1), .in(is_tval_to_report_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
   
   // Check for EXCEPTION/INTERRUPT to generate VDM with tvals
   assign is_tval_to_report_TE0 = trStartStop_ANY_d1 & pipe_vld_TE0[0] & ((trIType_TE0[0]==ITYPE_EXCEPTION) | (trIType_TE0[0]==ITYPE_INTERRUPT));
   assign tval_to_report_TE0 = trTval_TE0; 
-  generic_dff_clr #(.WIDTH(1)) is_tval_to_report_pend_ff (.out(is_tval_to_report_pend), .in(1'b1), .clr((~is_tval_to_report_TE0 & context_switch_IBH_reported_TE0) | trStop_ANY | isErrorClear_ANY), .en(is_tval_to_report_TE0 & trStartStop_ANY & ~isErrorPacketPushed_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) is_tval_to_report_pend_ff (.out(is_tval_to_report_pend), .in(1'b1), .clr((~is_tval_to_report_TE0 & context_switch_IBH_reported_TE0) | trStop_ANY | isErrorClear_ANY), .en(is_tval_to_report_TE0 & trStartStop_ANY & ~isErrorPacketPushed_ANY), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(TSTAMP_WIDTH)) trStop_tstamp_TE0_ff (.out(trStop_tstamp_TE0), .in(trTstamp_TE0), .clr(trStart_ANY), .en(trStop_ANY | (isProgTraceSync_Pending_clr)), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(TSTAMP_WIDTH)) trStop_tstamp_TE0_ff (.out(trStop_tstamp_TE0), .in(trTstamp_TE0), .clr(trStart_ANY), .en(trStop_ANY | (isProgTraceSync_Pending_clr)), .clk(clock), .rst_n(reset_n));
 
   assign trStop_iCount_Hist_to_report_TE0 = ((trTstamp_TE0 >= trStop_tstamp_TE0) & (isProgTraceCorrelation_Pending)) | (trStop_ANY & ~|pipe_vld_TE0);
 
@@ -482,41 +482,41 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   // Resourcefull Packet control
   assign isResourceFull_Packet_TE0 = (|is_hist_overflow_to_report_TE0) | (|is_iCount_overflow_TE0);
-  generic_dff #(.WIDTH(1)) isResourceFull_Packet_TE1_ff (.out(isResourceFull_Packet_TE1), .in(isResourceFull_Packet_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) isResourceFull_Packet_TE1_ff (.out(isResourceFull_Packet_TE1), .in(isResourceFull_Packet_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
 
   // Flops the reporting conditional signals
-  generic_dff_clr #(.WIDTH(NUM_BLOCKS)) isAddrPending_delay_ff (.out(isAddrPending_delay), .in(isAddrPending_TE0 | is_sic_AddrPending_TE0), .clr(isErrorClear_ANY | trStop_iCount_Hist_to_report_TE0 | trStop_ANY), .en(|pipe_vld_TE0), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(NUM_BLOCKS)) isAddrPending_delay_ff (.out(isAddrPending_delay), .in(isAddrPending_TE0 | is_sic_AddrPending_TE0), .clr(isErrorClear_ANY | trStop_iCount_Hist_to_report_TE0 | trStop_ANY), .en(|pipe_vld_TE0), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) seq_icnt_overflow_delay_ff (.out(seq_icnt_overflow_delay), .in(1'b1), .clr(isIndirectBranchHistSync_Pending_clr | trStart_ANY), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) seq_icnt_overflow_delay_ff (.out(seq_icnt_overflow_delay), .in(1'b1), .clr(isIndirectBranchHistSync_Pending_clr | trStart_ANY), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n)); 
 
   // Flops to store the data to be used in the next cycle or when the next address block is available
-  generic_dff #(.WIDTH(BTYPE_WIDTH)) pend_btype_to_report_delay_ff (.out(pend_btype_to_report_delay), .in((isAddrPending_TE0[0] | is_sic_AddrPending_TE0[0])?bType_to_report_TE0[0]:bType_to_report_TE0[1]), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0)), .clk(clock), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH(HIST_WIDTH)) pend_hist_to_report_delay_ff (.out(pend_hist_to_report_delay), .in(aux_ibh_packet_tgt_pending_TE0?'b1:((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?hist_to_report_TE0[0]:hist_to_report_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(ICOUNT_WIDTH)) pend_iCount_to_report_delay_ff (.out(pend_iCount_to_report_delay), .in(aux_ibh_packet_tgt_pending_TE0?aux_ibh_packet_icount_TE0:((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?iCount_to_report_TE0[0]:iCount_to_report_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(TSTAMP_WIDTH)) pend_tstamp_to_report_delay_ff (.out(pend_tstamp_to_report_delay), .in(trTstamp_TE0), .en(((|is_sic_AddrPending_TE0) | (|isAddrPending_TE0) | (|inbrhist_pkt_repeat_TE1)) & (trStartStop_ANY | trStop_ANY)), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(TSTAMP_WIDTH)) rb_tstamp_to_report_ff (.out(rb_tstamp_to_report), .in((|inbrhist_pkt_repeat_TE1 & (trStartStop_ANY | trStop_ANY))?trTstamp_TE1:pend_tstamp_to_report_delay), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(BTYPE_WIDTH)) pend_btype_to_report_delay_ff (.out(pend_btype_to_report_delay), .in((isAddrPending_TE0[0] | is_sic_AddrPending_TE0[0])?bType_to_report_TE0[0]:bType_to_report_TE0[1]), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0)), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(HIST_WIDTH)) pend_hist_to_report_delay_ff (.out(pend_hist_to_report_delay), .in(aux_ibh_packet_tgt_pending_TE0?'b1:((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?hist_to_report_TE0[0]:hist_to_report_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(ICOUNT_WIDTH)) pend_iCount_to_report_delay_ff (.out(pend_iCount_to_report_delay), .in(aux_ibh_packet_tgt_pending_TE0?aux_ibh_packet_icount_TE0:((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?iCount_to_report_TE0[0]:iCount_to_report_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TSTAMP_WIDTH)) pend_tstamp_to_report_delay_ff (.out(pend_tstamp_to_report_delay), .in(trTstamp_TE0), .en(((|is_sic_AddrPending_TE0) | (|isAddrPending_TE0) | (|inbrhist_pkt_repeat_TE1)) & (trStartStop_ANY | trStop_ANY)), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TSTAMP_WIDTH)) rb_tstamp_to_report_ff (.out(rb_tstamp_to_report), .in((|inbrhist_pkt_repeat_TE1 & (trStartStop_ANY | trStop_ANY))?trTstamp_TE1:pend_tstamp_to_report_delay), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
 
-  generic_dff #(.WIDTH(ICOUNT_WIDTH)) pend_ptc_iCount_to_report_delay_ff (.out(pend_ptc_iCount_to_report_delay), .in(seq_icnt_overflow_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH($clog2(ICOUNT_WIDTH)+1)) pend_ptc_iCount_to_report_delay_len_ff (.out(pend_ptc_iCount_to_report_delay_len), .in(seq_icnt_overflow_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(HIST_WIDTH)) pend_ptc_hist_overflow_to_report_delay_ff (.out(pend_ptc_hist_overflow_to_report_delay), .in(seq_icnt_overflow_TE0[1]?hist_to_report_TE0[1]:hist_to_report_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH($clog2(HIST_WIDTH)+1)) pend_ptc_hist_overflow_to_report_delay_len_ff (.out(pend_ptc_hist_overflow_to_report_delay_len), .in(seq_icnt_overflow_TE0[1]?hist_report_len_TE0[1]:hist_report_len_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(ICOUNT_WIDTH)) pend_ptc_iCount_to_report_delay_ff (.out(pend_ptc_iCount_to_report_delay), .in(seq_icnt_overflow_TE0[1]?iCount_to_report_TE0[1]:iCount_to_report_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($clog2(ICOUNT_WIDTH)+1)) pend_ptc_iCount_to_report_delay_len_ff (.out(pend_ptc_iCount_to_report_delay_len), .in(seq_icnt_overflow_TE0[1]?iCount_to_report_len_TE0[1]:iCount_to_report_len_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(HIST_WIDTH)) pend_ptc_hist_overflow_to_report_delay_ff (.out(pend_ptc_hist_overflow_to_report_delay), .in(seq_icnt_overflow_TE0[1]?hist_to_report_TE0[1]:hist_to_report_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($clog2(HIST_WIDTH)+1)) pend_ptc_hist_overflow_to_report_delay_len_ff (.out(pend_ptc_hist_overflow_to_report_delay_len), .in(seq_icnt_overflow_TE0[1]?hist_report_len_TE0[1]:hist_report_len_TE0[0]), .en(|seq_icnt_overflow_TE0), .clk(clock), .rst_n(reset_n));
   
   // Flop their lengths after the FF logic
-  generic_dff #(.WIDTH($clog2(HIST_WIDTH)+1)) pend_hist_to_report_delay_len_ff (.out(pend_hist_to_report_delay_len), .in(aux_ibh_packet_tgt_pending_TE0?$bits(pend_hist_to_report_delay_len)'('b1):((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?hist_report_len_TE0[0]:hist_report_len_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH($clog2(ICOUNT_WIDTH)+1)) pend_iCount_to_report_delay_len_ff (.out(pend_iCount_to_report_delay_len), .in(aux_ibh_packet_tgt_pending_TE0?aux_ibh_packet_icount_len_TE0:((trStop_ANY | isAddrPending_TE0[0] | is_sic_AddrPending_TE0[0])?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) pend_tstamp_to_report_delay_len_ff (.out(pend_tstamp_to_report_delay_len), .in(tstamp_len_TE0), .en(((|is_sic_AddrPending_TE0) | (|isAddrPending_TE0) | (|inbrhist_pkt_repeat_TE1)) & (trStartStop_ANY | trStop_ANY)), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) rb_tstamp_to_report_len_ff (.out(rb_tstamp_to_report_len), .in((|inbrhist_pkt_repeat_TE1 & (trStartStop_ANY | trStop_ANY))?tstamp_len_TE0:pend_tstamp_to_report_delay_len), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($clog2(HIST_WIDTH)+1)) pend_hist_to_report_delay_len_ff (.out(pend_hist_to_report_delay_len), .in(aux_ibh_packet_tgt_pending_TE0?$bits(pend_hist_to_report_delay_len)'('b1):((trStop_ANY | is_sic_AddrPending_TE0[0] | isAddrPending_TE0[0])?hist_report_len_TE0[0]:hist_report_len_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($clog2(ICOUNT_WIDTH)+1)) pend_iCount_to_report_delay_len_ff (.out(pend_iCount_to_report_delay_len), .in(aux_ibh_packet_tgt_pending_TE0?aux_ibh_packet_icount_len_TE0:((trStop_ANY | isAddrPending_TE0[0] | is_sic_AddrPending_TE0[0])?iCount_to_report_len_TE0[0]:iCount_to_report_len_TE0[1])), .en((|isAddrPending_TE0) | (|is_sic_AddrPending_TE0) | trStop_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) pend_tstamp_to_report_delay_len_ff (.out(pend_tstamp_to_report_delay_len), .in(tstamp_len_TE0), .en(((|is_sic_AddrPending_TE0) | (|isAddrPending_TE0) | (|inbrhist_pkt_repeat_TE1)) & (trStartStop_ANY | trStop_ANY)), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($clog2(TSTAMP_WIDTH)+1)) rb_tstamp_to_report_len_ff (.out(rb_tstamp_to_report_len), .in((|inbrhist_pkt_repeat_TE1 & (trStartStop_ANY | trStop_ANY))?tstamp_len_TE0:pend_tstamp_to_report_delay_len), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
 
   // Flop the Computed HIST, I-CNT field after the TE0 stage
-  generic_dff #(.WIDTH(HIST_WIDTH), .RESET_VALUE(1)) hist_TE1_ff (.out(hist_TE1), .in((trCorrelationMessageSent_ANY | isErrorClear_ANY)?HIST_WIDTH'('h1):next_hist_TE0), .en(isErrorClear_ANY | trCorrelationMessageSent_ANY | (|pipe_vld_TE0) | hist_TE1[HIST_WIDTH-1] | |trStart_ANY), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(ICOUNT_WIDTH)) iCount_TE1_ff (.out(iCount_TE1), .in((trCorrelationMessageSent_ANY | isErrorClear_ANY)?ICOUNT_WIDTH'('h0):next_iCount_TE0), .en(isErrorClear_ANY | trCorrelationMessageSent_ANY | (|pipe_vld_TE0) | trStart_ANY), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(HIST_WIDTH), .RESET_VALUE(1)) hist_TE1_ff (.out(hist_TE1), .in((trCorrelationMessageSent_ANY | isErrorClear_ANY)?HIST_WIDTH'('h1):next_hist_TE0), .en(isErrorClear_ANY | trCorrelationMessageSent_ANY | (|pipe_vld_TE0) | hist_TE1[HIST_WIDTH-1] | |trStart_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(ICOUNT_WIDTH)) iCount_TE1_ff (.out(iCount_TE1), .in((trCorrelationMessageSent_ANY | isErrorClear_ANY)?ICOUNT_WIDTH'('h0):next_iCount_TE0), .en(isErrorClear_ANY | trCorrelationMessageSent_ANY | (|pipe_vld_TE0) | trStart_ANY), .clk(clock), .rst_n(reset_n)); 
 
-  generic_dff_clr #(.WIDTH(1)) context_switch_report_pend_ff (.out(context_switch_report_pend), .in(1'b1), .clr(trStop_ANY | isErrorClear_ANY | (context_switch_IBH_reported_TE0 & ~context_switch_TE0)), .en(trStartStop_ANY & context_switch_TE0 & ~isErrorPacketPushed_ANY), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) context_switch_IBH_reported_TE1_ff (.out(context_switch_IBH_reported_TE1), .in(context_switch_IBH_reported_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) context_switch_report_pend_ff (.out(context_switch_report_pend), .in(1'b1), .clr(trStop_ANY | isErrorClear_ANY | (context_switch_IBH_reported_TE0 & ~context_switch_TE0)), .en(trStartStop_ANY & context_switch_TE0 & ~isErrorPacketPushed_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) context_switch_IBH_reported_TE1_ff (.out(context_switch_IBH_reported_TE1), .in(context_switch_IBH_reported_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trTracingInProgress_flop_ANY_ff (.out(trTracingInProgress_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] == PROGTRACECORRELATION) | (curr_pkt_TE1[1] == PROGTRACECORRELATION) | (curr_pkt_TE0[0] == ERROR)), .en((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0]), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trTracingInProgress_flop_ANY_ff (.out(trTracingInProgress_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] == PROGTRACECORRELATION) | (curr_pkt_TE1[1] == PROGTRACECORRELATION) | (curr_pkt_TE0[0] == ERROR)), .en((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0]), .clk(clock), .rst_n(reset_n));
 
   assign trCorrelationMessageSent_ANY = (curr_pkt_TE0[0] == PROGTRACECORRELATION & packet_pipe_vld_TE0[0]) | (curr_pkt_TE0[1] == PROGTRACECORRELATION & packet_pipe_vld_TE0[1]);
 
@@ -526,7 +526,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // ----------------------------------------------------------------------------------------------
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
     // I-CNT
-    generic_ffs_fast #(
+    tt_dfd_generic_ffs_fast #(
     .DIR_L2H(1'b0),
     .WIDTH(ICOUNT_WIDTH),
     .DATA_WIDTH(ICOUNT_WIDTH)
@@ -542,7 +542,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
     assign iCount_to_report_len_TE0[i] = ($clog2(ICOUNT_WIDTH)+1)'(|iCount_to_report_TE0[i]) + icnt_raw_len_TE0[i];
 
     // F-Addr
-    generic_ffs_fast #(
+    tt_dfd_generic_ffs_fast #(
     .DIR_L2H(1'b0),
     .WIDTH(PC_WIDTH-1),
     .DATA_WIDTH(PC_WIDTH-1)
@@ -559,7 +559,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
     // U-Addr
     assign u_addr_TE0[i] = trIAddr_TE0[i]^((|i & (&next_ref_addr_vld_TE0))?trIAddr_TE0[0]:ref_addr_TE1); 
-    generic_ffs_fast #(
+    tt_dfd_generic_ffs_fast #(
     .DIR_L2H(1'b0),
     .WIDTH(PC_WIDTH-1),
     .DATA_WIDTH(PC_WIDTH-1)
@@ -575,7 +575,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
     assign uaddr_len_TE0[i] = ($clog2(PC_WIDTH)+1)'(|u_addr_TE0[i]) + uaddr_raw_len_TE0[i];
 
     // HIST
-    generic_ffs_fast #(
+    tt_dfd_generic_ffs_fast #(
     .DIR_L2H(1'b0),
     .WIDTH(HIST_WIDTH),
     .DATA_WIDTH(HIST_WIDTH)
@@ -592,7 +592,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   end
 
   // HIST Overflow
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(HIST_WIDTH),
   .DATA_WIDTH(HIST_WIDTH)
@@ -608,7 +608,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign hist_overflow_to_report_len_TE0 = ($clog2(HIST_WIDTH)+1)'(|hist_overflow_to_report_TE0) + hist_overflow_to_report_raw_len_TE0;
 
   // B-Cnt (for RepeatBranch Message)
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(BCNT_WIDTH),
   .DATA_WIDTH(BCNT_WIDTH)
@@ -624,7 +624,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign bcnt_len_TE1 = ($clog2(BCNT_WIDTH)+1)'(|bcnt_to_report_TE1) + bcnt_raw_len_TE1;
 
   // Process-context
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(CONTEXT_WIDTH+5),
   .DATA_WIDTH(CONTEXT_WIDTH+5)
@@ -640,7 +640,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign process_context_len_TE0 = ($clog2(CONTEXT_WIDTH+5)+1)'(|context_to_report_TE0) + process_context_raw_len_TE0;
 
   // Tval
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(TVAL_WIDTH),
   .DATA_WIDTH(TVAL_WIDTH)
@@ -656,7 +656,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign tval_to_report_len_TE0 = ($clog2(TVAL_WIDTH)+1)'(|tval_to_report_TE0) + tval_to_report_raw_len_TE0;
 
   // T-Stamp
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(TSTAMP_WIDTH),
   .DATA_WIDTH(TSTAMP_WIDTH)
@@ -672,7 +672,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign tstamp_len_TE0 = ($clog2(TSTAMP_WIDTH)+1)'(|trTstamp_TE0) + tstamp_raw_len_TE0;
 
   // Trace Stop T-Stamp
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(TSTAMP_WIDTH),
   .DATA_WIDTH(TSTAMP_WIDTH)
@@ -689,7 +689,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   // AUX IBH U-Addr 
   assign aux_ibh_uaddr_TE0 = (trIAddr_TE0[0] + ((PC_WIDTH-1)'({1'b1,{(ICOUNT_WIDTH-1){1'b0}}}) - (PC_WIDTH-1)'(iCount_TE1))) ^ (trIAddr_TE0[1]);
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(PC_WIDTH-1),
   .DATA_WIDTH(PC_WIDTH-1)
@@ -705,7 +705,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign aux_ibh_uaddr_len_TE0 = ($clog2(PC_WIDTH)+1)'(|aux_ibh_uaddr_TE0) + aux_ibh_uaddr_raw_len_TE0;
 
   // AUX IBH Icount
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
   .DIR_L2H(1'b0),
   .WIDTH(ICOUNT_WIDTH),
   .DATA_WIDTH(ICOUNT_WIDTH)
@@ -992,29 +992,29 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // Flop the pipe valid signal to TE1
   // Flop the current packet to TE1 cycle
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
-    generic_dff #(.WIDTH($bits(Pkt_TCode_e))) curr_pkt_TE1_ff (.out({curr_pkt_TE1[i]}), .in(packet_pipe_vld_TE0[i]?curr_pkt_TE0[i]:PKT_UNKNOWN), .en(1'b1), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH($bits(Pkt_TCode_e))) curr_pkt_TE1_ff (.out({curr_pkt_TE1[i]}), .in(packet_pipe_vld_TE0[i]?curr_pkt_TE0[i]:PKT_UNKNOWN), .en(1'b1), .clk(clock), .rst_n(reset_n));
   end
   // Flop the time stamp to TE1 cycle to compute the cycle_count
-  generic_dff #(.WIDTH(TSTAMP_WIDTH)) tstamp_TE1_ff (.out(trTstamp_TE1), .in(trStop_ANY?TSTAMP_WIDTH'('h0):trTstamp_TE0), .en(trStop_ANY | (trStartStop_ANY & (|pipe_vld_TE0))), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TSTAMP_WIDTH)) tstamp_TE1_ff (.out(trTstamp_TE1), .in(trStop_ANY?TSTAMP_WIDTH'('h0):trTstamp_TE0), .en(trStop_ANY | (trStartStop_ANY & (|pipe_vld_TE0))), .clk(clock), .rst_n(reset_n));
 
   // Flop the ref-addr to use it with the next addr computation
   // MUX-ed scheme to select which one as the reference address based on the pipe_vld
   // Ref-Addr is updated only when the address is reported, not on every incoming block from BTHB
-  generic_dff #(.WIDTH(PC_WIDTH-1)) ref_addr_TE1_ff (.out(ref_addr_TE1), .in(aux_ibh_packet_pipe_vld_TE0?trIAddr_TE0[1]:(next_ref_addr_vld_TE0[1]?next_ref_addr_TE0[1]:next_ref_addr_TE0[0])), .en(aux_ibh_packet_pipe_vld_TE0 | (|next_ref_addr_vld_TE0)), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(PC_WIDTH-1)) ref_addr_TE1_ff (.out(ref_addr_TE1), .in(aux_ibh_packet_pipe_vld_TE0?trIAddr_TE0[1]:(next_ref_addr_vld_TE0[1]?next_ref_addr_TE0[1]:next_ref_addr_TE0[0])), .en(aux_ibh_packet_pipe_vld_TE0 | (|next_ref_addr_vld_TE0)), .clk(clock), .rst_n(reset_n));
 
   // Propogate the packet pipe valid to the TE1 stage
-  generic_dff #(.WIDTH(NUM_BLOCKS)) packet_pipe_vld_TE1_ff (.out(packet_pipe_vld_TE1), .in(packet_pipe_vld_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(NUM_BLOCKS)) packet_pipe_vld_TE1_ff (.out(packet_pipe_vld_TE1), .in(packet_pipe_vld_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trStop_iCount_Hist_to_report_TE1_ff (.out(trStop_iCount_Hist_to_report_TE1), .in(trStop_iCount_Hist_to_report_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));  
+  tt_dfd_generic_dff #(.WIDTH(1)) trStop_iCount_Hist_to_report_TE1_ff (.out(trStop_iCount_Hist_to_report_TE1), .in(trStop_iCount_Hist_to_report_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));  
   
   // Iterate over the total number of MSO logic blocks
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
     for (genvar j=0; j<NUM_MSO; j++) begin
       // Flop the TE0 data to feed into the MSO logic
-      generic_dff #(.WIDTH(MSO_DATA_IN_WIDTH)) mso_data_in_TE1_ff (.out(mso_data_in_TE1[i][j]), .in(mso_data_in_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
-      generic_dff #(.WIDTH($clog2(MSO_DATA_IN_WIDTH)+1)) mso_data_in_len_TE1_ff (.out(mso_data_in_len_TE1[i][j]), .in(mso_data_in_len_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
-      generic_dff #(.WIDTH(1)) mso_data_is_var_TE1_ff (.out(mso_data_is_var_TE1[i][j]), .in(mso_data_is_var_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
-      generic_dff #(.WIDTH(1)) mso_data_is_last_TE1_ff (.out(mso_data_is_last_TE1[i][j]), .in(mso_data_is_last_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(MSO_DATA_IN_WIDTH)) mso_data_in_TE1_ff (.out(mso_data_in_TE1[i][j]), .in(mso_data_in_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH($clog2(MSO_DATA_IN_WIDTH)+1)) mso_data_in_len_TE1_ff (.out(mso_data_in_len_TE1[i][j]), .in(mso_data_in_len_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(1)) mso_data_is_var_TE1_ff (.out(mso_data_is_var_TE1[i][j]), .in(mso_data_is_var_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(1)) mso_data_is_last_TE1_ff (.out(mso_data_is_last_TE1[i][j]), .in(mso_data_is_last_TE0[i][j]), .en(packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
  
         dfd_te_mso #(
           .DATA_WIDTH(MSO_DATA_IN_WIDTH)
@@ -1047,9 +1047,9 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   end
 
-  generic_dff #(.WIDTH(NUM_BLOCKS)) pkt_buffer_data_vld_TE2_ff (.out(pkt_buffer_data_vld_TE2), .in(pkt_buffer_data_vld_TE1), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(NUM_BLOCKS)) pkt_buffer_data_vld_TE2_ff (.out(pkt_buffer_data_vld_TE2), .in(pkt_buffer_data_vld_TE1), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_ffs_N #(.DIR_L2H    (1),
+  tt_dfd_generic_ffs_N #(.DIR_L2H    (1),
             .WIDTH      (5),
             .DATA_WIDTH ($bits(pkt_buffer_t)),
             .NUM_SEL    (5)
@@ -1067,19 +1067,19 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // ----------------------------------------------------------------------------------------------
   // Flop the fields of IBH packet TE0 (Both pipes)
   for (genvar i=0; i<NUM_BLOCKS; i++) begin 
-    generic_dff_clr #(.WIDTH(ICOUNT_WIDTH)) inbrhist_icnt_TE1_ff (.out(inbrhist_icnt_TE1[i]), .in(next_inbrhist_icnt_TE0[i]), .clr(trStop_ANY_d1 | isErrorClear_ANY), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i] & ~(ibh_btype_reported_TE0[i] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)}) & ~context_switch_IBH_reported_TE0), .clk(clock), .rst_n(reset_n));
-    generic_dff_clr #(.WIDTH(PC_WIDTH-1)) inbrhist_uaddr_TE1_ff (.out(inbrhist_uaddr_TE1[i]), .in(next_inbrhist_uaddr_TE0[i]), .clr(trStop_ANY_d1 | isErrorClear_ANY), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i] & ~(ibh_btype_reported_TE0[i] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)}) & ~context_switch_IBH_reported_TE0), .clk(clock), .rst_n(reset_n));
-    generic_dff_clr #(.WIDTH(HIST_WIDTH)) inbrhist_hist_TE1_ff (.out(inbrhist_hist_TE1[i]), .in(next_inbrhist_hist_TE0[i]), .clr(trStop_ANY_d1 | isErrorClear_ANY), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i] & ~(ibh_btype_reported_TE0[i] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)}) & ~context_switch_IBH_reported_TE0),  .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff_clr #(.WIDTH(ICOUNT_WIDTH)) inbrhist_icnt_TE1_ff (.out(inbrhist_icnt_TE1[i]), .in(next_inbrhist_icnt_TE0[i]), .clr(trStop_ANY_d1 | isErrorClear_ANY), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i] & ~(ibh_btype_reported_TE0[i] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)}) & ~context_switch_IBH_reported_TE0), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff_clr #(.WIDTH(PC_WIDTH-1)) inbrhist_uaddr_TE1_ff (.out(inbrhist_uaddr_TE1[i]), .in(next_inbrhist_uaddr_TE0[i]), .clr(trStop_ANY_d1 | isErrorClear_ANY), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i] & ~(ibh_btype_reported_TE0[i] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)}) & ~context_switch_IBH_reported_TE0), .clk(clock), .rst_n(reset_n));
+    tt_dfd_generic_dff_clr #(.WIDTH(HIST_WIDTH)) inbrhist_hist_TE1_ff (.out(inbrhist_hist_TE1[i]), .in(next_inbrhist_hist_TE0[i]), .clr(trStop_ANY_d1 | isErrorClear_ANY), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i] & ~(ibh_btype_reported_TE0[i] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)}) & ~context_switch_IBH_reported_TE0),  .clk(clock), .rst_n(reset_n));
 
-    generic_dff #(.WIDTH(BTYPE_WIDTH)) ibh_btype_reported_TE1_ff (.out(ibh_btype_reported_TE1[i]), .in(ibh_btype_reported_TE0[i]), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i]),  .clk(clock), .rst_n(reset_n)); 
+    tt_dfd_generic_dff #(.WIDTH(BTYPE_WIDTH)) ibh_btype_reported_TE1_ff (.out(ibh_btype_reported_TE1[i]), .in(ibh_btype_reported_TE0[i]), .en((curr_pkt_TE0[i] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE0[i]),  .clk(clock), .rst_n(reset_n)); 
   end
   // Flop the fields of IBH packet TE1 (Single entry)
-  generic_dff_clr #(.WIDTH(ICOUNT_WIDTH)) inbrhist_icnt_TE2_ff (.out(inbrhist_icnt_TE2), .in(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1])?inbrhist_icnt_TE1[1]:inbrhist_icnt_TE1[0]), .clr(trIBHS_trig_psync_ANY | trStop_iCount_Hist_to_report_TE0 | isErrorClear_ANY | inbrhist_pkt_repeat_clr_TE1), .en(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1] & ~(ibh_btype_reported_TE1[1] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) | ((curr_pkt_TE1[0] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[0] & ~(ibh_btype_reported_TE1[0] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) & ~context_switch_IBH_reported_TE1), .clk(clock), .rst_n(reset_n));
-  generic_dff_clr #(.WIDTH(PC_WIDTH-1)) inbrhist_uaddr_TE2_ff (.out(inbrhist_uaddr_TE2), .in(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1])?inbrhist_uaddr_TE1[1]:inbrhist_uaddr_TE1[0]), .clr(trIBHS_trig_psync_ANY | trStop_iCount_Hist_to_report_TE0 | isErrorClear_ANY | inbrhist_pkt_repeat_clr_TE1), .en(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1] & ~(ibh_btype_reported_TE1[1] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) | ((curr_pkt_TE1[0] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[0] & ~(ibh_btype_reported_TE1[0] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) & ~context_switch_IBH_reported_TE1), .clk(clock), .rst_n(reset_n));
-  generic_dff_clr #(.WIDTH(HIST_WIDTH)) inbrhist_hist_TE2_ff (.out(inbrhist_hist_TE2), .in(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1])?inbrhist_hist_TE1[1]:inbrhist_hist_TE1[0]), .clr(trIBHS_trig_psync_ANY | trStop_iCount_Hist_to_report_TE0 | isErrorClear_ANY | inbrhist_pkt_repeat_clr_TE1), .en(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1] & ~(ibh_btype_reported_TE1[1] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) | ((curr_pkt_TE1[0] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[0] & ~(ibh_btype_reported_TE1[0] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) & ~context_switch_IBH_reported_TE1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(ICOUNT_WIDTH)) inbrhist_icnt_TE2_ff (.out(inbrhist_icnt_TE2), .in(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1])?inbrhist_icnt_TE1[1]:inbrhist_icnt_TE1[0]), .clr(trIBHS_trig_psync_ANY | trStop_iCount_Hist_to_report_TE0 | isErrorClear_ANY | inbrhist_pkt_repeat_clr_TE1), .en(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1] & ~(ibh_btype_reported_TE1[1] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) | ((curr_pkt_TE1[0] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[0] & ~(ibh_btype_reported_TE1[0] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) & ~context_switch_IBH_reported_TE1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(PC_WIDTH-1)) inbrhist_uaddr_TE2_ff (.out(inbrhist_uaddr_TE2), .in(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1])?inbrhist_uaddr_TE1[1]:inbrhist_uaddr_TE1[0]), .clr(trIBHS_trig_psync_ANY | trStop_iCount_Hist_to_report_TE0 | isErrorClear_ANY | inbrhist_pkt_repeat_clr_TE1), .en(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1] & ~(ibh_btype_reported_TE1[1] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) | ((curr_pkt_TE1[0] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[0] & ~(ibh_btype_reported_TE1[0] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) & ~context_switch_IBH_reported_TE1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(HIST_WIDTH)) inbrhist_hist_TE2_ff (.out(inbrhist_hist_TE2), .in(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1])?inbrhist_hist_TE1[1]:inbrhist_hist_TE1[0]), .clr(trIBHS_trig_psync_ANY | trStop_iCount_Hist_to_report_TE0 | isErrorClear_ANY | inbrhist_pkt_repeat_clr_TE1), .en(((curr_pkt_TE1[1] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[1] & ~(ibh_btype_reported_TE1[1] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) | ((curr_pkt_TE1[0] == INDIRECTBRANCHHIST) & packet_pipe_vld_TE1[0] & ~(ibh_btype_reported_TE1[0] inside {BTYPE_WIDTH'('h2), BTYPE_WIDTH'('h3)})) & ~context_switch_IBH_reported_TE1), .clk(clock), .rst_n(reset_n));
 
   // B-CNT flop in TE2
-  generic_dff_clr #(.WIDTH(BCNT_WIDTH)) bcnt_TE2_ff (.out(bcnt_TE2), .in(inbrhist_pkt_repeat_clr_TE1?BCNT_WIDTH'('h0):next_bcnt_TE1), .clr(isErrorClear_ANY | (rb_packet_pipe_vld_TE1 & ~bcnt_overflow_TE1)), .en(|inbrhist_pkt_repeat_TE1 | inbrhist_pkt_repeat_clr_TE1 | bcnt_overflow_TE1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(BCNT_WIDTH)) bcnt_TE2_ff (.out(bcnt_TE2), .in(inbrhist_pkt_repeat_clr_TE1?BCNT_WIDTH'('h0):next_bcnt_TE1), .clr(isErrorClear_ANY | (rb_packet_pipe_vld_TE1 & ~bcnt_overflow_TE1)), .en(|inbrhist_pkt_repeat_TE1 | inbrhist_pkt_repeat_clr_TE1 | bcnt_overflow_TE1), .clk(clock), .rst_n(reset_n));
 
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
     assign inbrhist_hist_repeat_TE1[i] = (inbrhist_hist_TE1[i] == inbrhist_hist_TE2);
@@ -1111,7 +1111,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   end
 
   assign inbrhist_ibh_pkt_clr_after_bcnt_overflow = (|is_repatbranch_generating_packets_TE1 & ~inbrhist_pkt_interpipe_repeat_matches_TE1) & ~bcnt_overflow_TE1;
-  generic_dff_clr #(.WIDTH(1)) bcnt_TE2_overflowed_ff (.out(bcnt_TE2_overflowed), .in(1'b1), .clr(isErrorClear_ANY | (|next_bcnt_TE1) | inbrhist_ibh_pkt_clr_after_bcnt_overflow), .en(bcnt_overflow_TE1 & rb_packet_pipe_vld_TE1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) bcnt_TE2_overflowed_ff (.out(bcnt_TE2_overflowed), .in(1'b1), .clr(isErrorClear_ANY | (|next_bcnt_TE1) | inbrhist_ibh_pkt_clr_after_bcnt_overflow), .en(bcnt_overflow_TE1 & rb_packet_pipe_vld_TE1), .clk(clock), .rst_n(reset_n));
 
   // RepeatBranch Packet framing
   assign rb_mso_data_in_TE1[0] = MSO_DATA_IN_WIDTH'({bcnt_to_report_TE1,(Cr4BTrtecontrol.Trteinhibitsrc?REPEATBRANCH:{Cr4BTrteinstfeatures.Trtesrcid[3:0],REPEATBRANCH})});
@@ -1126,7 +1126,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   assign rb_packet_pipe_vld_TE1 = ((inbrhist_pkt_repeat_clr_TE1 & (bcnt_TE2!=0)) | inbrhist_pkt_repeat_reset_TE1) & ~(isErrorGeneration_TE0 & ~isBTHBOverflow_TE0);
 
-  generic_dff #(.WIDTH(1)) rb_packet_pipe_vld_TE2_ff (.out(rb_packet_pipe_vld_TE2), .in(rb_packet_pipe_vld_TE1), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) rb_packet_pipe_vld_TE2_ff (.out(rb_packet_pipe_vld_TE2), .in(rb_packet_pipe_vld_TE1), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   for (genvar j=0; j<2; j++) begin
       dfd_te_mso #(
@@ -1198,15 +1198,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign own_vdm_mso_data_is_var_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
   assign own_vdm_mso_data_is_last_TE0[1][3] = (own_vdm_packet_pipe_is_vdm_vld_TE0 & trtsenable);
 
-  generic_dff #(.WIDTH(NUM_BLOCKS)) own_vdm_packet_pipe_vld_TE1_ff (.out(own_vdm_packet_pipe_vld_TE1), .in(own_vdm_packet_pipe_vld_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(NUM_BLOCKS)) own_vdm_packet_pipe_vld_TE1_ff (.out(own_vdm_packet_pipe_vld_TE1), .in(own_vdm_packet_pipe_vld_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   for (genvar i=0; i<NUM_BLOCKS; i++) begin
     for (genvar j=0; j<4; j++) begin
       // Flop the TE0 data to feed into the MSO logic
-      generic_dff #(.WIDTH(MSO_DATA_IN_WIDTH)) own_vdm_mso_data_in_TE1_ff (.out(own_vdm_mso_data_in_TE1[i][j]), .in(own_vdm_mso_data_in_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
-      generic_dff #(.WIDTH($clog2(MSO_DATA_IN_WIDTH)+1)) own_vdm_mso_data_in_len_TE1_ff (.out(own_vdm_mso_data_in_len_TE1[i][j]), .in(own_vdm_mso_data_in_len_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
-      generic_dff #(.WIDTH(1)) own_vdm_mso_data_is_var_TE1_ff (.out(own_vdm_mso_data_is_var_TE1[i][j]), .in(own_vdm_mso_data_is_var_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
-      generic_dff #(.WIDTH(1)) own_vdm_mso_data_is_last_TE1_ff (.out(own_vdm_mso_data_is_last_TE1[i][j]), .in(own_vdm_mso_data_is_last_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(MSO_DATA_IN_WIDTH)) own_vdm_mso_data_in_TE1_ff (.out(own_vdm_mso_data_in_TE1[i][j]), .in(own_vdm_mso_data_in_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH($clog2(MSO_DATA_IN_WIDTH)+1)) own_vdm_mso_data_in_len_TE1_ff (.out(own_vdm_mso_data_in_len_TE1[i][j]), .in(own_vdm_mso_data_in_len_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(1)) own_vdm_mso_data_is_var_TE1_ff (.out(own_vdm_mso_data_is_var_TE1[i][j]), .in(own_vdm_mso_data_is_var_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
+      tt_dfd_generic_dff #(.WIDTH(1)) own_vdm_mso_data_is_last_TE1_ff (.out(own_vdm_mso_data_is_last_TE1[i][j]), .in(own_vdm_mso_data_is_last_TE0[i][j]), .en(own_vdm_packet_pipe_vld_TE0[i]), .clk(clock), .rst_n(reset_n));
 
       dfd_te_mso #(
         .DATA_WIDTH(MSO_DATA_IN_WIDTH)
@@ -1239,7 +1239,7 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // ----------------------------------------------------------------------------------------------
   // 2W = Max of two packets can be generated in a single cycle
   // 1R = The dfd_packetizer reads one packet
-  generic_fifoMN #(
+  tt_dfd_generic_fifoMN #(
     .ALLOW_CLEAR  (0),
     .DATA_WIDTH   ($bits(pkt_buffer_t)),
     .ENTRIES      (PKT_FIFO_CNT),
@@ -1264,26 +1264,26 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // Error Packet Conditions:
   // ----------------------------------------------------------------------------------------------
 
-  generic_dff_clr #(.WIDTH(1)) isEncoderBufferOverflowflop_ANY_ff (.out(isEncoderBufferOverflowflop_ANY), .in(1'b1), .clr(pkt_fifo_cnt_TE2 < 2), .en(pkt_fifo_cnt_TE2 >= 4), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) isEncoderBufferOverflowflop_ANY_ff (.out(isEncoderBufferOverflowflop_ANY), .in(1'b1), .clr(pkt_fifo_cnt_TE2 < 2), .en(pkt_fifo_cnt_TE2 >= 4), .clk(clock), .rst_n(reset_n)); 
   assign isEncoderBufferOverflow_ANY = isEncoderBufferOverflowflop_ANY; 
   
   assign isErrorPacketPushed_TE1 = (curr_pkt_TE1[0] == ERROR) & packet_pipe_vld_TE1[0] & (pkt_fifo_cnt_TE2 <= (PKT_FIFO_CNT-1));
 
-  generic_dff_clr #(.WIDTH(1)) isErrorPacketPushed_ANY_ff (.out(isErrorPacketPushed_ANY), .in(1'b1), .clr(pkt_fifo_cnt_TE2 < 2), .en(isErrorPacketPushed_TE1), .clk(clock), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH(1)) isErrorPacketPushed_d1_ANY_ff (.out(isErrorPacketPushed_d1_ANY), .in(isErrorPacketPushed_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) isErrorPacketPushed_ANY_ff (.out(isErrorPacketPushed_ANY), .in(1'b1), .clr(pkt_fifo_cnt_TE2 < 2), .en(isErrorPacketPushed_TE1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) isErrorPacketPushed_d1_ANY_ff (.out(isErrorPacketPushed_d1_ANY), .in(isErrorPacketPushed_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
 
   assign isErrorClear_ANY = (isEncoderBufferOverflow_ANY | isBTHBOverflow_TE0) & trStartStop_ANY; 
 
 
 
   assign trTeResyncAfterEncOverflowError_ANY = (~isErrorPacketPushed_ANY & isErrorPacketPushed_d1_ANY);
-  generic_dff_clr #(.WIDTH(1)) trTeResyncAfterBTHBOverflowError_ANY_ff (.out(trTeResyncAfterBTHBOverflowError_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] inside {PROGTRACESYNC, PROGTRACECORRELATION}) & packet_pipe_vld_TE0[0]), .en((~isErrorPacketPushed_ANY & isErrorPacketPushed_d1_ANY) | (isBTHBOverflow_TE0 & trStartStop_ANY)), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trTeResyncAfterBTHBOverflowError_ANY_ff (.out(trTeResyncAfterBTHBOverflowError_ANY), .in(1'b1), .clr((curr_pkt_TE0[0] inside {PROGTRACESYNC, PROGTRACECORRELATION}) & packet_pipe_vld_TE0[0]), .en((~isErrorPacketPushed_ANY & isErrorPacketPushed_d1_ANY) | (isBTHBOverflow_TE0 & trStartStop_ANY)), .clk(clock), .rst_n(reset_n)); 
   
   assign trTeResyncAfterError_ANY = trTeResyncAfterEncOverflowError_ANY | trTeResyncAfterBTHBOverflowError_ANY; 
 
   // StallEnable Conditions
   assign trBackpressure_ANY = isEncoderBufferOverflow_ANY & Cr4BTrtecontrol.Trteinststallena;
-  generic_dff #(.WIDTH(1)) MS_MC_trBackpressure_ANY_stg_ff (.out(MS_MC_trBackpressure_ANY), .in(trBackpressure_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) MS_MC_trBackpressure_ANY_stg_ff (.out(MS_MC_trBackpressure_ANY), .in(trBackpressure_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
 
   // ----------------------------------------------------------------------------------------------
   // TE - Packetizer Interface
@@ -1291,8 +1291,8 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign request_packet_space_in_bytes = (flush_mode_enable & ~ flush_mode_exit)?(($clog2(NTRACE_MAX_PACKET_WIDTH_IN_BYTES)+1)'('h4)):{($clog2(NTRACE_MAX_PACKET_WIDTH_IN_BYTES)+1){|pkt_fifo_cnt_TE2}} & ($clog2(NTRACE_MAX_PACKET_WIDTH_IN_BYTES)+1)'(pkt_len_in_bytes);
   
   // Flop out the data from the FIFO before sending out to dfd_packetizer
-  generic_dff #(.WIDTH(NTRACE_MAX_PACKET_WIDTH_IN_BYTES*8)) pktzr_data_in_ff (.out(data_in), .in((flush_mode_enable & ~ flush_mode_exit)?(256'hffffffff):pkt_data_out), .en(request_packet_space_in_bytes!=0 & requested_packet_space_granted), .clk(clock), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH(NTRACE_MAX_PACKET_WIDTH_IN_BYTES)) pktzr_data_in_be_ff (.out(data_byte_be_in), .in((flush_mode_enable & ~ flush_mode_exit)?(32'hf):pkt_data_out_be), .en(request_packet_space_in_bytes!=0 & requested_packet_space_granted), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(NTRACE_MAX_PACKET_WIDTH_IN_BYTES*8)) pktzr_data_in_ff (.out(data_in), .in((flush_mode_enable & ~ flush_mode_exit)?(256'hffffffff):pkt_data_out), .en(request_packet_space_in_bytes!=0 & requested_packet_space_granted), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(NTRACE_MAX_PACKET_WIDTH_IN_BYTES)) pktzr_data_in_be_ff (.out(data_byte_be_in), .in((flush_mode_enable & ~ flush_mode_exit)?(32'hf):pkt_data_out_be), .en(request_packet_space_in_bytes!=0 & requested_packet_space_granted), .clk(clock), .rst_n(reset_n)); 
 
   // ----------------------------------------------------------------------------------------------
   // Entry to and Exit from Debug Mode 
@@ -1301,15 +1301,15 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   assign trPrivisDebug_TE0 = ((trEncPriv_TE0 == PRIVMODE_DEBUG) | (~trTeTraceInPatchEnable_ANY & (trEncPriv_TE0 == PRIVMODE_PATCH))); 
   assign trPrivFiltered_TE0 = (trPrivModeFilterEnable_ANY?(trEncPriv_TE0 == trPrivModeFilterChoice_ANY):1'b1);
 
-  generic_dff #(.WIDTH(1)) trPrivisDebug_TE1_ff (.out(trPrivisDebug_TE1), .in(trPrivisDebug_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) trPrivisDebug_TE1_ff (.out(trPrivisDebug_TE1), .in(trPrivisDebug_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
 
   assign trPrivDebugModeEntry_ANY = trPrivisDebug_TE0 & ~trPrivisDebug_TE1;
   assign trPrivDebugModeExit_ANY = ~trPrivisDebug_TE0 & trPrivisDebug_TE1;
 
-  generic_dff_clr #(.WIDTH(1)) trPrivDebugEntry_PTC_pending_ANY_ff (.out(trPrivDebugEntry_PTC_pending_ANY), .in(1'b1), .en(trPrivDebugModeEntry_ANY & trTracingInProgress_ANY), .clr(trPrivDebugModeExit_ANY | ~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACECORRELATION) & packet_pipe_vld_TE0[0])), .clk(clock), .rst_n(reset_n));
-  generic_dff_clr #(.WIDTH(1)) trSwControlStop_PTC_pending_ANY_ff (.out(trSwControlStop_PTC_pending_ANY), .in(1'b1), .en(trSwControlStop_ANY & trTracingInProgress_ANY), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACECORRELATION) & packet_pipe_vld_TE0[0])), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trPrivDebugEntry_PTC_pending_ANY_ff (.out(trPrivDebugEntry_PTC_pending_ANY), .in(1'b1), .en(trPrivDebugModeEntry_ANY & trTracingInProgress_ANY), .clr(trPrivDebugModeExit_ANY | ~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACECORRELATION) & packet_pipe_vld_TE0[0])), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trSwControlStop_PTC_pending_ANY_ff (.out(trSwControlStop_PTC_pending_ANY), .in(1'b1), .en(trSwControlStop_ANY & trTracingInProgress_ANY), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACECORRELATION) & packet_pipe_vld_TE0[0])), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trTeReStartAfterDebugMode_ANY_ff (.out(trTeReStartAfterDebugMode_ANY), .in(1'b1), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACESYNC) & packet_pipe_vld_TE0[0] & ~trTeResyncAfterError_ANY)), .en(trPrivDebugModeExit_ANY & trTeInsttracing_Enable_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trTeReStartAfterDebugMode_ANY_ff (.out(trTeReStartAfterDebugMode_ANY), .in(1'b1), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACESYNC) & packet_pipe_vld_TE0[0] & ~trTeResyncAfterError_ANY)), .en(trPrivDebugModeExit_ANY & trTeInsttracing_Enable_ANY), .clk(clock), .rst_n(reset_n));
 
   // ----------------------------------------------------------------------------------------------
   // Trace MMR control logic
@@ -1365,56 +1365,56 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
 
   assign trNotifyIBHS_ANY = trTracingInProgress_ANY & trNotifySyncfromTrig_ANY; 
 
-  generic_dff_clr #(.WIDTH(1)) trNotifyIBHS_ANY_delay_ff (.out(trNotifyIBHS_ANY_delay), .in(1'b1), .clr(~trNotifyIBHS_ANY & (trStart_ANY | ((curr_pkt_TE1[0]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE1[0]) | ((curr_pkt_TE1[1]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE1[1]))), .en(trTracingInProgress_ANY & trNotifyIBHS_ANY), .clk(clock), .rst_n(reset_n)); //trStartStop_ANY
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trNotifyIBHS_ANY_delay_ff (.out(trNotifyIBHS_ANY_delay), .in(1'b1), .clr(~trNotifyIBHS_ANY & (trStart_ANY | ((curr_pkt_TE1[0]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE1[0]) | ((curr_pkt_TE1[1]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE1[1]))), .en(trTracingInProgress_ANY & trNotifyIBHS_ANY), .clk(clock), .rst_n(reset_n)); //trStartStop_ANY
  
 
-  generic_dff_clr #(.WIDTH(1)) trIBHS_trig_psync_ANY_ff (.out(trIBHS_trig_psync_ANY), .in(1'b1), .en(periodic_sync_count_overflow | trNotifyIBHS_ANY), .clr(trStart_ANY |((curr_pkt_TE0[0]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[0]) | ((curr_pkt_TE0[1]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[1])), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trIBHS_trig_psync_ANY_ff (.out(trIBHS_trig_psync_ANY), .in(1'b1), .en(periodic_sync_count_overflow | trNotifyIBHS_ANY), .clr(trStart_ANY |((curr_pkt_TE0[0]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[0]) | ((curr_pkt_TE0[1]==INDIRECTBRANCHHISTSYNC) & packet_pipe_vld_TE0[1])), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trIBHS_trig_psync_ANY_delay_ff (.out(trIBHS_trig_psync_ANY_delay), .in(trIBHS_trig_psync_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trIBHS_trig_psync_ANY_delay_ff (.out(trIBHS_trig_psync_ANY_delay), .in(trIBHS_trig_psync_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
   // ----------------------------------------------------------------------------------------------
   // Trace Start/Stop/Flush control logic
   // ----------------------------------------------------------------------------------------------
-  generic_dff #(.WIDTH(1)) trStop_ANY_d1_ff (.out(trStop_ANY_d1), .in(trStop_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trStartStop_ANY_d1_ff (.out(trStartStop_ANY_d1), .in(trStartStop_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trStop_ANY_d1_ff (.out(trStop_ANY_d1), .in(trStop_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trStartStop_ANY_d1_ff (.out(trStartStop_ANY_d1), .in(trStartStop_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trBthbStartStop_ANY_d1_ff (.out(trBthbStartStop_ANY_d1), .in(trBthbStartStop_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trBthbStartStop_ANY_d1_ff (.out(trBthbStartStop_ANY_d1), .in(trBthbStartStop_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
   assign MS_MC_trStartStop_ANY = trBthbStartStop_ANY_d1;
 
-  generic_dff #(.WIDTH(1)) trTeActive_ANY_d1_ff (.out(trTeActive_ANY_d1), .in(trTeActive_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trTeEnable_ANY_d1_ff (.out(trTeEnable_ANY_d1), .in(trTeEnable_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trTeInsttracing_Enable_ANY_d1_ff (.out(trTeInsttracing_Enable_ANY_d1), .in(trTeInsttracing_Enable_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trTeActive_ANY_d1_ff (.out(trTeActive_ANY_d1), .in(trTeActive_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trTeEnable_ANY_d1_ff (.out(trTeEnable_ANY_d1), .in(trTeEnable_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trTeInsttracing_Enable_ANY_d1_ff (.out(trTeInsttracing_Enable_ANY_d1), .in(trTeInsttracing_Enable_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trSwControlStop_ANY_ff (.out(trSwControlStop_ANY), .in(trSwControlStop_ANY_m1), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trSwControlStop_ANY_ff (.out(trSwControlStop_ANY), .in(trSwControlStop_ANY_m1), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trProgressed_after_DebugEntry_ANY_ff (.out(trProgressed_after_DebugEntry_ANY), .in(1'b1), .clr((trSwControlStop_ANY & ~trPrivDebugModeEntry_ANY) | ((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0])), .en(Cr4BTrtecontrol.Trteactive & (trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1) & (trTracingInProgress_ANY) & (trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY)), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trProgressed_after_DebugEntry_ANY_ff (.out(trProgressed_after_DebugEntry_ANY), .in(1'b1), .clr((trSwControlStop_ANY & ~trPrivDebugModeEntry_ANY) | ((curr_pkt_TE0[0] == PROGTRACESYNC) & packet_pipe_vld_TE0[0])), .en(Cr4BTrtecontrol.Trteactive & (trTeInsttracing_Enable_ANY | trTeInsttracing_Enable_ANY_d1) & (trTracingInProgress_ANY) & (trPrivDebugModeEntry_ANY | trPrivDebugEntry_PTC_pending_ANY)), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trReEnable_ANY_ff (.out(trReEnable_ANY), .in((~trTeInsttracing_Enable_ANY & trTeInsttracing_Enable_ANY_d1) | trReEnable_ANY), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACESYNC) & packet_pipe_vld_TE0[0] & ~trTeResyncAfterError_ANY)), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trReEnable_ANY_ff (.out(trReEnable_ANY), .in((~trTeInsttracing_Enable_ANY & trTeInsttracing_Enable_ANY_d1) | trReEnable_ANY), .clr(~trTeActive_ANY | ((curr_pkt_TE0[0]==PROGTRACESYNC) & packet_pipe_vld_TE0[0] & ~trTeResyncAfterError_ANY)), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trFlush_ANY_ff (.out(trFlush_ANY), .in(1'b1), .clr(~|pkt_fifo_cnt_TE2 & flush_mode_exit & flush_mode_enable), .en(~trTeEnable_ANY & trTeEnable_ANY_d1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trFlush_ANY_ff (.out(trFlush_ANY), .in(1'b1), .clr(~|pkt_fifo_cnt_TE2 & flush_mode_exit & flush_mode_enable), .en(~trTeEnable_ANY & trTeEnable_ANY_d1), .clk(clock), .rst_n(reset_n));
   
   assign trPacketizer_Flushmode_enable_ANY = trFlush_ANY & (pkt_fifo_cnt_TE2 == '0) & (curr_pkt_TE0[0] != PROGTRACECORRELATION) & ~|pkt_fifo_push_TE1;
-  generic_dff_clr #(.WIDTH(1)) flush_mode_enable_ff (.out(flush_mode_enable), .in(1'b1), .clr(flush_mode_enable & flush_mode_exit), .en(trPacketizer_Flushmode_enable_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) flush_mode_enable_ff (.out(flush_mode_enable), .in(1'b1), .clr(flush_mode_enable & flush_mode_exit), .en(trPacketizer_Flushmode_enable_ANY), .clk(clock), .rst_n(reset_n));
   
-  generic_dff #(.WIDTH(1)) trace_hardware_flush_d1_ff (.out(trace_hardware_flush_d1), .in(trace_hardware_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trace_hardware_flush_d1_ff (.out(trace_hardware_flush_d1), .in(trace_hardware_flush), .en(1'b1), .clk(clock), .rst_n(reset_n));
   assign trace_hardware_flush_pulse = ~trace_hardware_flush_d1 & trace_hardware_flush; 
 
-  generic_dff_clr #(.WIDTH(1)) trace_hw_flush_in_progress_ff (.out(trace_hw_flush_in_progress), .in(1'b1), .clr(~trTracingInProgress_ANY & ~|pkt_fifo_push_TE1 & ~|pkt_fifo_cnt_TE2 & ~flush_mode_enable & flush_mode_exit & packetizer_empty /*& ~trace_hardware_flush*/), .en(trace_hardware_flush_pulse & trTeEnable_ANY), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trace_hw_flush_in_progress_ff (.out(trace_hw_flush_in_progress), .in(1'b1), .clr(~trTracingInProgress_ANY & ~|pkt_fifo_push_TE1 & ~|pkt_fifo_cnt_TE2 & ~flush_mode_enable & flush_mode_exit & packetizer_empty /*& ~trace_hardware_flush*/), .en(trace_hardware_flush_pulse & trTeEnable_ANY), .clk(clock), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trace_hardware_stop_d1_ff (.out(trace_hardware_stop_d1), .in(trace_hardware_stop), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trace_hardware_stop_d1_ff (.out(trace_hardware_stop_d1), .in(trace_hardware_stop), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-  generic_dff_clr #(.WIDTH(1)) trace_stop_after_error_wo_sync_ff (.out(trace_stop_after_error_wo_sync), .in(1'b1), .clr((curr_pkt_TE0[0] inside {PROGTRACESYNC, PROGTRACECORRELATION}) & packet_pipe_vld_TE0[0]), .en(isErrorPacketPushed_ANY & isProgTraceSync_Pending & ~isProgTraceSync_Pending_clr), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) trace_stop_after_error_wo_sync_ff (.out(trace_stop_after_error_wo_sync), .in(1'b1), .clr((curr_pkt_TE0[0] inside {PROGTRACESYNC, PROGTRACECORRELATION}) & packet_pipe_vld_TE0[0]), .en(isErrorPacketPushed_ANY & isProgTraceSync_Pending & ~isProgTraceSync_Pending_clr), .clk(clock), .rst_n(reset_n));
   // ----------------------------------------------------------------------------------------------
   // Periodic SYNC Pending
   // ----------------------------------------------------------------------------------------------
-  generic_dff #(.WIDTH($bits(InstSyncMode))) inst_sync_mode_ff (.out({InstSyncMode}), .in(InstSyncMode_e'(Cr4BTrtecontrol.Trtesyncmode)), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(PERIODIC_SYNC_COUNT_WIDTH + 1)) periodic_sync_max_count_ff (.out(periodic_sync_max_count), .in((PERIODIC_SYNC_COUNT_WIDTH+1)'({1 << (Cr4BTrtecontrol.Trtesyncmax + 4)})), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH($bits(InstSyncMode))) inst_sync_mode_ff (.out({InstSyncMode}), .in(InstSyncMode_e'(Cr4BTrtecontrol.Trtesyncmode)), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(PERIODIC_SYNC_COUNT_WIDTH + 1)) periodic_sync_max_count_ff (.out(periodic_sync_max_count), .in((PERIODIC_SYNC_COUNT_WIDTH+1)'({1 << (Cr4BTrtecontrol.Trtesyncmax + 4)})), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   assign periodic_sync_count_clr = trIBHS_trig_psync_ANY | (|seq_icnt_overflow_TE0) | trStop_ANY | isErrorClear_ANY | trTeResyncAfterError_ANY;
 
-  generic_dff_clr #(.WIDTH(1)) periodic_sync_count_overflow_ff (.out(periodic_sync_count_overflow), .in(1'b1), .clr(periodic_sync_count_clr/*periodic_sync_count_overflow*/), .en(periodic_sync_count_overflow_stg), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) periodic_sync_count_overflow_ff (.out(periodic_sync_count_overflow), .in(1'b1), .clr(periodic_sync_count_clr/*periodic_sync_count_overflow*/), .en(periodic_sync_count_overflow_stg), .clk(clock), .rst_n(reset_n));
 
   // Compute the next value of the periodic sync counter based on the SYNC mode
-  generic_dff_clr #(.WIDTH(PERIODIC_SYNC_COUNT_WIDTH)) periodic_sync_count_ff (.out(periodic_sync_count), .in(next_periodic_sync_count), .clr(periodic_sync_count_clr), .en(InstSyncMode != SYNC_OFF), .clk(clock), .rst_n(reset_n)); //Should be cleared when any SYNC message is generated or trace stop
+  tt_dfd_generic_dff_clr #(.WIDTH(PERIODIC_SYNC_COUNT_WIDTH)) periodic_sync_count_ff (.out(periodic_sync_count), .in(next_periodic_sync_count), .clr(periodic_sync_count_clr), .en(InstSyncMode != SYNC_OFF), .clk(clock), .rst_n(reset_n)); //Should be cleared when any SYNC message is generated or trace stop
   always_comb begin
     periodic_sync_pkt_count = periodic_sync_count + (PERIODIC_SYNC_COUNT_WIDTH+1)'(|pkt_buffer_data_vld_TE2) + (PERIODIC_SYNC_COUNT_WIDTH+1)'(&pkt_buffer_data_vld_TE2) + (PERIODIC_SYNC_COUNT_WIDTH+1)'(trStart_ANY) + (PERIODIC_SYNC_COUNT_WIDTH+1)'(trTeResyncAfterError_ANY) + (PERIODIC_SYNC_COUNT_WIDTH+1)'(rb_packet_pipe_vld_TE2) + (PERIODIC_SYNC_COUNT_WIDTH+1)'(context_switch_TE1) + (PERIODIC_SYNC_COUNT_WIDTH+1)'(is_tval_to_report_TE1); // Packet Push happens in TE1 Stage, but trStart_ANY is in TE0 stage
     periodic_sync_iretire_count = $bits(periodic_sync_iretire_count)'(periodic_sync_count + ({(PERIODIC_SYNC_COUNT_WIDTH+1){pipe_vld_TE0[0] & (trStartStop_ANY | trStop_ANY)}} & (PERIODIC_SYNC_COUNT_WIDTH+1)'(trIRetire_TE0[0])) + ({(PERIODIC_SYNC_COUNT_WIDTH+1){pipe_vld_TE0[1] & (trStartStop_ANY | trStop_ANY)}} & (PERIODIC_SYNC_COUNT_WIDTH+1)'(trIRetire_TE0[1])));
@@ -1437,10 +1437,10 @@ module dfd_te_encoder import dfd_te_pkg::*; import dfd_tr_csr_pkg::*; import dfd
   // Control Logic for the Packet generation : Pending packet flops for each type
   // ---------------------------------------------------------------------------------------------- 
   // Flop for the SyncPending conditions
-  generic_dff_clr #(.WIDTH(1)) isProgTraceSync_Pending_TE0_ff (.out(isProgTraceSync_Pending), .in(trStart_ANY | isErrorGeneration_TE0 | isProgTraceSync_Pending), .clr((isProgTraceSync_Pending_clr | trStop_ANY) & ~isErrorGeneration_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
-  generic_dff_clr #(.WIDTH(1)) isProgTraceCorrelation_Pending_TE0_ff (.out(isProgTraceCorrelation_Pending), .in(isProgTraceCorrelation_Pending | (trStop_ANY & ~(packet_pipe_vld_TE0[0] & (curr_pkt_TE0[0] == PROGTRACECORRELATION)))), .clr(isProgTraceCorrelation_Pending_clr | trStart_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff_clr #(.WIDTH(1)) isIndirectBranchHist_Pending_TE0_ff (.out(isIndirectBranchHist_Pending), .in(isIndirectBranchHist_Pending | (is_hist_to_report_TE0[0] & (~trIBHS_trig_psync_ANY | isAddrPending_TE0[0])) | is_hist_to_report_TE0[1] | aux_ibh_packet_tgt_pending_TE0), .clr((isIndirectBranchHist_Pending_clr | isIndirectBranchHistSync_Pending_clr | trIBHS_trig_psync_ANY) & ~((is_hist_to_report_TE0[0] & isAddrPending_TE0[0]) | is_hist_to_report_TE0[1] | aux_ibh_packet_tgt_pending_TE0)), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff_clr #(.WIDTH(1)) isIndirectBranchHistSync_Pending_TE0_ff (.out(isIndirectBranchHistSync_Pending), .in((isIndirectBranchHistSync_Pending | trIBHS_trig_psync_ANY | (|seq_icnt_overflow_TE0)) & ~trSwControlStop_ANY), .clr(isIndirectBranchHistSync_Pending_clr | trStart_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) isProgTraceSync_Pending_TE0_ff (.out(isProgTraceSync_Pending), .in(trStart_ANY | isErrorGeneration_TE0 | isProgTraceSync_Pending), .clr((isProgTraceSync_Pending_clr | trStop_ANY) & ~isErrorGeneration_TE0), .en(1'b1), .clk(clock), .rst_n(reset_n)); 
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) isProgTraceCorrelation_Pending_TE0_ff (.out(isProgTraceCorrelation_Pending), .in(isProgTraceCorrelation_Pending | (trStop_ANY & ~(packet_pipe_vld_TE0[0] & (curr_pkt_TE0[0] == PROGTRACECORRELATION)))), .clr(isProgTraceCorrelation_Pending_clr | trStart_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) isIndirectBranchHist_Pending_TE0_ff (.out(isIndirectBranchHist_Pending), .in(isIndirectBranchHist_Pending | (is_hist_to_report_TE0[0] & (~trIBHS_trig_psync_ANY | isAddrPending_TE0[0])) | is_hist_to_report_TE0[1] | aux_ibh_packet_tgt_pending_TE0), .clr((isIndirectBranchHist_Pending_clr | isIndirectBranchHistSync_Pending_clr | trIBHS_trig_psync_ANY) & ~((is_hist_to_report_TE0[0] & isAddrPending_TE0[0]) | is_hist_to_report_TE0[1] | aux_ibh_packet_tgt_pending_TE0)), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) isIndirectBranchHistSync_Pending_TE0_ff (.out(isIndirectBranchHistSync_Pending), .in((isIndirectBranchHistSync_Pending | trIBHS_trig_psync_ANY | (|seq_icnt_overflow_TE0)) & ~trSwControlStop_ANY), .clr(isIndirectBranchHistSync_Pending_clr | trStart_ANY), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
   // Clear conditions for each of the packet flops
   always_comb begin

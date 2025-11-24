@@ -44,9 +44,9 @@ assign debug_signal_shift_mux_sel[7] = DebugSignalDelayMuxsel.Muxselseg7;
 for (genvar i=0; i<NUM_OUTPUT_LANES; i++) begin: lane_control_signals
   assign debug_signals_per_lane[i] = debug_signals_in[((i+1)*LANE_WIDTH-1):i*LANE_WIDTH];
 
-  generic_dff #(.WIDTH(LANE_WIDTH)) debug_signals_per_lane_ff_d1 (.out(debug_signals_per_lane_d1[i]), .in(debug_signals_per_lane[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(LANE_WIDTH)) debug_signals_per_lane_ff_d2 (.out(debug_signals_per_lane_d2[i]), .in(debug_signals_per_lane_d1[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
-  generic_dff #(.WIDTH(LANE_WIDTH)) debug_signals_per_lane_ff_d3 (.out(debug_signals_per_lane_d3[i]), .in(debug_signals_per_lane_d2[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(LANE_WIDTH)) debug_signals_per_lane_ff_d1 (.out(debug_signals_per_lane_d1[i]), .in(debug_signals_per_lane[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(LANE_WIDTH)) debug_signals_per_lane_ff_d2 (.out(debug_signals_per_lane_d2[i]), .in(debug_signals_per_lane_d1[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(LANE_WIDTH)) debug_signals_per_lane_ff_d3 (.out(debug_signals_per_lane_d3[i]), .in(debug_signals_per_lane_d2[i]), .en(1'b1), .clk(clock), .rst_n(reset_n));
 end
 
 // MUX logic at the output to select the correct debug signals with appropriate delay

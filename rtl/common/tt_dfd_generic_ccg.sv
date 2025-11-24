@@ -3,7 +3,7 @@
 
 // Generic, non-proprietary clock gating cell
 // Functionally equivalent to a typical clock gate: o_clk is i_clk when enabled, otherwise held low.
-module generic_ccg #(
+module tt_dfd_generic_ccg #(
     parameter WIDTH = 1,
     parameter LATE_EN = 0,  
     parameter HYST_EN = 1,     
@@ -69,7 +69,7 @@ module generic_ccg #(
     
     generate
         for (i = 0; i < WIDTH; i++) begin
-            generic_clkgate clkgate (
+            tt_dfd_generic_clkgate clkgate (
                 .clk(clk),
                 .en(o_en[i]),
                 .te(te),

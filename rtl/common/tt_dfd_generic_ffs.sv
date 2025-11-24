@@ -4,7 +4,7 @@
 // Generic find-first-set (priority encoder) with data multiplexing
 // Simple, standard implementation suitable for open-source use
 
-module generic_ffs #(
+module tt_dfd_generic_ffs #(
     parameter DIR_L2H    = 1,              // Direction: 1=Low-to-High (LSB first), 0=High-to-Low (MSB first)
     parameter WIDTH      = 8,              // Number of request inputs
     parameter SIZE       = ($clog2(WIDTH) > 1 ? $clog2(WIDTH) : 1),  // Encoded output width

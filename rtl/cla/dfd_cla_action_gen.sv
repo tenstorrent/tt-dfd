@@ -48,13 +48,13 @@ logic [XTRIGGER_WIDTH-1:0]                                 cla_chain_action_bus_
 assign cla_chain_action_bus_triggers[CLA_CHAIN_XTRIGGER_0] = action_bus[ACTION_XTRIGGER0_OUT];
 assign cla_chain_action_bus_triggers[CLA_CHAIN_XTRIGGER_1] = action_bus[ACTION_XTRIGGER1_OUT];
 
-generic_dff #(.WIDTH(1), .RESET_VALUE('0)) u_dff_clk_hlt_det_global (.out(clock_halt_global), .in('1), .en(action_bus[ACTION_CLOCK_HALT] && clock_halt_global_en), .clk(clock), .rst_n(reset_n));
-generic_dff #(.WIDTH(1), .RESET_VALUE('0)) u_dff_clk_hlt_det_local  (.out(clock_halt_local), .in('1), .en(action_bus[ACTION_CLOCK_HALT] && clock_halt_local_en), .clk(clock), .rst_n(reset_n));
-generic_dff #(.WIDTH(CLA_NODE_ID_MSB+1), .RESET_VALUE('0)) u_dff_curr_node_id (.out(current_node_id), .in(next_current_node_id), .en(1'b1), .clk(clock), .rst_n(reset_n_warm_ovrride));
-generic_dff #(.WIDTH(CLA_NUMBER_OF_ACTIONS), .RESET_VALUE('0)) u_dff_action_bus (.out(action_bus), .in(next_action_bus), .en(1'b1), .clk(clock), .rst_n(reset_n));
-generic_dff #(.WIDTH(CLA_NUMBER_OF_CUSTOM_ACTIONS), .RESET_VALUE('0)) u_dff_custom_action_bus (.out(custom_action_bus), .in(next_custom_action_bus), .en(1'b1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1), .RESET_VALUE('0)) u_dff_clk_hlt_det_global (.out(clock_halt_global), .in('1), .en(action_bus[ACTION_CLOCK_HALT] && clock_halt_global_en), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1), .RESET_VALUE('0)) u_dff_clk_hlt_det_local  (.out(clock_halt_local), .in('1), .en(action_bus[ACTION_CLOCK_HALT] && clock_halt_local_en), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CLA_NODE_ID_MSB+1), .RESET_VALUE('0)) u_dff_curr_node_id (.out(current_node_id), .in(next_current_node_id), .en(1'b1), .clk(clock), .rst_n(reset_n_warm_ovrride));
+tt_dfd_generic_dff #(.WIDTH(CLA_NUMBER_OF_ACTIONS), .RESET_VALUE('0)) u_dff_action_bus (.out(action_bus), .in(next_action_bus), .en(1'b1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(CLA_NUMBER_OF_CUSTOM_ACTIONS), .RESET_VALUE('0)) u_dff_custom_action_bus (.out(custom_action_bus), .in(next_custom_action_bus), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
-generic_dff #(.WIDTH(XTRIGGER_WIDTH*CLA_CHAIN_LOOP_DELAY_WIDTH), .RESET_VALUE('0)) u_dff_filter_cnt (.out(filter_cnt), .in(next_filter_cnt), .en(1'b1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(XTRIGGER_WIDTH*CLA_CHAIN_LOOP_DELAY_WIDTH), .RESET_VALUE('0)) u_dff_filter_cnt (.out(filter_cnt), .in(next_filter_cnt), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
 // Determine current node id:
 always_comb begin

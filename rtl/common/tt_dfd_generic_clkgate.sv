@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Generic clock gating cell that infers a technology-specific clock gate during synthesis
-module generic_clkgate (
+module tt_dfd_generic_clkgate (
     input logic clk,    // Input clock
     input logic en,     // Enable signal
     input logic te,     // Test enable

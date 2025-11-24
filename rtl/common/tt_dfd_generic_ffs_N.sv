@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
-module generic_ffs_N#(parameter DIR_L2H    = 1,              //Direction of Priority
+module tt_dfd_generic_ffs_N#(parameter DIR_L2H    = 1,              //Direction of Priority
                 parameter WIDTH      = 8,              //Number of inputs.
                 parameter SIZE       = ($clog2(WIDTH) > 1 ? $clog2(WIDTH) : 1), //Log2 Number of inputs
                 parameter DATA_WIDTH = 4,              //Width of data  
@@ -20,7 +20,7 @@ module generic_ffs_N#(parameter DIR_L2H    = 1,              //Direction of Prio
 // genvar i;
     // generate
         // for (i = 0; i < NUM_SEL; i = i + 1) begin
-        //     generic_ffs #(
+        //     tt_dfd_generic_ffs #(
         //         .DIR_L2H(DIR_L2H), 
         //         .WIDTH(WIDTH), 
         //         .SIZE(SIZE), 
@@ -40,7 +40,7 @@ module generic_ffs_N#(parameter DIR_L2H    = 1,              //Direction of Prio
     logic continue_flag;
     logic [WIDTH-1:0] req_in_masked;
 
-    // generic_ffs #(
+    // tt_dfd_generic_ffs #(
     //     .DIR_L2H(DIR_L2H), 
     //     .WIDTH(WIDTH), 
     //     .SIZE(SIZE), 

@@ -112,7 +112,7 @@ module dfd_trace_top
   logic            [        NUM_CORES-1:0]                 MS_TN_Src_Internal_Active_Cores;
   logic            [        NUM_CORES-1:0][DATA_WIDTH-1:0] MS_TN_Data_Internal_Active_Cores;
 
-  generic_ccg #(
+  tt_dfd_generic_ccg #(
       .HYST_EN (0),
       .HYST_CYC(0)
   ) u_Ccg_clk_tr (

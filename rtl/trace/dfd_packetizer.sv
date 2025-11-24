@@ -116,8 +116,8 @@ dfd_frame_filler #(
 // size of 2 packets, to avoid receiving another frame full signal before sending
 // the uncompressed packet. Currently, with packet size set to 10 bytes and frame size
 // set to 512 bytes, it is acceptable.
-generic_dff #(.WIDTH($clog2(MAX_STREAM_DEPTH)+1)) frames_in_stream_ff (.out(frames_in_stream), .in(frames_in_stream_next), .en(frame_info.stream_count_enable), .clk(clock), .rst_n(reset_n));
-generic_dff #(.WIDTH(1)) stream_full_ff (.out(stream_full), .in(stream_full_next), .en(1'b1), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH($clog2(MAX_STREAM_DEPTH)+1)) frames_in_stream_ff (.out(frames_in_stream), .in(frames_in_stream_next), .en(frame_info.stream_count_enable), .clk(clock), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1)) stream_full_ff (.out(stream_full), .in(stream_full_next), .en(1'b1), .clk(clock), .rst_n(reset_n));
 
 // Whenever a frame_full signal from dfd_packetizer is received, the frames_in_stream value
 // is updated. If the number of frames filled is equal to the second last stream entry idx
@@ -213,7 +213,7 @@ assign tnif_req_out = (fifo_entry_count > ($clog2(FIFO_ENTRIES)+1)'(0));
 assign fifo_pop = tnif_data_pull_data_in;
 assign tnif_data_out = fifo_read_data;
 
-generic_fifoMN
+tt_dfd_generic_fifoMN
 #(
     .DATA_WIDTH(FIFO_WIDTH_IN_BYTES*8),
     .ENTRIES(FIFO_ENTRIES),

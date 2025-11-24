@@ -311,15 +311,15 @@ logic                [31:0] CSR_TrScratchpadHi_F_Data;
 //------------------------------------------------------------------------------
 
 if (FLOP_IN_REQ) begin : flop_in_req
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_cs_ff             (.out(reg_cs)   , .in(CsrCs)    , .en(CsrCs|reg_cs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_en_ff          (.out(reg_wr_en), .in(CsrWrEn)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(2)           , .RESET_VALUE(0)) reg_wr_strb_ff        (.out(reg_wr_strb), .in(CsrWrStrb)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(ADDR_W)      , .RESET_VALUE(0)) reg_addr_ff           (.out(reg_addr) , .in(CsrAddr)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(32)          , .RESET_VALUE(0)) reg_wr_data_ff        (.out(reg_wr_data), .in(CsrWrData), .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_sel_ff         (.out(reg_rd_sel)  , .in(~CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_sel_ff         (.out(reg_wr_sel)  , .in(CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));    
-    generic_dff #(.WIDTH(INSTR_TYPE_W), .RESET_VALUE(0)) reg_wr_instr_type_ff  (.out(reg_wr_instr_type), .in(CsrWrInstrType), .en(CsrCs), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_ready_ff       (.out(reg_wr_ready), .in(CsrCs & CsrWrEn), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_cs_ff             (.out(reg_cs)   , .in(CsrCs)    , .en(CsrCs|reg_cs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_en_ff          (.out(reg_wr_en), .in(CsrWrEn)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(2)           , .RESET_VALUE(0)) reg_wr_strb_ff        (.out(reg_wr_strb), .in(CsrWrStrb)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(ADDR_W)      , .RESET_VALUE(0)) reg_addr_ff           (.out(reg_addr) , .in(CsrAddr)  , .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(32)          , .RESET_VALUE(0)) reg_wr_data_ff        (.out(reg_wr_data), .in(CsrWrData), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_rd_sel_ff         (.out(reg_rd_sel)  , .in(~CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_sel_ff         (.out(reg_wr_sel)  , .in(CsrRegSel), .en(CsrCs), .clk(clk), .rst_n(reset_n));    
+    tt_dfd_generic_dff #(.WIDTH(INSTR_TYPE_W), .RESET_VALUE(0)) reg_wr_instr_type_ff  (.out(reg_wr_instr_type), .in(CsrWrInstrType), .en(CsrCs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)           , .RESET_VALUE(0)) reg_wr_ready_ff       (.out(reg_wr_ready), .in(CsrCs & CsrWrEn), .en(CsrCs), .clk(clk), .rst_n(reset_n));
 end else begin
     assign reg_cs             = CsrCs;
     assign reg_wr_en          = CsrWrEn;
@@ -335,8 +335,8 @@ end
 assign reg_write    = reg_cs &  reg_wr_en;
 assign reg_read     = reg_cs;
 
-generic_dff #(.WIDTH(ADDR_W), .RESET_VALUE(0)) reg_addr_d1_ff (.out(reg_addr_d1) , .in(reg_addr) , .en(reg_cs), .clk(clk), .rst_n(reset_n));
-generic_dff #(.WIDTH(1)     , .RESET_VALUE(0)) reg_wren_d1_ff (.out(reg_write_d1), .in(reg_write), .en(reg_cs | reg_write_d1), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(ADDR_W), .RESET_VALUE(0)) reg_addr_d1_ff (.out(reg_addr_d1) , .in(reg_addr) , .en(reg_cs), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(1)     , .RESET_VALUE(0)) reg_wren_d1_ff (.out(reg_write_d1), .in(reg_write), .en(reg_cs | reg_write_d1), .clk(clk), .rst_n(reset_n));
 
 
 //------------------------------------------------------------------------------
@@ -351,7 +351,7 @@ logic [TR_TRFUNNELCONTROL_TRFUNNELEMPTY_WIDTH-1:0] CSR_Trfunnelcontrol_F_Trfunne
 assign CSR_Trfunnelcontrol_F_Trfunnelempty_DataEff = {reg_wr_data[3:3]};
 assign CSR_Trfunnelcontrol_F_Trfunnelempty_Data = (TrCsrTrfunnelcontrolWr.Data.Trfunnelempty);
 assign CSR_Trfunnelcontrol_F_Trfunnelempty_WrEn = ((TrCsrTrfunnelcontrolWr.TrfunnelemptyWrEn));
-generic_dff #(.WIDTH(TR_TRFUNNELCONTROL_TRFUNNELEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trfunnelcontrol_F_Trfunnelempty_ff   (.out(CSR_Trfunnelcontrol_F_Trfunnelempty), .in(CSR_Trfunnelcontrol_F_Trfunnelempty_Data), .en(CSR_Trfunnelcontrol_F_Trfunnelempty_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRFUNNELCONTROL_TRFUNNELEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trfunnelcontrol_F_Trfunnelempty_ff   (.out(CSR_Trfunnelcontrol_F_Trfunnelempty), .in(CSR_Trfunnelcontrol_F_Trfunnelempty_Data), .en(CSR_Trfunnelcontrol_F_Trfunnelempty_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trfunnelcontrol_F_Trfunnelenable_WrEn;
 logic [TR_TRFUNNELCONTROL_TRFUNNELENABLE_WIDTH-1:0] CSR_Trfunnelcontrol_F_Trfunnelenable_Data;
@@ -359,7 +359,7 @@ logic [TR_TRFUNNELCONTROL_TRFUNNELENABLE_WIDTH-1:0] CSR_Trfunnelcontrol_F_Trfunn
 assign CSR_Trfunnelcontrol_F_Trfunnelenable_DataEff = {reg_wr_data[1:1]};
 assign CSR_Trfunnelcontrol_F_Trfunnelenable_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRFUNNELCONTROL)) ? TR_TRFUNNELCONTROL_TRFUNNELENABLE_WIDTH'(update_value(64'(CSR_Trfunnelcontrol_F_Trfunnelenable), 64'(CSR_Trfunnelcontrol_F_Trfunnelenable_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrfunnelcontrolWr.Data.Trfunnelenable);
 assign CSR_Trfunnelcontrol_F_Trfunnelenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRFUNNELCONTROL)) | TrCsrTrfunnelcontrolWr.TrfunnelenableWrEn));
-generic_dff #(.WIDTH(TR_TRFUNNELCONTROL_TRFUNNELENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trfunnelcontrol_F_Trfunnelenable_ff   (.out(CSR_Trfunnelcontrol_F_Trfunnelenable), .in(CSR_Trfunnelcontrol_F_Trfunnelenable_Data), .en(CSR_Trfunnelcontrol_F_Trfunnelenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRFUNNELCONTROL_TRFUNNELENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trfunnelcontrol_F_Trfunnelenable_ff   (.out(CSR_Trfunnelcontrol_F_Trfunnelenable), .in(CSR_Trfunnelcontrol_F_Trfunnelenable_Data), .en(CSR_Trfunnelcontrol_F_Trfunnelenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trfunnelcontrol_F_Trfunnelactive_WrEn;
 logic [TR_TRFUNNELCONTROL_TRFUNNELACTIVE_WIDTH-1:0] CSR_Trfunnelcontrol_F_Trfunnelactive_Data;
@@ -367,7 +367,7 @@ logic [TR_TRFUNNELCONTROL_TRFUNNELACTIVE_WIDTH-1:0] CSR_Trfunnelcontrol_F_Trfunn
 assign CSR_Trfunnelcontrol_F_Trfunnelactive_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trfunnelcontrol_F_Trfunnelactive_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRFUNNELCONTROL)) ? TR_TRFUNNELCONTROL_TRFUNNELACTIVE_WIDTH'(update_value(64'(CSR_Trfunnelcontrol_F_Trfunnelactive), 64'(CSR_Trfunnelcontrol_F_Trfunnelactive_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrfunnelcontrolWr.Data.Trfunnelactive);
 assign CSR_Trfunnelcontrol_F_Trfunnelactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRFUNNELCONTROL)) | TrCsrTrfunnelcontrolWr.TrfunnelactiveWrEn));
-generic_dff #(.WIDTH(TR_TRFUNNELCONTROL_TRFUNNELACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trfunnelcontrol_F_Trfunnelactive_ff   (.out(CSR_Trfunnelcontrol_F_Trfunnelactive), .in(CSR_Trfunnelcontrol_F_Trfunnelactive_Data), .en(CSR_Trfunnelcontrol_F_Trfunnelactive_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRFUNNELCONTROL_TRFUNNELACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trfunnelcontrol_F_Trfunnelactive_ff   (.out(CSR_Trfunnelcontrol_F_Trfunnelactive), .in(CSR_Trfunnelcontrol_F_Trfunnelactive_Data), .en(CSR_Trfunnelcontrol_F_Trfunnelactive_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRFUNNELIMPL
 assign CSR_Trfunnelimpl_F_Trfunnelcomptype = 4'h8;
@@ -383,7 +383,7 @@ logic [TR_TRFUNNELDISINPUT_TRFUNNELDISINPUT_WIDTH-1:0] CSR_Trfunneldisinput_F_Tr
 assign CSR_Trfunneldisinput_F_Trfunneldisinput_DataEff = {reg_wr_data[15:0]};
 assign CSR_Trfunneldisinput_F_Trfunneldisinput_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRFUNNELDISINPUT)) ? TR_TRFUNNELDISINPUT_TRFUNNELDISINPUT_WIDTH'(update_value(64'(CSR_Trfunneldisinput_F_Trfunneldisinput), 64'(CSR_Trfunneldisinput_F_Trfunneldisinput_DataEff[15:0]), reg_wr_instr_type)) : TrCsrTrfunneldisinputWr.Data.Trfunneldisinput);
 assign CSR_Trfunneldisinput_F_Trfunneldisinput_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRFUNNELDISINPUT)) | TrCsrTrfunneldisinputWr.TrfunneldisinputWrEn));
-generic_dff #(.WIDTH(TR_TRFUNNELDISINPUT_TRFUNNELDISINPUT_WIDTH), .RESET_VALUE(0)) CSR_Trfunneldisinput_F_Trfunneldisinput_ff   (.out(CSR_Trfunneldisinput_F_Trfunneldisinput), .in(CSR_Trfunneldisinput_F_Trfunneldisinput_Data), .en(CSR_Trfunneldisinput_F_Trfunneldisinput_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRFUNNELDISINPUT_TRFUNNELDISINPUT_WIDTH), .RESET_VALUE(0)) CSR_Trfunneldisinput_F_Trfunneldisinput_ff   (.out(CSR_Trfunneldisinput_F_Trfunneldisinput), .in(CSR_Trfunneldisinput_F_Trfunneldisinput_Data), .en(CSR_Trfunneldisinput_F_Trfunneldisinput_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMCONTROL
 logic                                           CSR_Trramcontrol_F_Trramstoponwrap_WrEn;
@@ -392,7 +392,7 @@ logic [TR_TRRAMCONTROL_TRRAMSTOPONWRAP_WIDTH-1:0] CSR_Trramcontrol_F_Trramstopon
 assign CSR_Trramcontrol_F_Trramstoponwrap_DataEff = {reg_wr_data[8:8]};
 assign CSR_Trramcontrol_F_Trramstoponwrap_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) ? TR_TRRAMCONTROL_TRRAMSTOPONWRAP_WIDTH'(update_value(64'(CSR_Trramcontrol_F_Trramstoponwrap), 64'(CSR_Trramcontrol_F_Trramstoponwrap_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrramcontrolWr.Data.Trramstoponwrap);
 assign CSR_Trramcontrol_F_Trramstoponwrap_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) | TrCsrTrramcontrolWr.TrramstoponwrapWrEn));
-generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMSTOPONWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trramstoponwrap_ff   (.out(CSR_Trramcontrol_F_Trramstoponwrap), .in(CSR_Trramcontrol_F_Trramstoponwrap_Data), .en(CSR_Trramcontrol_F_Trramstoponwrap_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMSTOPONWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trramstoponwrap_ff   (.out(CSR_Trramcontrol_F_Trramstoponwrap), .in(CSR_Trramcontrol_F_Trramstoponwrap_Data), .en(CSR_Trramcontrol_F_Trramstoponwrap_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trramcontrol_F_Trrammode_WrEn;
 logic [TR_TRRAMCONTROL_TRRAMMODE_WIDTH    -1:0] CSR_Trramcontrol_F_Trrammode_Data;
@@ -400,7 +400,7 @@ logic [TR_TRRAMCONTROL_TRRAMMODE_WIDTH    -1:0] CSR_Trramcontrol_F_Trrammode_Dat
 assign CSR_Trramcontrol_F_Trrammode_DataEff = {reg_wr_data[4:4]};
 assign CSR_Trramcontrol_F_Trrammode_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) ? TR_TRRAMCONTROL_TRRAMMODE_WIDTH'(update_value(64'(CSR_Trramcontrol_F_Trrammode), 64'(CSR_Trramcontrol_F_Trrammode_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrramcontrolWr.Data.Trrammode);
 assign CSR_Trramcontrol_F_Trrammode_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) | TrCsrTrramcontrolWr.TrrammodeWrEn));
-generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMMODE_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trrammode_ff   (.out(CSR_Trramcontrol_F_Trrammode), .in(CSR_Trramcontrol_F_Trrammode_Data), .en(CSR_Trramcontrol_F_Trrammode_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMMODE_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trrammode_ff   (.out(CSR_Trramcontrol_F_Trrammode), .in(CSR_Trramcontrol_F_Trrammode_Data), .en(CSR_Trramcontrol_F_Trrammode_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trramcontrol_F_Trramempty_WrEn;
 logic [TR_TRRAMCONTROL_TRRAMEMPTY_WIDTH   -1:0] CSR_Trramcontrol_F_Trramempty_Data;
@@ -408,7 +408,7 @@ logic [TR_TRRAMCONTROL_TRRAMEMPTY_WIDTH   -1:0] CSR_Trramcontrol_F_Trramempty_Da
 assign CSR_Trramcontrol_F_Trramempty_DataEff = {reg_wr_data[3:3]};
 assign CSR_Trramcontrol_F_Trramempty_Data = (TrCsrTrramcontrolWr.Data.Trramempty);
 assign CSR_Trramcontrol_F_Trramempty_WrEn = ((TrCsrTrramcontrolWr.TrramemptyWrEn));
-generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trramcontrol_F_Trramempty_ff   (.out(CSR_Trramcontrol_F_Trramempty), .in(CSR_Trramcontrol_F_Trramempty_Data), .en(CSR_Trramcontrol_F_Trramempty_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trramcontrol_F_Trramempty_ff   (.out(CSR_Trramcontrol_F_Trramempty), .in(CSR_Trramcontrol_F_Trramempty_Data), .en(CSR_Trramcontrol_F_Trramempty_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trramcontrol_F_Trramenable_WrEn;
 logic [TR_TRRAMCONTROL_TRRAMENABLE_WIDTH  -1:0] CSR_Trramcontrol_F_Trramenable_Data;
@@ -416,7 +416,7 @@ logic [TR_TRRAMCONTROL_TRRAMENABLE_WIDTH  -1:0] CSR_Trramcontrol_F_Trramenable_D
 assign CSR_Trramcontrol_F_Trramenable_DataEff = {reg_wr_data[1:1]};
 assign CSR_Trramcontrol_F_Trramenable_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) ? TR_TRRAMCONTROL_TRRAMENABLE_WIDTH'(update_value(64'(CSR_Trramcontrol_F_Trramenable), 64'(CSR_Trramcontrol_F_Trramenable_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrramcontrolWr.Data.Trramenable);
 assign CSR_Trramcontrol_F_Trramenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) | TrCsrTrramcontrolWr.TrramenableWrEn));
-generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trramenable_ff   (.out(CSR_Trramcontrol_F_Trramenable), .in(CSR_Trramcontrol_F_Trramenable_Data), .en(CSR_Trramcontrol_F_Trramenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trramenable_ff   (.out(CSR_Trramcontrol_F_Trramenable), .in(CSR_Trramcontrol_F_Trramenable_Data), .en(CSR_Trramcontrol_F_Trramenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trramcontrol_F_Trramactive_WrEn;
 logic [TR_TRRAMCONTROL_TRRAMACTIVE_WIDTH  -1:0] CSR_Trramcontrol_F_Trramactive_Data;
@@ -424,7 +424,7 @@ logic [TR_TRRAMCONTROL_TRRAMACTIVE_WIDTH  -1:0] CSR_Trramcontrol_F_Trramactive_D
 assign CSR_Trramcontrol_F_Trramactive_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trramcontrol_F_Trramactive_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) ? TR_TRRAMCONTROL_TRRAMACTIVE_WIDTH'(update_value(64'(CSR_Trramcontrol_F_Trramactive), 64'(CSR_Trramcontrol_F_Trramactive_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrramcontrolWr.Data.Trramactive);
 assign CSR_Trramcontrol_F_Trramactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMCONTROL)) | TrCsrTrramcontrolWr.TrramactiveWrEn));
-generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trramactive_ff   (.out(CSR_Trramcontrol_F_Trramactive), .in(CSR_Trramcontrol_F_Trramactive_Data), .en(CSR_Trramcontrol_F_Trramactive_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMCONTROL_TRRAMACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trramcontrol_F_Trramactive_ff   (.out(CSR_Trramcontrol_F_Trramactive), .in(CSR_Trramcontrol_F_Trramactive_Data), .en(CSR_Trramcontrol_F_Trramactive_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMIMPL
 logic                                           CSR_Trramimpl_F_Trramvendorframelength_WrEn;
@@ -433,7 +433,7 @@ logic [TR_TRRAMIMPL_TRRAMVENDORFRAMELENGTH_WIDTH-1:0] CSR_Trramimpl_F_Trramvendo
 assign CSR_Trramimpl_F_Trramvendorframelength_DataEff = {reg_wr_data[27:24]};
 assign CSR_Trramimpl_F_Trramvendorframelength_Data = (TR_TRRAMIMPL_TRRAMVENDORFRAMELENGTH_WIDTH'(update_value(64'(CSR_Trramimpl_F_Trramvendorframelength), 64'(CSR_Trramimpl_F_Trramvendorframelength_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_Trramimpl_F_Trramvendorframelength_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMIMPL))));
-generic_dff #(.WIDTH(TR_TRRAMIMPL_TRRAMVENDORFRAMELENGTH_WIDTH), .RESET_VALUE(1)) CSR_Trramimpl_F_Trramvendorframelength_ff   (.out(CSR_Trramimpl_F_Trramvendorframelength), .in(CSR_Trramimpl_F_Trramvendorframelength_Data), .en(CSR_Trramimpl_F_Trramvendorframelength_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMIMPL_TRRAMVENDORFRAMELENGTH_WIDTH), .RESET_VALUE(1)) CSR_Trramimpl_F_Trramvendorframelength_ff   (.out(CSR_Trramimpl_F_Trramvendorframelength), .in(CSR_Trramimpl_F_Trramvendorframelength_Data), .en(CSR_Trramimpl_F_Trramvendorframelength_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trramimpl_F_Trramhassmem = 1'h1;
 
@@ -452,7 +452,7 @@ logic [TR_TRRAMSTARTLOW_TRRAMSTARTLOW_WIDTH-1:0] CSR_Trramstartlow_F_Trramstartl
 assign CSR_Trramstartlow_F_Trramstartlow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trramstartlow_F_Trramstartlow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMSTARTLOW)) ? TR_TRRAMSTARTLOW_TRRAMSTARTLOW_WIDTH'(update_value(64'(CSR_Trramstartlow_F_Trramstartlow), 64'(CSR_Trramstartlow_F_Trramstartlow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrramstartlowWr.Data.Trramstartlow);
 assign CSR_Trramstartlow_F_Trramstartlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMSTARTLOW)) | TrCsrTrramstartlowWr.TrramstartlowWrEn));
-generic_dff #(.WIDTH(TR_TRRAMSTARTLOW_TRRAMSTARTLOW_WIDTH), .RESET_VALUE(0)) CSR_Trramstartlow_F_Trramstartlow_ff   (.out(CSR_Trramstartlow_F_Trramstartlow), .in(CSR_Trramstartlow_F_Trramstartlow_Data), .en(CSR_Trramstartlow_F_Trramstartlow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMSTARTLOW_TRRAMSTARTLOW_WIDTH), .RESET_VALUE(0)) CSR_Trramstartlow_F_Trramstartlow_ff   (.out(CSR_Trramstartlow_F_Trramstartlow), .in(CSR_Trramstartlow_F_Trramstartlow_Data), .en(CSR_Trramstartlow_F_Trramstartlow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trramstartlow_F_Rsvd10 = 2'h0;
 
@@ -463,7 +463,7 @@ logic [TR_TRRAMSTARTHIGH_TRRAMSTARTHIGH_WIDTH-1:0] CSR_Trramstarthigh_F_Trramsta
 assign CSR_Trramstarthigh_F_Trramstarthigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trramstarthigh_F_Trramstarthigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMSTARTHIGH)) ? TR_TRRAMSTARTHIGH_TRRAMSTARTHIGH_WIDTH'(update_value(64'(CSR_Trramstarthigh_F_Trramstarthigh), 64'(CSR_Trramstarthigh_F_Trramstarthigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrramstarthighWr.Data.Trramstarthigh);
 assign CSR_Trramstarthigh_F_Trramstarthigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMSTARTHIGH)) | TrCsrTrramstarthighWr.TrramstarthighWrEn));
-generic_dff #(.WIDTH(TR_TRRAMSTARTHIGH_TRRAMSTARTHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramstarthigh_F_Trramstarthigh_ff   (.out(CSR_Trramstarthigh_F_Trramstarthigh), .in(CSR_Trramstarthigh_F_Trramstarthigh_Data), .en(CSR_Trramstarthigh_F_Trramstarthigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMSTARTHIGH_TRRAMSTARTHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramstarthigh_F_Trramstarthigh_ff   (.out(CSR_Trramstarthigh_F_Trramstarthigh), .in(CSR_Trramstarthigh_F_Trramstarthigh_Data), .en(CSR_Trramstarthigh_F_Trramstarthigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMLIMITLOW
 logic                                           CSR_Trramlimitlow_F_Trramlimitlow_WrEn;
@@ -472,7 +472,7 @@ logic [TR_TRRAMLIMITLOW_TRRAMLIMITLOW_WIDTH-1:0] CSR_Trramlimitlow_F_Trramlimitl
 assign CSR_Trramlimitlow_F_Trramlimitlow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trramlimitlow_F_Trramlimitlow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMLIMITLOW)) ? TR_TRRAMLIMITLOW_TRRAMLIMITLOW_WIDTH'(update_value(64'(CSR_Trramlimitlow_F_Trramlimitlow), 64'(CSR_Trramlimitlow_F_Trramlimitlow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrramlimitlowWr.Data.Trramlimitlow);
 assign CSR_Trramlimitlow_F_Trramlimitlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMLIMITLOW)) | TrCsrTrramlimitlowWr.TrramlimitlowWrEn));
-generic_dff #(.WIDTH(TR_TRRAMLIMITLOW_TRRAMLIMITLOW_WIDTH), .RESET_VALUE(30'h2000)) CSR_Trramlimitlow_F_Trramlimitlow_ff   (.out(CSR_Trramlimitlow_F_Trramlimitlow), .in(CSR_Trramlimitlow_F_Trramlimitlow_Data), .en(CSR_Trramlimitlow_F_Trramlimitlow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMLIMITLOW_TRRAMLIMITLOW_WIDTH), .RESET_VALUE(30'h2000)) CSR_Trramlimitlow_F_Trramlimitlow_ff   (.out(CSR_Trramlimitlow_F_Trramlimitlow), .in(CSR_Trramlimitlow_F_Trramlimitlow_Data), .en(CSR_Trramlimitlow_F_Trramlimitlow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trramlimitlow_F_Rsvd10 = 2'h0;
 
@@ -483,7 +483,7 @@ logic [TR_TRRAMLIMITHIGH_TRRAMLIMITHIGH_WIDTH-1:0] CSR_Trramlimithigh_F_Trramlim
 assign CSR_Trramlimithigh_F_Trramlimithigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trramlimithigh_F_Trramlimithigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMLIMITHIGH)) ? TR_TRRAMLIMITHIGH_TRRAMLIMITHIGH_WIDTH'(update_value(64'(CSR_Trramlimithigh_F_Trramlimithigh), 64'(CSR_Trramlimithigh_F_Trramlimithigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrramlimithighWr.Data.Trramlimithigh);
 assign CSR_Trramlimithigh_F_Trramlimithigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMLIMITHIGH)) | TrCsrTrramlimithighWr.TrramlimithighWrEn));
-generic_dff #(.WIDTH(TR_TRRAMLIMITHIGH_TRRAMLIMITHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramlimithigh_F_Trramlimithigh_ff   (.out(CSR_Trramlimithigh_F_Trramlimithigh), .in(CSR_Trramlimithigh_F_Trramlimithigh_Data), .en(CSR_Trramlimithigh_F_Trramlimithigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMLIMITHIGH_TRRAMLIMITHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramlimithigh_F_Trramlimithigh_ff   (.out(CSR_Trramlimithigh_F_Trramlimithigh), .in(CSR_Trramlimithigh_F_Trramlimithigh_Data), .en(CSR_Trramlimithigh_F_Trramlimithigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMWPLOW
 logic                                           CSR_Trramwplow_F_Trramwplow_WrEn;
@@ -492,7 +492,7 @@ logic [TR_TRRAMWPLOW_TRRAMWPLOW_WIDTH     -1:0] CSR_Trramwplow_F_Trramwplow_Data
 assign CSR_Trramwplow_F_Trramwplow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trramwplow_F_Trramwplow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMWPLOW)) ? TR_TRRAMWPLOW_TRRAMWPLOW_WIDTH'(update_value(64'(CSR_Trramwplow_F_Trramwplow), 64'(CSR_Trramwplow_F_Trramwplow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrramwplowWr.Data.Trramwplow);
 assign CSR_Trramwplow_F_Trramwplow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMWPLOW)) | TrCsrTrramwplowWr.TrramwplowWrEn));
-generic_dff #(.WIDTH(TR_TRRAMWPLOW_TRRAMWPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trramwplow_F_Trramwplow_ff   (.out(CSR_Trramwplow_F_Trramwplow), .in(CSR_Trramwplow_F_Trramwplow_Data), .en(CSR_Trramwplow_F_Trramwplow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMWPLOW_TRRAMWPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trramwplow_F_Trramwplow_ff   (.out(CSR_Trramwplow_F_Trramwplow), .in(CSR_Trramwplow_F_Trramwplow_Data), .en(CSR_Trramwplow_F_Trramwplow_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trramwplow_F_Trramwrap_WrEn;
 logic [TR_TRRAMWPLOW_TRRAMWRAP_WIDTH      -1:0] CSR_Trramwplow_F_Trramwrap_Data;
@@ -500,7 +500,7 @@ logic [TR_TRRAMWPLOW_TRRAMWRAP_WIDTH      -1:0] CSR_Trramwplow_F_Trramwrap_DataE
 assign CSR_Trramwplow_F_Trramwrap_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trramwplow_F_Trramwrap_Data = (TrCsrTrramwplowWr.Data.Trramwrap);
 assign CSR_Trramwplow_F_Trramwrap_WrEn = ((TrCsrTrramwplowWr.TrramwrapWrEn));
-generic_dff #(.WIDTH(TR_TRRAMWPLOW_TRRAMWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trramwplow_F_Trramwrap_ff   (.out(CSR_Trramwplow_F_Trramwrap), .in(CSR_Trramwplow_F_Trramwrap_Data), .en(CSR_Trramwplow_F_Trramwrap_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMWPLOW_TRRAMWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trramwplow_F_Trramwrap_ff   (.out(CSR_Trramwplow_F_Trramwrap), .in(CSR_Trramwplow_F_Trramwrap_Data), .en(CSR_Trramwplow_F_Trramwrap_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMWPHIGH
 logic                                           CSR_Trramwphigh_F_Trramwphigh_WrEn;
@@ -509,7 +509,7 @@ logic [TR_TRRAMWPHIGH_TRRAMWPHIGH_WIDTH   -1:0] CSR_Trramwphigh_F_Trramwphigh_Da
 assign CSR_Trramwphigh_F_Trramwphigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trramwphigh_F_Trramwphigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMWPHIGH)) ? TR_TRRAMWPHIGH_TRRAMWPHIGH_WIDTH'(update_value(64'(CSR_Trramwphigh_F_Trramwphigh), 64'(CSR_Trramwphigh_F_Trramwphigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrramwphighWr.Data.Trramwphigh);
 assign CSR_Trramwphigh_F_Trramwphigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMWPHIGH)) | TrCsrTrramwphighWr.TrramwphighWrEn));
-generic_dff #(.WIDTH(TR_TRRAMWPHIGH_TRRAMWPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramwphigh_F_Trramwphigh_ff   (.out(CSR_Trramwphigh_F_Trramwphigh), .in(CSR_Trramwphigh_F_Trramwphigh_Data), .en(CSR_Trramwphigh_F_Trramwphigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMWPHIGH_TRRAMWPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramwphigh_F_Trramwphigh_ff   (.out(CSR_Trramwphigh_F_Trramwphigh), .in(CSR_Trramwphigh_F_Trramwphigh_Data), .en(CSR_Trramwphigh_F_Trramwphigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMRPLOW
 logic                                           CSR_Trramrplow_F_Trramrplow_WrEn;
@@ -518,7 +518,7 @@ logic [TR_TRRAMRPLOW_TRRAMRPLOW_WIDTH     -1:0] CSR_Trramrplow_F_Trramrplow_Data
 assign CSR_Trramrplow_F_Trramrplow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trramrplow_F_Trramrplow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMRPLOW)) ? TR_TRRAMRPLOW_TRRAMRPLOW_WIDTH'(update_value(64'(CSR_Trramrplow_F_Trramrplow), 64'(CSR_Trramrplow_F_Trramrplow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrramrplowWr.Data.Trramrplow);
 assign CSR_Trramrplow_F_Trramrplow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMRPLOW)) | TrCsrTrramrplowWr.TrramrplowWrEn));
-generic_dff #(.WIDTH(TR_TRRAMRPLOW_TRRAMRPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trramrplow_F_Trramrplow_ff   (.out(CSR_Trramrplow_F_Trramrplow), .in(CSR_Trramrplow_F_Trramrplow_Data), .en(CSR_Trramrplow_F_Trramrplow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMRPLOW_TRRAMRPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trramrplow_F_Trramrplow_ff   (.out(CSR_Trramrplow_F_Trramrplow), .in(CSR_Trramrplow_F_Trramrplow_Data), .en(CSR_Trramrplow_F_Trramrplow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trramrplow_F_Rsvd10 = 2'h0;
 
@@ -529,7 +529,7 @@ logic [TR_TRRAMRPHIGH_TRRAMRPHIGH_WIDTH   -1:0] CSR_Trramrphigh_F_Trramrphigh_Da
 assign CSR_Trramrphigh_F_Trramrphigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trramrphigh_F_Trramrphigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMRPHIGH)) ? TR_TRRAMRPHIGH_TRRAMRPHIGH_WIDTH'(update_value(64'(CSR_Trramrphigh_F_Trramrphigh), 64'(CSR_Trramrphigh_F_Trramrphigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrramrphighWr.Data.Trramrphigh);
 assign CSR_Trramrphigh_F_Trramrphigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRRAMRPHIGH)) | TrCsrTrramrphighWr.TrramrphighWrEn));
-generic_dff #(.WIDTH(TR_TRRAMRPHIGH_TRRAMRPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramrphigh_F_Trramrphigh_ff   (.out(CSR_Trramrphigh_F_Trramrphigh), .in(CSR_Trramrphigh_F_Trramrphigh_Data), .en(CSR_Trramrphigh_F_Trramrphigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMRPHIGH_TRRAMRPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trramrphigh_F_Trramrphigh_ff   (.out(CSR_Trramrphigh_F_Trramrphigh), .in(CSR_Trramrphigh_F_Trramrphigh_Data), .en(CSR_Trramrphigh_F_Trramrphigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRRAMDATA
 logic                                           CSR_Trramdata_F_Trramdata_WrEn;
@@ -538,7 +538,7 @@ logic [TR_TRRAMDATA_TRRAMDATA_WIDTH       -1:0] CSR_Trramdata_F_Trramdata_DataEf
 assign CSR_Trramdata_F_Trramdata_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trramdata_F_Trramdata_Data = (TrCsrTrramdataWr.Data.Trramdata);
 assign CSR_Trramdata_F_Trramdata_WrEn = ((TrCsrTrramdataWr.TrramdataWrEn));
-generic_dff #(.WIDTH(TR_TRRAMDATA_TRRAMDATA_WIDTH), .RESET_VALUE(0)) CSR_Trramdata_F_Trramdata_ff   (.out(CSR_Trramdata_F_Trramdata), .in(CSR_Trramdata_F_Trramdata_Data), .en(CSR_Trramdata_F_Trramdata_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRRAMDATA_TRRAMDATA_WIDTH), .RESET_VALUE(0)) CSR_Trramdata_F_Trramdata_ff   (.out(CSR_Trramdata_F_Trramdata), .in(CSR_Trramdata_F_Trramdata_Data), .en(CSR_Trramdata_F_Trramdata_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRCUSTOMRAMSMEMLIMITLOW
 logic                                           CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_WrEn;
@@ -547,7 +547,7 @@ logic [TR_TRCUSTOMRAMSMEMLIMITLOW_TRCUSTOMRAMSMEMLIMITLOW_WIDTH-1:0] CSR_Trcusto
 assign CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_Data = (TR_TRCUSTOMRAMSMEMLIMITLOW_TRCUSTOMRAMSMEMLIMITLOW_WIDTH'(update_value(64'(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow), 64'(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_DataEff[29:0]), reg_wr_instr_type)));
 assign CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCUSTOMRAMSMEMLIMITLOW))));
-generic_dff #(.WIDTH(TR_TRCUSTOMRAMSMEMLIMITLOW_TRCUSTOMRAMSMEMLIMITLOW_WIDTH), .RESET_VALUE(30'h1000)) CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_ff   (.out(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow), .in(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_Data), .en(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCUSTOMRAMSMEMLIMITLOW_TRCUSTOMRAMSMEMLIMITLOW_WIDTH), .RESET_VALUE(30'h1000)) CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_ff   (.out(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow), .in(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_Data), .en(CSR_Trcustomramsmemlimitlow_F_Trcustomramsmemlimitlow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trcustomramsmemlimitlow_F_Rsvd10 = 2'h0;
 
@@ -558,7 +558,7 @@ logic [TR_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH-1:0] CSR_Trdstramcontrol_F_Tr
 assign CSR_Trdstramcontrol_F_Trdstramstoponwrap_DataEff = {reg_wr_data[8:8]};
 assign CSR_Trdstramcontrol_F_Trdstramstoponwrap_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) ? TR_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH'(update_value(64'(CSR_Trdstramcontrol_F_Trdstramstoponwrap), 64'(CSR_Trdstramcontrol_F_Trdstramstoponwrap_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrdstramcontrolWr.Data.Trdstramstoponwrap);
 assign CSR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) | TrCsrTrdstramcontrolWr.TrdstramstoponwrapWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstramstoponwrap_ff   (.out(CSR_Trdstramcontrol_F_Trdstramstoponwrap), .in(CSR_Trdstramcontrol_F_Trdstramstoponwrap_Data), .en(CSR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstramstoponwrap_ff   (.out(CSR_Trdstramcontrol_F_Trdstramstoponwrap), .in(CSR_Trdstramcontrol_F_Trdstramstoponwrap_Data), .en(CSR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trdstramcontrol_F_Trdstrammode_WrEn;
 logic [TR_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstrammode_Data;
@@ -566,7 +566,7 @@ logic [TR_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstram
 assign CSR_Trdstramcontrol_F_Trdstrammode_DataEff = {reg_wr_data[4:4]};
 assign CSR_Trdstramcontrol_F_Trdstrammode_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) ? TR_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH'(update_value(64'(CSR_Trdstramcontrol_F_Trdstrammode), 64'(CSR_Trdstramcontrol_F_Trdstrammode_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrdstramcontrolWr.Data.Trdstrammode);
 assign CSR_Trdstramcontrol_F_Trdstrammode_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) | TrCsrTrdstramcontrolWr.TrdstrammodeWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstrammode_ff   (.out(CSR_Trdstramcontrol_F_Trdstrammode), .in(CSR_Trdstramcontrol_F_Trdstrammode_Data), .en(CSR_Trdstramcontrol_F_Trdstrammode_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstrammode_ff   (.out(CSR_Trdstramcontrol_F_Trdstrammode), .in(CSR_Trdstramcontrol_F_Trdstrammode_Data), .en(CSR_Trdstramcontrol_F_Trdstrammode_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trdstramcontrol_F_Trdstramempty_WrEn;
 logic [TR_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstramempty_Data;
@@ -574,7 +574,7 @@ logic [TR_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstra
 assign CSR_Trdstramcontrol_F_Trdstramempty_DataEff = {reg_wr_data[3:3]};
 assign CSR_Trdstramcontrol_F_Trdstramempty_Data = (TrCsrTrdstramcontrolWr.Data.Trdstramempty);
 assign CSR_Trdstramcontrol_F_Trdstramempty_WrEn = ((TrCsrTrdstramcontrolWr.TrdstramemptyWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trdstramcontrol_F_Trdstramempty_ff   (.out(CSR_Trdstramcontrol_F_Trdstramempty), .in(CSR_Trdstramcontrol_F_Trdstramempty_Data), .en(CSR_Trdstramcontrol_F_Trdstramempty_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH), .RESET_VALUE(1)) CSR_Trdstramcontrol_F_Trdstramempty_ff   (.out(CSR_Trdstramcontrol_F_Trdstramempty), .in(CSR_Trdstramcontrol_F_Trdstramempty_Data), .en(CSR_Trdstramcontrol_F_Trdstramempty_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trdstramcontrol_F_Trdstramenable_WrEn;
 logic [TR_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstramenable_Data;
@@ -582,7 +582,7 @@ logic [TR_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstr
 assign CSR_Trdstramcontrol_F_Trdstramenable_DataEff = {reg_wr_data[1:1]};
 assign CSR_Trdstramcontrol_F_Trdstramenable_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) ? TR_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH'(update_value(64'(CSR_Trdstramcontrol_F_Trdstramenable), 64'(CSR_Trdstramcontrol_F_Trdstramenable_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrdstramcontrolWr.Data.Trdstramenable);
 assign CSR_Trdstramcontrol_F_Trdstramenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) | TrCsrTrdstramcontrolWr.TrdstramenableWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstramenable_ff   (.out(CSR_Trdstramcontrol_F_Trdstramenable), .in(CSR_Trdstramcontrol_F_Trdstramenable_Data), .en(CSR_Trdstramcontrol_F_Trdstramenable_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstramenable_ff   (.out(CSR_Trdstramcontrol_F_Trdstramenable), .in(CSR_Trdstramcontrol_F_Trdstramenable_Data), .en(CSR_Trdstramcontrol_F_Trdstramenable_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trdstramcontrol_F_Trdstramactive_WrEn;
 logic [TR_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstramactive_Data;
@@ -590,7 +590,7 @@ logic [TR_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0] CSR_Trdstramcontrol_F_Trdstr
 assign CSR_Trdstramcontrol_F_Trdstramactive_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trdstramcontrol_F_Trdstramactive_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) ? TR_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH'(update_value(64'(CSR_Trdstramcontrol_F_Trdstramactive), 64'(CSR_Trdstramcontrol_F_Trdstramactive_DataEff[0:0]), reg_wr_instr_type)) : TrCsrTrdstramcontrolWr.Data.Trdstramactive);
 assign CSR_Trdstramcontrol_F_Trdstramactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMCONTROL)) | TrCsrTrdstramcontrolWr.TrdstramactiveWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstramactive_ff   (.out(CSR_Trdstramcontrol_F_Trdstramactive), .in(CSR_Trdstramcontrol_F_Trdstramactive_Data), .en(CSR_Trdstramcontrol_F_Trdstramactive_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH), .RESET_VALUE(0)) CSR_Trdstramcontrol_F_Trdstramactive_ff   (.out(CSR_Trdstramcontrol_F_Trdstramactive), .in(CSR_Trdstramcontrol_F_Trdstramactive_Data), .en(CSR_Trdstramcontrol_F_Trdstramactive_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRDSTRAMIMPL
 logic                                           CSR_Trdstramimpl_F_Trdstramvendorframelength_WrEn;
@@ -599,7 +599,7 @@ logic [TR_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH-1:0] CSR_Trdstramimpl_F_T
 assign CSR_Trdstramimpl_F_Trdstramvendorframelength_DataEff = {reg_wr_data[27:24]};
 assign CSR_Trdstramimpl_F_Trdstramvendorframelength_Data = (TR_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH'(update_value(64'(CSR_Trdstramimpl_F_Trdstramvendorframelength), 64'(CSR_Trdstramimpl_F_Trdstramvendorframelength_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_Trdstramimpl_F_Trdstramvendorframelength_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMIMPL))));
-generic_dff #(.WIDTH(TR_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH), .RESET_VALUE(1)) CSR_Trdstramimpl_F_Trdstramvendorframelength_ff   (.out(CSR_Trdstramimpl_F_Trdstramvendorframelength), .in(CSR_Trdstramimpl_F_Trdstramvendorframelength_Data), .en(CSR_Trdstramimpl_F_Trdstramvendorframelength_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH), .RESET_VALUE(1)) CSR_Trdstramimpl_F_Trdstramvendorframelength_ff   (.out(CSR_Trdstramimpl_F_Trdstramvendorframelength), .in(CSR_Trdstramimpl_F_Trdstramvendorframelength_Data), .en(CSR_Trdstramimpl_F_Trdstramvendorframelength_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trdstramimpl_F_Trdstramhassmem = 1'h1;
 
@@ -618,7 +618,7 @@ logic [TR_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH-1:0] CSR_Trdstramstartlow_F_Tr
 assign CSR_Trdstramstartlow_F_Trdstramstartlow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trdstramstartlow_F_Trdstramstartlow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMSTARTLOW)) ? TR_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH'(update_value(64'(CSR_Trdstramstartlow_F_Trdstramstartlow), 64'(CSR_Trdstramstartlow_F_Trdstramstartlow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrdstramstartlowWr.Data.Trdstramstartlow);
 assign CSR_Trdstramstartlow_F_Trdstramstartlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMSTARTLOW)) | TrCsrTrdstramstartlowWr.TrdstramstartlowWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramstartlow_F_Trdstramstartlow_ff   (.out(CSR_Trdstramstartlow_F_Trdstramstartlow), .in(CSR_Trdstramstartlow_F_Trdstramstartlow_Data), .en(CSR_Trdstramstartlow_F_Trdstramstartlow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramstartlow_F_Trdstramstartlow_ff   (.out(CSR_Trdstramstartlow_F_Trdstramstartlow), .in(CSR_Trdstramstartlow_F_Trdstramstartlow_Data), .en(CSR_Trdstramstartlow_F_Trdstramstartlow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trdstramstartlow_F_Rsvd10 = 2'h0;
 
@@ -629,7 +629,7 @@ logic [TR_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH-1:0] CSR_Trdstramstarthigh_F
 assign CSR_Trdstramstarthigh_F_Trdstramstarthigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trdstramstarthigh_F_Trdstramstarthigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMSTARTHIGH)) ? TR_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH'(update_value(64'(CSR_Trdstramstarthigh_F_Trdstramstarthigh), 64'(CSR_Trdstramstarthigh_F_Trdstramstarthigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrdstramstarthighWr.Data.Trdstramstarthigh);
 assign CSR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMSTARTHIGH)) | TrCsrTrdstramstarthighWr.TrdstramstarthighWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramstarthigh_F_Trdstramstarthigh_ff   (.out(CSR_Trdstramstarthigh_F_Trdstramstarthigh), .in(CSR_Trdstramstarthigh_F_Trdstramstarthigh_Data), .en(CSR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramstarthigh_F_Trdstramstarthigh_ff   (.out(CSR_Trdstramstarthigh_F_Trdstramstarthigh), .in(CSR_Trdstramstarthigh_F_Trdstramstarthigh_Data), .en(CSR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRDSTRAMLIMITLOW
 logic                                           CSR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn;
@@ -638,7 +638,7 @@ logic [TR_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH-1:0] CSR_Trdstramlimitlow_F_Tr
 assign CSR_Trdstramlimitlow_F_Trdstramlimitlow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trdstramlimitlow_F_Trdstramlimitlow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMLIMITLOW)) ? TR_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH'(update_value(64'(CSR_Trdstramlimitlow_F_Trdstramlimitlow), 64'(CSR_Trdstramlimitlow_F_Trdstramlimitlow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrdstramlimitlowWr.Data.Trdstramlimitlow);
 assign CSR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMLIMITLOW)) | TrCsrTrdstramlimitlowWr.TrdstramlimitlowWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramlimitlow_F_Trdstramlimitlow_ff   (.out(CSR_Trdstramlimitlow_F_Trdstramlimitlow), .in(CSR_Trdstramlimitlow_F_Trdstramlimitlow_Data), .en(CSR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramlimitlow_F_Trdstramlimitlow_ff   (.out(CSR_Trdstramlimitlow_F_Trdstramlimitlow), .in(CSR_Trdstramlimitlow_F_Trdstramlimitlow_Data), .en(CSR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trdstramlimitlow_F_Rsvd10 = 2'h0;
 
@@ -649,7 +649,7 @@ logic [TR_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH-1:0] CSR_Trdstramlimithigh_F
 assign CSR_Trdstramlimithigh_F_Trdstramlimithigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trdstramlimithigh_F_Trdstramlimithigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMLIMITHIGH)) ? TR_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH'(update_value(64'(CSR_Trdstramlimithigh_F_Trdstramlimithigh), 64'(CSR_Trdstramlimithigh_F_Trdstramlimithigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrdstramlimithighWr.Data.Trdstramlimithigh);
 assign CSR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMLIMITHIGH)) | TrCsrTrdstramlimithighWr.TrdstramlimithighWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramlimithigh_F_Trdstramlimithigh_ff   (.out(CSR_Trdstramlimithigh_F_Trdstramlimithigh), .in(CSR_Trdstramlimithigh_F_Trdstramlimithigh_Data), .en(CSR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramlimithigh_F_Trdstramlimithigh_ff   (.out(CSR_Trdstramlimithigh_F_Trdstramlimithigh), .in(CSR_Trdstramlimithigh_F_Trdstramlimithigh_Data), .en(CSR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRDSTRAMWPLOW
 logic                                           CSR_Trdstramwplow_F_Trdstramwplow_WrEn;
@@ -658,7 +658,7 @@ logic [TR_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH-1:0] CSR_Trdstramwplow_F_Trdstramwpl
 assign CSR_Trdstramwplow_F_Trdstramwplow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trdstramwplow_F_Trdstramwplow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMWPLOW)) ? TR_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH'(update_value(64'(CSR_Trdstramwplow_F_Trdstramwplow), 64'(CSR_Trdstramwplow_F_Trdstramwplow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrdstramwplowWr.Data.Trdstramwplow);
 assign CSR_Trdstramwplow_F_Trdstramwplow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMWPLOW)) | TrCsrTrdstramwplowWr.TrdstramwplowWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramwplow_F_Trdstramwplow_ff   (.out(CSR_Trdstramwplow_F_Trdstramwplow), .in(CSR_Trdstramwplow_F_Trdstramwplow_Data), .en(CSR_Trdstramwplow_F_Trdstramwplow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramwplow_F_Trdstramwplow_ff   (.out(CSR_Trdstramwplow_F_Trdstramwplow), .in(CSR_Trdstramwplow_F_Trdstramwplow_Data), .en(CSR_Trdstramwplow_F_Trdstramwplow_WrEn), .clk(clk), .rst_n(reset_n));
 
 logic                                           CSR_Trdstramwplow_F_Trdstramwrap_WrEn;
 logic [TR_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0] CSR_Trdstramwplow_F_Trdstramwrap_Data;
@@ -666,7 +666,7 @@ logic [TR_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0] CSR_Trdstramwplow_F_Trdstramwrap
 assign CSR_Trdstramwplow_F_Trdstramwrap_DataEff = {reg_wr_data[0:0]};
 assign CSR_Trdstramwplow_F_Trdstramwrap_Data = (TrCsrTrdstramwplowWr.Data.Trdstramwrap);
 assign CSR_Trdstramwplow_F_Trdstramwrap_WrEn = ((TrCsrTrdstramwplowWr.TrdstramwrapWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trdstramwplow_F_Trdstramwrap_ff   (.out(CSR_Trdstramwplow_F_Trdstramwrap), .in(CSR_Trdstramwplow_F_Trdstramwrap_Data), .en(CSR_Trdstramwplow_F_Trdstramwrap_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH), .RESET_VALUE(0)) CSR_Trdstramwplow_F_Trdstramwrap_ff   (.out(CSR_Trdstramwplow_F_Trdstramwrap), .in(CSR_Trdstramwplow_F_Trdstramwrap_Data), .en(CSR_Trdstramwplow_F_Trdstramwrap_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRDSTRAMWPHIGH
 logic                                           CSR_Trdstramwphigh_F_Trdstramwphigh_WrEn;
@@ -675,7 +675,7 @@ logic [TR_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH-1:0] CSR_Trdstramwphigh_F_Trdstram
 assign CSR_Trdstramwphigh_F_Trdstramwphigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trdstramwphigh_F_Trdstramwphigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMWPHIGH)) ? TR_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH'(update_value(64'(CSR_Trdstramwphigh_F_Trdstramwphigh), 64'(CSR_Trdstramwphigh_F_Trdstramwphigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrdstramwphighWr.Data.Trdstramwphigh);
 assign CSR_Trdstramwphigh_F_Trdstramwphigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMWPHIGH)) | TrCsrTrdstramwphighWr.TrdstramwphighWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramwphigh_F_Trdstramwphigh_ff   (.out(CSR_Trdstramwphigh_F_Trdstramwphigh), .in(CSR_Trdstramwphigh_F_Trdstramwphigh_Data), .en(CSR_Trdstramwphigh_F_Trdstramwphigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramwphigh_F_Trdstramwphigh_ff   (.out(CSR_Trdstramwphigh_F_Trdstramwphigh), .in(CSR_Trdstramwphigh_F_Trdstramwphigh_Data), .en(CSR_Trdstramwphigh_F_Trdstramwphigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRDSTRAMRPLOW
 logic                                           CSR_Trdstramrplow_F_Trdstramrplow_WrEn;
@@ -684,7 +684,7 @@ logic [TR_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH-1:0] CSR_Trdstramrplow_F_Trdstramrpl
 assign CSR_Trdstramrplow_F_Trdstramrplow_DataEff = {reg_wr_data[31:2]};
 assign CSR_Trdstramrplow_F_Trdstramrplow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMRPLOW)) ? TR_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH'(update_value(64'(CSR_Trdstramrplow_F_Trdstramrplow), 64'(CSR_Trdstramrplow_F_Trdstramrplow_DataEff[29:0]), reg_wr_instr_type)) : TrCsrTrdstramrplowWr.Data.Trdstramrplow);
 assign CSR_Trdstramrplow_F_Trdstramrplow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMRPLOW)) | TrCsrTrdstramrplowWr.TrdstramrplowWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramrplow_F_Trdstramrplow_ff   (.out(CSR_Trdstramrplow_F_Trdstramrplow), .in(CSR_Trdstramrplow_F_Trdstramrplow_Data), .en(CSR_Trdstramrplow_F_Trdstramrplow_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH), .RESET_VALUE(0)) CSR_Trdstramrplow_F_Trdstramrplow_ff   (.out(CSR_Trdstramrplow_F_Trdstramrplow), .in(CSR_Trdstramrplow_F_Trdstramrplow_Data), .en(CSR_Trdstramrplow_F_Trdstramrplow_WrEn), .clk(clk), .rst_n(reset_n));
 
 assign CSR_Trdstramrplow_F_Rsvd10 = 2'h0;
 
@@ -695,7 +695,7 @@ logic [TR_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH-1:0] CSR_Trdstramrphigh_F_Trdstram
 assign CSR_Trdstramrphigh_F_Trdstramrphigh_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trdstramrphigh_F_Trdstramrphigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMRPHIGH)) ? TR_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH'(update_value(64'(CSR_Trdstramrphigh_F_Trdstramrphigh), 64'(CSR_Trdstramrphigh_F_Trdstramrphigh_DataEff[31:0]), reg_wr_instr_type)) : TrCsrTrdstramrphighWr.Data.Trdstramrphigh);
 assign CSR_Trdstramrphigh_F_Trdstramrphigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRDSTRAMRPHIGH)) | TrCsrTrdstramrphighWr.TrdstramrphighWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramrphigh_F_Trdstramrphigh_ff   (.out(CSR_Trdstramrphigh_F_Trdstramrphigh), .in(CSR_Trdstramrphigh_F_Trdstramrphigh_Data), .en(CSR_Trdstramrphigh_F_Trdstramrphigh_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH), .RESET_VALUE(0)) CSR_Trdstramrphigh_F_Trdstramrphigh_ff   (.out(CSR_Trdstramrphigh_F_Trdstramrphigh), .in(CSR_Trdstramrphigh_F_Trdstramrphigh_Data), .en(CSR_Trdstramrphigh_F_Trdstramrphigh_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRDSTRAMDATA
 logic                                           CSR_Trdstramdata_F_Trdstramdata_WrEn;
@@ -704,7 +704,7 @@ logic [TR_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH -1:0] CSR_Trdstramdata_F_Trdstramdata_
 assign CSR_Trdstramdata_F_Trdstramdata_DataEff = {reg_wr_data[31:0]};
 assign CSR_Trdstramdata_F_Trdstramdata_Data = (TrCsrTrdstramdataWr.Data.Trdstramdata);
 assign CSR_Trdstramdata_F_Trdstramdata_WrEn = ((TrCsrTrdstramdataWr.TrdstramdataWrEn));
-generic_dff #(.WIDTH(TR_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH), .RESET_VALUE(0)) CSR_Trdstramdata_F_Trdstramdata_ff   (.out(CSR_Trdstramdata_F_Trdstramdata), .in(CSR_Trdstramdata_F_Trdstramdata_Data), .en(CSR_Trdstramdata_F_Trdstramdata_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH), .RESET_VALUE(0)) CSR_Trdstramdata_F_Trdstramdata_ff   (.out(CSR_Trdstramdata_F_Trdstramdata), .in(CSR_Trdstramdata_F_Trdstramdata_Data), .en(CSR_Trdstramdata_F_Trdstramdata_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRCLUSTERFUSECFGLOW
 logic                                           CSR_TrClusterFuseCfgLow_F_Core3Vid_WrEn;
@@ -713,7 +713,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE3VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core
 assign CSR_TrClusterFuseCfgLow_F_Core3Vid_DataEff = {reg_wr_data[31:29]};
 assign CSR_TrClusterFuseCfgLow_F_Core3Vid_Data = (TR_TRCLUSTERFUSECFGLOW_CORE3VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core3Vid), 64'(CSR_TrClusterFuseCfgLow_F_Core3Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core3Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE3VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core3Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core3Vid), .in(CSR_TrClusterFuseCfgLow_F_Core3Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core3Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE3VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core3Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core3Vid), .in(CSR_TrClusterFuseCfgLow_F_Core3Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core3Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core3Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE3ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core3Enable_Data;
@@ -721,7 +721,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE3ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_C
 assign CSR_TrClusterFuseCfgLow_F_Core3Enable_DataEff = {reg_wr_data[28:28]};
 assign CSR_TrClusterFuseCfgLow_F_Core3Enable_Data = (TR_TRCLUSTERFUSECFGLOW_CORE3ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core3Enable), 64'(CSR_TrClusterFuseCfgLow_F_Core3Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core3Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE3ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core3Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core3Enable), .in(CSR_TrClusterFuseCfgLow_F_Core3Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core3Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE3ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core3Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core3Enable), .in(CSR_TrClusterFuseCfgLow_F_Core3Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core3Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core2Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE2VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core2Vid_Data;
@@ -729,7 +729,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE2VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core
 assign CSR_TrClusterFuseCfgLow_F_Core2Vid_DataEff = {reg_wr_data[27:25]};
 assign CSR_TrClusterFuseCfgLow_F_Core2Vid_Data = (TR_TRCLUSTERFUSECFGLOW_CORE2VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core2Vid), 64'(CSR_TrClusterFuseCfgLow_F_Core2Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core2Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE2VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core2Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core2Vid), .in(CSR_TrClusterFuseCfgLow_F_Core2Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core2Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE2VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core2Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core2Vid), .in(CSR_TrClusterFuseCfgLow_F_Core2Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core2Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core2Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE2ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core2Enable_Data;
@@ -737,7 +737,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE2ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_C
 assign CSR_TrClusterFuseCfgLow_F_Core2Enable_DataEff = {reg_wr_data[24:24]};
 assign CSR_TrClusterFuseCfgLow_F_Core2Enable_Data = (TR_TRCLUSTERFUSECFGLOW_CORE2ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core2Enable), 64'(CSR_TrClusterFuseCfgLow_F_Core2Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core2Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE2ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core2Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core2Enable), .in(CSR_TrClusterFuseCfgLow_F_Core2Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core2Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE2ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core2Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core2Enable), .in(CSR_TrClusterFuseCfgLow_F_Core2Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core2Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core1Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE1VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core1Vid_Data;
@@ -745,7 +745,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE1VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core
 assign CSR_TrClusterFuseCfgLow_F_Core1Vid_DataEff = {reg_wr_data[23:21]};
 assign CSR_TrClusterFuseCfgLow_F_Core1Vid_Data = (TR_TRCLUSTERFUSECFGLOW_CORE1VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core1Vid), 64'(CSR_TrClusterFuseCfgLow_F_Core1Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core1Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE1VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core1Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core1Vid), .in(CSR_TrClusterFuseCfgLow_F_Core1Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core1Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE1VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core1Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core1Vid), .in(CSR_TrClusterFuseCfgLow_F_Core1Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core1Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core1Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE1ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core1Enable_Data;
@@ -753,7 +753,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE1ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_C
 assign CSR_TrClusterFuseCfgLow_F_Core1Enable_DataEff = {reg_wr_data[20:20]};
 assign CSR_TrClusterFuseCfgLow_F_Core1Enable_Data = (TR_TRCLUSTERFUSECFGLOW_CORE1ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core1Enable), 64'(CSR_TrClusterFuseCfgLow_F_Core1Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core1Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE1ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core1Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core1Enable), .in(CSR_TrClusterFuseCfgLow_F_Core1Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core1Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE1ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core1Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core1Enable), .in(CSR_TrClusterFuseCfgLow_F_Core1Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core1Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core0Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE0VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core0Vid_Data;
@@ -761,7 +761,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE0VID_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core
 assign CSR_TrClusterFuseCfgLow_F_Core0Vid_DataEff = {reg_wr_data[19:17]};
 assign CSR_TrClusterFuseCfgLow_F_Core0Vid_Data = (TR_TRCLUSTERFUSECFGLOW_CORE0VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core0Vid), 64'(CSR_TrClusterFuseCfgLow_F_Core0Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core0Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE0VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core0Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core0Vid), .in(CSR_TrClusterFuseCfgLow_F_Core0Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core0Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE0VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core0Vid_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core0Vid), .in(CSR_TrClusterFuseCfgLow_F_Core0Vid_Data), .en(CSR_TrClusterFuseCfgLow_F_Core0Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Core0Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_CORE0ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Core0Enable_Data;
@@ -769,7 +769,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_CORE0ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_C
 assign CSR_TrClusterFuseCfgLow_F_Core0Enable_DataEff = {reg_wr_data[16:16]};
 assign CSR_TrClusterFuseCfgLow_F_Core0Enable_Data = (TR_TRCLUSTERFUSECFGLOW_CORE0ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Core0Enable), 64'(CSR_TrClusterFuseCfgLow_F_Core0Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Core0Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE0ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core0Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core0Enable), .in(CSR_TrClusterFuseCfgLow_F_Core0Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core0Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_CORE0ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Core0Enable_ff   (.out(CSR_TrClusterFuseCfgLow_F_Core0Enable), .in(CSR_TrClusterFuseCfgLow_F_Core0Enable_Data), .en(CSR_TrClusterFuseCfgLow_F_Core0Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Rsvd1512_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_RSVD1512_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Rsvd1512_Data;
@@ -777,7 +777,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_RSVD1512_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Rsvd
 assign CSR_TrClusterFuseCfgLow_F_Rsvd1512_DataEff = {reg_wr_data[15:12]};
 assign CSR_TrClusterFuseCfgLow_F_Rsvd1512_Data = (TR_TRCLUSTERFUSECFGLOW_RSVD1512_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Rsvd1512), 64'(CSR_TrClusterFuseCfgLow_F_Rsvd1512_DataEff[3:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Rsvd1512_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_RSVD1512_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Rsvd1512_ff   (.out(CSR_TrClusterFuseCfgLow_F_Rsvd1512), .in(CSR_TrClusterFuseCfgLow_F_Rsvd1512_Data), .en(CSR_TrClusterFuseCfgLow_F_Rsvd1512_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_RSVD1512_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Rsvd1512_ff   (.out(CSR_TrClusterFuseCfgLow_F_Rsvd1512), .in(CSR_TrClusterFuseCfgLow_F_Rsvd1512_Data), .en(CSR_TrClusterFuseCfgLow_F_Rsvd1512_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_IOCOHERENCYDISABLE_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_Data;
@@ -785,7 +785,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_IOCOHERENCYDISABLE_WIDTH-1:0] CSR_TrClusterFuseCfg
 assign CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_DataEff = {reg_wr_data[11:11]};
 assign CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_Data = (TR_TRCLUSTERFUSECFGLOW_IOCOHERENCYDISABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable), 64'(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_IOCOHERENCYDISABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_ff   (.out(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable), .in(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_Data), .en(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_IOCOHERENCYDISABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_ff   (.out(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable), .in(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_Data), .en(CSR_TrClusterFuseCfgLow_F_IoCoherencyDisable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_EXPORTRESTRICTIONENABLED_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_Data;
@@ -793,7 +793,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_EXPORTRESTRICTIONENABLED_WIDTH-1:0] CSR_TrClusterF
 assign CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_DataEff = {reg_wr_data[10:10]};
 assign CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_Data = (TR_TRCLUSTERFUSECFGLOW_EXPORTRESTRICTIONENABLED_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled), 64'(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_EXPORTRESTRICTIONENABLED_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_ff   (.out(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled), .in(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_Data), .en(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_EXPORTRESTRICTIONENABLED_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_ff   (.out(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled), .in(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_Data), .en(CSR_TrClusterFuseCfgLow_F_ExportRestrictionEnabled_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_Rsvd98_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_RSVD98_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Rsvd98_Data;
@@ -801,7 +801,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_RSVD98_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_Rsvd98
 assign CSR_TrClusterFuseCfgLow_F_Rsvd98_DataEff = {reg_wr_data[9:8]};
 assign CSR_TrClusterFuseCfgLow_F_Rsvd98_Data = (TR_TRCLUSTERFUSECFGLOW_RSVD98_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_Rsvd98), 64'(CSR_TrClusterFuseCfgLow_F_Rsvd98_DataEff[1:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_Rsvd98_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_RSVD98_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Rsvd98_ff   (.out(CSR_TrClusterFuseCfgLow_F_Rsvd98), .in(CSR_TrClusterFuseCfgLow_F_Rsvd98_Data), .en(CSR_TrClusterFuseCfgLow_F_Rsvd98_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_RSVD98_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_Rsvd98_ff   (.out(CSR_TrClusterFuseCfgLow_F_Rsvd98), .in(CSR_TrClusterFuseCfgLow_F_Rsvd98_Data), .en(CSR_TrClusterFuseCfgLow_F_Rsvd98_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_WrEn;
 logic [TR_TRCLUSTERFUSECFGLOW_SCHARVESTSTRAP_WIDTH-1:0] CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_Data;
@@ -809,7 +809,7 @@ logic [TR_TRCLUSTERFUSECFGLOW_SCHARVESTSTRAP_WIDTH-1:0] CSR_TrClusterFuseCfgLow_
 assign CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_DataEff = {reg_wr_data[7:0]};
 assign CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_Data = (TR_TRCLUSTERFUSECFGLOW_SCHARVESTSTRAP_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap), 64'(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_DataEff[7:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGLOW)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_SCHARVESTSTRAP_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_ff   (.out(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap), .in(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_Data), .en(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGLOW_SCHARVESTSTRAP_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_ff   (.out(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap), .in(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_Data), .en(CSR_TrClusterFuseCfgLow_F_ScHarvestStrap_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 //Register: CSR_TRCLUSTERFUSECFGHI
 logic                                           CSR_TrClusterFuseCfgHi_F_Lock_WrEn;
@@ -818,7 +818,7 @@ logic [TR_TRCLUSTERFUSECFGHI_LOCK_WIDTH   -1:0] CSR_TrClusterFuseCfgHi_F_Lock_Da
 assign CSR_TrClusterFuseCfgHi_F_Lock_DataEff = {reg_wr_data[31:31]};
 assign CSR_TrClusterFuseCfgHi_F_Lock_Data = (TR_TRCLUSTERFUSECFGHI_LOCK_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Lock), 64'(CSR_TrClusterFuseCfgHi_F_Lock_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Lock_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_LOCK_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Lock_ff   (.out(CSR_TrClusterFuseCfgHi_F_Lock), .in(CSR_TrClusterFuseCfgHi_F_Lock_Data), .en(CSR_TrClusterFuseCfgHi_F_Lock_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_LOCK_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Lock_ff   (.out(CSR_TrClusterFuseCfgHi_F_Lock), .in(CSR_TrClusterFuseCfgHi_F_Lock_Data), .en(CSR_TrClusterFuseCfgHi_F_Lock_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Rsvd3022_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_RSVD3022_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Rsvd3022_Data;
@@ -826,7 +826,7 @@ logic [TR_TRCLUSTERFUSECFGHI_RSVD3022_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Rsvd30
 assign CSR_TrClusterFuseCfgHi_F_Rsvd3022_DataEff = {reg_wr_data[30:22]};
 assign CSR_TrClusterFuseCfgHi_F_Rsvd3022_Data = (TR_TRCLUSTERFUSECFGHI_RSVD3022_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Rsvd3022), 64'(CSR_TrClusterFuseCfgHi_F_Rsvd3022_DataEff[8:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Rsvd3022_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_RSVD3022_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Rsvd3022_ff   (.out(CSR_TrClusterFuseCfgHi_F_Rsvd3022), .in(CSR_TrClusterFuseCfgHi_F_Rsvd3022_Data), .en(CSR_TrClusterFuseCfgHi_F_Rsvd3022_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_RSVD3022_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Rsvd3022_ff   (.out(CSR_TrClusterFuseCfgHi_F_Rsvd3022), .in(CSR_TrClusterFuseCfgHi_F_Rsvd3022_Data), .en(CSR_TrClusterFuseCfgHi_F_Rsvd3022_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_JTAG2UARCHENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_Data;
@@ -834,7 +834,7 @@ logic [TR_TRCLUSTERFUSECFGHI_JTAG2UARCHENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_
 assign CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_DataEff = {reg_wr_data[21:21]};
 assign CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_Data = (TR_TRCLUSTERFUSECFGHI_JTAG2UARCHENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable), 64'(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_JTAG2UARCHENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable), .in(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_JTAG2UARCHENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable), .in(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_Jtag2UarchEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_DstEnable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_DSTENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_DstEnable_Data;
@@ -842,14 +842,14 @@ logic [TR_TRCLUSTERFUSECFGHI_DSTENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_DstEn
 assign CSR_TrClusterFuseCfgHi_F_DstEnable_DataEff = {reg_wr_data[20:20]};
 assign CSR_TrClusterFuseCfgHi_F_DstEnable_Data = (TR_TRCLUSTERFUSECFGHI_DSTENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_DstEnable), 64'(CSR_TrClusterFuseCfgHi_F_DstEnable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_DstEnable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_DSTENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_DstEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_DstEnable), .in(CSR_TrClusterFuseCfgHi_F_DstEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_DstEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_DSTENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_DstEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_DstEnable), .in(CSR_TrClusterFuseCfgHi_F_DstEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_DstEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
 logic                                           CSR_TrClusterFuseCfgHi_F_TraceEnable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_TRACEENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_TraceEnable_Data;
 logic [TR_TRCLUSTERFUSECFGHI_TRACEENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_TraceEnable_DataEff;
 assign CSR_TrClusterFuseCfgHi_F_TraceEnable_DataEff = {reg_wr_data[19:19]};
 assign CSR_TrClusterFuseCfgHi_F_TraceEnable_Data = (TR_TRCLUSTERFUSECFGHI_TRACEENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_TraceEnable), 64'(CSR_TrClusterFuseCfgHi_F_TraceEnable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_TraceEnable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_TRACEENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_TraceEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_TraceEnable), .in(CSR_TrClusterFuseCfgHi_F_TraceEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_TraceEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_TRACEENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_TraceEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_TraceEnable), .in(CSR_TrClusterFuseCfgHi_F_TraceEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_TraceEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_ClaEnable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CLAENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_ClaEnable_Data;
@@ -857,7 +857,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CLAENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_ClaEn
 assign CSR_TrClusterFuseCfgHi_F_ClaEnable_DataEff = {reg_wr_data[18:18]};
 assign CSR_TrClusterFuseCfgHi_F_ClaEnable_Data = (TR_TRCLUSTERFUSECFGHI_CLAENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_ClaEnable), 64'(CSR_TrClusterFuseCfgHi_F_ClaEnable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_ClaEnable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CLAENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_ClaEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_ClaEnable), .in(CSR_TrClusterFuseCfgHi_F_ClaEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_ClaEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CLAENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_ClaEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_ClaEnable), .in(CSR_TrClusterFuseCfgHi_F_ClaEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_ClaEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_DebugEnable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_DEBUGENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_DebugEnable_Data;
@@ -865,7 +865,7 @@ logic [TR_TRCLUSTERFUSECFGHI_DEBUGENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Deb
 assign CSR_TrClusterFuseCfgHi_F_DebugEnable_DataEff = {reg_wr_data[17:16]};
 assign CSR_TrClusterFuseCfgHi_F_DebugEnable_Data = (TR_TRCLUSTERFUSECFGHI_DEBUGENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_DebugEnable), 64'(CSR_TrClusterFuseCfgHi_F_DebugEnable_DataEff[1:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_DebugEnable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_DEBUGENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_DebugEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_DebugEnable), .in(CSR_TrClusterFuseCfgHi_F_DebugEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_DebugEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_DEBUGENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_DebugEnable_ff   (.out(CSR_TrClusterFuseCfgHi_F_DebugEnable), .in(CSR_TrClusterFuseCfgHi_F_DebugEnable_Data), .en(CSR_TrClusterFuseCfgHi_F_DebugEnable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core7Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE7VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core7Vid_Data;
@@ -873,7 +873,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE7VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core7V
 assign CSR_TrClusterFuseCfgHi_F_Core7Vid_DataEff = {reg_wr_data[15:13]};
 assign CSR_TrClusterFuseCfgHi_F_Core7Vid_Data = (TR_TRCLUSTERFUSECFGHI_CORE7VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core7Vid), 64'(CSR_TrClusterFuseCfgHi_F_Core7Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core7Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE7VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core7Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core7Vid), .in(CSR_TrClusterFuseCfgHi_F_Core7Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core7Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE7VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core7Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core7Vid), .in(CSR_TrClusterFuseCfgHi_F_Core7Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core7Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core7Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE7ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core7Enable_Data;
@@ -881,7 +881,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE7ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Cor
 assign CSR_TrClusterFuseCfgHi_F_Core7Enable_DataEff = {reg_wr_data[12:12]};
 assign CSR_TrClusterFuseCfgHi_F_Core7Enable_Data = (TR_TRCLUSTERFUSECFGHI_CORE7ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core7Enable), 64'(CSR_TrClusterFuseCfgHi_F_Core7Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core7Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE7ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core7Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core7Enable), .in(CSR_TrClusterFuseCfgHi_F_Core7Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core7Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE7ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core7Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core7Enable), .in(CSR_TrClusterFuseCfgHi_F_Core7Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core7Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core6Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE6VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core6Vid_Data;
@@ -889,7 +889,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE6VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core6V
 assign CSR_TrClusterFuseCfgHi_F_Core6Vid_DataEff = {reg_wr_data[11:9]};
 assign CSR_TrClusterFuseCfgHi_F_Core6Vid_Data = (TR_TRCLUSTERFUSECFGHI_CORE6VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core6Vid), 64'(CSR_TrClusterFuseCfgHi_F_Core6Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core6Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE6VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core6Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core6Vid), .in(CSR_TrClusterFuseCfgHi_F_Core6Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core6Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE6VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core6Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core6Vid), .in(CSR_TrClusterFuseCfgHi_F_Core6Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core6Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core6Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE6ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core6Enable_Data;
@@ -897,7 +897,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE6ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Cor
 assign CSR_TrClusterFuseCfgHi_F_Core6Enable_DataEff = {reg_wr_data[8:8]};
 assign CSR_TrClusterFuseCfgHi_F_Core6Enable_Data = (TR_TRCLUSTERFUSECFGHI_CORE6ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core6Enable), 64'(CSR_TrClusterFuseCfgHi_F_Core6Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core6Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE6ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core6Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core6Enable), .in(CSR_TrClusterFuseCfgHi_F_Core6Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core6Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE6ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core6Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core6Enable), .in(CSR_TrClusterFuseCfgHi_F_Core6Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core6Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core5Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE5VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core5Vid_Data;
@@ -905,7 +905,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE5VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core5V
 assign CSR_TrClusterFuseCfgHi_F_Core5Vid_DataEff = {reg_wr_data[7:5]};
 assign CSR_TrClusterFuseCfgHi_F_Core5Vid_Data = (TR_TRCLUSTERFUSECFGHI_CORE5VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core5Vid), 64'(CSR_TrClusterFuseCfgHi_F_Core5Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core5Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE5VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core5Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core5Vid), .in(CSR_TrClusterFuseCfgHi_F_Core5Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core5Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE5VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core5Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core5Vid), .in(CSR_TrClusterFuseCfgHi_F_Core5Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core5Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core5Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE5ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core5Enable_Data;
@@ -913,7 +913,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE5ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Cor
 assign CSR_TrClusterFuseCfgHi_F_Core5Enable_DataEff = {reg_wr_data[4:4]};
 assign CSR_TrClusterFuseCfgHi_F_Core5Enable_Data = (TR_TRCLUSTERFUSECFGHI_CORE5ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core5Enable), 64'(CSR_TrClusterFuseCfgHi_F_Core5Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core5Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE5ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core5Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core5Enable), .in(CSR_TrClusterFuseCfgHi_F_Core5Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core5Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE5ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core5Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core5Enable), .in(CSR_TrClusterFuseCfgHi_F_Core5Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core5Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core4Vid_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE4VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core4Vid_Data;
@@ -921,7 +921,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE4VID_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core4V
 assign CSR_TrClusterFuseCfgHi_F_Core4Vid_DataEff = {reg_wr_data[3:1]};
 assign CSR_TrClusterFuseCfgHi_F_Core4Vid_Data = (TR_TRCLUSTERFUSECFGHI_CORE4VID_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core4Vid), 64'(CSR_TrClusterFuseCfgHi_F_Core4Vid_DataEff[2:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core4Vid_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE4VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core4Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core4Vid), .in(CSR_TrClusterFuseCfgHi_F_Core4Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core4Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE4VID_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core4Vid_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core4Vid), .in(CSR_TrClusterFuseCfgHi_F_Core4Vid_Data), .en(CSR_TrClusterFuseCfgHi_F_Core4Vid_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 logic                                           CSR_TrClusterFuseCfgHi_F_Core4Enable_WrEn;
 logic [TR_TRCLUSTERFUSECFGHI_CORE4ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Core4Enable_Data;
@@ -929,7 +929,7 @@ logic [TR_TRCLUSTERFUSECFGHI_CORE4ENABLE_WIDTH-1:0] CSR_TrClusterFuseCfgHi_F_Cor
 assign CSR_TrClusterFuseCfgHi_F_Core4Enable_DataEff = {reg_wr_data[0:0]};
 assign CSR_TrClusterFuseCfgHi_F_Core4Enable_Data = (TR_TRCLUSTERFUSECFGHI_CORE4ENABLE_WIDTH'(update_value(64'(CSR_TrClusterFuseCfgHi_F_Core4Enable), 64'(CSR_TrClusterFuseCfgHi_F_Core4Enable_DataEff[0:0]), reg_wr_instr_type)));
 assign CSR_TrClusterFuseCfgHi_F_Core4Enable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRCLUSTERFUSECFGHI)))) & ~CSR_TrClusterFuseCfgHi_F_Lock;
-generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE4ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core4Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core4Enable), .in(CSR_TrClusterFuseCfgHi_F_Core4Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core4Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
+tt_dfd_generic_dff #(.WIDTH(TR_TRCLUSTERFUSECFGHI_CORE4ENABLE_WIDTH), .RESET_VALUE(0)) CSR_TrClusterFuseCfgHi_F_Core4Enable_ff   (.out(CSR_TrClusterFuseCfgHi_F_Core4Enable), .in(CSR_TrClusterFuseCfgHi_F_Core4Enable_Data), .en(CSR_TrClusterFuseCfgHi_F_Core4Enable_WrEn), .clk(clk), .rst_n(cold_resetn));
 
 //Register: CSR_TRSCRATCHLO
 logic                                           CSR_TrScratchLo_F_Data_WrEn;
@@ -938,7 +938,7 @@ logic [TR_TRSCRATCHLO_DATA_WIDTH          -1:0] CSR_TrScratchLo_F_Data_DataEff;
 assign CSR_TrScratchLo_F_Data_DataEff = {reg_wr_data[31:0]};
 assign CSR_TrScratchLo_F_Data_Data = (TR_TRSCRATCHLO_DATA_WIDTH'(update_value(64'(CSR_TrScratchLo_F_Data), 64'(CSR_TrScratchLo_F_Data_DataEff[31:0]), reg_wr_instr_type)));
 assign CSR_TrScratchLo_F_Data_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRSCRATCHLO))));
-generic_dff #(.WIDTH(TR_TRSCRATCHLO_DATA_WIDTH), .RESET_VALUE(0)) CSR_TrScratchLo_F_Data_ff   (.out(CSR_TrScratchLo_F_Data), .in(CSR_TrScratchLo_F_Data_Data), .en(CSR_TrScratchLo_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRSCRATCHLO_DATA_WIDTH), .RESET_VALUE(0)) CSR_TrScratchLo_F_Data_ff   (.out(CSR_TrScratchLo_F_Data), .in(CSR_TrScratchLo_F_Data_Data), .en(CSR_TrScratchLo_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRSCRATCHHI
 logic                                           CSR_TrScratchHi_F_Data_WrEn;
@@ -947,7 +947,7 @@ logic [TR_TRSCRATCHHI_DATA_WIDTH          -1:0] CSR_TrScratchHi_F_Data_DataEff;
 assign CSR_TrScratchHi_F_Data_DataEff = {reg_wr_data[31:0]};
 assign CSR_TrScratchHi_F_Data_Data = (TR_TRSCRATCHHI_DATA_WIDTH'(update_value(64'(CSR_TrScratchHi_F_Data), 64'(CSR_TrScratchHi_F_Data_DataEff[31:0]), reg_wr_instr_type)));
 assign CSR_TrScratchHi_F_Data_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRSCRATCHHI))));
-generic_dff #(.WIDTH(TR_TRSCRATCHHI_DATA_WIDTH), .RESET_VALUE(0)) CSR_TrScratchHi_F_Data_ff   (.out(CSR_TrScratchHi_F_Data), .in(CSR_TrScratchHi_F_Data_Data), .en(CSR_TrScratchHi_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRSCRATCHHI_DATA_WIDTH), .RESET_VALUE(0)) CSR_TrScratchHi_F_Data_ff   (.out(CSR_TrScratchHi_F_Data), .in(CSR_TrScratchHi_F_Data_Data), .en(CSR_TrScratchHi_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRSCRATCHPADLO
 logic                                           CSR_TrScratchpadLo_F_Data_WrEn;
@@ -956,7 +956,7 @@ logic [TR_TRSCRATCHPADLO_DATA_WIDTH       -1:0] CSR_TrScratchpadLo_F_Data_DataEf
 assign CSR_TrScratchpadLo_F_Data_DataEff = {reg_wr_data[31:0]};
 assign CSR_TrScratchpadLo_F_Data_Data = (TR_TRSCRATCHPADLO_DATA_WIDTH'(update_value(64'(CSR_TrScratchpadLo_F_Data), 64'(CSR_TrScratchpadLo_F_Data_DataEff[31:0]), reg_wr_instr_type)));
 assign CSR_TrScratchpadLo_F_Data_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRSCRATCHPADLO))));
-generic_dff #(.WIDTH(TR_TRSCRATCHPADLO_DATA_WIDTH), .RESET_VALUE(32'hEFEFEFEF)) CSR_TrScratchpadLo_F_Data_ff   (.out(CSR_TrScratchpadLo_F_Data), .in(CSR_TrScratchpadLo_F_Data_Data), .en(CSR_TrScratchpadLo_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRSCRATCHPADLO_DATA_WIDTH), .RESET_VALUE(32'hEFEFEFEF)) CSR_TrScratchpadLo_F_Data_ff   (.out(CSR_TrScratchpadLo_F_Data), .in(CSR_TrScratchpadLo_F_Data_Data), .en(CSR_TrScratchpadLo_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
 
 //Register: CSR_TRSCRATCHPADHI
 logic                                           CSR_TrScratchpadHi_F_Data_WrEn;
@@ -965,7 +965,7 @@ logic [TR_TRSCRATCHPADHI_DATA_WIDTH       -1:0] CSR_TrScratchpadHi_F_Data_DataEf
 assign CSR_TrScratchpadHi_F_Data_DataEff = {reg_wr_data[31:0]};
 assign CSR_TrScratchpadHi_F_Data_Data = (TR_TRSCRATCHPADHI_DATA_WIDTH'(update_value(64'(CSR_TrScratchpadHi_F_Data), 64'(CSR_TrScratchpadHi_F_Data_DataEff[31:0]), reg_wr_instr_type)));
 assign CSR_TrScratchpadHi_F_Data_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_CSR_TRSCRATCHPADHI))));
-generic_dff #(.WIDTH(TR_TRSCRATCHPADHI_DATA_WIDTH), .RESET_VALUE(32'hEFEFEFEF)) CSR_TrScratchpadHi_F_Data_ff   (.out(CSR_TrScratchpadHi_F_Data), .in(CSR_TrScratchpadHi_F_Data_Data), .en(CSR_TrScratchpadHi_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
+tt_dfd_generic_dff #(.WIDTH(TR_TRSCRATCHPADHI_DATA_WIDTH), .RESET_VALUE(32'hEFEFEFEF)) CSR_TrScratchpadHi_F_Data_ff   (.out(CSR_TrScratchpadHi_F_Data), .in(CSR_TrScratchpadHi_F_Data_Data), .en(CSR_TrScratchpadHi_F_Data_WrEn), .clk(clk), .rst_n(reset_n));
 
 //------------------------------------------------------------------------------
 // Register Reads
@@ -1236,9 +1236,9 @@ end
 assign CsrWrReady = reg_wr_ready;
 
 if (FLOP_RD_DATA) begin : flop_rd_data
-    generic_dff #(.WIDTH(1) , .RESET_VALUE(0)) Csr_Hit_ff    (.out(CsrHit)   , .in(reg_hit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TR_NUM_REGISTERS) , .RESET_VALUE(0)) Csr_Hit_List_ff    (.out(CsrHitList)   , .in(reg_prehit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(32), .RESET_VALUE(0)) Csr_RdData_ff (.out(CsrRdData), .in(reg_rd_data), .en(reg_cs), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1) , .RESET_VALUE(0)) Csr_Hit_ff    (.out(CsrHit)   , .in(reg_hit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TR_NUM_REGISTERS) , .RESET_VALUE(0)) Csr_Hit_List_ff    (.out(CsrHitList)   , .in(reg_prehit)    , .en(reg_cs | CsrHit), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) Csr_RdData_ff (.out(CsrRdData), .in(reg_rd_data), .en(reg_cs), .clk(clk), .rst_n(reset_n));
 end else begin
     assign CsrHit     = reg_hit;
     assign CsrHitList = reg_prehit;

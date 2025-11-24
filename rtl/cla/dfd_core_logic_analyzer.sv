@@ -112,7 +112,7 @@ ClacounterCfgCsr_s    ClacounterCfgCsr[CLA_NUMBER_OF_COUNTERS];
 logic   [DEBUG_SIGNALS_WIDTH-1:0] debug_signals_d1;
 
 logic       gated_clock;
-generic_ccg #(.HYST_EN(0)) ClaGatedClock
+tt_dfd_generic_ccg #(.HYST_EN(0)) ClaGatedClock
      (.out_clk (gated_clock), .clk (clock),
       .en (ClactrlstatusCsr.EnableCla), .rst_n (reset_n),
       .force_en ('0), .hyst ('0), .te('0));
@@ -351,8 +351,8 @@ assign DbgSignalSnapShotNode3Eap1CsrWr.Data = debug_signals_d1;
 assign DbgSignalSnapShotNode3Eap2CsrWr.Data = debug_signals_d1;
 assign DbgSignalSnapShotNode3Eap3CsrWr.Data = debug_signals_d1;
 
-generic_dff #(.WIDTH($bits(xtrigger_in)))  xtrigger_in_ff  (.out(xtrigger_in_d1),         .in(xtrigger_in), .clk(gated_clock), .rst_n(reset_n), .en(1'b1));
-generic_dff #(.WIDTH($bits(xtrigger_out))) xtrigger_out_ff (  .out(xtrigger_out), .in(xtrigger_out_pre_ff), .clk(gated_clock), .rst_n(reset_n), .en(1'b1));
+tt_dfd_generic_dff #(.WIDTH($bits(xtrigger_in)))  xtrigger_in_ff  (.out(xtrigger_in_d1),         .in(xtrigger_in), .clk(gated_clock), .rst_n(reset_n), .en(1'b1));
+tt_dfd_generic_dff #(.WIDTH($bits(xtrigger_out))) xtrigger_out_ff (  .out(xtrigger_out), .in(xtrigger_out_pre_ff), .clk(gated_clock), .rst_n(reset_n), .en(1'b1));
 
 dfd_xtrigger_stretch_circuit xtrigger_stretch_circuit_inst (
   .clock(gated_clock),

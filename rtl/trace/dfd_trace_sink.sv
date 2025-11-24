@@ -343,26 +343,26 @@ module dfd_trace_sink
   //  Misc signals connection (Ntrace/DST)
   // --------------------------------------------------------------------------
   // Complete frame length value in bytes
-  generic_dff #(.WIDTH(10)) trntrFrameLength_ANY_ff (.out(trntrFrameLength_ANY), .in({TrCsrTrramimpl.Trramvendorframelength[3:0],6'b0}), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(10)) trdstFrameLength_ANY_ff (.out(trdstFrameLength_ANY), .in({TrCsrTrdstramimpl.Trdstramvendorframelength[3:0],6'b0}), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(10)) trntrFrameLength_ANY_ff (.out(trntrFrameLength_ANY), .in({TrCsrTrramimpl.Trramvendorframelength[3:0],6'b0}), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(10)) trdstFrameLength_ANY_ff (.out(trdstFrameLength_ANY), .in({TrCsrTrdstramimpl.Trdstramvendorframelength[3:0],6'b0}), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
-  generic_dff #(.WIDTH(30)) Trcustomramsmemlimitlow_ANY_ff (.out(Trcustomramsmemlimitlow_ANY), .in(TrCsrTrcustomramsmemlimitlow.Trcustomramsmemlimitlow), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) Trcustomramsmemlimitlow_ANY_ff (.out(Trcustomramsmemlimitlow_ANY), .in(TrCsrTrcustomramsmemlimitlow.Trcustomramsmemlimitlow), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   assign trdstRamSMEMStartLow_ANY = Trcustomramsmemlimitlow_ANY;
   assign trdstRamSMEMLimitLow_ANY = 30'h2000;
   assign trdstRamSMEMStartAddr_ANY = trdstRamSMEMStartLow_ANY[6+:(TRC_RAM_INDEX_WIDTH+1)];
   assign trdstRamSMEMLimitAddr_ANY = trdstRamSMEMLimitLow_ANY[6+:(TRC_RAM_INDEX_WIDTH+1)]; 
 
-  generic_dff #(.WIDTH(30)) trdstRamSMEMSizeLow_ANY_ff (.out(trdstRamSMEMSizeLow_ANY), .in($bits(trdstRamSMEMSizeLow_ANY)'(trdstRamSMEMLimitLow_ANY - TrCsrTrcustomramsmemlimitlow.Trcustomramsmemlimitlow)), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1)) trdstRamSMEMTotalSets_ANY_ff (.out(trdstRamSMEMTotalSets_ANY), .in($bits(trdstRamSMEMTotalSets_ANY)'(trdstRamSMEMLimitAddr_ANY - trdstRamSMEMStartAddr_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trdstRamSMEMSizeLow_ANY_ff (.out(trdstRamSMEMSizeLow_ANY), .in($bits(trdstRamSMEMSizeLow_ANY)'(trdstRamSMEMLimitLow_ANY - TrCsrTrcustomramsmemlimitlow.Trcustomramsmemlimitlow)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1)) trdstRamSMEMTotalSets_ANY_ff (.out(trdstRamSMEMTotalSets_ANY), .in($bits(trdstRamSMEMTotalSets_ANY)'(trdstRamSMEMLimitAddr_ANY - trdstRamSMEMStartAddr_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   assign trntrRamSMEMStartLow_ANY = 30'h0;
   assign trntrRamSMEMLimitLow_ANY = Trcustomramsmemlimitlow_ANY;
   assign trntrRamSMEMStartAddr_ANY = trntrRamSMEMStartLow_ANY[6+:(TRC_RAM_INDEX_WIDTH+1)]; 
   assign trntrRamSMEMLimitAddr_ANY = trntrRamSMEMLimitLow_ANY[6+:(TRC_RAM_INDEX_WIDTH+1)];
 
-  generic_dff #(.WIDTH(30)) trntrRamSMEMSizeLow_ANY_ff (.out(trntrRamSMEMSizeLow_ANY), .in($bits(trntrRamSMEMSizeLow_ANY)'(TrCsrTrcustomramsmemlimitlow.Trcustomramsmemlimitlow)), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1)) trntrRamSMEMTotalSets_ANY_ff (.out(trntrRamSMEMTotalSets_ANY), .in($bits(trntrRamSMEMTotalSets_ANY)'(trntrRamSMEMLimitAddr_ANY - trntrRamSMEMStartAddr_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trntrRamSMEMSizeLow_ANY_ff (.out(trntrRamSMEMSizeLow_ANY), .in($bits(trntrRamSMEMSizeLow_ANY)'(TrCsrTrcustomramsmemlimitlow.Trcustomramsmemlimitlow)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1)) trntrRamSMEMTotalSets_ANY_ff (.out(trntrRamSMEMTotalSets_ANY), .in($bits(trntrRamSMEMTotalSets_ANY)'(trntrRamSMEMLimitAddr_ANY - trntrRamSMEMStartAddr_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   assign Eff_InsnTraceWrEnPerCore_TS0 = trntrRamMode_ANY?InsnTraceWrEnPerCore_TS0:(InsnTraceWrEnPerCore_TS0 & ~trntrcoreframefillpendingwhileoverflow_ANY);
   assign Eff_DataTraceWrEnPerCore_TS0 = trdstRamMode_ANY?DataTraceWrEnPerCore_TS0:(DataTraceWrEnPerCore_TS0 & ~trdstcoreframefillpendingwhileoverflow_ANY);
@@ -375,23 +375,23 @@ module dfd_trace_sink
   // --------------------------------------------------------------------------
   // Timing Staging flops
   // -------------------------------------------------------------------------- 
-  generic_dff #(.WIDTH(1)) TR_TS_Even_Src_stg_ff (.out(TR_TS_Even_Src_stg), .in(TR_TS_Even_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) TR_TS_Odd_Src_stg_ff (.out(TR_TS_Odd_Src_stg), .in(TR_TS_Odd_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) TR_TS_Even_Src_stg_ff (.out(TR_TS_Even_Src_stg), .in(TR_TS_Even_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) TR_TS_Odd_Src_stg_ff (.out(TR_TS_Odd_Src_stg), .in(TR_TS_Odd_Src), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_Even_Data_stg_ff (.out(TR_TS_Even_Data_stg), .in(TR_TS_Even_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_Odd_Data_stg_ff (.out(TR_TS_Odd_Data_stg), .in(TR_TS_Odd_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_Even_Data_stg_ff (.out(TR_TS_Even_Data_stg), .in(TR_TS_Even_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(DATA_WIDTH)) TR_TS_Odd_Data_stg_ff (.out(TR_TS_Odd_Data_stg), .in(TR_TS_Odd_Data), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
-  generic_dff #(.WIDTH(30)) trnorthcoreRamWpLow_ANY_stg_ff (.out(trnorthcoreRamWpLow_ANY_stg), .in(trnorthcoreRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(30)) trsouthcoreRamWpLow_ANY_stg_ff (.out(trsouthcoreRamWpLow_ANY_stg), .in(trsouthcoreRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trnorthcoreRamWpLow_ANY_stg_ff (.out(trnorthcoreRamWpLow_ANY_stg), .in(trnorthcoreRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trsouthcoreRamWpLow_ANY_stg_ff (.out(trsouthcoreRamWpLow_ANY_stg), .in(trsouthcoreRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_Even_Vld_stg_ff (.out(Eff_TR_TS_Even_Vld_stg), .in(Eff_TR_TS_Even_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_Odd_Vld_stg_ff (.out(Eff_TR_TS_Odd_Vld_stg), .in(Eff_TR_TS_Odd_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_Even_Vld_stg_ff (.out(Eff_TR_TS_Even_Vld_stg), .in(Eff_TR_TS_Even_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES_IN_PATH)) Eff_TR_TS_Odd_Vld_stg_ff (.out(Eff_TR_TS_Odd_Vld_stg), .in(Eff_TR_TS_Odd_Vld), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
-  generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .in(trntrnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .in(trntrnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trntrnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trntrnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg), .in(trdstnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trdstnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg), .in(trdstnextlocaltoupdateRamWpWrap_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1_ff (.out(trdstnextlocaltoupdateRamWpWrap_ANY_stg_d1), .in(trdstnextlocaltoupdateRamWpWrap_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // --------------------------------------------------------------------------
   // Incoming Data Capture
@@ -433,7 +433,7 @@ module dfd_trace_sink
   assign TrRamPendPktSouthWr_TS0 = {trsouthcoreRamWpLow_ANY_stg[5:4], trsouthcoreRamWpLow_ANY_stg[6+:TRC_RAM_INDEX_WIDTH], TR_TS_Odd_Data_stg, TR_TS_Odd_Src_stg};
 
   for (genvar i=0; i<TRC_RAM_WAYS; i++) begin
-    generic_dff #(.WIDTH(3)) TrRamPerWayPendToWriteCnt_ff (.out(TrRamPerWayPendToWriteCnt_TS1[i]), .in(TrRamPerWayNextPendToWriteCnt_TS0[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(3)) TrRamPerWayPendToWriteCnt_ff (.out(TrRamPerWayPendToWriteCnt_TS1[i]), .in(TrRamPerWayNextPendToWriteCnt_TS0[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
     /* verilator lint_off WIDTHEXPAND */
     assign TrRamPerWayNextPendToWriteCnt_TS0[i] = TrRamPerWayPendToWriteCnt_TS1[i] + (TrRamPendPktNorthWrEn_TS0 & (TrRamPendPktNorthWr_TS0.TrRamPendWayIdx_ANY == i[1:0])) + (TrRamPendPktSouthWrEn_TS0 & (TrRamPendPktSouthWr_TS0.TrRamPendWayIdx_ANY == i[1:0])) - |TrRamPerWayPendToWriteCnt_TS1[i];
     /* verilator lint_on WIDTHEXPAND */
@@ -457,14 +457,14 @@ module dfd_trace_sink
   //   .i_reset_n    (reset_n)
   // );
 
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpLowWrap_ANY_ff (.out(trdstnextlocaltoupdateRamWpLowWrap_ANY), .in((trdstnextlocaltoupdateRamWpLow_ANY >= trdstRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpLowWrap_ANY_ff (.out(trdstnextlocaltoupdateRamWpLowWrap_ANY), .in((trdstnextlocaltoupdateRamWpLow_ANY >= trdstRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   assign trdstlocalRamWpLow_ANY = ~trdstRamMode_ANY?((trdstRamEnableStart_ANY_d1 | (~trdstStoponWrap_ANY & trdstnextlocaltoupdateRamWpLowWrap_ANY))?trdstRamStartLow_ANY:trdstnextlocaltoupdateRamWpLow_ANY_stg)
                                                    :(trdstRamEnableStart_ANY_d1?trdstRamSMEMStartLow_ANY:trdstnextlocaltoupdateRamWpLow_ANY_stg); // Increment based on the frame_length
   
   // assign trdstnextlocalRamWpLow_ANY[0] = trdstlocalRamWpLow_ANY; //(trdstRamMode_ANY & trdstRamEnableStart_ANY_d1)?trdstRamSMEMStartLow_ANY:trdstlocalRamWpLow_ANY;
 
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
     .DIR_L2H(1),
     .WIDTH(NUM_CORES),
     .DATA_WIDTH(NUM_CORES)
@@ -487,15 +487,15 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(1)) trdstnorthcoresNewFrameStart_ANY_d1_ff (.out(trdstnorthcoresNewFrameStart_ANY_d1), .in(trdstnorthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstsouthcoresNewFrameStart_ANY_d1_ff (.out(trdstsouthcoresNewFrameStart_ANY_d1), .in(trdstsouthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstnorthcoresNewFrameStart_ANY_d1_ff (.out(trdstnorthcoresNewFrameStart_ANY_d1), .in(trdstnorthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstsouthcoresNewFrameStart_ANY_d1_ff (.out(trdstsouthcoresNewFrameStart_ANY_d1), .in(trdstsouthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // assign trdstnextlocaltoupdateRamWpLow_ANY = trdstnextlocalRamWpLow_ANY[3];
 
-  generic_dff #(.WIDTH(30)) trdstnextlocaltoupdateRamWpLow_ANY_ff (.out(trdstnextlocaltoupdateRamWpLow_ANY_stg), .in(trdstnextlocaltoupdateRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trdstnextlocaltoupdateRamWpLow_ANY_ff (.out(trdstnextlocaltoupdateRamWpLow_ANY_stg), .in(trdstnextlocaltoupdateRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY), .in(((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2])) >= trdstRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY), .in((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2]*2)) >= trdstRamLimitLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY), .in(((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2])) >= trdstRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY_ff (.out(trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY), .in((trdstlocalRamWpLow_ANY + $bits(trdstlocalRamWpLow_ANY)'(trdstFrameLength_ANY[9:2]*2)) >= trdstRamLimitLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   /* verilator lint_off WIDTHEXPAND */
   assign trdstnextlocaltoupdateRamWpWrap_ANY = (trdstnextlocaltoupdateRamWpWrapOneNewFrame_ANY & ((|trdstnorthcoresNewFrameStart_ANY_d1) | (|trdstsouthcoresNewFrameStart_ANY_d1))) | (trdstnextlocaltoupdateRamWpWrapTwoNewFrame_ANY & ((|trdstnorthcoresNewFrameStart_ANY_d1) & (|trdstsouthcoresNewFrameStart_ANY_d1)));
@@ -520,8 +520,8 @@ module dfd_trace_sink
   // Timing Flops used in comparison maths 
   //Flop-1: (trdstRamSMEMStartLow_ANY + trdstRamSMEMSizeLow_ANY*2) - trdstFrameLength_ANY[9:2] 
   //Flop-2: trdstRamLimitLow_ANY - trdstFrameLength_ANY[9:2] 
-  generic_dff #(.WIDTH(30)) trdstMemMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trdstMemMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'($bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'(trdstRamSMEMStartLow_ANY) + $bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'(trdstRamSMEMSizeLow_ANY*2) - $bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'(trdstFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(30)) trdstRamMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trdstRamMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trdstRamMode_nextlocalWrapCond_WpLow_ANY)'($bits(trdstRamMode_nextlocalWrapCond_WpLow_ANY)'(trdstRamLimitLow_ANY) - $bits(trdstRamMode_nextlocalWrapCond_WpLow_ANY)'(trdstFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trdstMemMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trdstMemMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'($bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'(trdstRamSMEMStartLow_ANY) + $bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'(trdstRamSMEMSizeLow_ANY*2) - $bits(trdstMemMode_nextlocalWrapCond_WpLow_ANY)'(trdstFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trdstRamMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trdstRamMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trdstRamMode_nextlocalWrapCond_WpLow_ANY)'($bits(trdstRamMode_nextlocalWrapCond_WpLow_ANY)'(trdstRamLimitLow_ANY) - $bits(trdstRamMode_nextlocalWrapCond_WpLow_ANY)'(trdstFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   for (genvar i=0; i<NUM_CORES; i++) begin
     /* verilator lint_off WIDTHEXPAND */
@@ -534,10 +534,10 @@ module dfd_trace_sink
     assign trdstcoreRamWpWrap_ANY[i] = |((trdstcorefullRamWpLow_ANY[i] - trdstRamSMEMStartLow_ANY) & trdstRamSMEMSizeLow_ANY); // |((trdstcoreRamWpAddr_ANY[i] - trdstMemSMEMStartAddr_ANY) & trdstRamSMEMTotalSets_ANY)
 
     // Timing flops
-    generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) trdstcoreRamWpAddr_ANY_d1_ff (.out(trdstcoreRamWpAddr_ANY_d1[i]), .in(trdstcoreRamWpAddr_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)) trdstcoreRamWpWrap_ANY_d1_ff (.out(trdstcoreRamWpWrap_ANY_d1[i]), .in(trdstcoreRamWpWrap_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) trdstcoreRamWpAddr_ANY_d1_ff (.out(trdstcoreRamWpAddr_ANY_d1[i]), .in(trdstcoreRamWpAddr_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) trdstcoreRamWpWrap_ANY_d1_ff (.out(trdstcoreRamWpWrap_ANY_d1[i]), .in(trdstcoreRamWpWrap_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-    generic_dff #(.WIDTH(30), .RESET_VALUE(0)) trdstcorenextRamWpLow_ANY_ff (
+    tt_dfd_generic_dff #(.WIDTH(30), .RESET_VALUE(0)) trdstcorenextRamWpLow_ANY_ff (
         .out          (trdstcorenextRamWpLow_ANY[i]),
         .in          (trdstRamEnableStart_ANY_d1?(trdstRamMode_ANY?trdstRamSMEMStartLow_ANY:trdstRamStartLow_ANY):trdstcorefullRamWpLow_ANY[i]),
         .en         (trdstRamEnableStart_ANY_d1 | Eff_DataTraceWrEnPerCore_TS0[i]),
@@ -545,7 +545,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-    generic_dff #(.WIDTH(5), .RESET_VALUE(0)) trdstcorenextwritecnt_ANY_ff (
+    tt_dfd_generic_dff #(.WIDTH(5), .RESET_VALUE(0)) trdstcorenextwritecnt_ANY_ff (
         .out          (trdstcorenextwritecnt_ANY[i]),
         .in          (trdstcorewritecnt_ANY[i]), 
         .en         (1'b1),
@@ -553,7 +553,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-      generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) trdstcoreframefillpendingwhileoverflow_ANY_ff (
+      tt_dfd_generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) trdstcoreframefillpendingwhileoverflow_ANY_ff (
         .out          (trdstcoreframefillpendingwhileoverflow_ANY[i]),
         .in          (1'b1),
         .clr        (trdstcoreFrameFillComplete_ANY[i]),
@@ -568,7 +568,7 @@ module dfd_trace_sink
                                                       ?$bits(trdstcoreRamAddrtoNextLocalSetDiff_ANY[i])'(trdstRamSMEMTotalSets_ANY - (TrdstMemRamRdAddr_TS1 - trdstcoreRamWpAddr_ANY_d1[i]))
                                                       :$bits(trdstcoreRamAddrtoNextLocalSetDiff_ANY[i])'(trdstcoreRamWpAddr_ANY_d1[i] - TrdstMemRamRdAddr_TS1);
 
-    generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) trdstcoreRamAddrtoNextLocalSetDiff_ANY_stg_ff (
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) trdstcoreRamAddrtoNextLocalSetDiff_ANY_stg_ff (
         .out          (trdstcoreRamAddrtoNextLocalSetDiff_ANY_stg[i]),
         .in          (trdstcoreRamAddrtoNextLocalSetDiff_ANY[i]), 
         .en         (1'b1),
@@ -590,7 +590,7 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE(0)) trdstMemRamRdEnFromCore_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE(0)) trdstMemRamRdEnFromCore_ANY_ff (
         .out          (trdstMemRamRdEnFromCore_ANY),
         .in          (trdstMemRamRdEnFromCore_ANY_stg),
         .en         (1'b1),
@@ -598,7 +598,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-  generic_dff_clr #(.WIDTH(1)) TrdstMemModeRamFlush_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) TrdstMemModeRamFlush_ANY_ff (
     .out          (TrdstMemModeRamFlush_ANY),
     .in          (1'b1),
     .clr        (&trdstcoretoFlushClear_ANY),
@@ -616,7 +616,7 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE({NUM_CORES{1'b1}})) trdstcoreFrameFillComplete_d1_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE({NUM_CORES{1'b1}})) trdstcoreFrameFillComplete_d1_ANY_ff (
         .out          (trdstcoreFrameFillComplete_d1_ANY),
         .in          (trdstcoreFrameFillComplete_ANY),
         .en         (1'b1),
@@ -624,7 +624,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-  generic_dff_clr #(.WIDTH(9)) trdstNumFramesFilledInSRAM_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(9)) trdstNumFramesFilledInSRAM_ANY_ff (
         .out          (trdstNumFramesFilledInSRAM_ANY),
         .in          ($bits(trdstNumFramesFilledInSRAM_ANY)'(trdstNumFramesFilledInSRAM_ANY + trdstNumFrameFillComplete_ANY_d1*DataTrace_NumSetsPerFrame_ANY - $bits(trdstNumFramesFilledInSRAM_ANY)'(TrdstMemAxiWrVld_ANY))),
         .clr        (trdstRamEnableStart_ANY_d1),
@@ -634,7 +634,7 @@ module dfd_trace_sink
       );
 
   // Staging Flops
-  generic_dff #(.WIDTH(9)) trdstNumFrameFillComplete_ANY_d1_ff (
+  tt_dfd_generic_dff #(.WIDTH(9)) trdstNumFrameFillComplete_ANY_d1_ff (
         .out          (trdstNumFrameFillComplete_ANY_d1),
         .in          (trdstNumFrameFillComplete_ANY),
         .en         (1'b1),
@@ -642,7 +642,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-  generic_dff #(.WIDTH(9)) trdstNumFramesFilledInSRAM_ANY_d1_ff (
+  tt_dfd_generic_dff #(.WIDTH(9)) trdstNumFramesFilledInSRAM_ANY_d1_ff (
         .out          (trdstNumFramesFilledInSRAM_ANY_d1),
         .in          (trdstNumFramesFilledInSRAM_ANY),
         .en         (1'b1),
@@ -668,14 +668,14 @@ module dfd_trace_sink
   //   .i_reset_n    (reset_n)
   // );
 
-  generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpLowWrap_ANY_ff (.out(trntrnextlocaltoupdateRamWpLowWrap_ANY), .in((trntrnextlocaltoupdateRamWpLow_ANY >= trntrRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpLowWrap_ANY_ff (.out(trntrnextlocaltoupdateRamWpLowWrap_ANY), .in((trntrnextlocaltoupdateRamWpLow_ANY >= trntrRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   assign trntrlocalRamWpLow_ANY = ~trntrRamMode_ANY?((trntrRamEnableStart_ANY_d1 | (~trntrStoponWrap_ANY & trntrnextlocaltoupdateRamWpLowWrap_ANY))?trntrRamStartLow_ANY:trntrnextlocaltoupdateRamWpLow_ANY_stg)
                                                    :(trntrRamEnableStart_ANY_d1?trntrRamSMEMStartLow_ANY:trntrnextlocaltoupdateRamWpLow_ANY_stg); // Increment based on the frame_length
   
   // assign trntrnextlocalRamWpLow_ANY[0] = trntrlocalRamWpLow_ANY; //(trntrRamMode_ANY & trntrRamEnableStart_ANY_d1)?trntrRamSMEMStartLow_ANY:trntrlocalRamWpLow_ANY;
 
-  generic_ffs_fast #(
+  tt_dfd_generic_ffs_fast #(
     .DIR_L2H(1),
     .WIDTH(NUM_CORES),
     .DATA_WIDTH(NUM_CORES)
@@ -698,15 +698,15 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(1)) trntrnorthcoresNewFrameStart_ANY_d1_ff (.out(trntrnorthcoresNewFrameStart_ANY_d1), .in(trntrnorthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trntrsouthcoresNewFrameStart_ANY_d1_ff (.out(trntrsouthcoresNewFrameStart_ANY_d1), .in(trntrsouthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrnorthcoresNewFrameStart_ANY_d1_ff (.out(trntrnorthcoresNewFrameStart_ANY_d1), .in(trntrnorthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrsouthcoresNewFrameStart_ANY_d1_ff (.out(trntrsouthcoresNewFrameStart_ANY_d1), .in(trntrsouthcoresNewFrameStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // assign trntrnextlocaltoupdateRamWpLow_ANY =  trntrnextlocalRamWpLow_ANY[3];
 
-  generic_dff #(.WIDTH(30)) trntrnextlocaltoupdateRamWpLow_ANY_ff (.out(trntrnextlocaltoupdateRamWpLow_ANY_stg), .in(trntrnextlocaltoupdateRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trntrnextlocaltoupdateRamWpLow_ANY_ff (.out(trntrnextlocaltoupdateRamWpLow_ANY_stg), .in(trntrnextlocaltoupdateRamWpLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrapOneNewFrame_ANY_ff (.out(trntrnextlocaltoupdateRamWpWrapOneNewFrame_ANY), .in(((trntrlocalRamWpLow_ANY + $bits(trntrlocalRamWpLow_ANY)'(trntrFrameLength_ANY[9:2])) >= trntrRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrapTwoNewFrame_ANY_ff (.out(trntrnextlocaltoupdateRamWpWrapTwoNewFrame_ANY), .in((trntrlocalRamWpLow_ANY + $bits(trntrlocalRamWpLow_ANY)'(trntrFrameLength_ANY[9:2]*2)) >= trntrRamLimitLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrapOneNewFrame_ANY_ff (.out(trntrnextlocaltoupdateRamWpWrapOneNewFrame_ANY), .in(((trntrlocalRamWpLow_ANY + $bits(trntrlocalRamWpLow_ANY)'(trntrFrameLength_ANY[9:2])) >= trntrRamLimitLow_ANY)), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrnextlocaltoupdateRamWpWrapTwoNewFrame_ANY_ff (.out(trntrnextlocaltoupdateRamWpWrapTwoNewFrame_ANY), .in((trntrlocalRamWpLow_ANY + $bits(trntrlocalRamWpLow_ANY)'(trntrFrameLength_ANY[9:2]*2)) >= trntrRamLimitLow_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   /* verilator lint_off WIDTHEXPAND */
   assign trntrnextlocaltoupdateRamWpWrap_ANY = (trntrnextlocaltoupdateRamWpWrapOneNewFrame_ANY & ((|trntrnorthcoresNewFrameStart_ANY_d1) | (|trntrsouthcoresNewFrameStart_ANY_d1))) | (trntrnextlocaltoupdateRamWpWrapTwoNewFrame_ANY & ((|trntrnorthcoresNewFrameStart_ANY_d1) & (|trntrsouthcoresNewFrameStart_ANY_d1)));
@@ -730,8 +730,8 @@ module dfd_trace_sink
   // Timing Flops used in comparison maths 
   //Flop-1: (trntrRamSMEMStartLow_ANY + trntrRamSMEMSizeLow_ANY*2) - trntrFrameLength_ANY[9:2] 
   //Flop-2: trntrRamLimitLow_ANY - trntrFrameLength_ANY[9:2] 
-  generic_dff #(.WIDTH(30)) trntrMemMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trntrMemMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'($bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'(trntrRamSMEMStartLow_ANY) + $bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'(trntrRamSMEMSizeLow_ANY*2) - $bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'(trntrFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH(30)) trntrRamMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trntrRamMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trntrRamMode_nextlocalWrapCond_WpLow_ANY)'($bits(trntrRamMode_nextlocalWrapCond_WpLow_ANY)'(trntrRamLimitLow_ANY) - $bits(trntrRamMode_nextlocalWrapCond_WpLow_ANY)'(trntrFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(30)) trntrMemMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trntrMemMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'($bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'(trntrRamSMEMStartLow_ANY) + $bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'(trntrRamSMEMSizeLow_ANY*2) - $bits(trntrMemMode_nextlocalWrapCond_WpLow_ANY)'(trntrFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(30)) trntrRamMode_nextlocalWrapCond_WpLow_ANY_ff (.out(trntrRamMode_nextlocalWrapCond_WpLow_ANY), .in($bits(trntrRamMode_nextlocalWrapCond_WpLow_ANY)'($bits(trntrRamMode_nextlocalWrapCond_WpLow_ANY)'(trntrRamLimitLow_ANY) - $bits(trntrRamMode_nextlocalWrapCond_WpLow_ANY)'(trntrFrameLength_ANY[9:2]))), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   for (genvar i=0; i<NUM_CORES; i++) begin
     /* verilator lint_off WIDTHEXPAND */
@@ -744,10 +744,10 @@ module dfd_trace_sink
     assign trntrcoreRamWpWrap_ANY[i] = |((trntrcorefullRamWpLow_ANY[i] - trntrRamSMEMStartLow_ANY) & trntrRamSMEMSizeLow_ANY); // |((trntrcoreRamWpAddr_ANY[i] - trntrRamSMEMStartAddr_ANY) & trntrRamSMEMTotalSets_ANY)
  
     // Timing flops
-    generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) trntrcoreRamWpAddr_ANY_d1_ff (.out(trntrcoreRamWpAddr_ANY_d1[i]), .in(trntrcoreRamWpAddr_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(1)) trntrcoreRamWpWrap_ANY_d1_ff (.out(trntrcoreRamWpWrap_ANY_d1[i]), .in(trntrcoreRamWpWrap_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) trntrcoreRamWpAddr_ANY_d1_ff (.out(trntrcoreRamWpAddr_ANY_d1[i]), .in(trntrcoreRamWpAddr_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) trntrcoreRamWpWrap_ANY_d1_ff (.out(trntrcoreRamWpWrap_ANY_d1[i]), .in(trntrcoreRamWpWrap_ANY[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-    generic_dff #(.WIDTH(30), .RESET_VALUE(0)) trntrcorenextRamWpLow_ANY_ff (
+    tt_dfd_generic_dff #(.WIDTH(30), .RESET_VALUE(0)) trntrcorenextRamWpLow_ANY_ff (
         .out          (trntrcorenextRamWpLow_ANY[i]),
         .in          (trntrRamEnableStart_ANY_d1?(trntrRamMode_ANY?trntrRamSMEMStartLow_ANY:trntrRamStartLow_ANY):trntrcorefullRamWpLow_ANY[i]),
         .en         (trntrRamEnableStart_ANY_d1 | Eff_InsnTraceWrEnPerCore_TS0[i]),
@@ -755,7 +755,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-    generic_dff #(.WIDTH(5), .RESET_VALUE(0)) trntrcorenextwritecnt_ANY_ff (
+    tt_dfd_generic_dff #(.WIDTH(5), .RESET_VALUE(0)) trntrcorenextwritecnt_ANY_ff (
         .out          (trntrcorenextwritecnt_ANY[i]),
         .in          (trntrcorewritecnt_ANY[i]), 
         .en         (1'b1),
@@ -763,7 +763,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-    generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) trntrcoreframefillpendingwhileoverflow_ANY_ff (
+    tt_dfd_generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) trntrcoreframefillpendingwhileoverflow_ANY_ff (
         .out          (trntrcoreframefillpendingwhileoverflow_ANY[i]),
         .in          (1'b1),
         .clr        (trntrcoreFrameFillComplete_ANY[i]),
@@ -778,7 +778,7 @@ module dfd_trace_sink
                                                       ?$bits(trntrcoreRamAddrtoNextLocalSetDiff_ANY[i])'(trntrRamSMEMTotalSets_ANY - (TrntrMemRamRdAddr_TS1 - trntrcoreRamWpAddr_ANY_d1[i]))
                                                       :$bits(trntrcoreRamAddrtoNextLocalSetDiff_ANY[i])'(trntrcoreRamWpAddr_ANY_d1[i] - TrntrMemRamRdAddr_TS1);
 
-    generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) trntrcoreRamAddrtoNextLocalSetDiff_ANY_stg_ff (
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) trntrcoreRamAddrtoNextLocalSetDiff_ANY_stg_ff (
         .out          (trntrcoreRamAddrtoNextLocalSetDiff_ANY_stg[i]),
         .in          (trntrcoreRamAddrtoNextLocalSetDiff_ANY[i]), 
         .en         (1'b1),
@@ -799,7 +799,7 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE(0)) trntrMemRamRdEnFromCore_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE(0)) trntrMemRamRdEnFromCore_ANY_ff (
         .out          (trntrMemRamRdEnFromCore_ANY),
         .in          (trntrMemRamRdEnFromCore_ANY_stg),
         .en         (1'b1),
@@ -807,7 +807,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-  generic_dff_clr #(.WIDTH(1)) TrntrMemModeRamFlush_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) TrntrMemModeRamFlush_ANY_ff (
     .out          (TrntrMemModeRamFlush_ANY),
     .in          (1'b1),
     .clr        (&trntrcoretoFlushClear_ANY),
@@ -825,7 +825,7 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE({NUM_CORES{1'b1}})) trntrcoreFrameFillComplete_d1_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(NUM_CORES), .RESET_VALUE({NUM_CORES{1'b1}})) trntrcoreFrameFillComplete_d1_ANY_ff (
         .out          (trntrcoreFrameFillComplete_d1_ANY),
         .in          (trntrcoreFrameFillComplete_ANY),
         .en         (1'b1),
@@ -833,7 +833,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-  generic_dff_clr #(.WIDTH(9)) trntrNumFramesFilledInSRAM_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(9)) trntrNumFramesFilledInSRAM_ANY_ff (
         .out          (trntrNumFramesFilledInSRAM_ANY),
         .in          ($bits(trntrNumFramesFilledInSRAM_ANY)'(trntrNumFramesFilledInSRAM_ANY + trntrNumFrameFillComplete_ANY_d1*InsnTrace_NumSetsPerFrame_ANY - $bits(trntrNumFramesFilledInSRAM_ANY)'(TrntrMemAxiWrVld_ANY))),
         .clr        (trntrRamEnableStart_ANY_d1),
@@ -843,7 +843,7 @@ module dfd_trace_sink
       );
   
   // Staging Flops
-  generic_dff #(.WIDTH(9)) trntrNumFrameFillComplete_ANY_d1_ff (
+  tt_dfd_generic_dff #(.WIDTH(9)) trntrNumFrameFillComplete_ANY_d1_ff (
         .out          (trntrNumFrameFillComplete_ANY_d1),
         .in          (trntrNumFrameFillComplete_ANY),
         .en         (1'b1),
@@ -851,7 +851,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
       );
 
-  generic_dff #(.WIDTH(9)) trntrNumFramesFilledInSRAM_ANY_d1_ff (
+  tt_dfd_generic_dff #(.WIDTH(9)) trntrNumFramesFilledInSRAM_ANY_d1_ff (
         .out          (trntrNumFramesFilledInSRAM_ANY_d1),
         .in          (trntrNumFramesFilledInSRAM_ANY),
         .en         (1'b1),
@@ -863,7 +863,7 @@ module dfd_trace_sink
   // Flops to store the outstanding writes to the RAM in case of multiple writes to same way
   // ----------------------------------------------------------------------------------------------
   for (genvar i=0; i<8; i++) begin
-    generic_dff #(.WIDTH(1)) TrRamPendPktVld_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrRamPendPktVld_ff (
       .out          (TrRamPendPktVld_ANY[i]),
       .in          (TrRamPendWrEn_ANY[i] | ~TrRamPendRdEn_ANY[i]), 
       .en         (TrRamPendWrEn_ANY[i] | TrRamPendRdEn_ANY[i]),
@@ -871,7 +871,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH($bits(TrRamPendPkt_s))) TrRamPendPkt_ff (
+    tt_dfd_generic_dff #(.WIDTH($bits(TrRamPendPkt_s))) TrRamPendPkt_ff (
       .out          (TrRamPendPktRd_ANY[i]),
       .in          (TrRamPendPktWr_ANY[i]), 
       .en         (TrRamPendWrEn_ANY[i]),
@@ -916,7 +916,7 @@ module dfd_trace_sink
     end
   end
 
-  generic_dff #(.WIDTH(TRC_RAM_WAYS)) TrRamFreeWayMaskPend_ANY_stg_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_WAYS)) TrRamFreeWayMaskPend_ANY_stg_ff (
     .out          (TrRamFreeWayMaskPend_ANY_stg),
     .in          (TrRamFreeWayMaskPend_ANY),
     .en         (1'b1),
@@ -924,7 +924,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
   
-  generic_dff #(.WIDTH(TRC_RAM_WAYS)) TrdstRamPendPktInhibitRamRd_ANY_stg_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_WAYS)) TrdstRamPendPktInhibitRamRd_ANY_stg_ff (
     .out          (TrdstRamPendPktInhibitRamRd_ANY_stg),
     .in          (TrdstRamPendPktInhibitRamRd_ANY),
     .en         (1'b1),
@@ -932,7 +932,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(TRC_RAM_WAYS)) TrntrRamPendPktInhibitRamRd_ANY_stg_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_WAYS)) TrntrRamPendPktInhibitRamRd_ANY_stg_ff (
     .out          (TrntrRamPendPktInhibitRamRd_ANY_stg),
     .in          (TrntrRamPendPktInhibitRamRd_ANY),
     .en         (1'b1),
@@ -940,7 +940,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_ffs_N #(
+  tt_dfd_generic_ffs_N #(
     .DIR_L2H(1'b0),
     .WIDTH(8),
     .DATA_WIDTH(8),
@@ -1017,15 +1017,15 @@ module dfd_trace_sink
                               | ({(TRC_RAM_INDEX_WIDTH){TrRamPendRdEn_ANY[6] & (TrRamPendPktRd_ANY[6].TrRamPendWayIdx_ANY == i[1:0])}} & TrRamPendPktRd_ANY[6].TrRamPendAddr_ANY)
                               | ({(TRC_RAM_INDEX_WIDTH){TrRamPendRdEn_ANY[7] & (TrRamPendPktRd_ANY[7].TrRamPendWayIdx_ANY == i[1:0])}} & TrRamPendPktRd_ANY[7].TrRamPendAddr_ANY);
 
-    generic_dff #(.WIDTH(1)) TraceWrEn_TS0_ff (.out(TraceWrEn_TS0[i]), .in(TraceWrEn_TS0_stg_d1[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_even_ff (.out(TraceWrData_TS0[2*i]), .in(TraceWrData_TS0_stg_d1[2*i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_odd_ff (.out(TraceWrData_TS0[2*i+1]), .in(TraceWrData_TS0_stg_d1[2*i+1]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TraceWrAddr_TS0_ff (.out(TraceWrAddr_TS0[i]), .in(TraceWrAddr_TS0_stg_d1[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) TraceWrEn_TS0_ff (.out(TraceWrEn_TS0[i]), .in(TraceWrEn_TS0_stg_d1[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_even_ff (.out(TraceWrData_TS0[2*i]), .in(TraceWrData_TS0_stg_d1[2*i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_odd_ff (.out(TraceWrData_TS0[2*i+1]), .in(TraceWrData_TS0_stg_d1[2*i+1]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TraceWrAddr_TS0_ff (.out(TraceWrAddr_TS0[i]), .in(TraceWrAddr_TS0_stg_d1[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-    generic_dff #(.WIDTH(1)) TraceWrEn_TS0_stg_ff (.out(TraceWrEn_TS0_stg_d1[i]), .in(TraceWrEn_TS0_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_even_stg_ff (.out(TraceWrData_TS0_stg_d1[2*i]), .in(TraceWrData_TS0_stg[2*i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_odd_stg_ff (.out(TraceWrData_TS0_stg_d1[2*i+1]), .in(TraceWrData_TS0_stg[2*i+1]), .en(1'b1), .clk(clk), .rst_n(reset_n));
-    generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TraceWrAddr_TS0_stg_ff (.out(TraceWrAddr_TS0_stg_d1[i]), .in(TraceWrAddr_TS0_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) TraceWrEn_TS0_stg_ff (.out(TraceWrEn_TS0_stg_d1[i]), .in(TraceWrEn_TS0_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_even_stg_ff (.out(TraceWrData_TS0_stg_d1[2*i]), .in(TraceWrData_TS0_stg[2*i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TraceWrData_TS0_odd_stg_ff (.out(TraceWrData_TS0_stg_d1[2*i+1]), .in(TraceWrData_TS0_stg[2*i+1]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TraceWrAddr_TS0_stg_ff (.out(TraceWrAddr_TS0_stg_d1[i]), .in(TraceWrAddr_TS0_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
     // Actual Ram Addr (Write + Read Interleaved)
     assign TraceAddr_ANY[i] = TraceWrEn_TS0[i]?TraceWrAddr_TS0[i]:TraceRdAddr_TS1;  
@@ -1035,14 +1035,14 @@ module dfd_trace_sink
   assign trdstRamWrEn_TS0_stg = (TrRamNorthTraceWrEn_TS0 & ~TrRamNorthTraceWrSrc_TS0) | (TrRamSouthTraceWrEn_TS0 & ~TrRamSouthTraceWrSrc_TS0) | (|(TrRamPendRdEn_ANY & TrRamPendDstPktVld_ANY));
   assign trntrRamWrEn_TS0_stg = (TrRamNorthTraceWrEn_TS0 & TrRamNorthTraceWrSrc_TS0) | (TrRamSouthTraceWrEn_TS0 & TrRamSouthTraceWrSrc_TS0) | (|(TrRamPendRdEn_ANY & TrRamPendNtracePktVld_ANY));
 
-  generic_dff #(.WIDTH(1)) TraceWrEn_TS0_ff (.out(TraceRamWrEn_TS0), .in(TraceRamWrEn_TS0_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) TraceWrEn_TS0_stg_ff (.out(TraceRamWrEn_TS0_stg_d1), .in(TraceRamWrEn_TS0_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) TraceWrEn_TS0_ff (.out(TraceRamWrEn_TS0), .in(TraceRamWrEn_TS0_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) TraceWrEn_TS0_stg_ff (.out(TraceRamWrEn_TS0_stg_d1), .in(TraceRamWrEn_TS0_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trdstRamWrEn_TS0_ff (.out(trdstRamWrEn_TS0), .in(trdstRamWrEn_TS0_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstRamWrEn_TS0_stg_ff (.out(trdstRamWrEn_TS0_stg_d1), .in(trdstRamWrEn_TS0_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstRamWrEn_TS0_ff (.out(trdstRamWrEn_TS0), .in(trdstRamWrEn_TS0_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstRamWrEn_TS0_stg_ff (.out(trdstRamWrEn_TS0_stg_d1), .in(trdstRamWrEn_TS0_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
-  generic_dff #(.WIDTH(1)) trntrRamWrEn_TS0_ff (.out(trntrRamWrEn_TS0), .in(trntrRamWrEn_TS0_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trntrRamWrEn_TS0_stg_ff (.out(trntrRamWrEn_TS0_stg_d1), .in(trntrRamWrEn_TS0_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrRamWrEn_TS0_ff (.out(trntrRamWrEn_TS0), .in(trntrRamWrEn_TS0_stg_d1), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrRamWrEn_TS0_stg_ff (.out(trntrRamWrEn_TS0_stg_d1), .in(trntrRamWrEn_TS0_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
   
   // --------------------------------------------------------------------------
   // Trace Sink RAM Connection (SRAM in trace_mem)
@@ -1099,11 +1099,11 @@ module dfd_trace_sink
                                   (trdstRamRpLow_ANY[5:3] == i[2:0]);
     assign TraceRdEn_TS1[i] = TraceMemRdEn_ANY?TraceMemPerWayRdEn_TS1[i]:(trRamDataRdEn_ANY ? InsnTraceRdEn_TS1[i] : DataTraceRdEn_TS1[i]);
     
-    generic_dff #(.WIDTH(1)) TraceRdEnTS2_ff (.out(TraceRdEn_TS2[i]), .in(TraceRdEn_TS1[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) TraceRdEnTS2_ff (.out(TraceRdEn_TS2[i]), .in(TraceRdEn_TS1[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
   end
 
-  generic_dff #(.WIDTH(1)) InsnTraceRdEnTS2_ff (.out(InsnTraceRdEn_TS2), .in(trRamDataRdEn_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) DstTraceRdEnTS2_ff (.out(DataTraceRdEn_TS2), .in(trdstRamDataRdEn_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) InsnTraceRdEnTS2_ff (.out(InsnTraceRdEn_TS2), .in(trRamDataRdEn_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) DstTraceRdEnTS2_ff (.out(DataTraceRdEn_TS2), .in(trdstRamDataRdEn_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
 
   // --------------------------------------------------------------------------
@@ -1123,7 +1123,7 @@ module dfd_trace_sink
   assign DataTrace_NumInFlightFrame_ANY = $bits(DataTrace_NumInFlightFrame_ANY)'((TN_TR_Dst_NumPkt_PerFrame == 6'h20)?INFLIGHT_FRAME_CNT_512B:((TN_TR_Dst_NumPkt_PerFrame == 6'h10)?INFLIGHT_FRAME_CNT_256B:(TN_TR_Dst_NumPkt_PerFrame == 6'h8)?INFLIGHT_FRAME_CNT_128B:INFLIGHT_FRAME_CNT_64B));
   /* verilator lint_on WIDTHEXPAND */
 
-  generic_dff #(.WIDTH(32), .RESET_VALUE(0)) InsnTrace_InFlightData_BackPressure_Threshold_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) InsnTrace_InFlightData_BackPressure_Threshold_ANY_ff (
     .out          (InsnTrace_InFlightData_BackPressure_Threshold_ANY),
     .in          ($bits(InsnTrace_InFlightData_BackPressure_Threshold_ANY)'(InsnTrace_NumSetsPerFrame_ANY*InsnTrace_NumInFlightFrame_ANY*TR_TS_Ntrace_NumEnabled_Srcs)),
     .en         (1'b1),
@@ -1131,7 +1131,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(32), .RESET_VALUE(0)) DataTrace_InFlightData_BackPressure_Threshold_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(32), .RESET_VALUE(0)) DataTrace_InFlightData_BackPressure_Threshold_ANY_ff (
     .out          (DataTrace_InFlightData_BackPressure_Threshold_ANY),
     .in          ($bits(InsnTrace_InFlightData_BackPressure_Threshold_ANY)'(DataTrace_NumSetsPerFrame_ANY*DataTrace_NumInFlightFrame_ANY*TR_TS_Dst_NumEnabled_Srcs)),
     .en         (1'b1),
@@ -1139,7 +1139,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH + 1), .RESET_VALUE(0)) trntrcoretoFlushThreshold_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH + 1), .RESET_VALUE(0)) trntrcoretoFlushThreshold_ANY_ff (
     .out          (trntrcoretoFlushThreshold_ANY),
     .in          ($bits(trntrcoretoFlushThreshold_ANY)'((TR_TS_Ntrace_NumEnabled_Srcs[3])?(trntrRamSMEMTotalSets_ANY >> 3'h4):(TR_TS_Ntrace_NumEnabled_Srcs[2])?(trntrRamSMEMTotalSets_ANY >> 3'h2):(TR_TS_Ntrace_NumEnabled_Srcs[1])?(trntrRamSMEMTotalSets_ANY >> 3'h1):(trntrRamSMEMTotalSets_ANY >> 3'h1))),
     .en         (1'b1),
@@ -1147,7 +1147,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH + 1), .RESET_VALUE(0)) trdstcoretoFlushThreshold_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH + 1), .RESET_VALUE(0)) trdstcoretoFlushThreshold_ANY_ff (
     .out          (trdstcoretoFlushThreshold_ANY),
     .in          ($bits(trdstcoretoFlushThreshold_ANY)'((TR_TS_Dst_NumEnabled_Srcs[3])?(trdstRamSMEMTotalSets_ANY >> 3'h4):(TR_TS_Dst_NumEnabled_Srcs[2])?(trdstRamSMEMTotalSets_ANY >> 3'h2):(TR_TS_Dst_NumEnabled_Srcs[1])?(trdstRamSMEMTotalSets_ANY >> 3'h1):(trdstRamSMEMTotalSets_ANY >> 3'h1))),
     .en         (1'b1),
@@ -1178,12 +1178,12 @@ module dfd_trace_sink
   assign TS_TR_Ntrace_Flush_int = (~trntrRamMode_ANY & trntrStoponWrap_ANY & (~trntrRamActiveEnable_ANY | trntrRamModeBP_ANY)) | (trntrRamMode_ANY & (TrntrMemModeRamFlush_ANY | (trntrStoponWrap_ANY & (~trntrRamActiveEnable_ANY | trntrMemModeBP_ANY))));
   assign TS_TR_Dst_Flush_int = (~trdstRamMode_ANY & trdstStoponWrap_ANY & (~trdstRamActiveEnable_ANY | trdstRamModeBP_ANY)) | (trdstRamMode_ANY & (TrdstMemModeRamFlush_ANY | (trdstStoponWrap_ANY & (~trdstRamActiveEnable_ANY | trdstMemModeBP_ANY)))); 
 
-  generic_dff #(.WIDTH(1)) TS_TR_Ntrace_Bp_ff (.out(TS_TR_Ntrace_Bp), .in(TS_TR_Ntrace_Bp_int), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) TS_TR_Dst_Bp_ff (.out(TS_TR_Dst_Bp), .in(TS_TR_Dst_Bp_int), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH(1)) TS_TR_Ntrace_Flush_ff (.out(TS_TR_Ntrace_Flush), .in(TS_TR_Ntrace_Flush_int), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
-  generic_dff #(.WIDTH(1)) TS_TR_Dst_Flush_ff (.out(TS_TR_Dst_Flush), .in(TS_TR_Dst_Flush_int), .en(1'b1), .clk(clk), .rst_n(reset_n));  
+  tt_dfd_generic_dff #(.WIDTH(1)) TS_TR_Ntrace_Bp_ff (.out(TS_TR_Ntrace_Bp), .in(TS_TR_Ntrace_Bp_int), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) TS_TR_Dst_Bp_ff (.out(TS_TR_Dst_Bp), .in(TS_TR_Dst_Bp_int), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) TS_TR_Ntrace_Flush_ff (.out(TS_TR_Ntrace_Flush), .in(TS_TR_Ntrace_Flush_int), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) TS_TR_Dst_Flush_ff (.out(TS_TR_Dst_Flush), .in(TS_TR_Dst_Flush_int), .en(1'b1), .clk(clk), .rst_n(reset_n));  
 
-  generic_dff_clr #(.WIDTH(1)) TrntrMemModeRamBackPressure_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) TrntrMemModeRamBackPressure_ff (
     .out          (TrntrMemModeRamBackPressure_ANY),
     .in          (1'b1),
     .clr        ($bits(trntrcoretoFlushThreshold_ANY)'(trntrNumFramesFilledInSRAM_ANY*InsnTrace_NumSetsPerFrame_ANY) <= (trntrcoretoFlushThreshold_ANY + (trntrcoretoFlushThreshold_ANY >> 1))),
@@ -1192,7 +1192,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff_clr #(.WIDTH(1)) TrdstMemModeRamBackPressure_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1)) TrdstMemModeRamBackPressure_ff (
     .out          (TrdstMemModeRamBackPressure_ANY),
     .in          (1'b1),
     .clr        ($bits(trdstcoretoFlushThreshold_ANY)'(trdstNumFramesFilledInSRAM_ANY*DataTrace_NumSetsPerFrame_ANY) <= (trdstcoretoFlushThreshold_ANY + (trdstcoretoFlushThreshold_ANY >> 1))),
@@ -1205,7 +1205,7 @@ module dfd_trace_sink
   // Debug Signal Trace SMEM Storage Buffer
   // --------------------------------------------------------------------------
   for (genvar i=0; i<TRC_RAM_INSTANCES; i++) begin
-    generic_dff #(.WIDTH(1)) TrdstMemRdBufferVld_TS5_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrdstMemRdBufferVld_TS5_ff (
       .out          (TrdstMemRdBufferVld_TS5[i]),
       .in          (TrdstMemRdBufferVld_TS4[i]), 
       .en         (1'b1),
@@ -1213,7 +1213,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH(1)) TrdstMemRdBufferVld_TS4_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrdstMemRdBufferVld_TS4_ff (
       .out          (TrdstMemRdBufferVld_TS4[i]),
       .in          (TrdstMemRdBufferVld_TS3[i]), 
       .en         (1'b1),
@@ -1221,7 +1221,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff_clr #(.WIDTH(1)) TrdstMemRdBufferVld_ff (
+    tt_dfd_generic_dff_clr #(.WIDTH(1)) TrdstMemRdBufferVld_ff (
       .out          (TrdstMemRdBufferVld_TS3[i]),
       .in          (TrdstMemAxiWrVld_ANY?1'b0:TrdstMemRamRdEn_TS2[i]), 
       .en         (TrdstMemRamRdEn_TS2[i] | TrdstMemAxiWrVld_ANY),
@@ -1230,7 +1230,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TrdstMemRdBuffer_ff (
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TrdstMemRdBuffer_ff (
       .out          (TrdstMemRdBuffer_TS3[i]),
       .in          (TraceRamData_TS2[i]), 
       .en         (TrdstMemRamRdEn_TS2[i] | TrdstMemAxiWrVld_ANY),
@@ -1238,7 +1238,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH(1)) TrdstMemRamRdEn_d1_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrdstMemRamRdEn_d1_ff (
       .out          (TrdstMemRamRdEn_TS2[i]),
       .in          (TrdstMemRamRdRdy_TS1 & TrdstMemRamRdEn_TS1[i]), 
       .en         (1'b1),
@@ -1249,10 +1249,10 @@ module dfd_trace_sink
     assign TrdstMemRamRdEn_TS1_stg[i] = (TrdstMemRamRdRamEn_ANY & TrRamFreeWayMaskPend_ANY_stg[i/2] & ~TrdstRamPendPktInhibitRamRd_ANY_stg[i/2] & ~TrdstMemRamRdEn_TS2[i] & ~TrdstMemRdBufferVld_TS3[i] & ~TrdstMemRdBufferVld_TS4[i] & ~TrdstMemRdBufferVld_TS5[i])
                                & (&trdstMemRamRdEnFromCore_ANY) & (|trdstNumFramesFilledInSRAM_ANY_d1);
 
-    generic_dff #(.WIDTH(1)) TrdstMemRamRdEn_TS1_ff (.out(TrdstMemRamRdEn_TS1[i]), .in(TrdstMemRamRdEn_TS1_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
+    tt_dfd_generic_dff #(.WIDTH(1)) TrdstMemRamRdEn_TS1_ff (.out(TrdstMemRamRdEn_TS1[i]), .in(TrdstMemRamRdEn_TS1_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n));
   end
 
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) TrdstMemRamRdAddrFlop_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) TrdstMemRamRdAddrFlop_ANY_ff (
         .out          (TrdstMemRamRdAddrFlop_ANY),
         .in          (trdstRamEnableStart_ANY_d1?trdstRamSMEMStartAddr_ANY:$bits(TrdstMemRamRdAddrFlop_ANY)'(TrdstMemRamRdAddrFlop_ANY + 1'b1)),
         .en         (trdstRamEnableStart_ANY_d1 | TrdstMemAxiWrVld_ANY),
@@ -1260,7 +1260,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TrdstMemRamRdAddr_TS1_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TrdstMemRamRdAddr_TS1_ff (
     .out          (TrdstMemRamRdAddr_TS1),
     .in          (TrdstMemRamRdAddr_TS1_stg), 
     .en         (1'b1),
@@ -1276,7 +1276,7 @@ module dfd_trace_sink
   assign TrdstMemAxiWrData_ANY = TrdstMemRdBuffer_TS3;
   assign TrdstMemRamRdRamEn_ANY = trdstMemModeEnable_ANY;
 
-  generic_dff #(.WIDTH(AXI_ADDR_WIDTH)) TrdstMemAxiWrAddr_ff (
+  tt_dfd_generic_dff #(.WIDTH(AXI_ADDR_WIDTH)) TrdstMemAxiWrAddr_ff (
     .out          (TrdstMemAxiWrAddr_ANY),
     .in          ((trdstRamEnableStart_ANY_d1 | ($bits(trdstMemSMEMLimitAddr_ANY)'(TrdstMemAxiWrAddr_ANY) == trdstMemSMEMLimitAddr_ANY))?trdstMemSMEMStartAddr_ANY:$bits(TrdstMemAxiWrAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40)),
     .en         (trdstRamEnableStart_ANY_d1 | (trdstMemModeEnable_ANY & TrdstMemAxiWrVld_ANY)),
@@ -1284,7 +1284,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(1)) TrdstMemAxiWrAddrWrap_ff (
+  tt_dfd_generic_dff #(.WIDTH(1)) TrdstMemAxiWrAddrWrap_ff (
     .out          (TrdstMemAxiWrAddrWrap_ANY),
     .in          (($bits(trdstMemSMEMLimitAddr_ANY)'(TrdstMemAxiWrAddr_ANY + 'h40) == trdstMemSMEMLimitAddr_ANY)),
     .en         (trdstRamEnableStart_ANY_d1 | (trdstMemModeEnable_ANY & TrdstMemAxiWrVld_ANY)),
@@ -1296,7 +1296,7 @@ module dfd_trace_sink
   // N-Trace SMEM Storage Buffer
   // --------------------------------------------------------------------------
   for (genvar i=0; i<TRC_RAM_INSTANCES; i++) begin
-    generic_dff #(.WIDTH(1)) TrntrMemRdBufferVld_TS5_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrntrMemRdBufferVld_TS5_ff (
       .out          (TrntrMemRdBufferVld_TS5[i]),
       .in          (TrntrMemRdBufferVld_TS4[i]), 
       .en         (1'b1),
@@ -1304,7 +1304,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH(1)) TrntrMemRdBufferVld_TS4_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrntrMemRdBufferVld_TS4_ff (
       .out          (TrntrMemRdBufferVld_TS4[i]),
       .in          (TrntrMemRdBufferVld_TS3[i]), 
       .en         (1'b1),
@@ -1312,7 +1312,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff_clr #(.WIDTH(1)) TrntrMemRdBufferVld_ff (
+    tt_dfd_generic_dff_clr #(.WIDTH(1)) TrntrMemRdBufferVld_ff (
       .out          (TrntrMemRdBufferVld_TS3[i]),
       .in          (TrntrMemAxiWrVld_ANY?1'b0:TrntrMemRamRdEn_TS2[i]), 
       .en         (TrntrMemRamRdEn_TS2[i] | TrntrMemAxiWrVld_ANY),
@@ -1321,7 +1321,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TrntrMemRdBuffer_ff (
+    tt_dfd_generic_dff #(.WIDTH(TRC_RAM_DATA_WIDTH)) TrntrMemRdBuffer_ff (
       .out          (TrntrMemRdBuffer_TS3[i]),
       .in          (TraceRamData_TS2[i]), 
       .en         (TrntrMemRamRdEn_TS2[i] | TrntrMemAxiWrVld_ANY),
@@ -1329,7 +1329,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-    generic_dff #(.WIDTH(1)) TrntrMemRamRdEn_d1_ff (
+    tt_dfd_generic_dff #(.WIDTH(1)) TrntrMemRamRdEn_d1_ff (
       .out          (TrntrMemRamRdEn_TS2[i]),
       .in          (TrntrMemRamRdRdy_TS1 & TrntrMemRamRdEn_TS1[i]), 
       .en         (1'b1),
@@ -1340,10 +1340,10 @@ module dfd_trace_sink
     assign TrntrMemRamRdEn_TS1_stg[i] = (TrntrMemRamRdRamEn_ANY & TrRamFreeWayMaskPend_ANY_stg[i/2] & ~TrntrRamPendPktInhibitRamRd_ANY_stg[i/2] & ~TrntrMemRamRdEn_TS2[i] & ~TrntrMemRdBufferVld_TS3[i] & ~TrntrMemRdBufferVld_TS4[i] & ~TrntrMemRdBufferVld_TS5[i])
                                & (&trntrMemRamRdEnFromCore_ANY) & (|trntrNumFramesFilledInSRAM_ANY_d1);
 
-    generic_dff #(.WIDTH(1)) TrntrMemRamRdEn_TS1_ff (.out(TrntrMemRamRdEn_TS1[i]), .in(TrntrMemRamRdEn_TS1_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
+    tt_dfd_generic_dff #(.WIDTH(1)) TrntrMemRamRdEn_TS1_ff (.out(TrntrMemRamRdEn_TS1[i]), .in(TrntrMemRamRdEn_TS1_stg[i]), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
   end
 
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) TrntrMemRamRdAddrFlop_ANY_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH+1), .RESET_VALUE(0)) TrntrMemRamRdAddrFlop_ANY_ff (
         .out          (TrntrMemRamRdAddrFlop_ANY),
         .in          (trntrRamEnableStart_ANY_d1?trntrRamSMEMStartAddr_ANY:$bits(TrntrMemRamRdAddrFlop_ANY)'(TrntrMemRamRdAddrFlop_ANY + 1'b1)),
         .en         (trntrRamEnableStart_ANY_d1 | TrntrMemAxiWrVld_ANY),
@@ -1351,7 +1351,7 @@ module dfd_trace_sink
         .rst_n    (reset_n)
   ); 
 
-  generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TrntrMemRamRdAddr_TS1_ff (
+  tt_dfd_generic_dff #(.WIDTH(TRC_RAM_INDEX_WIDTH)) TrntrMemRamRdAddr_TS1_ff (
       .out          (TrntrMemRamRdAddr_TS1),
       .in          (TrntrMemRamRdAddr_TS1_stg), 
       .en         (1'b1),
@@ -1367,7 +1367,7 @@ module dfd_trace_sink
   assign TrntrMemAxiWrData_ANY = TrntrMemRdBuffer_TS3;
   assign TrntrMemRamRdRamEn_ANY = trntrMemModeEnable_ANY;
 
-  generic_dff #(.WIDTH(AXI_ADDR_WIDTH)) TrntrMemAxiWrAddr_ff (
+  tt_dfd_generic_dff #(.WIDTH(AXI_ADDR_WIDTH)) TrntrMemAxiWrAddr_ff (
     .out          (TrntrMemAxiWrAddr_ANY),
     .in          ((trntrRamEnableStart_ANY_d1 | ($bits(trntrMemSMEMLimitAddr_ANY)' (TrntrMemAxiWrAddr_ANY) == trntrMemSMEMLimitAddr_ANY))?trntrMemSMEMStartAddr_ANY:$bits(TrntrMemAxiWrAddr_ANY)'(TrntrMemAxiWrAddr_ANY + 'h40)),
     .en         (trntrRamEnableStart_ANY_d1 | (trntrMemModeEnable_ANY & TrntrMemAxiWrVld_ANY)),
@@ -1375,7 +1375,7 @@ module dfd_trace_sink
     .rst_n    (reset_n)
   );
 
-  generic_dff #(.WIDTH(1)) TrntrMemAxiWrAddrWrap_ff (
+  tt_dfd_generic_dff #(.WIDTH(1)) TrntrMemAxiWrAddrWrap_ff (
     .out          (TrntrMemAxiWrAddrWrap_ANY),
     .in          (($bits(trntrMemSMEMLimitAddr_ANY)'(TrntrMemAxiWrAddr_ANY + 'h40) == trntrMemSMEMLimitAddr_ANY)),
     .en         (trntrRamEnableStart_ANY_d1 | (trntrMemModeEnable_ANY & TrntrMemAxiWrVld_ANY)),
@@ -1386,7 +1386,7 @@ module dfd_trace_sink
   // --------------------------------------------------------------------------
   // N-Trace and DST SMEM Reads/Writes Interleave
   // --------------------------------------------------------------------------
-  generic_dff #(.WIDTH(1)) TrMemRamRd_NtraceOrDst_ANY_ff (.out(TrMemRamRd_NtraceOrDst_ANY), .in(~TrMemRamRd_NtraceOrDst_ANY), .en(TrMemAxiWrRdy_ANY & (|TrntrMemRamRdEn_TS1 & |TrdstMemRamRdEn_TS1)), .clk(clk), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) TrMemRamRd_NtraceOrDst_ANY_ff (.out(TrMemRamRd_NtraceOrDst_ANY), .in(~TrMemRamRd_NtraceOrDst_ANY), .en(TrMemAxiWrRdy_ANY & (|TrntrMemRamRdEn_TS1 & |TrdstMemRamRdEn_TS1)), .clk(clk), .rst_n(reset_n)); 
   
   assign TrdstMemRamRdRdy_TS1 = |TrdstMemRamRdEn_TS1 & (|TrntrMemRamRdEn_TS1?(TrMemRamRd_NtraceOrDst_ANY == 1'b0):1'b1);
   assign TrntrMemRamRdRdy_TS1 = |TrntrMemRamRdEn_TS1 & (|TrdstMemRamRdEn_TS1?(TrMemRamRd_NtraceOrDst_ANY == 1'b1):1'b1); 
@@ -1395,7 +1395,7 @@ module dfd_trace_sink
   assign TraceMemRdAddr_TS1 = TrntrMemRamRdRdy_TS1?TrntrMemRamRdAddr_TS1:TrdstMemRamRdAddr_TS1;
   assign TraceMemPerWayRdEn_TS1 = TrntrMemRamRdRdy_TS1?TrntrMemRamRdEn_TS1:TrdstMemRamRdEn_TS1;
 
-  generic_dff #(.WIDTH(1)) TrMemAxiWrVld_NtraceOrDst_ANY_ff (.out(TrMemAxiWrVld_NtraceOrDst_ANY), .in(~TrMemAxiWrVld_NtraceOrDst_ANY), .en(TrMemAxiWrRdy_ANY & (TrntrMemRdBufferFull_ANY & TrdstMemRdBufferFull_ANY)), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) TrMemAxiWrVld_NtraceOrDst_ANY_ff (.out(TrMemAxiWrVld_NtraceOrDst_ANY), .in(~TrMemAxiWrVld_NtraceOrDst_ANY), .en(TrMemAxiWrRdy_ANY & (TrntrMemRdBufferFull_ANY & TrdstMemRdBufferFull_ANY)), .clk(clk), .rst_n(reset_n));
 
   assign TrMemAxiWrVld_ANY = TrntrMemAxiWrVld_ANY | TrdstMemAxiWrVld_ANY;
   assign TrMemAxiWrAddr_ANY = TrntrMemAxiWrVld_ANY?TrntrMemAxiWrAddr_ANY:TrdstMemAxiWrAddr_ANY;
@@ -1415,13 +1415,13 @@ module dfd_trace_sink
   assign trntrStoponWrap_ANY = TrCsrTrramcontrol.Trramstoponwrap;
   assign trntrMemModeEnable_ANY = trntrRamMode_ANY;
 
-  generic_dff #(.WIDTH(1)) trntrRamMode_ANY_ff (.out(trntrRamMode_ANY), .in(trntrRamMode_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrRamMode_ANY_ff (.out(trntrRamMode_ANY), .in(trntrRamMode_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n)); 
 
   assign trntrRamEnableStart_ANY = trntrRamActiveEnable_ANY & ~trntrRamActiveEnable_ANY_d1;
   assign trntrRamEnableStop_ANY = ~trntrRamActiveEnable_ANY & trntrRamActiveEnable_ANY_d1;
 
-  generic_dff #(.WIDTH(1)) trRamEnable_ANY_d1_ff (.out(trntrRamActiveEnable_ANY_d1), .in(trntrRamActiveEnable_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trntrRamEnableStart_ANY_d1_ff (.out(trntrRamEnableStart_ANY_d1), .in(trntrRamEnableStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trRamEnable_ANY_d1_ff (.out(trntrRamActiveEnable_ANY_d1), .in(trntrRamActiveEnable_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trntrRamEnableStart_ANY_d1_ff (.out(trntrRamEnableStart_ANY_d1), .in(trntrRamEnableStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // DST
   assign trdstRamActive_ANY = TrCsrTrdstramcontrol.Trdstramactive;
@@ -1431,13 +1431,13 @@ module dfd_trace_sink
   assign trdstStoponWrap_ANY = TrCsrTrdstramcontrol.Trdstramstoponwrap; 
   assign trdstMemModeEnable_ANY = trdstRamMode_ANY; 
 
-  generic_dff #(.WIDTH(1)) trdstRamMode_ANY_ff (.out(trdstRamMode_ANY), .in(trdstRamMode_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstRamMode_ANY_ff (.out(trdstRamMode_ANY), .in(trdstRamMode_ANY_stg), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   assign trdstRamEnableStart_ANY = trdstRamActiveEnable_ANY & ~trdstRamActiveEnable_ANY_d1;
   assign trdstRamEnableStop_ANY = ~trdstRamActiveEnable_ANY & trdstRamActiveEnable_ANY_d1;
 
-  generic_dff #(.WIDTH(1)) trdstRamActiveEnable_ANY_d1_ff (.out(trdstRamActiveEnable_ANY_d1), .in(trdstRamActiveEnable_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
-  generic_dff #(.WIDTH(1)) trdstRamEnableStart_ANY_d1_ff (.out(trdstRamEnableStart_ANY_d1), .in(trdstRamEnableStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstRamActiveEnable_ANY_d1_ff (.out(trdstRamActiveEnable_ANY_d1), .in(trdstRamActiveEnable_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
+  tt_dfd_generic_dff #(.WIDTH(1)) trdstRamEnableStart_ANY_d1_ff (.out(trdstRamEnableStart_ANY_d1), .in(trdstRamEnableStart_ANY), .en(1'b1), .clk(clk), .rst_n(reset_n));
 
   // ----------------------------------------------------------------------------------------------
   // Trace RAM Pointer MMRs
@@ -1465,7 +1465,7 @@ module dfd_trace_sink
 
   assign TrntrFlushTimeoutCntrClr_ANY = (TrntrFlushTimeoutCntr_ANY == TR_SINK_FLUSH_TIMEOUT);
 
-  generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) TrntrFlushTimeoutStart_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) TrntrFlushTimeoutStart_ANY_ff (
       .out          (TrntrFlushTimeoutStart_ANY),
       .in          (1'b1), 
       .en         (~trntrRamActiveEnable_ANY & trntrRamActiveEnable_ANY_d1),
@@ -1474,7 +1474,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-  generic_dff_clr #(.WIDTH(16), .RESET_VALUE(0)) TrntrFlushTimeoutCntr_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(16), .RESET_VALUE(0)) TrntrFlushTimeoutCntr_ANY_ff (
       .out          (TrntrFlushTimeoutCntr_ANY),
       .in          ($bits(TrntrFlushTimeoutCntr_ANY)'(TrntrFlushTimeoutCntr_ANY + 1'b1)), 
       .en         (TrntrFlushTimeoutStart_ANY & ~TrntrFlushTimeoutDone_ANY),
@@ -1483,7 +1483,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-  generic_dff_clr #(.WIDTH(1), .RESET_VALUE(1)) TrntrFlushTimeoutDone_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1), .RESET_VALUE(1)) TrntrFlushTimeoutDone_ANY_ff (
       .out          (TrntrFlushTimeoutDone_ANY),
       .in          (1'b1), 
       .en         (TrntrFlushTimeoutCntrClr_ANY),
@@ -1552,7 +1552,7 @@ module dfd_trace_sink
 
   assign TrdstFlushTimeoutCntrClr_ANY = (TrdstFlushTimeoutCntr_ANY == TR_SINK_FLUSH_TIMEOUT);
 
-  generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) TrdstFlushTimeoutStart_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1), .RESET_VALUE(0)) TrdstFlushTimeoutStart_ANY_ff (
       .out          (TrdstFlushTimeoutStart_ANY),
       .in          (1'b1), 
       .en         (~trdstRamActiveEnable_ANY & trdstRamActiveEnable_ANY_d1),
@@ -1561,7 +1561,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-  generic_dff_clr #(.WIDTH(16), .RESET_VALUE(0)) TrdstFlushTimeoutCntr_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(16), .RESET_VALUE(0)) TrdstFlushTimeoutCntr_ANY_ff (
       .out          (TrdstFlushTimeoutCntr_ANY),
       .in          ($bits(TrdstFlushTimeoutCntr_ANY)'(TrdstFlushTimeoutCntr_ANY + 1'b1)), 
       .en         (TrdstFlushTimeoutStart_ANY & ~TrdstFlushTimeoutDone_ANY),
@@ -1570,7 +1570,7 @@ module dfd_trace_sink
       .rst_n    (reset_n)
     );
 
-  generic_dff_clr #(.WIDTH(1), .RESET_VALUE(1)) TrdstFlushTimeoutDone_ANY_ff (
+  tt_dfd_generic_dff_clr #(.WIDTH(1), .RESET_VALUE(1)) TrdstFlushTimeoutDone_ANY_ff (
       .out          (TrdstFlushTimeoutDone_ANY),
       .in          (1'b1), 
       .en         (TrdstFlushTimeoutCntrClr_ANY),
