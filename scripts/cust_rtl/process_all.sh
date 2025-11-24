@@ -13,7 +13,8 @@ features=("CLA" "DST" "NTRACE" "MMR")
 gen_filename() {
     local name="dfd_top"
     for feat in "$@"; do
-        name+="_${feat,,}"  # Convert to lowercase
+        feat_lower=$(echo "$feat" | tr '[:upper:]' '[:lower:]')
+        name+="_${feat_lower}"
     done
     echo "$CUST_DFD_DIR/${name}.sv"
 }
@@ -25,7 +26,11 @@ update_module_name() {
     # Remove .sv extension for module name
     newname=${newname%.sv}
     # Use sed to replace the module name
-    sed -i "s/module dfd_top/module ${newname}/" "$file"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/module dfd_top/module ${newname}/" "$file"
+    else
+        sed -i "s/module dfd_top/module ${newname}/" "$file"
+    fi
 }
 
 # Generate all possible combinations
