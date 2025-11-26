@@ -89,7 +89,6 @@ module tt_dfd_generic_mem_model #(
   localparam int RwpArr = (Rwp != 0 ? Rwp : 1);
   localparam int RopArr = (Rop != 0 ? Rop : 1);
   logic [RwpArr-1:0][Dw-1:0] rw_pipe0;
-  logic [RwpArr-1:0] rw_valid0;
 
   // RO ports pipeline (per port)
   logic [RopArr-1:0][Dw-1:0] ro_pipe0, ro_pipe1;
@@ -122,7 +121,6 @@ module tt_dfd_generic_mem_model #(
       end
       // Clear read pipelines and valids
       rw_pipe0  <= '{default: '0};
-      rw_valid0 <= '0;
 
       ro_pipe0  <= '{default: '0};
       ro_pipe1  <= '{default: '0};
@@ -130,7 +128,6 @@ module tt_dfd_generic_mem_model #(
       ro_valid1 <= '0;
     end else begin
       // Default: shift read pipelines each cycle
-      rw_valid0 <= '0;  // will be set per-port when a new read is launched
 
       ro_pipe1  <= ro_pipe0;
       ro_valid1 <= ro_valid0;
@@ -148,16 +145,9 @@ module tt_dfd_generic_mem_model #(
           end else begin
             /* verilator lint_off WIDTH */
             // Launch a read into the 3-stage pipeline
-            rw_pipe0[p]  <= mem_data[i_mem_addr[p]];
-            rw_valid0[p] <= 1'b1;
+            o_mem_rd_data[p]  <= mem_data[i_mem_addr[p]];
             /* verilator lint_on WIDTH */
           end
-        end
-        // Update output when pipeline matures (3 cycles after launch)
-        if (rw_valid0[p]) begin
-          o_mem_rd_data[p] <= rw_pipe0[p];
-        end else begin
-          o_mem_rd_data[p] <= o_mem_rd_data[p];
         end
       end
 
