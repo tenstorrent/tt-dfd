@@ -16,7 +16,6 @@ module dfd_cross_connect #(
 localparam ACCUMULATOR_DATA_WIDTH = ACCUMULATOR_DATA_WIDTH_IN_BYTES * 8;
 localparam BANK_DATA_WIDTH           = BANK_DATA_WIDTH_IN_BYTES * 8;
 localparam NUMBER_OF_BITS_IN_WRITE_BYTE_BOUNDARY = $clog2(ACCUMULATOR_DATA_WIDTH_IN_BYTES);
-int i;
 
 logic [ACCUMULATOR_DATA_WIDTH_IN_BYTES*8     -1:0] accumulator_data_set0;
 logic [ACCUMULATOR_DATA_WIDTH_IN_BYTES*8     -1:0] accumulator_data_set1;
@@ -28,7 +27,7 @@ logic [ACCUMULATOR_DATA_WIDTH_IN_BYTES       -1:0] accumulator_byte_enables_set1
    begin
     accumulator_data_set0         = {ACCUMULATOR_DATA_WIDTH{1'b0}};   
     accumulator_byte_enables_set0 = {ACCUMULATOR_DATA_WIDTH_IN_BYTES{1'b0}};   
-    for(i =0; i<=ACCUMULATOR_DATA_WIDTH_IN_BYTES-BANK_DATA_WIDTH_IN_BYTES; i=i+1) 
+    for(int i =0; i<=ACCUMULATOR_DATA_WIDTH_IN_BYTES-BANK_DATA_WIDTH_IN_BYTES; i=i+1) 
      begin
        if (write_byte_boundary == ((NUMBER_OF_BITS_IN_WRITE_BYTE_BOUNDARY)'(i))) begin
            accumulator_data_set0         = (ACCUMULATOR_DATA_WIDTH)'(cross_connect_data_in * (2**(i*8)));     //{cross_connect_data_in,{i*8{1'b0}}};
@@ -68,7 +67,7 @@ always@(*)
 always @(*) begin
   accumulator_data_set1           = accumulator_data_set1_array[0];
   accumulator_byte_enables_set1   = accumulator_byte_enables_set1_array[0];
-  for(i = 1; i<BANK_DATA_WIDTH_IN_BYTES; i=i+1) 
+  for(int i = 1; i<BANK_DATA_WIDTH_IN_BYTES; i=i+1) 
     begin
         if (write_byte_boundary == ((NUMBER_OF_BITS_IN_WRITE_BYTE_BOUNDARY)'(ACCUMULATOR_DATA_WIDTH_IN_BYTES-BANK_DATA_WIDTH_IN_BYTES + i))) begin
            accumulator_data_set1           = accumulator_data_set1_array[i-1];
