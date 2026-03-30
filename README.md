@@ -101,7 +101,7 @@ Users are encouraged to use the tools above to program the CLA. Both CLA DocGen 
 
 ### Documentation
 
-Under [doc](doc), there exists architectural documentation and information regarding how to integration, program, and use tt-dfd's various features. 
+Under [doc](doc), there exists architectural documentation and information regarding how to integrate, program, and use tt-dfd's various features. 
 
 ### Filelist
 
