@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added new section under [README.md](README.md) to reference integration guide and architecture documentation 
+
 ### Fixed 
 
 - Fixed DC elaboration issue in dfd_cross_connect.sv with loop var i
