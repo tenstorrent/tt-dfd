@@ -73,12 +73,15 @@ Notes:
 | [dv/](dv)             | [dfd/](dv/dfd)          | Testbenches, verification code, and APB traffic generation utilities |
 | [scripts/](scripts)   | [cla_compiler/](scripts/cla_compiler) | [CLA programming tools](scripts/cla_compiler/README.md) and example programs |
 |                       | [cust_rtl/](scripts/cust_rtl) | Scripts for generating custom RTL variants |
-|                       | [docgen/](scripts/docgen) | [Documentation generation tools](scripts/docgen/README.md) and example programs
-| [lint/](lint)         |                           | Spyglass project, run configs and lint waivers.
+|                       | [docgen/](scripts/docgen) | [Documentation generation tools](scripts/docgen/README.md) and example programs |
+| [lint/](lint)         |                           | Spyglass project, run configs and lint waivers. |
+| [doc/](doc)           |                           | tt-dfd manual / guide |
 
 ### Register map (MMRs)
 
 tt-dfd exposes internal memory-mapped registers (MMRs) for control and status. The CSR definitions live under [rtl/mmr/](rtl/mmr/). 
+
+Additionally, under [doc/](doc) the document [doc/tt-dfd.pdf](tt-dfd.pdf) also contains information regarding existing MMRs. 
 
 ### CLA tooling
 
@@ -95,6 +98,10 @@ $ python3 dv/dfd/yamlToApbTraffic.py <path/to/value_dump.yaml> -o apb_write.txt
 ```
 
 Users are encouraged to use the tools above to program the CLA. Both CLA DocGen and the CLA Compiler contain READMEs with examples for each tool.  
+
+### Documentation
+
+Under [doc](doc), there exists architectural documentation and information regarding how to program and use tt-dfd and its various features. 
 
 ### Filelist
 
