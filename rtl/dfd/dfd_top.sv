@@ -25,8 +25,8 @@ module dfd_top
   import dfd_tn_pkg::*;
   import dfd_CL_axi_pkg::*;
 #(
-    parameter int unsigned NUM_TRACE_AND_ANALYZER_INST = 1,
-    localparam int unsigned TNIF_CONNECTIONS = (NUM_TRACE_AND_ANALYZER_INST <= 1) ? 2 : NUM_TRACE_AND_ANALYZER_INST,
+    parameter int unsigned NUM_TRACE_AND_ANALYZER_INST = 1, 
+    localparam int unsigned TNIF_CONNECTIONS = (NUM_TRACE_AND_ANALYZER_INST <= 1) ? 2 : ((NUM_TRACE_AND_ANALYZER_INST + 1) & ~1), // Even Number
     parameter bit NTRACE_SUPPORT = 1,  /* @@ KEEP - (NTRACE) {\tparameter NTRACE_SUPPORT = 0,} @@ */
     parameter bit DST_SUPPORT = 1,  /* @@ KEEP - (DST) {\tparameter DST_SUPPORT = 0,} @@ */
     parameter bit CLA_SUPPORT = 1,  /* @@ KEEP - (CLA) {\tparameter CLA_SUPPORT = 0,} @@ */
@@ -511,7 +511,7 @@ module dfd_top
   // Trace Top (Contains Trace Network -> Trace Funnel -> Trace Mem)
   if ((DST_SUPPORT == 1) || (NTRACE_SUPPORT == 1)) begin : trace_top_gen_blk
     dfd_trace_top #(
-        .NUM_CORES(TNIF_CONNECTIONS),  // Minimum 2 TNIFs
+        .NUM_CORES(TNIF_CONNECTIONS),  // Even Number 
         .NUM_ACTIVE_CORES(NUM_TRACE_AND_ANALYZER_INST),
         .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0]),
         .DATA_WIDTH_IN_BYTES(DATA_WIDTH_IN_BYTES),

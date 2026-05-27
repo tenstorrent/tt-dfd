@@ -16,7 +16,7 @@ module dfd_tb
   import dfd_CL_axi_pkg::*;
 #(
     parameter TEST = 1,
-    parameter NUM_TRACE_AND_ANALYZER_INST = 2
+    parameter NUM_TRACE_AND_ANALYZER_INST = 5
 ) ();
 
   // Clock and reset
