@@ -9,15 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Fixed 
+
+### Changed
+
+### Removed
+
+## [0.2.2] - 2026-05-27
+
+### Added
+
 - Added new section under [README.md](README.md) to reference integration guide and architecture documentation 
 
 ### Fixed 
 
 - Fixed DC elaboration issue in dfd_cross_connect.sv with loop var i
-
-### Changed
-
-### Removed
+- Fixed PARAMETER NUM_TRACE_AND_ANALYZER_INST to allow support for ODD values without throwing error on EDA toosl (caught in [Issue #21](https://github.com/tenstorrent/tt-dfd/issues/21))
 
 ## [0.2.1] - 2025-11-26
 
