@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2025 Tenstorrent AI ULC
+// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
 // SPDX-License-Identifier: Apache-2.0
 
 module tt_dfd_generic_ffs_N#(parameter DIR_L2H    = 1,              //Direction of Priority

@@ -15,6 +15,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [0.2.3] - 2026-06-03
+
+### Added
+
+- Added DST decoder under [scripts/dstdecoder](scripts/dstdecoder/). This tool can be used to decode the compressed DST packets back to the original traced data
+
+### Fixed 
+
+- Fixed copyright year to 2026
+
 ## [0.2.2] - 2026-05-27
 
 ### Added
