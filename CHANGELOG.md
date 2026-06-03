@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added DST decoder under [scripts/dstdecoder](scripts/dstdecoder/). This tool can be used to decode the compressed DST packets back to the original traced data
+
 ### Fixed 
 
 ### Changed

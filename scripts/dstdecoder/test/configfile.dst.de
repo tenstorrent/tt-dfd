@@ -1,0 +1,17 @@
+1    MajVecFetchInstrEn
+1    InWFQMode
+1    DispatchStallAndDE0Busy
+1    DispatchStall
+1    RestartDE
+1    InRetHandleRoutine
+1    de_ic_DeFetchStallAll_IC5
+1    UnUsed1
+3    WfiState
+3    DeIdleState
+2    UnUsed2
+8    DispSeqOpsHit_IC5
+8    XBarFetchVld_IC5
+8    IBufXBarInEn_IC5
+8    CgenInstrVld_IC5
+8    ExcepVldTherm_DE0
+8    KillDispVld_DE0 
