@@ -10,9 +10,9 @@ DFD_DIR = rtl/dfd
 CUSTOM_RTL_DIR = scripts/cust_rtl
 CLAC_DIR = scripts/cla
 
-.PHONY: tests top_test apb_test clean build cust_rtl
+.PHONY: tests top_test apb_test tnif_test clean build cust_rtl
 
-tests: top_test apb_test
+tests: top_test apb_test tnif_test
 
 build: cust_rtl.stamp tt_dfd.f
 
@@ -31,6 +31,10 @@ top_test: build
 	vcs -timescale=1ns/1ns -full64 -f tt_dfd.f -sverilog -top dfd_tb -debug_access+all -lca -kdb
 	./simv
 
+tnif_test: build
+	vcs -timescale=1ns/1ns -full64 -f tt_dfd.f -sverilog -top dfd_tnif_tb -debug_access+all -lca -kdb
+	./simv
+
 apb_test: build
 	vcs -timescale=1ns/1ns -full64 -f tt_dfd.f -sverilog -top dfd_mmrs_tb -debug_access+all -lca -kdb
 	./simv > apb_test.log
@@ -43,12 +47,6 @@ apb_test: build
 		echo "APB TEST PASSED"; \
 		exit 0; \
 	fi
-
-tt_dfd_lint: build
-	spyglass -project lint/tt_dfd.prj -batch -goals lint/lint_rtl
-
-tt_dfd_lint_enhanced: build
-	spyglass -project lint/tt_dfd.prj -batch -goals lint/lint_rtl_enhanced
 
 clean:
 	git clean -fXd

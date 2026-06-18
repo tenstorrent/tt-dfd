@@ -22,11 +22,15 @@ module dfd_tnif_tb
   import dfd_CL_axi_pkg::*;
 #(
     parameter TEST = 1,
-    parameter int unsigned NUM_TRACE_AND_ANALYZER_INST = 1
+    // Must be EVEN: the _notrace source block (TRACE_SUPPORT=0) sizes its TNIF to
+    // NUM_TRACE_AND_ANALYZER_INST, while the _tnif network block (TRACE_SUPPORT=1) rounds
+    // up to an even number. The two TNIF boundaries only have matching widths when
+    // NUM_TRACE_AND_ANALYZER_INST is already even (then NUM == even-rounded(NUM)).
+    parameter int unsigned NUM_TRACE_AND_ANALYZER_INST = 2
 ) ();
 
-  // TNIF_CONNECTIONS must match the formula used inside the variants so the bus widths
-  // line up on both sides of the boundary.
+  // TNIF_CONNECTIONS must match the (trace-supported) formula used inside the variants so
+  // the bus widths line up on both sides of the boundary.
   localparam int unsigned TNIF_CONNECTIONS =
       (NUM_TRACE_AND_ANALYZER_INST <= 1) ? 2 : ((NUM_TRACE_AND_ANALYZER_INST + 1) & ~1);
   localparam int unsigned TR_TNIF_DATA_WIDTH = 16 * 8;  // DATA_WIDTH_IN_BYTES * 8

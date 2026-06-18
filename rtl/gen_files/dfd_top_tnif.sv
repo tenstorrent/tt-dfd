@@ -26,7 +26,6 @@ module dfd_top_tnif
   import dfd_CL_axi_pkg::*;
 #(
     parameter int unsigned NUM_TRACE_AND_ANALYZER_INST = 1,
-    localparam int unsigned TNIF_CONNECTIONS = (NUM_TRACE_AND_ANALYZER_INST <= 1) ? 2 : ((NUM_TRACE_AND_ANALYZER_INST + 1) & ~1), // Even Number
 	parameter NTRACE_SUPPORT = 0,
 	parameter DST_SUPPORT = 0,
 	parameter CLA_SUPPORT = 0,
@@ -38,6 +37,7 @@ module dfd_top_tnif
     parameter mem_gen_pkg::MemCell_e SINK_CELL = mem_gen_pkg::mem_cell_undefined,
     parameter bit [DFD_APB_ADDR_WIDTH-1:0] BASE_ADDR = '0,
     parameter bit [DFD_APB_ADDR_WIDTH-1:0] TIMESYNC_ADDR_OFFSET = 'h200
+    ,localparam int unsigned TNIF_CONNECTIONS = TRACE_SUPPORT ? (NUM_TRACE_AND_ANALYZER_INST <= 1) ? 2 : ((NUM_TRACE_AND_ANALYZER_INST + 1) & ~1) : NUM_TRACE_AND_ANALYZER_INST
     ,localparam int unsigned TR_TNIF_DATA_WIDTH = 16 * 8  // DATA_WIDTH_IN_BYTES * 8
 ) (
     //Globals
@@ -414,14 +414,14 @@ module dfd_top_tnif
         .i_mem_tsel_settings(i_mem_tsel_settings),
 
         // Trace Network (TNIF Interface)
-        .TN_MS_Gnt   (tnif_tr_gnt_in),
-        .TN_MS_Dst_Bp  (tnif_dst_bp_in),
-        .TN_MS_Ntrace_Bp (tnif_ntr_bp_in),
-        .TN_MS_Dst_Flush (tnif_dst_flush_in),
-        .TN_MS_Ntrace_Flush (tnif_ntr_flush_in),
-        .MS_TN_Vld   (tnif_tr_vld_out),
-        .MS_TN_Src   (tnif_tr_src_out),
-        .MS_TN_Data   (tnif_tr_data_out),
+        .tnif_tr_gnt   (tnif_tr_gnt_in),
+        .tnif_dst_bp  (tnif_dst_bp_in),
+        .tnif_ntr_bp (tnif_ntr_bp_in),
+        .tnif_dst_flush (tnif_dst_flush_in),
+        .tnif_ntr_flush (tnif_ntr_flush_in),
+        .tnif_tr_vld   (tnif_tr_vld_out),
+        .tnif_tr_src   (tnif_tr_src_out),
+        .tnif_tr_data   (tnif_tr_data_out),
 
         // Trace DFD MMRs
         .TrCsrs  (DfdCsrs.TrCsrs),
