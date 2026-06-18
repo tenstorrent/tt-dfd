@@ -35,6 +35,7 @@ import dfd_dst_csr_pkg::*;
     parameter NTRACE_SUPPORT = 1,
     parameter DST_SUPPORT = 1,
     parameter CLA_SUPPORT = 1,
+    parameter TRACE_SUPPORT = 1,
     parameter NUM_TRACE_AND_ANALYZER_INST = 1,
     parameter BASE_ADDR = 23'h0,
     parameter TRC_SIZE_IN_B = 32'h8000
@@ -396,7 +397,7 @@ import dfd_dst_csr_pkg::*;
             assign CsrRdData_CLA = '0;
         end
 
-        if ((DST_SUPPORT == 1 )|| (NTRACE_SUPPORT == 1)) begin : tr_csr_gen_blk
+        if (TRACE_SUPPORT == 1) begin : tr_csr_gen_blk
             // --------------------------------------------------------------------------
             // WARL Checks for Trace RAM Start and Limit
             // --------------------------------------------------------------------------

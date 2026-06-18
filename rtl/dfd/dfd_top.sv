@@ -30,6 +30,7 @@ module dfd_top
     parameter bit NTRACE_SUPPORT = 1,  /* @@ KEEP - (NTRACE) {\tparameter NTRACE_SUPPORT = 0,} @@ */
     parameter bit DST_SUPPORT = 1,  /* @@ KEEP - (DST) {\tparameter DST_SUPPORT = 0,} @@ */
     parameter bit CLA_SUPPORT = 1,  /* @@ KEEP - (CLA) {\tparameter CLA_SUPPORT = 0,} @@ */
+    parameter bit TRACE_SUPPORT = 1,  /* @@ KEEP - (!NOTRACE) {\tparameter TRACE_SUPPORT = 0,} @@ */
     parameter bit INTERNAL_MMRS = 1,  /* @@ KEEP - (MMR) {\tparameter INTERNAL_MMRS = 0,} @@ */
     parameter int unsigned DEBUGMARKER_WIDTH = 8,  // CLA's Debug Marker Width
     parameter int unsigned TRC_SIZE_IN_KB = 16,
@@ -37,6 +38,9 @@ module dfd_top
     parameter mem_gen_pkg::MemCell_e SINK_CELL = mem_gen_pkg::mem_cell_undefined,
     parameter bit [DFD_APB_ADDR_WIDTH-1:0] BASE_ADDR = '0,
     parameter bit [DFD_APB_ADDR_WIDTH-1:0] TIMESYNC_ADDR_OFFSET = 'h200
+    /* @@ START - (NOTRACE | !(DST | NTRACE)) @@ */
+    ,localparam int unsigned TR_TNIF_DATA_WIDTH = 16 * 8  // DATA_WIDTH_IN_BYTES * 8
+    /* @@ END - (NOTRACE | !(DST | NTRACE)) @@ */
 ) (
     //Globals
     input logic clk,
@@ -116,7 +120,7 @@ module dfd_top
     input timestamp_s [NUM_TRACE_AND_ANALYZER_INST-1:0] CoreTime,  // Timestamp value for DST
     /* @@ END - (DST) @@ */
 
-    /* @@ START - (DST || NTRACE) @@ */
+    /* @@ START - (!NOTRACE) @@ */
     // TRACE
     // AXI Interface the External Memory
     output dfd_slv_axi_req_t TR_EXT_SlvReq,
@@ -125,7 +129,43 @@ module dfd_top
     // JTAG-AXI Control Interface for Trace
     input  dfd_tr_slv_axi_req_t JT_TR_SlvReq,
     output dfd_tr_slv_axi_rsp_t TR_JT_SlvResp,
-    /* @@ END - (DST || NTRACE) @@ */
+    /* @@ END - (!NOTRACE) @@ */
+
+    /* @@ START - (NOTRACE) @@ */
+    // TRACE (NOTRACE variant): the trace subsystem (dfd_trace_top network/funnel/mem,
+    // AXI memory interface, and Trace MMRs) is instantiated externally. Only the
+    // dfd_unit <-> trace-network (TNIF) interface crosses this boundary, mirroring the
+    // internal tnif_* nets (_i = into dfd_top, _o = out of dfd_top).
+    // verilint W240 off
+    input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_tr_gnt_i,
+    input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_dst_bp_i,
+    input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_ntr_bp_i,
+    input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_dst_flush_i,
+    input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_ntr_flush_i,
+    // verilint W240 on
+    output logic       [TNIF_CONNECTIONS-1:0]                          tnif_tr_vld_o,
+    output logic       [TNIF_CONNECTIONS-1:0]                          tnif_tr_src_o,
+    output logic       [TNIF_CONNECTIONS-1:0][TR_TNIF_DATA_WIDTH-1:0]  tnif_tr_data_o,
+    /* @@ END - (NOTRACE) @@ */
+
+    // TRACE (TNIF variant) ports: commented out in the template and exposed only when the
+    // _tnif variant is generated (TRACE_SUPPORT & !(DST | NTRACE)). The trace network/
+    // funnel/mem (dfd_trace_top) lives here, but the trace sources (DST/NTRACE dfd_units)
+    // are external, so the trace-network core-facing (TNIF) interface is exposed for an
+    // external _notrace block to drive. Directions mirror the _notrace variant's tnif_*
+    // ports (_o = out of dfd_top toward the external sources, _i = into dfd_top from them).
+    /* @@ START_UNC - ((!NOTRACE) & !(DST | NTRACE)) @@ */
+    //output logic       [TNIF_CONNECTIONS-1:0]                          tnif_tr_gnt_o,
+    //output logic       [TNIF_CONNECTIONS-1:0]                          tnif_dst_bp_o,
+    //output logic       [TNIF_CONNECTIONS-1:0]                          tnif_ntr_bp_o,
+    //output logic       [TNIF_CONNECTIONS-1:0]                          tnif_dst_flush_o,
+    //output logic       [TNIF_CONNECTIONS-1:0]                          tnif_ntr_flush_o,
+    //// verilint W240 off
+    //input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_tr_vld_i,
+    //input  logic       [TNIF_CONNECTIONS-1:0]                          tnif_tr_src_i,
+    //input  logic       [TNIF_CONNECTIONS-1:0][TR_TNIF_DATA_WIDTH-1:0]  tnif_tr_data_i,
+    //// verilint W240 on
+    /* @@ END_UNC - ((!NOTRACE) & !(DST | NTRACE)) @@ */
 
     /* @@ START - (!MMR) @@ */
     // External MMRs
@@ -201,14 +241,14 @@ module dfd_top
   //assign Priv = {NUM_TRACE_AND_ANALYZER_INST{PRIVMODE_USER}};
   //assign TrigControl = {NUM_TRACE_AND_ANALYZER_INST{TRIG_TRACE_NONE}};
   /* @@ END_UNC - (!NTRACE) @@ */
-  /* @@ START_UNC - (!(DST || NTRACE)) @@ */
+  /* @@ START_UNC - (NOTRACE) @@ */
   //dfd_slv_axi_req_t	TR_EXT_SlvReq;
   //dfd_slv_axi_rsp_t	EXT_TR_SlvResp;
   //dfd_tr_slv_axi_rsp_t	TR_JT_SlvResp;
   //dfd_tr_slv_axi_req_t	JT_TR_SlvReq;
   //assign JT_TR_SlvReq = '0;
   //assign EXT_TR_SlvResp = '0;
-  /* @@ END_UNC - (!(DST || NTRACE)) @@ */
+  /* @@ END_UNC - (NOTRACE) @@ */
   /* @@ START_UNC - (MMR) @@ */
   //DfdCsrs_s   		DfdCsrs_external;
   //DfdCsrsWr_s 		DfdCsrsWr_external;
@@ -246,6 +286,7 @@ module dfd_top
       .NTRACE_SUPPORT(NTRACE_SUPPORT),
       .DST_SUPPORT(DST_SUPPORT),
       .CLA_SUPPORT(CLA_SUPPORT),
+      .TRACE_SUPPORT(TRACE_SUPPORT),
       .NUM_TRACE_AND_ANALYZER_INST(NUM_TRACE_AND_ANALYZER_INST),
       .TRC_SIZE_IN_B(TRC_SIZE_IN_B),
       .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0])
@@ -438,6 +479,7 @@ module dfd_top
       end
     end
   end else begin
+    assign debug_bus_aligned                    = debug_bus;
     assign xtrigger_out                         = '0;
     assign external_action_halt_clock_out       = '0;
     assign external_action_halt_clock_local_out = '0;
@@ -454,6 +496,25 @@ module dfd_top
   end
 
 
+  // TNIF variant: the trace sources (DST/NTRACE dfd_units) are external. The block below
+  // binds the trace-network core-facing interface to the exposed TNIF ports (an external
+  // _notrace block drives the sources); no DST/NTRACE encoders or MMR write-backs exist
+  // locally. It is commented out in the template and activated only for _tnif variants,
+  // and is mutually exclusive with the dfd_unit_gen_blk loop (kept for all non-TNIF).
+  /* @@ START_UNC - ((!NOTRACE) & !(DST | NTRACE)) @@ */
+  //assign tnif_tr_vld_out     = tnif_tr_vld_i;
+  //assign tnif_tr_src_out     = tnif_tr_src_i;
+  //assign tnif_tr_data_out    = tnif_tr_data_i;
+  //assign tnif_tr_gnt_o       = tnif_tr_gnt_in;
+  //assign tnif_dst_bp_o       = tnif_dst_bp_in;
+  //assign tnif_ntr_bp_o       = tnif_ntr_bp_in;
+  //assign tnif_dst_flush_o    = tnif_dst_flush_in;
+  //assign tnif_ntr_flush_o    = tnif_ntr_flush_in;
+  //assign DfdCsrsWr.DstCsrsWr = '0;
+  //assign DfdCsrsWr.NtrCsrsWr = '0;
+  /* @@ END_UNC - ((!NOTRACE) & !(DST | NTRACE)) @@ */
+
+  /* @@ START - (NOTRACE | DST | NTRACE) @@ */
   for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : dfd_unit_gen_blk
     if (ii < NUM_TRACE_AND_ANALYZER_INST) begin : dfd_unit_real
       dfd_unit #(
@@ -507,9 +568,18 @@ module dfd_top
       assign DfdCsrsWr.NtrCsrsWr[ii] = '0;
     end
   end
+  /* @@ END - (NOTRACE | DST | NTRACE) @@ */
 
+  /* @@ START - (NOTRACE) @@ */
+  // NOTRACE: expose the trace network/funnel outputs to the external dfd_trace_top.
+  assign tnif_tr_vld_o  = tnif_tr_vld_out;
+  assign tnif_tr_src_o  = tnif_tr_src_out;
+  assign tnif_tr_data_o = tnif_tr_data_out;
+  /* @@ END - (NOTRACE) @@ */
   // Trace Top (Contains Trace Network -> Trace Funnel -> Trace Mem)
-  if ((DST_SUPPORT == 1) || (NTRACE_SUPPORT == 1)) begin : trace_top_gen_blk
+  // Presence of the trace subsystem (trace_top + trace MMRs) is gated solely by
+  // TRACE_SUPPORT; it is independent of DST_SUPPORT/NTRACE_SUPPORT.
+  if (TRACE_SUPPORT == 1) begin : trace_top_gen_blk
     dfd_trace_top #(
         .NUM_CORES(TNIF_CONNECTIONS),  // Even Number 
         .NUM_ACTIVE_CORES(NUM_TRACE_AND_ANALYZER_INST),
@@ -555,12 +625,17 @@ module dfd_top
         .tr_jt_mmr_rsp_data_i(),
         .tr_jt_mmr_rsp_vld_i ()
     );
-  end else begin
-    assign tnif_tr_gnt_in = '0;
-    assign tnif_dst_bp_in = '0;
-    assign tnif_ntr_bp_in = '0;
-    assign tnif_dst_flush_in = '0;
-    assign tnif_ntr_flush_in = '0;
+  /* @@ START - (NOTRACE) @@ */
+  end else begin : trace_extern_gen_blk
+    // NOTRACE: dfd_trace_top (network/funnel/mem + trace MMRs) lives outside this
+    // module; wire the dfd_unit <-> trace-network (TNIF) boundary to ports.
+    assign tnif_tr_gnt_in     = tnif_tr_gnt_i;
+    assign tnif_dst_bp_in     = tnif_dst_bp_i;
+    assign tnif_ntr_bp_in     = tnif_ntr_bp_i;
+    assign tnif_dst_flush_in  = tnif_dst_flush_i;
+    assign tnif_ntr_flush_in  = tnif_ntr_flush_i;
+    assign DfdCsrsWr.TrCsrsWr = '0;  // trace MMRs are external in notrace
+  /* @@ END - (NOTRACE) @@ */
   end
 
 endmodule

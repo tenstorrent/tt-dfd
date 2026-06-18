@@ -91,24 +91,27 @@ sources:
 - rtl/dfd/dfd_top.sv
 - target: dfd_cust_rtl
   files:
-  - rtl/gen_files/dfd_top_cla.sv
-  - rtl/gen_files/dfd_top_dst.sv
-  - rtl/gen_files/dfd_top_ntrace.sv
-  - rtl/gen_files/dfd_top_mmr.sv
-  - rtl/gen_files/dfd_top_cla_dst.sv
-  - rtl/gen_files/dfd_top_cla_ntrace.sv
-  - rtl/gen_files/dfd_top_cla_mmr.sv
-  - rtl/gen_files/dfd_top_dst_ntrace.sv
+  # Internal trace (DST/NTRACE encoders + trace network), all MMR
   - rtl/gen_files/dfd_top_dst_mmr.sv
   - rtl/gen_files/dfd_top_ntrace_mmr.sv
-  - rtl/gen_files/dfd_top_cla_dst_ntrace.sv
+  - rtl/gen_files/dfd_top_dst_ntrace_mmr.sv
   - rtl/gen_files/dfd_top_cla_dst_mmr.sv
   - rtl/gen_files/dfd_top_cla_ntrace_mmr.sv
-  - rtl/gen_files/dfd_top_dst_ntrace_mmr.sv
   - rtl/gen_files/dfd_top_cla_dst_ntrace_mmr.sv
+  ## NOTRACE (encoders only; trace network external), all MMR
+  - rtl/gen_files/dfd_top_dst_notrace_mmr.sv
+  - rtl/gen_files/dfd_top_ntrace_notrace_mmr.sv
+  - rtl/gen_files/dfd_top_dst_ntrace_notrace_mmr.sv
+  - rtl/gen_files/dfd_top_cla_dst_notrace_mmr.sv
+  - rtl/gen_files/dfd_top_cla_ntrace_notrace_mmr.sv
+  - rtl/gen_files/dfd_top_cla_dst_ntrace_notrace_mmr.sv
+  ## TNIF (trace network only; encoders external), all MMR
+  - rtl/gen_files/dfd_top_tnif.sv
+  - rtl/gen_files/dfd_top_cla_tnif.sv
 - target: dfd_dv
   files:
   - dv/dfd/dfd_tb.sv
   - dv/dfd/dfd_mmrs_tb.sv
+  - dv/dfd/dfd_tnif_tb.sv
 workspace:
   checkout_dir: deps

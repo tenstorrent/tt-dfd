@@ -9,11 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `TRACE_SUPPORT` parameter to `dfd_top` and `dfd_mmrs` to decouple the trace subsystem (and its trace MMRs) from `DST_SUPPORT`/`NTRACE_SUPPORT`.
+- Added new `_notrace` variants which don't include the trace network sink or funnel; the trace subsystem is instantiated externally and the core-facing trace-network (TNIF) interface is exposed on the module boundary as `tnif_*` ports.
+- Added new `_tnif` variants (e.g. `dfd_top_tnif`, `dfd_top_cla_tnif`) which contain only the trace network/funnel/mem with the DST/NTRACE encoders external. The TNIF ports are derived from `TRACE_SUPPORT & !(DST_SUPPORT || NTRACE_SUPPORT)` and are commented out in the template, exposed only when the `_tnif` variant is generated.
+- Added [dv/dfd/dfd_tnif_tb.sv](dv/dfd/dfd_tnif_tb.sv) connecting a `dfd_top_cla_ntrace_notrace_mmr` (trace sources) to a `dfd_top_tnif` (trace network) over the TNIF boundary to validate the split topology.
+
 ### Fixed 
+
+- Fixed Spyglass `W123` ("read but never set") for `debug_bus_aligned` in non-CLA variants by adding a passthrough assignment.
 
 ### Changed
 
+- All generated `dfd_top` variants are now MMR-enabled; [scripts/cust_rtl/process_all.sh](scripts/cust_rtl/process_all.sh) enumerates the explicit set of valid variants instead of every feature combination.
+
 ### Removed
+
+- Removed generation of non-MMR `dfd_top` variants (including the standalone `dfd_top_mmr`/`dfd_top_cla_mmr`), which were unsupported.
 
 ## [0.2.3] - 2026-06-03
 
