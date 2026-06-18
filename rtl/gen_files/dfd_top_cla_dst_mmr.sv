@@ -30,6 +30,7 @@ module dfd_top_cla_dst_mmr
 	parameter NTRACE_SUPPORT = 0,
     parameter bit DST_SUPPORT = 1,
     parameter bit CLA_SUPPORT = 1,
+    parameter bit TRACE_SUPPORT = 1,
     parameter bit INTERNAL_MMRS = 1,
     parameter int unsigned DEBUGMARKER_WIDTH = 8,  // CLA's Debug Marker Width
     parameter int unsigned TRC_SIZE_IN_KB = 16,
@@ -90,6 +91,13 @@ module dfd_top_cla_dst_mmr
     // JTAG-AXI Control Interface for Trace
     input  dfd_tr_slv_axi_req_t JT_TR_SlvReq,
     output dfd_tr_slv_axi_rsp_t TR_JT_SlvResp,
+
+    // TRACE (TNIF variant) ports: commented out in the template and exposed only when the
+    // _tnif variant is generated (TRACE_SUPPORT & !(DST | NTRACE)). The trace network/
+    // funnel/mem (dfd_trace_top) lives here, but the trace sources (DST/NTRACE dfd_units)
+    // are external, so the trace-network core-facing (TNIF) interface is exposed for an
+    // external _notrace block to drive. Directions mirror the _notrace variant's tnif_*
+    // ports (_o = out of dfd_top toward the external sources, _i = into dfd_top from them).
 
     // APB Interface
     input  logic [ DFD_APB_ADDR_WIDTH-1:0] paddr,
@@ -167,6 +175,7 @@ module dfd_top_cla_dst_mmr
       .NTRACE_SUPPORT(NTRACE_SUPPORT),
       .DST_SUPPORT(DST_SUPPORT),
       .CLA_SUPPORT(CLA_SUPPORT),
+      .TRACE_SUPPORT(TRACE_SUPPORT),
       .NUM_TRACE_AND_ANALYZER_INST(NUM_TRACE_AND_ANALYZER_INST),
       .TRC_SIZE_IN_B(TRC_SIZE_IN_B),
       .BASE_ADDR(BASE_ADDR[DFD_APB_ADDR_WIDTH-1:0])
@@ -359,6 +368,7 @@ module dfd_top_cla_dst_mmr
       end
     end
   end else begin
+    assign debug_bus_aligned                    = debug_bus;
     assign xtrigger_out                         = '0;
     assign external_action_halt_clock_out       = '0;
     assign external_action_halt_clock_local_out = '0;
@@ -373,6 +383,12 @@ module dfd_top_cla_dst_mmr
 
     assign DfdCsrsWr.ClaCsrsWr                  = '0;
   end
+
+  // TNIF variant: the trace sources (DST/NTRACE dfd_units) are external. The block below
+  // binds the trace-network core-facing interface to the exposed TNIF ports (an external
+  // _notrace block drives the sources); no DST/NTRACE encoders or MMR write-backs exist
+  // locally. It is commented out in the template and activated only for _tnif variants,
+  // and is mutually exclusive with the dfd_unit_gen_blk loop (kept for all non-TNIF).
 
   for (genvar ii = 0; ii < MAX_NUM_TRACE_INST; ii++) begin : dfd_unit_gen_blk
     if (ii < NUM_TRACE_AND_ANALYZER_INST) begin : dfd_unit_real
@@ -429,7 +445,9 @@ module dfd_top_cla_dst_mmr
   end
 
   // Trace Top (Contains Trace Network -> Trace Funnel -> Trace Mem)
-  if ((DST_SUPPORT == 1) || (NTRACE_SUPPORT == 1)) begin : trace_top_gen_blk
+  // Presence of the trace subsystem (trace_top + trace MMRs) is gated solely by
+  // TRACE_SUPPORT; it is independent of DST_SUPPORT/NTRACE_SUPPORT.
+  if (TRACE_SUPPORT == 1) begin : trace_top_gen_blk
     dfd_trace_top #(
         .NUM_CORES(TNIF_CONNECTIONS),  // Even Number
         .NUM_ACTIVE_CORES(NUM_TRACE_AND_ANALYZER_INST),
@@ -475,12 +493,6 @@ module dfd_top_cla_dst_mmr
         .tr_jt_mmr_rsp_data_i(),
         .tr_jt_mmr_rsp_vld_i ()
     );
-  end else begin
-    assign tnif_tr_gnt_in = '0;
-    assign tnif_dst_bp_in = '0;
-    assign tnif_ntr_bp_in = '0;
-    assign tnif_dst_flush_in = '0;
-    assign tnif_ntr_flush_in = '0;
   end
 
 endmodule

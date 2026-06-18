@@ -1,0 +1,6 @@
+INPUT@@/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/dfd_top/lint/lint_rtl/spyglass_reports@@/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/html_reports/data_files/@@dfd_top@@lint-lint_rtl@@
+COPY@@/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/dfd_top/lint/lint_rtl/spyglass_reports/waiver.rpt@@data_files/dfd_top_lint-lint_rtl_waiver.rpt@@
+COPY@@/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/dfd_top/lint/lint_rtl/spyglass_reports/moresimple.rpt@@data_files/dfd_top_lint-lint_rtl_moresimple.rpt@@
+COPY@@/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/dfd_top/lint/lint_rtl/spyglass_reports/no_msg_reporting_rules.rpt@@data_files/dfd_top_lint-lint_rtl_no_msg_reporting_rules.rpt@@
+PROCESS@@lint@@SpyGlass@@morelint
+COPY@@/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/dfd_top/lint/lint_rtl/spyglass.log@@data_files/dfd_top_lint-lint_rtl_spyglass.log@@

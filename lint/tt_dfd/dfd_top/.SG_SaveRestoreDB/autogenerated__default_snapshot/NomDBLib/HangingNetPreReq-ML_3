@@ -1,0 +1,195 @@
+#delibOpen WORK_rr_arb_tree_2_32_0_1_1_1_1_STRUCT_9x0_LOGIC_51x0_LOGIC_7x0_LOGIC_2x0_LOGIC_sm_12_\gen_arbiter.gen_int_rr.gen_fair_arb.i_lzc_lower _empty_o
+#delibOpen WORK_rr_arb_tree_2_32_0_1_1_1_1_STRUCT_9x0_LOGIC_51x0_LOGIC_7x0_LOGIC_2x0_LOGIC_sm_9_\gen_arbiter.gen_int_rr.gen_fair_arb.i_lzc_lower _empty_o
+#delibOpen axi_mux_\gen_mux.i_aw_arbiter _idx_o
+#delibOpen axi_mux_\gen_mux.i_w_fifo _usage_o
+#delibOpen axi_mux_\gen_mux.i_ar_arbiter _idx_o
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[0].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[1].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[2].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[3].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[4].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[5].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[6].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_reg_mem_shut_down_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_reg_mem_deep_sleep_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_reg_mem_diode_bypass_mode
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_mem_dft_bypass_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_mem_scan_enable
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_mem_scan_in_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _i_mem_scan_in_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _o_mem_scan_out_left
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _o_mem_scan_out_right
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _o_mem_pudelay_shut_down
+#delibOpen dfd_trace_mem_sink_\TrcSinkCells[7].TrcSinkRam _o_mem_pudelay_deep_sleep
+#delibOpen dfd_trace_sink_ff_dst_framestart_data_out
+#delibOpen dfd_trace_sink_ff_dst_framestart_req_out_therm
+#delibOpen dfd_trace_sink_ff_dst_framestart_enc_req_out
+#delibOpen dfd_trace_sink_ff_ntr_framestart_data_out
+#delibOpen dfd_trace_sink_ff_ntr_framestart_req_out_therm
+#delibOpen dfd_trace_sink_ff_ntr_framestart_enc_req_out
+#delibOpen dfd_trace_sink_TrRamPendWrEn_ffsN_req_sum
+#delibOpen dfd_trace_sink_TrRamPendWrEn_ffsN_data_out
+#delibOpen dfd_trace_sink_TrRamPendWrEn_ffsN_enc_req_out
+#delibOpen dfd_trace_funnel_i_vidtopid_ntrace_disinput_pid
+#delibOpen dfd_trace_funnel_i_vidtopid_ntrace_disinput_map_avail
+#delibOpen dfd_trace_funnel_i_vidtopid_dst_disinput_pid
+#delibOpen dfd_trace_funnel_i_vidtopid_dst_disinput_map_avail
+#delibOpen WORK_dfd_packetizer_64_32_16_11_32_frame_filler_instance_flush_mode_exit
+#delibOpen WORK_dfd_packetizer_64_32_16_11_32_fifo_instance_o_broadside_data
+#delibOpen WORK_dfd_packetizer_64_32_16_11_32_fifo_instance_o_rdptr
+#delibOpen WORK_dfd_packetizer_64_32_16_11_32_fifo_instance_o_wrptr
+#delibOpen dfd_te_encoder_\genblk3[0].ff_icnt _data_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_icnt _req_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_icnt _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[0].ff_faddr _data_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_faddr _req_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_faddr _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[0].ff_uaddr _data_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_uaddr _req_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_uaddr _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[0].ff_hist _data_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_hist _req_out
+#delibOpen dfd_te_encoder_\genblk3[0].ff_hist _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[1].ff_icnt _data_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_icnt _req_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_icnt _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[1].ff_faddr _data_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_faddr _req_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_faddr _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[1].ff_uaddr _data_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_uaddr _req_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_uaddr _req_out_therm
+#delibOpen dfd_te_encoder_\genblk3[1].ff_hist _data_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_hist _req_out
+#delibOpen dfd_te_encoder_\genblk3[1].ff_hist _req_out_therm
+#delibOpen dfd_te_encoder_ff_hist_data_out
+#delibOpen dfd_te_encoder_ff_hist_req_out
+#delibOpen dfd_te_encoder_ff_hist_req_out_therm
+#delibOpen dfd_te_encoder_ff_bcnt_data_out
+#delibOpen dfd_te_encoder_ff_bcnt_req_out
+#delibOpen dfd_te_encoder_ff_bcnt_req_out_therm
+#delibOpen dfd_te_encoder_ff_process_context_data_out
+#delibOpen dfd_te_encoder_ff_process_context_req_out
+#delibOpen dfd_te_encoder_ff_process_context_req_out_therm
+#delibOpen dfd_te_encoder_ff_tval_to_report_data_out
+#delibOpen dfd_te_encoder_ff_tval_to_report_req_out
+#delibOpen dfd_te_encoder_ff_tval_to_report_req_out_therm
+#delibOpen dfd_te_encoder_ff_tstamp_data_out
+#delibOpen dfd_te_encoder_ff_tstamp_req_out
+#delibOpen dfd_te_encoder_ff_tstamp_req_out_therm
+#delibOpen dfd_te_encoder_ff_stop_tstamp_data_out
+#delibOpen dfd_te_encoder_ff_stop_tstamp_req_out
+#delibOpen dfd_te_encoder_ff_stop_tstamp_req_out_therm
+#delibOpen dfd_te_encoder_ff_aux_ibh_uaddr_data_out
+#delibOpen dfd_te_encoder_ff_aux_ibh_uaddr_req_out
+#delibOpen dfd_te_encoder_ff_aux_ibh_uaddr_req_out_therm
+#delibOpen dfd_te_encoder_ff_aux_ibh_icount_data_out
+#delibOpen dfd_te_encoder_ff_aux_ibh_icount_req_out
+#delibOpen dfd_te_encoder_ff_aux_ibh_icount_req_out_therm
+#delibOpen dfd_te_encoder_Find_Packet_Writes_TE1_req_out
+#delibOpen dfd_te_encoder_Find_Packet_Writes_TE1_enc_req_out
+#delibOpen dfd_te_encoder_pkt_buffer_o_broadside_data
+#delibOpen dfd_te_encoder_pkt_buffer_o_rdptr
+#delibOpen dfd_te_encoder_pkt_buffer_o_wrptr
+#delibOpen WORK_dfd_packetizer_64_10_16_9_32_frame_filler_instance_flush_mode_exit
+#delibOpen WORK_dfd_packetizer_64_10_16_9_32_fifo_instance_o_broadside_data
+#delibOpen WORK_dfd_packetizer_64_10_16_9_32_fifo_instance_o_rdptr
+#delibOpen WORK_dfd_packetizer_64_10_16_9_32_fifo_instance_o_wrptr
+#delibOpen dfd_unit_\genblk2.n_trace_packetizer _stream_full
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.u_dfd_top_mmr _CsrWrReady
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.u_dfd_top_mmr _CsrHitList
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.u_dfd_top_mmr _CsrUpdateEn
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.u_dfd_top_mmr _CsrUpdateAddr
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.u_dfd_top_mmr _CsrUpdateData
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.ntr_csr_gen_blk.ntr_csr_inst[0].genblk1.u_ntr_csr _CsrWrReady
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.ntr_csr_gen_blk.ntr_csr_inst[0].genblk1.u_ntr_csr _CsrHitList
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.ntr_csr_gen_blk.ntr_csr_inst[0].genblk1.u_ntr_csr _CsrUpdateEn
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.ntr_csr_gen_blk.ntr_csr_inst[0].genblk1.u_ntr_csr _CsrUpdateAddr
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.ntr_csr_gen_blk.ntr_csr_inst[0].genblk1.u_ntr_csr _CsrUpdateData
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.dst_csr_gen_blk.dst_csr_inst[0].genblk1.u_dst_csr _CsrWrReady
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.dst_csr_gen_blk.dst_csr_inst[0].genblk1.u_dst_csr _CsrHitList
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.dst_csr_gen_blk.dst_csr_inst[0].genblk1.u_dst_csr _CsrUpdateEn
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.dst_csr_gen_blk.dst_csr_inst[0].genblk1.u_dst_csr _CsrUpdateAddr
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.dst_csr_gen_blk.dst_csr_inst[0].genblk1.u_dst_csr _CsrUpdateData
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.cla_csr_gen_blk.cla_csr_inst[0].genblk1.u_cla_mmr _CsrWrReady
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.cla_csr_gen_blk.cla_csr_inst[0].genblk1.u_cla_mmr _CsrHitList
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.cla_csr_gen_blk.cla_csr_inst[0].genblk1.u_cla_mmr _CsrUpdateEn
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.cla_csr_gen_blk.cla_csr_inst[0].genblk1.u_cla_mmr _CsrUpdateAddr
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.cla_csr_gen_blk.cla_csr_inst[0].genblk1.u_cla_mmr _CsrUpdateData
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.tr_csr_gen_blk.trace_sink_mmr _CsrWrReady
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.tr_csr_gen_blk.trace_sink_mmr _CsrHitList
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.tr_csr_gen_blk.trace_sink_mmr _CsrUpdateEn
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.tr_csr_gen_blk.trace_sink_mmr _CsrUpdateAddr
+#delibOpen dfd_mmrs_\gen_internal_mmrs_blk.tr_csr_gen_blk.trace_sink_mmr _CsrUpdateData
+#delibOpen dfd_top_\trace_top_gen_blk.u_trace_top _tr_jt_mmr_rsp_data_i
+#delibOpen dfd_top_\trace_top_gen_blk.u_trace_top _tr_jt_mmr_rsp_vld_i

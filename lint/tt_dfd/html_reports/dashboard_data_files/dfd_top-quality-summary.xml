@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <goals xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="file:///Dashboard/GoalSummaryGraph.xsd">
+<!-- This file schema is internal to SpyGlass DashBoard and subject to change in future without notice --> 
+<severity name="Fatal" color="11350115" />
+<severity name="Error" color="16711680" />
+<severity name="Warning" color="15696483" />
+ <goal name="lint_rtl" Fatal="0" Error="0" Warning="325" />
+	<title>Block : dfd_top (Unresolved Violations) </title>
+	<xaxis_label>Goals</xaxis_label>
+	<yaxis_label>Violation Count</yaxis_label>
+</goals>

@@ -1,0 +1,138 @@
+IO Definitions
+Pin,Direction,Range,Type,Reference Clock,Registered,Internally Synchronized,IO Delay,Mode,Description
+Active,OUTPUT,,-,-,Yes,-,,,-
+Backpressure,OUTPUT,,-,-,Yes,-,,,-
+Context,INPUT,[31:0],-,-,No,-,,,-
+CoreTime,INPUT,,-,-,Yes,-,,,Timestamp value for DST
+DfdCsrsWr_external,OUTPUT,,-,-,Yes,-,,,-
+DfdCsrs_external,INPUT,,-,-,Yes,-,,,External MMRs
+EXT_TR_SlvResp,INPUT,,-,-,Yes,-,,,-
+Error,INPUT,,-,-,No,-,,,-
+IAddr,INPUT,[125:0],-,-,No,-,,,-
+ILastSize,INPUT,[1:0],-,-,No,-,,,-
+IRetire,INPUT,[9:0],-,-,No,-,,,NTRACE
+IType,INPUT,[5:0],-,-,No,-,,,-
+JT_TR_SlvReq,INPUT,,-,-,Yes,-,,,JTAG-AXI Control Interface for T...
+Priv,INPUT,,-,-,No,-,,,-
+StallModeEn,OUTPUT,,-,-,Yes,-,,,-
+StartStop,OUTPUT,,-,-,Yes,-,,,-
+TR_EXT_SlvReq,OUTPUT,,-,-,Yes,-,,,AXI Interface the External Memory
+TR_JT_SlvResp,OUTPUT,,-,-,Yes,-,,,-
+Time_Tick,INPUT,,-,-,No,-,,,Cluster clock reference time tick
+TrigControl,INPUT,,-,-,No,-,,,-
+Tstamp,INPUT,[63:0],-,-,No,-,,,-
+Tval,INPUT,[63:0],-,-,No,-,,,-
+cla_debug_marker,OUTPUT,[7:0],-,-,Yes,-,,,Debug marker to use in debugbus
+clk,INPUT,,-,-,Yes,-,,,Globals
+cold_reset_n,INPUT,,-,-,No,-,,,-
+external_action_custom,OUTPUT,[15:0],-,-,Yes,-,,,-
+external_action_debug_interrupt_out,OUTPUT,,-,-,Yes,-,,,-
+external_action_halt_clock_local_out,OUTPUT,,-,-,Yes,-,,,-
+external_action_halt_clock_out,OUTPUT,,-,-,Yes,-,,,-
+external_action_toggle_gpio_out,OUTPUT,,-,-,Yes,-,,,-
+external_action_trace_pulse,OUTPUT,,-,-,Yes,-,,,So CLA can notify other Ntrace/D...
+external_action_trace_start,OUTPUT,,-,-,Yes,-,,,So CLA can notify other Ntrace/D...
+external_action_trace_stop,OUTPUT,,-,-,Yes,-,,,So CLA can notify other Ntrace/D...
+external_cla_action_trace_pulse,INPUT,,-,-,No,-,,,-
+external_cla_action_trace_start,INPUT,,-,-,No,-,,,verilint W240 off
+external_cla_action_trace_stop,INPUT,,-,-,No,-,,,-
+hw0,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw1,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw10,INPUT,[15:0],-,-,No,-,,,-
+hw11,INPUT,[15:0],-,-,No,-,,,-
+hw12,INPUT,[15:0],-,-,No,-,,,-
+hw13,INPUT,[15:0],-,-,No,-,,,-
+hw14,INPUT,[15:0],-,-,No,-,,,-
+hw15,INPUT,[15:0],-,-,No,-,,,-
+hw2,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw3,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw4,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw5,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw6,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw7,INPUT,[15:0],-,-,No,-,,,DEBUG MUX SIGNALS
+hw8,INPUT,[15:0],-,-,No,-,,,-
+hw9,INPUT,[15:0],-,-,No,-,,,-
+i_mem_tsel_settings,INPUT,[10:0],-,-,No,-,,,-
+paddr,INPUT,[22:0],-,-,No,-,,,APB Interface
+penable,INPUT,,-,-,No,-,,,-
+prdata,OUTPUT,[31:0],-,-,No,-,,,-
+pready,OUTPUT,,-,-,No,-,,,-
+psel,INPUT,,-,-,No,-,,,-
+pslverr,OUTPUT,,-,-,No,-,,,-
+pstrb,INPUT,[3:0],-,-,No,-,,,-
+pwdata,INPUT,[31:0],-,-,No,-,,,-
+pwrite,INPUT,,-,-,No,-,,,-
+reset_n,INPUT,,-,-,Yes,-,,,-
+reset_n_warm_ovrride,INPUT,,-,-,No,-,,,-
+time_match_event,INPUT,,-,-,No,-,,,When time matches the time match...
+timesync_cla_timestamp,OUTPUT,,-,-,Yes,-,,,-
+tnif_dst_bp_i,INPUT,[1:0],-,-,No,-,,,-
+tnif_dst_flush_i,INPUT,[1:0],-,-,No,-,,,-
+tnif_ntr_bp_i,INPUT,[1:0],-,-,No,-,,,-
+tnif_ntr_flush_i,INPUT,[1:0],-,-,No,-,,,-
+tnif_tr_data_o,OUTPUT,[255:0],-,-,No,-,,,-
+tnif_tr_gnt_i,INPUT,[1:0],-,-,No,-,,,verilint W240 off
+tnif_tr_src_o,OUTPUT,[1:0],-,-,No,-,,,-
+tnif_tr_vld_o,OUTPUT,[1:0],-,-,No,-,,,verilint W240 on
+xtrigger_in,INPUT,[1:0],-,-,No,-,,,CLA
+xtrigger_out,OUTPUT,[1:0],-,-,Yes,-,,,-
+*** Port clock info not available. Please refer to documentation for help
+*** Input/Output delay information unavailable. Please refer to documentation for help
+
+ Clock Trees
+
+Power 
+Technology - 
+Register bit width threshold for clock gating - 
+Registers enabled with clock gating -  (Total -) 
+Number of non gated registers - 
+Clock Gating percentage -% 
+Clock Gating efficiency -% 
+Annotation percentage -% 
+Inferred clock gating percentage -% 
+Number of registers with new enable(ODC) - 
+Number of registers with new enable(STC) - 
+Number of registers with stronger enable(ODC) - 
+Number of registers with stronger enable(STC) - 
+Leakage Power,Internal Power,Switching Power,Total Power,Power Savings
+-,-,-,-,-
+
+Power Clocks
+
+Potential Table
+
+Number of Registers (CGE v/s ROADF table)
+
+ VCLP Power Domain Statistics 
+Current Scope,Element Count,Level Shifter Strategies,Repeater Strategies,Isolation Strategies,Retention Strategies,Power Switch Strategies,Power,Ground,Pwell,Nwell
+*** VCLP PowerDomainStats data not available. Please refer to documentation for help
+
+ VCLP UPF Statistics 
+Statistics,Value
+*** VCLP UPFStats data not available. Please refer to documentation for help
+
+Constraints
+Ports constrained -% 
+Registers constrained -% 
+Exception Type,Total Number of exceptions
+*** Constraints data not available. Please refer to documentation for help
+*** FP/MCP data not available.Please refer to documentation for help
+
+Testability 
+*** Undetected Faults data not available.
+*** Transition Faults data not available. Please refer to documentation for help
+Testability,Fault Coverage,Test Coverage
+Stuck-at Test,-%,-% 
+Transition Fault,-%,-% 
+
+Design Statistics
+*** Gate counts not available. Please refer to documentation for help
+*** Audit counts not available. Please refer to documentation for help
+Statistic,Count
+Synthesizable gates (NAND2 equivalent),-
+Registers,-
+Latches,-
+Tristates,-
+
+Black Boxes (Analog, Mixed-Signal, Memory, Custom IP)
+Name,Number of Ports

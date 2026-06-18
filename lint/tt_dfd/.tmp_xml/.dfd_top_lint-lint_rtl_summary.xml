@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<goal_summary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="file://Dashboard/goal_xml.xsd">
+<!-- This file schema is internal to Atrenta DashBoard and subject to change in future without notice --> 
+<goal name="lint/lint_rtl"/>
+<top name="dfd_top"/>
+<dir name="/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/consolidated_reports/dfd_top_lint_lint_rtl/"/>
+<log name="/proj_risc/user_dev/joeychen/projects/tt-dfd/lint/tt_dfd/dfd_top/lint/lint_rtl/spyglass.log" link="data_files/dfd_top_lint-lint_rtl_spyglass.log"/>
+  <std_reports> 
+<report name="Waiver" link="data_files/dfd_top_lint-lint_rtl_waiver.rpt" tooltip="waiver.rpt" />
+<report name="moresimple" link="data_files/dfd_top_lint-lint_rtl_moresimple.rpt" tooltip="moresimple.rpt" />
+<report name="no_msg_reporting_rules" link="data_files/dfd_top_lint-lint_rtl_no_msg_reporting_rules.rpt" tooltip="no_msg_reporting_rules.rpt" />
+  </std_reports> 
+<tech_reports> 
+   <technology name="(Not Available)"> 
+   </technology> 
+</tech_reports> 
+<statistics fatal="0" error="0" warning="325" info="8208" waived_error="0" waived_warning="56" waived_info="0" /> 
+<tech_summary> 
+</tech_summary> 
+</goal_summary> 

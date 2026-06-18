@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>SpyGlass Reports</title>
+	<link class="include" rel="stylesheet" type="text/css" href="./css/jquery.jqplot.min.css">
+	<link type="text/css" href="./css/south-street/jquery-ui-1.8.22.custom.css" rel="stylesheet"/>
+	
+	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="js/excanvas.js"></script><![endif]-->
+	<script type="text/javascript" src="./js/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="./js/jquery-ui-1.8.22.custom.min.js"></script>
+	
+	<!--this file contains tack to add close button on tabs only after 3rd tab onwards-->
+	<script type="text/javascript" src="./js/ui.tabs.closable1.js"></script>
+	
+	<script src="./js/jquery.qtip-1.0.0-rc3.min.js" type="text/javascript"></script>
+	
+	<!--SpyGlass files-->
+	<script src="./js/browser.js" type="text/javascript"></script>
+	<script src="./js/configuration.js" type="text/javascript"></script>
+	<script src="./js/factory_functions.js" type="text/javascript"></script>
+	<script src="./js/report_layout_functions.js" type="text/javascript"></script>	
+	<!--SpyGlass  files-->
+	
+	
+	
+	<script type="text/javascript">
+	
+		$(document).ready(function(){
+			checkConfiguration();
+			
+			var report_file_to_open;
+			
+			if(strstr(getParameterByName("goal"), "data_files", false)){
+				report_file_to_open=getParameterByName("goal");
+			}else {
+				report_file_to_open="data_files/"+getParameterByName("goal");
+			}
+			
+		
+			if(false===isBrowserIncompatible){
+				
+				
+				if(getParameterByName("goal")!=""){
+					
+					drawMainHeader("cntMainHeader");//div name in which header will append
+					drawMainTabs("cntMainTabs");						
+					
+					var strTabSummary=XMLToString(getFileContents(report_file_to_open));
+					var xmlDocTabSummary = $($.parseXML(strTabSummary));
+					tab_content=getReportTabContent(xmlDocTabSummary);
+					
+					
+					var goal_name=xmlDocTabSummary.find("goal").attr("name");
+					var top_name=xmlDocTabSummary.find("top").attr("name");
+					updateMainHeaderDescription("Design Top: "+top_name);
+					createTab("1", goal_name,tab_content);
+				}
+				
+				
+				
+				
+				else if(getParameterByName("goalname")!=""){
+					
+					drawMainHeaderWithSelectBox("cntMainHeader");//div name in which header will append
+					drawMainTabs("cntMainTabs");
+					
+					var strTopSummary=XMLToString(getFileContents("data_files/html_top.xml"));
+					var xmlDocTopSummary = $($.parseXML(strTopSummary));
+					var design_top=$(xmlDocTopSummary).find("top").attr("name");
+					updateMainHeaderDescription("Design Top: "+design_top);
+					//now finding all the goals
+					var tmp_counter=0;
+					var chosen_select_index=1;
+					$(xmlDocTopSummary).find('goals').find('goal').each(function(){
+						tmp_counter++;
+						if($(this).attr('name')==getParameterByName("goalname")){
+							var strTabSummary=XMLToString(getFileContents($(this).attr('link')));
+							var xmlDocTabSummary = $($.parseXML(strTabSummary));
+							tab_content=getReportTabContent(xmlDocTabSummary);
+							createTab(tmp_counter, $(this).attr('name'),tab_content);
+							chosen_select_index=tmp_counter;
+						}
+						$('#selGoalNames').append($('<option>', {
+							value: tmp_counter,
+							text: $(this).attr('name')
+						}));
+						
+						//alert($(this).attr('name'));
+					});//foreach create tab
+					
+					//now.. choose the select box
+					$("#selGoalNames").val(chosen_select_index);
+					var tabContainerId="cntMainTabs";
+					var tabId="#tb-1";
+					var index = $('#cntMainTabs a[href="'+tabId+'"]').parent().index();
+					$('#cntMainTabs').tabs("select", index);
+				
+				}//if goalname is not set
+				
+				
+				
+				
+				
+				
+				
+				else{
+					
+					drawMainHeaderWithSelectBox("cntMainHeader");//div name in which header will append
+					drawMainTabs("cntMainTabs");
+					
+					var strTopSummary=XMLToString(getFileContents("data_files/html_top.xml"));
+					var xmlDocTopSummary = $($.parseXML(strTopSummary));
+					var design_top=$(xmlDocTopSummary).find("top").attr("name");
+					updateMainHeaderDescription("Design Top: "+design_top);
+					//now finding all the goals
+					var tmp_counter=0;
+					$(xmlDocTopSummary).find('goals').find('goal').each(function(){
+						tmp_counter++;
+						if(tmp_counter==1){
+							var strTabSummary=XMLToString(getFileContents($(this).attr('link')));
+							var xmlDocTabSummary = $($.parseXML(strTabSummary));
+							tab_content=getReportTabContent(xmlDocTabSummary);
+							createTab(tmp_counter, $(this).attr('name'),tab_content);
+						}
+						$('#selGoalNames').append($('<option>', {
+							value: tmp_counter,
+							text: $(this).attr('name')
+						}));
+						
+						//alert($(this).attr('name'));
+					});//foreach create tab
+					
+					//now.. choose first tab
+					var tabContainerId="cntMainTabs";
+					var tabId="#tb-1";
+					var index = $('#cntMainTabs a[href="'+tabId+'"]').parent().index();
+					$('#cntMainTabs').tabs("select", index);
+				
+				}//if goalname is not set
+			}// if browser is compatible
+			
+			
+			
+			$("#selGoalNames").change(function() {
+				var tabContainerId="cntMainTabs";
+				var tabId="#tb-" + $(this).val();
+				
+				var goal_filenamekey=$(this).val() - 1;
+				
+				goal_filename=$(xmlDocTopSummary).find('goals').find('goal').eq(goal_filenamekey).attr("link");
+				goal_title=$(xmlDocTopSummary).find('goals').find('goal').eq(goal_filenamekey).attr("name");
+				//var strTabSummary=XMLToString(getFileContents($(this).attr('link')));
+				var strTabSummary=XMLToString(getFileContents(goal_filename));
+				var xmlDocTabSummary = $($.parseXML(strTabSummary));
+				tab_content=getReportTabContent(xmlDocTabSummary);
+				createTab($(this).val(), goal_title,tab_content);
+				
+				
+				/*
+				var index = $('#'+tabContainerId+' a[href="'+tabId+'"]').parent().index();
+				$('#'+tabContainerId).tabs("select", index);
+				*/
+			});
+			
+			
+			$("a[title]").qtip({
+				style: 
+					{ 
+						name: 'dark', 
+						tip: true, 
+						border: {width: 1}
+					},
+					position: {
+						corner: {
+							target: 'bottomMiddle',
+							tooltip: 'topMiddle'
+						}
+					}
+			});
+			
+		
+		});//document.ready ends
+		
+		
+		function getReportTabContent(xmlObj){
+			var tabContent="";
+			var goal_name=$(xmlObj).find('goal').attr("name");
+			var top_name=$(xmlObj).find('top').attr("name");
+			var dir_name=$(xmlObj).find('dir').attr("name");
+			var log_name=$(xmlObj).find('log').attr("name");
+			var log_link=$(xmlObj).find('log').attr("link");
+			
+			tabContent+="<div style=\"padding:0px 30px;font-size:13px;\">";
+			
+			tabContent+="<div style=\"padding:10px 5px;border:1px solid #CCCCCC;background-color:#F9F8F4;width:70%\">";
+			tabContent+="<h1 class=\"bigger green\">Result Summary</h1>";
+			tabContent+="<div><strong>Goal Run:</strong> "+goal_name+"</div>";			
+			tabContent+="<div><strong>Top module:</strong> "+top_name+"</div>";
+			tabContent+="<div><strong>Report Directory:</strong> "+dir_name+"</div>";
+			tabContent+="<div><strong>Log File:</strong> <a href=\""+log_link+"\" target=\"_blank\">"+log_name+"</a>&nbsp;</div>";
+			tabContent+="</div>";
+			
+			
+			tabContent+="<h1 class=\"bigger green\">Standard Reports</h1>";
+			$(xmlObj).find('std_reports').find('report').each(function(){
+				if($(this).attr('link')!=""){
+					var filePathExt=getFileExtensionByPath($(this).attr('link'));
+					if(filePathExt=="xml"){
+						tabContent+="<a href=\"report.html?goal="+$(this).attr('link')+"\" target=\"_blank\" title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</a>";
+					}else if(filePathExt=="csv"){
+						tabContent+="<a href=\"csv_reader.html?report="+$(this).attr('link')+"\" target=\"_blank\" title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</a>";
+					}//if file path is  xml type
+					else{
+						tabContent+="<a href=\""+$(this).attr('link')+"\" target=\"_blank\" title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</a>";
+					}//if file path is not xml type
+				}else{
+					tabContent+="<span title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</span>";
+				}
+				tabContent+="&nbsp;&nbsp;&nbsp;&nbsp;";
+			
+			
+			
+			});//find category
+			tabContent+="<hr>";
+			
+			$(xmlObj).find('tech_reports').find('technology').each(function(){
+				tabContent+="<h1 class=\"bigger green\">Technology Reports: "+$(this).attr("name")+"</h1>";
+				$(this).find('report').each(function(){
+					if($(this).attr('link')!=""){
+						var filePathExt=getFileExtensionByPath($(this).attr('link'));
+						if(filePathExt=="xml"){
+							tabContent+="<a href=\"report.html?goal="+$(this).attr('link')+"\" target=\"_blank\" title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</a>";
+						}else if(filePathExt=="csv"){
+							tabContent+="<a href=\"csv_reader.html?report="+$(this).attr('link')+"\" target=\"_blank\" title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</a>";
+						}//if file path is  xml type
+						else{
+							tabContent+="<a href=\""+$(this).attr('link')+"\" target=\"_blank\" title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</a>";
+						}//if file path is not xml type
+					}
+					else{
+						tabContent+="<span title=\""+$(this).attr('tooltip')+"\">"+$(this).attr('name')+"</span>";
+					}
+					tabContent+="&nbsp;&nbsp;&nbsp;&nbsp;";
+				});//find category
+			});
+			tabContent+="<hr>";
+			
+			tabContent+="<h1 class=\"bigger green\">Goal Violation Summary</h1>";
+			var waived_e=$(xmlObj).find("statistics").attr("waived_error");
+			var waived_w=$(xmlObj).find("statistics").attr("waived_warning");
+			var waived_i=$(xmlObj).find("statistics").attr("waived_info");
+			
+			var fatal=$(xmlObj).find("statistics").attr("fatal");
+			var error=$(xmlObj).find("statistics").attr("error");
+			var warning=$(xmlObj).find("statistics").attr("warning");
+			var info=$(xmlObj).find("statistics").attr("info");
+			
+			tabContent+="<table style=\"width:900px;\"><tr>";
+			tabContent+="<td style=\"width:20%\"><strong>Waived Messages:</strong></td>";
+			tabContent+="<td style=\"width:20%;text-align:right;\">&nbsp;</td>";
+			tabContent+="<td style=\"width:20%;text-align:right;\">"+waived_e+" Errors</td>";
+			tabContent+="<td style=\"width:20%;text-align:right;\">"+waived_w+" Warnings</td>";
+			tabContent+="<td style=\"width:20%;text-align:right;\">"+waived_i+" Info</td></tr>";
+			
+			tabContent+="<tr><td><strong>Reported Messages:</strong></td>";
+			tabContent+="<td style=\"text-align:right;\">"+fatal+" Fatals</td>";
+			tabContent+="<td style=\"text-align:right;\">"+error+" Errors</td>";
+			tabContent+="<td style=\"text-align:right;\">"+warning+" Warnings</td>";
+			tabContent+="<td style=\"text-align:right;\">"+info+" Info</td></tr>";
+			tabContent+="</table>";
+			
+			tabContent+="<hr>";
+			
+			$(xmlObj).find('tech_summary').find('technology').each(function(){
+				tabContent+="<h1 class=\"bigger green\">Technology Summary: "+$(this).attr("name")+"</h1>";
+				tabContent+="<table style=\"width:900px;\">";
+				$(this).find('item').each(function(){
+					
+					var nm_q_arr=$(this).attr('name').split("=");
+					tabContent+="<tr><td style=\"width:30%\">";
+					if($(this).attr('link')!=""){
+						tabContent+="<a href=\""+$(this).attr('link')+"\" target=\"_blank\">"+nm_q_arr[0]+"</a>";
+					}else{
+						tabContent+="<span>"+nm_q_arr[0]+"</span>";
+					}
+					tabContent+="</td>";
+					tabContent+="<td style=\"width:5%\">=</td>";
+					tabContent+="<td style=\"width:65%\">"+nm_q_arr[1]+"</td></tr>";
+				});//find category
+				tabContent+="</table>";
+			});
+			
+			tabContent+="</div>";
+			tabContent+="<br><br>";
+			return tabContent;
+		}
+		
+		function getParameterByName( name ){
+		  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+		  var regexS = "[\\?&]"+name+"=([^&#]*)";
+		  var regex = new RegExp( regexS );
+		  var results = regex.exec( window.location.href );
+		  if( results == null )
+			return "";
+		  else
+			return decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+		
+		function strstr(haystack, needle, bool) {
+			var pos = 0;
+			haystack += "";
+			pos = haystack.indexOf(needle); if (pos == -1) {
+				return false;
+			} else {
+				if (bool) {
+					return haystack.substr(0, pos);
+				} else {
+					return haystack.slice(pos);
+				}
+			}
+		}
+	</script>
+	
+</head>
+
+<body>
+	
+	
+	<div id="cntMainHeader"></div>
+	<div id="cntMainTabs">
+		<ul>
+			<li><a href="#tmp">Loading...</a></li>
+		</ul>
+		<div id="tmp"></div>
+		
+	</div>
+	
+</body>
+</html>

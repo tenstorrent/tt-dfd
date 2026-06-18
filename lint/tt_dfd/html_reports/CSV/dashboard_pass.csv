@@ -1,0 +1,12 @@
+SpyGlass DashBoard,,,,,,,,,,,,,, 
+Created: Wed Jun 17 18:47:22 CDT 2026 by joeychen,,,,,,,,,,,,,, 
+dfd_top,,,,,,,,,,,
+,Category,Run status,Design objective,,,,,Success criteria,Pass/Fail status,Graph
+,Summary,Not completed,,,,,,Passed objectives = 0,Unknown
+
+,Quality goals,Run status,Unresolved Messages,,,Waived Messages,,Success criteria,Pass/Fail status,Graph
+,,,FATAL,ERROR,WARNING,ERROR,WARNING,,,,
+,Summary,Completed,0,0,325,0,56,Passed goals = 1,Pass
+,lint/lint_rtl::,Completed,0,0,325,0,56, Fatal =0; Error =0,Pass
+
+ Note: The SpyGlass configuration file used to collect data for this report is: <NA>,,,,,,,,,,,,,,

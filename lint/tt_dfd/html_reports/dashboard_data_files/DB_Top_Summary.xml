@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="file://Dashboard/DB_Top_Summary.xsd">
+<!-- This file schema is internal to SpyGlass DashBoard and subject to change in future without notice --> 
+	<category name="Quality" fail="0" in-process="0" pass="100">
+
+		 <item name="lint/lint_rtl" fail="0" in-process="0" pass="100" link="dashboard_data_files/lint-lint_rtl.xml"/>
+	</category>
+<collapse_all>false </collapse_all>
+<title><![CDATA[]]></title>
+<label><![CDATA[]]></label>
+</items>

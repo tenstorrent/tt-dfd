@@ -1,0 +1,77 @@
+SCHEMA@@PName@@Dir@@Msb@@Lsb@@Desc@@DU@@DU_BBOX
+VALUE@@clk@@INPUT@@0@@0@@Globals@@dfd_top@@No
+VALUE@@reset_n@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@reset_n_warm_ovrride@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@cold_reset_n@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@i_mem_tsel_settings@@INPUT@@10@@0@@-@@dfd_top@@No
+VALUE@@hw0@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw1@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw2@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw3@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw4@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw5@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw6@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw7@@INPUT@@15@@0@@DEBUG MUX SIGNALS@@dfd_top@@No
+VALUE@@hw8@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw9@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw10@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw11@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw12@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw13@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw14@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@hw15@@INPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@Time_Tick@@INPUT@@0@@0@@Cluster clock reference time tick@@dfd_top@@No
+VALUE@@xtrigger_in@@INPUT@@1@@0@@CLA@@dfd_top@@No
+VALUE@@time_match_event@@INPUT@@0@@0@@When time matches the time match...@@dfd_top@@No
+VALUE@@xtrigger_out@@OUTPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@cla_debug_marker@@OUTPUT@@7@@0@@Debug marker to use in debugbus@@dfd_top@@No
+VALUE@@external_action_trace_start@@OUTPUT@@0@@0@@So CLA can notify other Ntrace/D...@@dfd_top@@No
+VALUE@@external_action_trace_stop@@OUTPUT@@0@@0@@So CLA can notify other Ntrace/D...@@dfd_top@@No
+VALUE@@external_action_trace_pulse@@OUTPUT@@0@@0@@So CLA can notify other Ntrace/D...@@dfd_top@@No
+VALUE@@external_action_halt_clock_out@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@external_action_halt_clock_local_out@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@external_action_debug_interrupt_out@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@external_action_toggle_gpio_out@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@external_action_custom@@OUTPUT@@15@@0@@-@@dfd_top@@No
+VALUE@@timesync_cla_timestamp@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@external_cla_action_trace_start@@INPUT@@0@@0@@verilint W240 off@@dfd_top@@No
+VALUE@@external_cla_action_trace_stop@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@external_cla_action_trace_pulse@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@IRetire@@INPUT@@9@@0@@NTRACE@@dfd_top@@No
+VALUE@@IType@@INPUT@@5@@0@@-@@dfd_top@@No
+VALUE@@IAddr@@INPUT@@125@@0@@-@@dfd_top@@No
+VALUE@@ILastSize@@INPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@Tstamp@@INPUT@@63@@0@@-@@dfd_top@@No
+VALUE@@Priv@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@Context@@INPUT@@31@@0@@-@@dfd_top@@No
+VALUE@@Tval@@INPUT@@63@@0@@-@@dfd_top@@No
+VALUE@@Error@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@Active@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@StallModeEn@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@StartStop@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@Backpressure@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@TrigControl@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@CoreTime@@INPUT@@0@@0@@Timestamp value for DST@@dfd_top@@No
+VALUE@@TR_EXT_SlvReq@@OUTPUT@@0@@0@@AXI Interface the External Memory@@dfd_top@@No
+VALUE@@EXT_TR_SlvResp@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@JT_TR_SlvReq@@INPUT@@0@@0@@JTAG-AXI Control Interface for T...@@dfd_top@@No
+VALUE@@TR_JT_SlvResp@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@tnif_tr_gnt_i@@INPUT@@1@@0@@verilint W240 off@@dfd_top@@No
+VALUE@@tnif_dst_bp_i@@INPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@tnif_ntr_bp_i@@INPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@tnif_dst_flush_i@@INPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@tnif_ntr_flush_i@@INPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@tnif_tr_vld_o@@OUTPUT@@1@@0@@verilint W240 on@@dfd_top@@No
+VALUE@@tnif_tr_src_o@@OUTPUT@@1@@0@@-@@dfd_top@@No
+VALUE@@tnif_tr_data_o@@OUTPUT@@255@@0@@-@@dfd_top@@No
+VALUE@@DfdCsrs_external@@INPUT@@0@@0@@External MMRs@@dfd_top@@No
+VALUE@@DfdCsrsWr_external@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@paddr@@INPUT@@22@@0@@APB Interface@@dfd_top@@No
+VALUE@@psel@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@penable@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@pstrb@@INPUT@@3@@0@@-@@dfd_top@@No
+VALUE@@pwrite@@INPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@pwdata@@INPUT@@31@@0@@-@@dfd_top@@No
+VALUE@@pready@@OUTPUT@@0@@0@@-@@dfd_top@@No
+VALUE@@prdata@@OUTPUT@@31@@0@@-@@dfd_top@@No
+VALUE@@pslverr@@OUTPUT@@0@@0@@-@@dfd_top@@No

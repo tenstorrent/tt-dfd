@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <lines xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="file:///Dashboard/DobjTrendgraph.xsd">
+<!-- This file schema is internal to SpyGlass DashBoard and subject to change in future without notice --> 
+	<title>dfd_top:       Partial crossings </title>
+	<xaxis_label>Date</xaxis_label>
+	<yaxis_label>Partial crossings</yaxis_label>
+	</lines>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+        <modules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="file://Dashboard/DB_Block_Summary.xsd">
+<!-- This file schema is internal to SpyGlass DashBoard and subject to change in future without notice --> 
+<module name="dfd_top" header_link="dashboard_data_files/DashBoard_Main.xml#dfd_top"> 
+                          <design_objectives> 
+</design_objectives> 
+<quality_goals>
+<goal name="lint/lint_rtl" header_link="dashboard_data_files/lint-lint_rtl.xml" pass_status="Pass" cell_link="dashboard_data_files/dfd_top_lint-lint_rtl-trend.xml" date_time="06/17/2026 (18:47)"/>
+ </quality_goals>
+<oldest_update>06/17/2026 (18:47) </oldest_update>
+                </module> 
+</modules>
