@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html_top xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:noNamespaceSchemaLocation="file://Dashboard/html_top.xsd">
-<!-- This file schema is internal to SpyGlass DashBoard and subject to change in future without notice --> 
-<top name="dfd_top"/>
-<goals>
-<goal name="lint/lint_rtl" link="data_files/dfd_top_lint-lint_rtl_summary.xml" />
-</goals>
-</html_top>

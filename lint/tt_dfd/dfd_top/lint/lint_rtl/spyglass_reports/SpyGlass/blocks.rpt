@@ -1,6 +1,0 @@
-dfd_mmrs@@@@dfd_top.u_dfd_mmrs
-dfd_mux_sel@@@@dfd_top.\dbm_gen_blk.dbm_gen_inst_blk[0].u_dfd_mux_sel 
-dfd_time_sync@@@@dfd_top.\cla_gen_blk.cla_gen_inst_blk[0].genblk1.time_sync_block 
-dfd_core_logic_analyzer@@@@dfd_top.\cla_gen_blk.cla_gen_inst_blk[0].genblk1.cla0 
-dfd_unit@@@@dfd_top.\dfd_unit_gen_blk[0].dfd_unit_real.u_dfd_unit 
-dfd_trace_top@@@@dfd_top.\trace_top_gen_blk.u_trace_top 
