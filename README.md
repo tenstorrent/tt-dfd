@@ -74,7 +74,6 @@ Notes:
 | [scripts/](scripts)   | [cla_compiler/](scripts/cla_compiler) | [CLA programming tools](scripts/cla_compiler/README.md) and example programs |
 |                       | [cust_rtl/](scripts/cust_rtl) | Scripts for generating custom RTL variants |
 |                       | [docgen/](scripts/docgen) | [Documentation generation tools](scripts/docgen/README.md) and example programs |
-| [lint/](lint)         |                           | Spyglass project, run configs and lint waivers. |
 | [doc/](doc)           |                           | tt-dfd manual / guide |
 
 ### Register map (MMRs)
