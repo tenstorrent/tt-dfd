@@ -215,6 +215,17 @@ module dfd_tb
       .JT_TR_SlvReq  ('0),
       .TR_JT_SlvResp (),
 
+      // TNIF (notrace boundary): present on the boundary but unused here since the trace
+      // subsystem is internal (TRACE_SUPPORT=1). Tie inputs off and leave outputs open.
+      .tnif_tr_gnt_i   ('0),
+      .tnif_dst_bp_i   ('0),
+      .tnif_ntr_bp_i   ('0),
+      .tnif_dst_flush_i('0),
+      .tnif_ntr_flush_i('0),
+      .tnif_tr_vld_o   (),
+      .tnif_tr_src_o   (),
+      .tnif_tr_data_o  (),
+
       // External MMRs Interface
       .DfdCsrs_external  ('0),
       .DfdCsrsWr_external()
