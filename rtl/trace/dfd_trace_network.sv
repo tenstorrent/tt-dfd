@@ -20,14 +20,14 @@ module dfd_trace_network
   input  logic                                            reset_n,
 
   // TNIF interfaces from the core
-  output logic [NUM_CORES-1:0]                            TN_MS_Gnt,
-  output logic [NUM_CORES-1:0]                            TN_MS_Ntrace_Bp,
-  output logic [NUM_CORES-1:0]                            TN_MS_Dst_Bp,
-  output logic [NUM_CORES-1:0]                            TN_MS_Ntrace_Flush,
-  output logic [NUM_CORES-1:0]                            TN_MS_Dst_Flush,
-  input  logic [NUM_CORES-1:0]                            MS_TN_Vld,
-  input  logic [NUM_CORES-1:0]                            MS_TN_Src,
-  input  logic [NUM_CORES-1:0] [DATA_WIDTH-1:0]           MS_TN_Data,
+  output logic [NUM_CORES-1:0]                            tnif_tr_gnt,
+  output logic [NUM_CORES-1:0]                            tnif_ntr_bp,
+  output logic [NUM_CORES-1:0]                            tnif_dst_bp,
+  output logic [NUM_CORES-1:0]                            tnif_ntr_flush,
+  output logic [NUM_CORES-1:0]                            tnif_dst_flush,
+  input  logic [NUM_CORES-1:0]                            tnif_tr_vld,
+  input  logic [NUM_CORES-1:0]                            tnif_tr_src,
+  input  logic [NUM_CORES-1:0] [DATA_WIDTH-1:0]           tnif_tr_data,
 
   // Even branch data interface
   output logic [NUM_CORES_IN_PATH-1:0]                    TN_TR_Even_Vld,
@@ -132,14 +132,14 @@ module dfd_trace_network
       .reset_n(reset_n),
 
       // Current Node connections
-      .fblk_tr_gnt(TN_MS_Gnt[i << 1]),
-      .fblk_tr_src(MS_TN_Src[i << 1]),
-      .fblk_tr_vld(MS_TN_Vld[i << 1]),
-      .fblk_tr_data(MS_TN_Data[i << 1]),
-      .fblk_tr_ntrace_bp(TN_MS_Ntrace_Bp[i << 1]),
-      .fblk_tr_dst_bp(TN_MS_Dst_Bp[i << 1]),
-      .fblk_tr_ntrace_flush(TN_MS_Ntrace_Flush[i << 1]),
-      .fblk_tr_dst_flush(TN_MS_Dst_Flush[i << 1]),
+      .fblk_tr_gnt(tnif_tr_gnt[i << 1]),
+      .fblk_tr_src(tnif_tr_src[i << 1]),
+      .fblk_tr_vld(tnif_tr_vld[i << 1]),
+      .fblk_tr_data(tnif_tr_data[i << 1]),
+      .fblk_tr_ntrace_bp(tnif_ntr_bp[i << 1]),
+      .fblk_tr_dst_bp(tnif_dst_bp[i << 1]),
+      .fblk_tr_ntrace_flush(tnif_ntr_flush[i << 1]),
+      .fblk_tr_dst_flush(tnif_dst_flush[i << 1]),
 
       // Upstream connections
       .upstrm_tr_vld(rep_core_tr_vld_north[i+1]),
@@ -180,14 +180,14 @@ module dfd_trace_network
       .reset_n(reset_n),
 
       // Current Node connections
-      .fblk_tr_gnt(TN_MS_Gnt[(i << 1) + 1]),
-      .fblk_tr_src(MS_TN_Src[(i << 1) + 1]),
-      .fblk_tr_vld(MS_TN_Vld[(i << 1) + 1]),
-      .fblk_tr_data(MS_TN_Data[(i << 1) + 1]),
-      .fblk_tr_ntrace_bp(TN_MS_Ntrace_Bp[(i << 1) + 1]),
-      .fblk_tr_dst_bp(TN_MS_Dst_Bp[(i << 1) + 1]),
-      .fblk_tr_ntrace_flush(TN_MS_Ntrace_Flush[(i << 1) + 1]),
-      .fblk_tr_dst_flush(TN_MS_Dst_Flush[(i << 1) + 1]),
+      .fblk_tr_gnt(tnif_tr_gnt[(i << 1) + 1]),
+      .fblk_tr_src(tnif_tr_src[(i << 1) + 1]),
+      .fblk_tr_vld(tnif_tr_vld[(i << 1) + 1]),
+      .fblk_tr_data(tnif_tr_data[(i << 1) + 1]),
+      .fblk_tr_ntrace_bp(tnif_ntr_bp[(i << 1) + 1]),
+      .fblk_tr_dst_bp(tnif_dst_bp[(i << 1) + 1]),
+      .fblk_tr_ntrace_flush(tnif_ntr_flush[(i << 1) + 1]),
+      .fblk_tr_dst_flush(tnif_dst_flush[(i << 1) + 1]),
 
       // Upstream connections
       .upstrm_tr_vld(rep_core_tr_vld_south[i+1]),

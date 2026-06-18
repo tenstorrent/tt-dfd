@@ -27,14 +27,14 @@ module dfd_trace_top
 
     // Trace Network
     // TNIF interfaces from the core
-    output logic [NUM_CORES-1:0]                 TN_MS_Gnt,
-    output logic [NUM_CORES-1:0]                 TN_MS_Ntrace_Bp,
-    output logic [NUM_CORES-1:0]                 TN_MS_Dst_Bp,
-    output logic [NUM_CORES-1:0]                 TN_MS_Ntrace_Flush,
-    output logic [NUM_CORES-1:0]                 TN_MS_Dst_Flush,
-    input  logic [NUM_CORES-1:0]                 MS_TN_Vld,
-    input  logic [NUM_CORES-1:0]                 MS_TN_Src,
-    input  logic [NUM_CORES-1:0][DATA_WIDTH-1:0] MS_TN_Data,
+    output logic [NUM_CORES-1:0]                 tnif_tr_gnt,
+    output logic [NUM_CORES-1:0]                 tnif_ntr_bp,
+    output logic [NUM_CORES-1:0]                 tnif_dst_bp,
+    output logic [NUM_CORES-1:0]                 tnif_ntr_flush,
+    output logic [NUM_CORES-1:0]                 tnif_dst_flush,
+    input  logic [NUM_CORES-1:0]                 tnif_tr_vld,
+    input  logic [NUM_CORES-1:0]                 tnif_tr_src,
+    input  logic [NUM_CORES-1:0][DATA_WIDTH-1:0] tnif_tr_data,
 
     // Trace MMRs
     input  TrCsrs_s   TrCsrs,
@@ -108,9 +108,9 @@ module dfd_trace_top
 
   logic                                                    Ccg_clk_tr;
 
-  logic            [        NUM_CORES-1:0]                 MS_TN_Vld_Internal_Active_Cores;
-  logic            [        NUM_CORES-1:0]                 MS_TN_Src_Internal_Active_Cores;
-  logic            [        NUM_CORES-1:0][DATA_WIDTH-1:0] MS_TN_Data_Internal_Active_Cores;
+  logic            [        NUM_CORES-1:0]                 tnif_tr_vld_Internal_Active_Cores;
+  logic            [        NUM_CORES-1:0]                 tnif_tr_src_Internal_Active_Cores;
+  logic            [        NUM_CORES-1:0][DATA_WIDTH-1:0] tnif_tr_data_Internal_Active_Cores;
 
   tt_dfd_generic_ccg #(
       .HYST_EN (0),
@@ -126,14 +126,14 @@ module dfd_trace_top
   );
 
   always_comb begin
-    MS_TN_Vld_Internal_Active_Cores  = '0;
-    MS_TN_Src_Internal_Active_Cores  = '0;
-    MS_TN_Data_Internal_Active_Cores = '0;
+    tnif_tr_vld_Internal_Active_Cores  = '0;
+    tnif_tr_src_Internal_Active_Cores  = '0;
+    tnif_tr_data_Internal_Active_Cores = '0;
 
     for (int i = 0; i < NUM_ACTIVE_CORES; i++) begin
-      MS_TN_Vld_Internal_Active_Cores[i]  = MS_TN_Vld[i];
-      MS_TN_Src_Internal_Active_Cores[i]  = MS_TN_Src[i];
-      MS_TN_Data_Internal_Active_Cores[i] = MS_TN_Data[i];
+      tnif_tr_vld_Internal_Active_Cores[i]  = tnif_tr_vld[i];
+      tnif_tr_src_Internal_Active_Cores[i]  = tnif_tr_src[i];
+      tnif_tr_data_Internal_Active_Cores[i] = tnif_tr_data[i];
     end
   end
 
@@ -144,14 +144,14 @@ module dfd_trace_top
   ) trace_network_inst (
       .clk(clk),
       .reset_n(reset_n),
-      .TN_MS_Gnt(TN_MS_Gnt),
-      .TN_MS_Ntrace_Bp(TN_MS_Ntrace_Bp),
-      .TN_MS_Dst_Bp(TN_MS_Dst_Bp),
-      .TN_MS_Ntrace_Flush(TN_MS_Ntrace_Flush),
-      .TN_MS_Dst_Flush(TN_MS_Dst_Flush),
-      .MS_TN_Vld(MS_TN_Vld_Internal_Active_Cores),
-      .MS_TN_Src(MS_TN_Src_Internal_Active_Cores),
-      .MS_TN_Data(MS_TN_Data_Internal_Active_Cores),
+      .tnif_tr_gnt(tnif_tr_gnt),
+      .tnif_ntr_bp(tnif_ntr_bp),
+      .tnif_dst_bp(tnif_dst_bp),
+      .tnif_ntr_flush(tnif_ntr_flush),
+      .tnif_dst_flush(tnif_dst_flush),
+      .tnif_tr_vld(tnif_tr_vld_Internal_Active_Cores),
+      .tnif_tr_src(tnif_tr_src_Internal_Active_Cores),
+      .tnif_tr_data(tnif_tr_data_Internal_Active_Cores),
       .TN_TR_Even_Vld(TN_TR_Even_Vld),
       .TN_TR_Even_Src(TN_TR_Even_Src),
       .TN_TR_Even_Data(TN_TR_Even_Data),
