@@ -45,7 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed 
 
 - Fixed DC elaboration issue in dfd_cross_connect.sv with loop var i
-- Fixed PARAMETER NUM_TRACE_AND_ANALYZER_INST to allow support for ODD values without throwing error on EDA toosl (caught in [Issue #21](https://github.com/tenstorrent/tt-dfd/issues/21))
+- Fixed PARAMETER NUM_TRACE_AND_ANALYZER_INST to allow support for ODD values without throwing error on EDA tools (caught in [Issue #21](https://github.com/tenstorrent/tt-dfd/issues/21))
+- Fixed spelling and grammar typos in the DocGen, DocGen examples and DSTDecoder READMEs
 
 ## [0.2.1] - 2025-11-26
 
