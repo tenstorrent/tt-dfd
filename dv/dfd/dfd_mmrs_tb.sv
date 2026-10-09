@@ -1,5 +1,4 @@
-// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
-// SPDX-License-Identifier: Apache-2.0
+
 
 `timescale 1ns/10ps
 
@@ -194,7 +193,7 @@ module dfd_mmrs_tb
     .NTRACE_SUPPORT(1),
     .DST_SUPPORT(1),
     .CLA_SUPPORT(1),
-    .NUM_TRACE_AND_ANALYZER_INST(1),
+    .NUM_TRACE_INST(1),
     .BASE_ADDR(23'h000000)
   ) dut (
     .clk(PCLK),

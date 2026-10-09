@@ -1,0 +1,5598 @@
+# Default values: {'ALIAS_OF': '', 'MASKED_BY': '', 'MASK_WRITES_ONLY?': '', 'SPEC_COPIES': '', 'CL_MMR_SIZE': '64', 'HW_READ': '', 'HW_WRITE': '', 'SW_READ': '', 'SW_WRITE': ''}
+# List of all register info fields:
+#['NAME', 'ALIAS_OF', 'MASKED_BY', 'MASK_WRITES_ONLY?', 'SPEC_COPIES', 'VISIBILITY', 'TYPE', 'SUB_CATEGORY', 'ADDRESS', 'CL_MMR_SIZE', 'FIELDS_NAME', 'FIELDS_WIDTH', 'FIELDS_RANGE', 'RESET_VALUE', 'RESET_PORT', 'LEGAL_VALUE', 'SW_TYPE', 'SW_READ', 'SW_WRITE', 'HW_READ', 'HW_WRITE', 'DESCRIPTION']
+c_custom_example:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: SdExt
+    ADDRESS: '0x000BC0'
+    DESCRIPTION: Custom Core register
+    RESET_PORT: ''
+    HW_READ: SC,AP,MB,PM
+    HW_WRITE: SC,AP,MB,PM
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  rsvd_63_2:
+    FIELDS_WIDTH: '62'
+    FIELDS_RANGE: '63:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: '[0:1]'
+    DESCRIPTION: Custom Core register - Reserved
+    SW_TYPE: ''
+  example1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Custom Core register - Example1
+    SW_TYPE: ''
+  example0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Custom Core register - Example0
+    SW_TYPE: ''
+c_dbg_cla_counter0_cfg:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000100'
+    DESCRIPTION: Configure CLA counter0. One of the 4 counters used for counting cycles
+      after a event match, and trigger a action on match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  rsvd:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 63:63
+    RESET_VALUE: '0'
+    LEGAL_VALUE: '0'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_target:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '62:48'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_counter:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '47:33'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  reset_on_target:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '32:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: When Counter = {upper_target,target} reset to 0.  With this bit set,
+      counter will provide a periodic tick w/ frequency of (target +1) if the action
+      is set to Auto Incr. The periodic tick will continue till Stop Auto Incr or
+      Clear Counter action.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  target:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '31:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  counter:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '15:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_counter1_cfg:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000108'
+    DESCRIPTION: Configure CLA counter1. One of the 4 counters used for counting cycles
+      after a event match, and trigger a action on match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  rsvd:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 63:63
+    RESET_VALUE: '0'
+    LEGAL_VALUE: '0'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_target:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '62:48'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_counter:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '47:33'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  reset_on_target:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '32:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: When Counter = {upper_targe,target}, reset to 0.  With this bit set,
+      counter will provide a periodic tick w/ frequency of (target +1) if the action
+      is set to Auto Incr. The periodic tick will continue till Stop Auto Incr or
+      Clear Counter action.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  target:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '31:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  counter:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '15:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_counter2_cfg:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000110'
+    DESCRIPTION: Configure CLA counter2. One of the 4 counters used for counting cycles
+      after a event match, and trigger a action on match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  rsvd:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 63:63
+    RESET_VALUE: '0'
+    LEGAL_VALUE: '0'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_target:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '62:48'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_counter:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '47:33'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  reset_on_target:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '32:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: When Counter = {upper_target,target}, reset to 0.  With this bit
+      set, counter will provide a periodic tick w/ frequency of (target +1) if the
+      action is set to Auto Incr. The periodic tick will continue till Stop Auto Incr
+      or Clear Counter action.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  target:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '31:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  counter:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '15:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_counter3_cfg:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000118'
+    DESCRIPTION: Configure CLA counter3. One of the 4 counters used for counting cycles
+      after a event match, and trigger a action on match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  rsvd:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 63:63
+    RESET_VALUE: '0'
+    LEGAL_VALUE: '0'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_target:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '62:48'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  upper_counter:
+    FIELDS_WIDTH: '15'
+    FIELDS_RANGE: '47:33'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  reset_on_target:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '32:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: When Counter = {upper_target,target}, reset to 0.  With this bit
+      set, counter will provide a periodic tick w/ frequency of (target +1) if the
+      action is set to Auto Incr. The periodic tick will continue till Stop Auto Incr
+      or Clear Counter action.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  target:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '31:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  counter:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '15:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node0_eap0:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000120'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node0_eap1:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000128'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node0_eap2:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000248'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node0_eap3:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000250'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node1_eap0:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000130'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node1_eap1:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000138'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node1_eap2:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000258'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node1_eap3:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000260'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node2_eap0:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000140'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node2_eap1:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000148'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node2_eap2:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000268'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node2_eap3:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000270'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node3_eap0:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000150'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node3_eap1:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000158'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node3_eap2:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000278'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_node3_eap3:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000280'
+    DESCRIPTION: CLA Action(s) are tied to events(s) using "event-action pairing"
+      registers. One of he 8 EAPs (4 EAPs per Node).
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  action3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  udf:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '51:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: User Defined Function with event type 0, 1, and 2 as arguments
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '43:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action1 is valid only if custom_action1_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: custom_action0 is valid only if custom_action0_enable is set
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action1:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '35:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  custom_action0:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select the bit position of custom action bus to be set when EAP trigger
+      is met. External blocks can define and implement the specifc action for a given
+      bit.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Select a trigger event '
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  event_type0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select a trigger event
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  logical_op:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Relation to be satisfied among events to activate the actions
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '13:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  action0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select an Action
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  dest_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Select Destination Node
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_mask0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000160'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x2) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_mask0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000400'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x2) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_match0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000168'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x2) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_match0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000408'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x2) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_mask1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000170'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x4) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_mask1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000410'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x4) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_match1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000178'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x4) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_match1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000418'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x4) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_mask2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000228'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1C) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_mask2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000420'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1C) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_match2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000230'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1C) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_match2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000428'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1C) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_mask3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000238'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1D) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_mask3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000430'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1D) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mask to be applied to debug bus before match
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_match3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000240'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1D) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_match3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000438'
+    DESCRIPTION: Used to define debug bus match event. Match event (0x1D) is triggered
+      when debug_bus & mask = match.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value used for debug bus match.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_edge_detect_cfg:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000180'
+    DESCRIPTION: Register to configure debug bus for edge triggers.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  pos_edge_signal1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '15:15'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Defines which edge to detect for singal from signal1_select. 1:
+      Pos edge, 0: Neg Edge'
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  signal1_select:
+    FIELDS_WIDTH: '7'
+    FIELDS_RANGE: '14:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Define which signal to select for edge detection.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  pos_edge_signal0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '7:7'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Defines which edge to detect for singal from signal0_select. 1:
+      Pos edge, 0: Neg Edge'
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  signal0_select:
+    FIELDS_WIDTH: '7'
+    FIELDS_RANGE: '6:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Define which signal to select for edge detection.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_eap_status:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000188'
+    DESCRIPTION: 'Register to indicate if EAP Pair was activated. Use the corresponding
+      w2c register to reset the status. There are 2 bits for each EAP. The bit corresponds
+      to action-0 and action-1 of the EAP. The register is used by SW to know if an
+      action was taken (ex: NMI ISR needs to know which of the EAP triggered the NMI)'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  node3_eap3_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '47:47'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap2_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '46:46'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap1_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '45:45'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap0_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '44:44'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap3_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '43:43'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap2_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '42:42'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap1_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '41:41'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap0_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '40:40'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap3_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '39:39'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap2_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '38:38'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap1_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '37:37'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap0_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '36:36'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap3_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '35:35'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap2_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '34:34'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap1_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '33:33'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap0_w2c:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '32:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_16:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '31:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap3:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '15:15'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap2:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '14:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '13:13'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node3_eap0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '12:12'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap3:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '11:11'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap2:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '10:10'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '9:9'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node2_eap0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '8:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap3:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '7:7'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap2:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '6:6'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '5:5'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node1_eap0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '4:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap3:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '3:3'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap2:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '2:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+  node0_eap0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_ctrl_status:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000190'
+    DESCRIPTION: Ctrl/Status register to Enable EAP after EAP programming is complete,
+      and read the current node.
+    MASKED_BY: c_dbg_cla_ctrl_status
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  cla_lock:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 63:63
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: If this bit is set, then CLA is locked and the enbale_cla is latched
+      forever
+    MASKED_BY: ~cla_lock
+    MASK_WRITES_ONLY?: 'True'
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_62_16:
+    FIELDS_WIDTH: '47'
+    FIELDS_RANGE: '62:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: reserved fields
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  disable_local_clock_halt:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '15:15'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: If this bit is set, clock halt action is not applied to local clocks
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  disable_global_clock_halt:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '14:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: If this bit is set, clock halt action is not applied to global clocks
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  cla_chain_loop_delay:
+    FIELDS_WIDTH: '7'
+    FIELDS_RANGE: '13:7'
+    RESET_VALUE: '36'
+    LEGAL_VALUE: ''
+    DESCRIPTION: "Creates a window in which we don\u2019t forward the incoming Xtrigger\
+      \ and Clock_Halt signal"
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  enable_cla:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '6:6'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Set this bit to 1 to enable CLA. If this bit is set, CLA is clock
+      gated (save pwr)
+    MASKED_BY: ~cla_lock
+    MASK_WRITES_ONLY?: 'True'
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  enable_eap:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '5:5'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Set Enable EAP to 1 after EAP programming is complete
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  current_node:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Read the current node.
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_mux_sel_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000198'
+    DESCRIPTION: ''
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  Muxselseg7:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg6:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg5:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '51:46'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg4:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '45:40'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg3:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '39:34'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 3. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane3=
+      Seg3, if bit[0] = 1, Lane3 = Seg4, if bit[1] =1, Lane3 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '33:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 2. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane2=
+      Seg2, if bit[0] = 1, Lane2 = Seg4, if bit[1] =1, Lane2 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg1:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 1. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane1=
+      Seg1, if bit[0] = 1, Lane1 = Seg4, if bit[1] =1, Lane1 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg0:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 0. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane0
+      = Seg0, if bit[0] = 1, Lane0 = Seg4, if bit[1] =1, Lane0 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_15_10:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '15:10'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Valid:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '9:9'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Valid. If this bit is set, the Muxsel bits are valid. The field is W1S (Write 1 to Set) and will always read 0.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    HW_WRITE: CLA
+    SW_TYPE: ''
+  FineGrainTime:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '8:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Fine Grain Time Enable. If this bit is set, the fine grain time is enabled.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  DbmId:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Unique DBM ID of the DBM instance
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  DbmMode:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Mode selection, 0: DBM off, 1: Normal debug mode, 2: DBM ID output
+      mode, 3: Toggle Mode'
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_mux_sel_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000440'
+    DESCRIPTION: ''
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  Muxselseg15:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '63:58'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg14:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '57:52'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg13:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '51:46'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg12:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '45:40'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg11:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '39:34'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 3. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane3=
+      Seg3, if bit[0] = 1, Lane3 = Seg4, if bit[1] =1, Lane3 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg10:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '33:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 2. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane2=
+      Seg2, if bit[0] = 1, Lane2 = Seg4, if bit[1] =1, Lane2 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg9:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '27:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 1. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane1=
+      Seg1, if bit[0] = 1, Lane1 = Seg4, if bit[1] =1, Lane1 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg8:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '21:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Mux Select Bits for Lane 0. Split debug bus into 16 bit segments.
+      Seg0 = debug bus [15:0], Seg1 = debug bus[31:16],.... If all bits are 0, Lane0
+      = Seg0, if bit[0] = 1, Lane0 = Seg4, if bit[1] =1, Lane0 = Seg5,...
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_15_0:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '15:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_rsvd1:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001A0'
+    DESCRIPTION: 'Reserved Register that can be changed. '
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value of reserved register.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_rsvd2:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001A8'
+    DESCRIPTION: 'Reserved Register that can be changed. '
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value of reserved register.
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_delay_mux_sel:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002C8'
+    DESCRIPTION: ''
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  rsvd:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '63:32'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg15:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '31:30'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg14:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '29:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg13:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '27:26'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg12:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '25:24'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg11:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '23:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg10:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '21:20'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg9:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '19:18'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg8:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '17:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg7:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '15:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 7
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg6:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '13:12'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 6
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg5:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '11:10'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 5
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg4:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '9:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 4
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg3:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '7:6'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 3
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg2:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '5:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 2
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg1:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '3:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 1
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  Muxselseg0:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Dbg Mux Shifted signals Select Bits for Lane 0
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_transition_mask_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001B0'
+    DESCRIPTION: 3 registers to configure "transition event". This register is to
+      select the signals of interest using a mask.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_transition_mask_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000448'
+    DESCRIPTION: 3 registers to configure "transition event". This register is to
+      select the signals of interest using a mask.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_transition_from_value_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001B8'
+    DESCRIPTION: 3 registers to configure "transition event". The event is triggered
+      on transition from Value A to Value B. This register specifies Value A.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_transition_from_value_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000450'
+    DESCRIPTION: 3 registers to configure "transition event". The event is triggered
+      on transition from Value A to Value B. This register specifies Value A.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_transition_to_value_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001C0'
+    DESCRIPTION: 3 registers to configure "transition event". The event is triggered
+      on transition from Value A to Value B. This register specifies Value B.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_transition_to_value_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000458'
+    DESCRIPTION: 3 registers to configure "transition event". The event is triggered
+      on transition from Value A to Value B. This register specifies Value B.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_ones_count_mask_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001C8'
+    DESCRIPTION: 2 registers to configure "ones count" event. This register is to
+      select the signals of interest using a mask.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_ones_count_mask_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000460'
+    DESCRIPTION: 2 registers to configure "ones count" event. This register is to
+      select the signals of interest using a mask.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_ones_count_value:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001D0'
+    DESCRIPTION: 2 registers to configure "ones count" event. Event triggered when
+      the sum of the signals match the value specified in this register.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_any_change_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001D8'
+    DESCRIPTION: Event triggered when a subset of debug signals change. The mask is
+      used to select the subset of the debug signals.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  mask:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_any_change_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000468'
+    DESCRIPTION: Event triggered when a subset of debug signals change. The mask is
+      used to select the subset of the debug signals.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_TYPE: WARL
+  mask:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node0_eap0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001E0'
+    DESCRIPTION: debug Bus Value when Node0 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node0_eap0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000470'
+    DESCRIPTION: debug Bus Value when Node0 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node0_eap1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001E8'
+    DESCRIPTION: debug Bus Value when Node0 Eap1 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node0_eap1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000478'
+    DESCRIPTION: debug Bus Value when Node0 Eap1 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node0_eap2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000288'
+    DESCRIPTION: debug Bus Value when Node0 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node0_eap2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004B0'
+    DESCRIPTION: debug Bus Value when Node0 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node0_eap3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000290'
+    DESCRIPTION: debug Bus Value when Node0 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node0_eap3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004B8'
+    DESCRIPTION: debug Bus Value when Node0 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node1_eap0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001F0'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node1_eap0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000480'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node1_eap1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001F8'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node1_eap1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000488'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node1_eap2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000298'
+    DESCRIPTION: debug Bus Value when Node1 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node1_eap2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004C0'
+    DESCRIPTION: debug Bus Value when Node1 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node1_eap3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002A0'
+    DESCRIPTION: debug Bus Value when Node1 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node1_eap3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004C8'
+    DESCRIPTION: debug Bus Value when Node1 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node2_eap0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000200'
+    DESCRIPTION: debug Bus Value when Node0 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node2_eap0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000490'
+    DESCRIPTION: debug Bus Value when Node0 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node2_eap1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000208'
+    DESCRIPTION: debug Bus Value when Node0 Eap1 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node2_eap1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000498'
+    DESCRIPTION: debug Bus Value when Node0 Eap1 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node2_eap2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002A8'
+    DESCRIPTION: debug Bus Value when Node2 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node2_eap2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004D0'
+    DESCRIPTION: debug Bus Value when Node2 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node2_eap3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002B0'
+    DESCRIPTION: debug Bus Value when Node2 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node2_eap3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004D8'
+    DESCRIPTION: debug Bus Value when Node2 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node3_eap0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000210'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node3_eap0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004A0'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node3_eap1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000218'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node3_eap1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004A8'
+    DESCRIPTION: debug Bus Value when Node1 Eap0 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node3_eap2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002B8'
+    DESCRIPTION: debug Bus Value when Node3 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node3_eap2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004E0'
+    DESCRIPTION: debug Bus Value when Node3 Eap2 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_signal_snapshot_node3_eap3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002C0'
+    DESCRIPTION: debug Bus Value when Node3 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+
+c_dbg_signal_snapshot_node3_eap3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004E8'
+    DESCRIPTION: debug Bus Value when Node3 Eap3 Trigger is met.
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_WRITE: CLA
+    SW_TYPE: WARL
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_time_match:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000220'
+    DESCRIPTION: This value is compared (greater than or equal to the programmed value)
+      against the internal time register value of the core, and is used to generate
+      a time match event for CLA. Needs to be non zero for the time match event signal
+      to trigger. The event will only trigger an action if the EAP programming is
+      done. Requires writing 0 to this register to stop the match event.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  time_match_val:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_xtrigger_timestretch:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002D8'
+    DESCRIPTION: This value determines the time stretched pulse duration for the cross
+      trigger. 8 bits for each of the two triggers.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: WARL
+  rsvd:
+    FIELDS_WIDTH: '48'
+    FIELDS_RANGE: '63:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  xtrigger1_stretch:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '15:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  xtrigger0_stretch:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '7:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_timestamp:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002F0'
+    DESCRIPTION: 64-bit timestamp counter. Increments on time_tick. Can be written directly
+      or loaded from timestamp_sync on xtrigger when resync is enabled.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: ''
+  timestamp_upper:
+    FIELDS_WIDTH: '56'
+    FIELDS_RANGE: '63:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Current timestamp value (upper 56 bits)
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  timestamp_lower:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '7:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Current timestamp value (lower 8 bits)
+    RESET_PORT: ''
+    HW_WRITE: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_timestamp_sync:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0002F8'
+    DESCRIPTION: Timestamp sync value. This value is loaded into the timestamp register
+      on xtrigger posedge when resync bit is enabled.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: ''
+  timestamp_sync:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Sync value to load into timestamp
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_cla_timestamp_config:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000300'
+    DESCRIPTION: Timestamp configuration register. Controls resync behavior and debug marker.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: ''
+  rsvd1:
+    FIELDS_WIDTH: '54'
+    FIELDS_RANGE: '63:10'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  ts_capture:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '9:9'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: "When this bit is set, a cross trigger 0 event will cause the value from Timestamp register to be written into the TimestampCapture register"
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    HW_WRITE: CLA
+    SW_TYPE: ''
+  debug_marker:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '8:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Debug marker output value
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  resync:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '0:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: "When set, timestamp is loaded from timestamp_sync on xtrigger posedge. Auto-clears after load."
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    HW_WRITE: CLA
+    SW_TYPE: ''
+c_dbg_cla_timestamp_offset:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000308'
+    DESCRIPTION: Timestamp offset register. The Offset value is subtracted from the timestamp before comparing with incoming timestamp value.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_TYPE: ''
+  rsvd0:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '63:56'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  offset:
+    FIELDS_WIDTH: '56'
+    FIELDS_RANGE: '55:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Timestamp offset value
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+scratch:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FF8'
+    DESCRIPTION: Additional scratch register for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: CLA
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''
+c_dbg_lfsr:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004F0'
+    DESCRIPTION: LFSR value.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  lfsr:
+    FIELDS_WIDTH: '63'
+    FIELDS_RANGE: '63:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    HW_WRITE: CLA
+    DESCRIPTION: 'Value of the LFSR register.'
+  lfsr_active:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '0:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Enable the LFSR register.'
+    RESET_PORT: ''
+    SW_TYPE: ''
+c_dbg_lfsr_mask:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0004F8'
+    DESCRIPTION: LFSR programming mask.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  mask:
+    FIELDS_WIDTH: '63'
+    FIELDS_RANGE: '63:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the LFSR register.'
+  rsvd0:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '0:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Reserved.'
+    RESET_PORT: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_timestamp_capture:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000500'
+    DESCRIPTION: Captured timestamp upper bits. When ts_capture is set in the timestamp
+      config register, a cross trigger 0 event captures the timestamp upper bits into
+      this register.
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    HW_WRITE: CLA
+    SW_TYPE: ''
+  timestamp:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Timestamp capture value.'
+c_dbg_compare0_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000508'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare0_mask_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000510'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare1_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000518'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare1_mask_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000520'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare2_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000528'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare2_mask_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000530'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare3_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000538'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare3_mask_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000540'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare0_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000548'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare0_mask_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000550'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare1_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000558'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare1_mask_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000560'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare2_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000568'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare2_mask_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000570'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_compare3_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000578'
+    DESCRIPTION: 'Value for arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value for arithmetic comparison.'
+c_dbg_compare3_mask_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000580'
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+    RESET_PORT: reset_n_warm_ovrride_hi
+    HW_READ: CLA
+    SW_READ: R
+    SW_WRITE: W
+    SW_TYPE: ''
+  value:
+    FIELDS_WIDTH: '64'
+    FIELDS_RANGE: '63:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Value to mask the arithmetic comparison.'
+c_dbg_version:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CLA
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FF0'
+    DESCRIPTION: 'Version Register. '
+    RESET_PORT: reset_n_warm_ovrride
+    HW_READ: CLA
+    SW_READ: R
+    SW_TYPE: WARL
+  rsvd63_12:
+    FIELDS_WIDTH: '52'
+    FIELDS_RANGE: '63:12'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved bits.
+  major:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '11:8'
+    RESET_VALUE: '2'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value of major version.
+  minor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '7:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value of minor version.
+  patch:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '3:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Value of patch version.

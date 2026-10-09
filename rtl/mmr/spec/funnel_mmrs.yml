@@ -1,0 +1,166 @@
+trFunnelControl:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000000'
+    FUNNEL_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: FUNNEL
+    HW_WRITE: FUNNEL
+    SW_TYPE: WARL
+  trFunnelActive:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trFunnelEnable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trFunnelEmpty:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '3:3'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_2_2:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '2:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_4:
+    FIELDS_WIDTH: '28'
+    FIELDS_RANGE: '31:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+trFunnelImpl:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000004'
+    FUNNEL_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: FUNNEL
+    SW_TYPE: WARL
+  trFunnelVerMajor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '3:0'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trFunnelVerMinor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '7:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: e
+    SW_READ: R
+    SW_TYPE: ''
+  trFunnelCompType:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '11:8'
+    RESET_VALUE: '8'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_12:
+    FIELDS_WIDTH: '20'
+    FIELDS_RANGE: '31:12'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+trFunnelDisInput:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000008'
+    FUNNEL_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: FUNNEL
+    HW_WRITE: FUNNEL
+    SW_TYPE: WARL
+  trFunnelDisInput:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '15:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Bits 7:0 are reserved for N-trace srcs and 15:8 for Dst sources
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_16:
+    FIELDS_WIDTH: '16'
+    FIELDS_RANGE: '31:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+scratch_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FF8'
+    FUNNEL_MMR_SIZE: '32'
+    DESCRIPTION: Scratch register (low) for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: FUNNEL
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''
+scratch_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FFC'
+    FUNNEL_MMR_SIZE: '32'
+    DESCRIPTION: Scratch register (high) for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: FUNNEL
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''

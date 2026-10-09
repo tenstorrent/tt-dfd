@@ -1,5 +1,3 @@
-// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
-// SPDX-License-Identifier: Apache-2.0
 
 module dfd_tb
   import dfd_dst_pkg::*;
@@ -13,10 +11,9 @@ module dfd_tb
   import dfd_packetizer_pkg::*;
   import dfd_te_pkg::*;
   import dfd_tn_pkg::*;
-  import dfd_CL_axi_pkg::*;
 #(
     parameter TEST = 1,
-    parameter NUM_TRACE_AND_ANALYZER_INST = 5
+    parameter NUM_TRACE_INST = 2
 ) ();
 
   // Clock and reset
@@ -129,7 +126,7 @@ module dfd_tb
 
   dfd_top #(
       .BASE_ADDR(0),
-      .NUM_TRACE_AND_ANALYZER_INST(NUM_TRACE_AND_ANALYZER_INST),
+      .NUM_TRACE_INST(NUM_TRACE_INST),
       .NTRACE_SUPPORT(1),
       .DST_SUPPORT(1),
       .CLA_SUPPORT(1),
@@ -196,7 +193,7 @@ module dfd_tb
       .IAddr('0),
       .ILastSize('0),
       .Tstamp('0),
-      .Priv({NUM_TRACE_AND_ANALYZER_INST{PRIVMODE_USER}}),
+      .Priv({NUM_TRACE_INST{PRIVMODE_USER}}),
       .Context('0),
       .Tval('0),
       .Error('0),
@@ -204,7 +201,7 @@ module dfd_tb
       .StallModeEn(),
       .StartStop(),
       .Backpressure(),
-      .TrigControl({NUM_TRACE_AND_ANALYZER_INST{TRIG_TRACE_OFF}}),
+      .TrigControl({NUM_TRACE_INST{TRIG_TRACE_OFF}}),
 
       // DST Interface
       .CoreTime('0),
@@ -215,17 +212,6 @@ module dfd_tb
       .JT_TR_SlvReq  ('0),
       .TR_JT_SlvResp (),
 
-      // TNIF (notrace boundary): present on the boundary but unused here since the trace
-      // subsystem is internal (TRACE_SUPPORT=1). Tie inputs off and leave outputs open.
-      .tnif_tr_gnt_i   ('0),
-      .tnif_dst_bp_i   ('0),
-      .tnif_ntr_bp_i   ('0),
-      .tnif_dst_flush_i('0),
-      .tnif_ntr_flush_i('0),
-      .tnif_tr_vld_o   (),
-      .tnif_tr_src_o   (),
-      .tnif_tr_data_o  (),
-
       // External MMRs Interface
       .DfdCsrs_external  ('0),
       .DfdCsrsWr_external()
@@ -233,7 +219,7 @@ module dfd_tb
 
   dfd_top_cla_dst_mmr #(
       .BASE_ADDR(64'HC0160000),
-      .NUM_TRACE_AND_ANALYZER_INST(1),
+      .NUM_TRACE_INST(1),
       .NTRACE_SUPPORT(0),
       .DST_SUPPORT(1),
       .CLA_SUPPORT(1),

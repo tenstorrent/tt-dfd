@@ -1,0 +1,488 @@
+# Default values: {'ALIAS_OF': '', 'MASKED_BY': '', 'MASK_WRITES_ONLY?': '', 'SPEC_COPIES': '', 'DST_MMR_SIZE': '64', 'HW_READ': '', 'HW_WRITE': '', 'SW_READ': '', 'SW_WRITE': ''}
+# List of all register info fields:
+#['NAME', 'ALIAS_OF', 'MASKED_BY', 'MASK_WRITES_ONLY?', 'SPEC_COPIES', 'VISIBILITY', 'TYPE', 'SUB_CATEGORY', 'ADDRESS', 'DST_MMR_SIZE', 'FIELDS_NAME', 'FIELDS_WIDTH', 'FIELDS_RANGE', 'RESET_VALUE', 'RESET_PORT', 'LEGAL_VALUE', 'SW_TYPE', 'SW_READ', 'SW_WRITE', 'HW_READ', 'HW_WRITE', 'DESCRIPTION']
+# c_custom_example:
+#   common_data:
+#     VISIBILITY: Internal
+#     TYPE: Debug
+#     SUB_CATEGORY: SdExt
+#     ADDRESS: BC0
+#     DESCRIPTION: Custom Core register
+#     RESET_PORT: ''
+#     HW_READ: SC,AP,MB,PM
+#     HW_WRITE: SC,AP,MB,PM
+#     SW_WRITE: W
+#     SW_READ: R
+#     SW_TYPE: WARL
+#   rsvd_63_2:
+#     FIELDS_WIDTH: '62'
+#     FIELDS_RANGE: '63:2'
+#     RESET_VALUE: '0'
+#     LEGAL_VALUE: '[0:1]'
+#     DESCRIPTION: Custom Core register - Reserved
+#     SW_TYPE: ''
+#   example1:
+#     FIELDS_WIDTH: '1'
+#     FIELDS_RANGE: '1:1'
+#     RESET_VALUE: '0'
+#     LEGAL_VALUE: ''
+#     DESCRIPTION: Custom Core register - Example1
+#     SW_TYPE: ''
+#   example0:
+#     FIELDS_WIDTH: '1'
+#     FIELDS_RANGE: 0:0
+#     RESET_VALUE: '0'
+#     LEGAL_VALUE: ''
+#     DESCRIPTION: Custom Core register - Example0
+#     SW_TYPE: ''
+trDstControl:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Trace
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000000'
+    DST_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: DST
+    SW_TYPE: WARL
+  trDstActive:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstEnable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstTracing:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '2:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    HW_WRITE: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstEmpty:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '3:3'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    HW_WRITE: DST
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstMode:
+    FIELDS_WIDTH: '3'
+    FIELDS_RANGE: '6:4'
+    RESET_VALUE: '6'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_8_7:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '8:7'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstContext:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '9:9'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_10_10:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '10:10'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstTriggerEnable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '11:11'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    HW_READ: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstStallOrOverflow:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '12:12'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstStallEna:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '13:13'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_14_14:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '14:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInhibitSrc:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '15:15'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstSyncMode:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '17:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: When the field is set tp 2'b10, sent timestamp. All other vlaues
+      not NA.
+    HW_READ: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_19_18:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '19:18'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstSyncMax:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '23:20'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: When trDstSyncMode is set to 2'b10, timestamp will be sent for every
+      2^(trDstSyncMax + 4) Cluster clocks.
+    HW_READ: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstFormat:
+    FIELDS_WIDTH: '3'
+    FIELDS_RANGE: '26:24'
+    RESET_VALUE: '3'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'bit[0]: XOR Enable, bit[1]: VLT Enable. Supported values : 2''b3
+      (XOR+VLT Compression), 2''b1 (XOR Compresion), 2''b0 (No Compression)'
+    HW_READ: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_27:
+    FIELDS_WIDTH: '5'
+    FIELDS_RANGE: '31:27'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+trDstImpl:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Trace
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000004'
+    DST_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: DST
+    SW_TYPE: WARL
+  trDstVerMajor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '3:0'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstVerMinor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '7:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstCompType:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '11:8'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_15_12:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '15:12'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstProtocolMajor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '19:16'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstProtocolMinor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '23:20'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstVendorFrameLength:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '27:24'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Specify frame length. Frame Length = trDstVendorFrameLength* 64 ;
+      Frame Length should be a multiple of Bank Data Width.
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstVendorStreamLength:
+    FIELDS_WIDTH: '3'
+    FIELDS_RANGE: '30:28'
+    RESET_VALUE: '4'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Specify Stream length. A stream starts with "no compressed packet".
+      Stream length specifies number of frames before a non-compressed packet is sent.Stream
+      Length = 32* 2^(trDstVendorStreamLength + 1)
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstTimestampConfig:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '31:31'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'DST timestamp configuration. 0: timestamp input form external source (CoreTime). 1: timestamp from CLA timesync.'
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+trDstInstFeatures:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Trace
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000008'
+    DST_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: DST
+    SW_TYPE: WARL
+  trDstInstNoAddrDiff:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstNoTrapAddr:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_7_2:
+    FIELDS_WIDTH: '6'
+    FIELDS_RANGE: '7:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstInstEnRepeatedHistory:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '8:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_15_9:
+    FIELDS_WIDTH: '7'
+    FIELDS_RANGE: '15:9'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  trDstSrcID:
+    FIELDS_WIDTH: '12'
+    FIELDS_RANGE: '27:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trDstSrcBits:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '4'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+c_dbg_debug_trace_cfg:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: CR_DEBUG_MUX
+    SUB_CATEGORY: ''
+    ADDRESS: '0x0001A0'
+    DST_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: DST
+    SW_TYPE: WARL
+  rsvd_31_22:
+    FIELDS_WIDTH: '10'
+    FIELDS_RANGE: '31:22'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  frame_closure_mode:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '21:21'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Closure Mode: 1: Close frame with a packet no larger than max packet
+      size  before any overflow (due to packets crossing frame boundary). 0: Close
+      frame when packets cross boundary. Push back packet crossing frame boundary
+      to packet generator.'
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  frame_mode_enable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '20:20'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Enable Frame Mode (Frame Mode: Always pack "frame length" number
+      of bytes for trace transmission). If flush to memory is stalled (due to silicon
+      bug), we can have incomplete packets in memory. Frame Mode will help SW decoder
+      to avoid reading incomplete trasnmitted packets. In Frame Mode, SW will get
+      a memory pointer that is aligned to Frame Length. HW will ensure  there are
+      no incomplete packets incluced in the region pointed by memory pointer.'
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_19_16:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '19:16'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  frame_lenght_in_bytes:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '15:12'
+    RESET_VALUE: '2'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Use trDstImpl[trDstVendorFrameLength] for Frame Length programming.
+      Register field ZBB-ed. '
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trace_frame_fill_byte:
+    FIELDS_WIDTH: '8'
+    FIELDS_RANGE: '11:4'
+    RESET_VALUE: '81'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Use "Filler Packet" to align a stream of trace packets within a
+      frame boundary. '
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trace_source_id:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '3:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: 'Trace Source ID'
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+scratch_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FF8'
+    DST_MMR_SIZE: '32'
+    DESCRIPTION: Scratch register (low) for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''
+scratch_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FFC'
+    DST_MMR_SIZE: '32'
+    DESCRIPTION: Scratch register (high) for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: DST
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''

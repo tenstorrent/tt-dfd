@@ -5,7 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - v2.0
+
+### Changed
+
+- Reorganised the package around new generated integration tops in [rtl/top/](rtl/top/) (APB and AXI flavors) and regenerated MMR RTL with YAML specs in [rtl/mmr/spec/](rtl/mmr/spec/). The `dfd_`-prefixed modules, `rtl/dfd/` and `rtl/gen_files/` of the previous release are replaced.
+- Each IP now has its own folder (`rtl/cla`, `rtl/dst`, `rtl/trace`, `rtl/mmr`), with shared infrastructure in `rtl/common`.
+- MMR space organization to be more efficient
+
+### Added
+
+- New MMR version register (`c_dbg_version`, reset value `2.0.0`).
+- Legacy compatibility wrappers in [rtl/compat/](rtl/compat/) that present the previous top-level interfaces on top of the new tops.
+- 128-bit debug bus support
+- New CLA events:
+    - Arithmetic compare
+    - LFSR
+- HRepeat support in Ntrace
+- Relative timestamp support in Ntrace
+
+### Notes
+
+- Documentation and the CLA compiler have not yet been updated for v2.0 and will follow in a later commit. Until then the CLA compiler reports that v2.0 compatibility is not available.
+
 
 ### Added
 
