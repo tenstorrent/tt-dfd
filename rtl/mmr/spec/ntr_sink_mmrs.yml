@@ -1,0 +1,452 @@
+trRamControl:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000000'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: WARL
+  trRamActive:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trRamEnable:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trRamEmpty:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '3:3'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamMode:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '4:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  trRamStopOnWrap:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '8:8'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_2_2:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '2:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_7_5:
+    FIELDS_WIDTH: '3'
+    FIELDS_RANGE: '7:5'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_9:
+    FIELDS_WIDTH: '23'
+    FIELDS_RANGE: '31:9'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+trRamImpl:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000004'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_TYPE: WARL
+  trRamVerMajor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '3:0'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamVerMinor:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '7:4'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamCompType:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '11:8'
+    RESET_VALUE: '9'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamHasSRAM:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '12:12'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamHasSMEM:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '13:13'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamVendorFrameLength:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '27:24'
+    RESET_VALUE: '1'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_23_14:
+    FIELDS_WIDTH: '10'
+    FIELDS_RANGE: '23:14'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_31_28:
+    FIELDS_WIDTH: '4'
+    FIELDS_RANGE: '31:28'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+trRamStartLow:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000010'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_TYPE: WARL
+  trRamStartLow:
+    FIELDS_WIDTH: '30'
+    FIELDS_RANGE: '31:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    HW_WRITE: NTR_SINK
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_1_0:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+trRamStartHigh:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000014'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: WARL
+  trRamStartHigh:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+trRamLimitLow:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000018'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_TYPE: WARL
+  trRamLimitLow:
+    FIELDS_WIDTH: '30'
+    FIELDS_RANGE: '31:2'
+    RESET_VALUE: '2000'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    HW_WRITE: NTR_SINK
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_1_0:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+trRamLimitHigh:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x00001C'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: WARL
+  trRamLimitHigh:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+trRamWPLow:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000020'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: WARL
+  trRamWrap:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: 0:0
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+  trRamWPLow:
+    FIELDS_WIDTH: '30'
+    FIELDS_RANGE: '31:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_1_1:
+    FIELDS_WIDTH: '1'
+    FIELDS_RANGE: '1:1'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: Reserved
+    SW_READ: R
+    SW_TYPE: ''
+trRamWPHigh:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000024'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: WARL
+  trRamWPHigh:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+trRamRPLow:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000028'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_TYPE: WARL
+  trRamRPLow:
+    FIELDS_WIDTH: '30'
+    FIELDS_RANGE: '31:2'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    HW_WRITE: NTR_SINK
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_1_0:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+trRamRPHigh:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x00002C'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: WARL
+  trRamRPHigh:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+trRamData:
+  common_data:
+    VISIBILITY: External
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000040'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    HW_WRITE: NTR_SINK
+    SW_TYPE: Read Only
+  trRamData:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+trCustomRamSMEMLimitLow:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: RegAccess
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000E00'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: ''
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_TYPE: WARL
+  trCustomRamSMEMLimitLow:
+    FIELDS_WIDTH: '30'
+    FIELDS_RANGE: '31:2'
+    RESET_VALUE: PARAM
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: ''
+  rsvd_1_0:
+    FIELDS_WIDTH: '2'
+    FIELDS_RANGE: '1:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_READ: R
+    SW_TYPE: ''
+scratch_lo:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FF8'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: Scratch register (low) for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''
+scratch_hi:
+  common_data:
+    VISIBILITY: Internal
+    TYPE: Debug
+    SUB_CATEGORY: ''
+    ADDRESS: '0x000FFC'
+    NTR_SINK_MMR_SIZE: '32'
+    DESCRIPTION: Scratch register (high) for DV and potential ECO usage
+    RESET_PORT: ''
+    HW_READ: NTR_SINK
+    SW_WRITE: W
+    SW_READ: R
+    SW_TYPE: WARL
+  data:
+    FIELDS_WIDTH: '32'
+    FIELDS_RANGE: '31:0'
+    RESET_VALUE: '0'
+    LEGAL_VALUE: ''
+    DESCRIPTION: ''
+    SW_TYPE: ''

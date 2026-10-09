@@ -1,5 +1,3 @@
-# SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
-# SPDX-License-Identifier: Apache-2.0
 
 import os
 import sys
@@ -18,6 +16,7 @@ import traceback
 # Global vars
 ###################################
 g_program_version = "1.1.0"
+g_defaultMmrSpecPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "rtl", "mmr", "spec", "cla_mmrs.yml")
 
 
 def getLogger(name, console="WARNING", outputdir="", logFile=True, fileLevel="DEBUG"):
@@ -2847,6 +2846,26 @@ def escapeBazelSandbox(filePath):
   return absolutePath
   
 
+def getMmrSpecVersion(specPath):
+  #Returns the (major, minor, patch) reset values of the c_dbg_version MMR
+  specFile = open(specPath, "r")
+  specDict = yaml.load(specFile, Loader=yaml.SafeLoader)
+  specFile.close()
+  versionDict = specDict["c_dbg_version"]
+  return tuple(str2int(versionDict[field]["RESET_VALUE"]) for field in ["major", "minor", "patch"])
+
+
+def checkMmrVersion(specPath):
+  if (not os.path.exists(specPath)):
+    g_logger.warning("MMR spec \"{}\" not found. Skipping MMR version check".format(specPath))
+    return
+  major, minor, patch = getMmrSpecVersion(specPath)
+  g_logger.info("CLA MMR version (c_dbg_version) = {}.{}.{}".format(major, minor, patch))
+  if (major >= 2):
+    g_logger.error("CLA MMR version {}.{}.{} detected in \"{}\". v2.0 compatibility is not available in this compiler".format(major, minor, patch, specPath))
+    sys.exit(1)
+
+
 def main():
   #Get args 
   parser = argparse.ArgumentParser(description='(Version {}) Compile CLA program description into CSR field values'.format(g_program_version))
@@ -2854,10 +2873,12 @@ def main():
   parser.add_argument('--busInfoPath', type=str, help='Path to the json file that contains information on the debug bus implementation. This json can be generated using generateClaDoc.py')
   parser.add_argument("--outputPath", type=str, help="Output path for where CSR fields will be dumped in a yaml file")
   parser.add_argument("--logName", type=str, default="compileClaProgram.log", help="Name of output log file")
+  parser.add_argument("--mmrSpecPath", type=str, default=g_defaultMmrSpecPath, help="Path to the CLA MMR spec yaml. The reset value of c_dbg_version is checked for compatibility")
   args = parser.parse_args()
 
   global g_logger
   g_logger = getLogger(args.logName)
+  checkMmrVersion(args.mmrSpecPath)
 
   try:
     claInfoPath = args.busInfoPath

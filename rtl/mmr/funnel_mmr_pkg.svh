@@ -1,0 +1,286 @@
+// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+`ifndef FUNNEL_MMR_PKG_SVH
+`define FUNNEL_MMR_PKG_SVH
+
+package funnel_mmr_pkg;
+
+localparam FUNNEL_REG_MAP_BASE_ADDR                                    = 12'h000;
+
+localparam FUNNEL_TRFUNNELCONTROL_REG_OFFSET                           = 12'h000;
+localparam FUNNEL_TRFUNNELCONTROL_REG_ADDR                             = 12'h000;
+localparam FUNNEL_TRFUNNELIMPL_REG_OFFSET                              = 12'h004;
+localparam FUNNEL_TRFUNNELIMPL_REG_ADDR                                = 12'h004;
+localparam FUNNEL_TRFUNNELDISINPUT_REG_OFFSET                          = 12'h008;
+localparam FUNNEL_TRFUNNELDISINPUT_REG_ADDR                            = 12'h008;
+localparam FUNNEL_SCRATCHLO_REG_OFFSET                                 = 12'hFF8;
+localparam FUNNEL_SCRATCHLO_REG_ADDR                                   = 12'hFF8;
+localparam FUNNEL_SCRATCHHI_REG_OFFSET                                 = 12'hFFC;
+localparam FUNNEL_SCRATCHHI_REG_ADDR                                   = 12'hFFC;
+
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELACTIVE_MASK                   = 32'h1;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELACTIVE_SHIFT                  = 0;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELACTIVE_LOW                    = 0;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELACTIVE_HIGH                   = 0;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELACTIVE_WIDTH                  = 1;
+
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELENABLE_MASK                   = 32'h2;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELENABLE_SHIFT                  = 1;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELENABLE_LOW                    = 1;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELENABLE_HIGH                   = 1;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELENABLE_WIDTH                  = 1;
+
+localparam FUNNEL_TRFUNNELCONTROL_RSVD22_MASK                           = 32'h4;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD22_SHIFT                          = 2;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD22_LOW                            = 2;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD22_HIGH                           = 2;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD22_WIDTH                          = 1;
+
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELEMPTY_MASK                    = 32'h8;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELEMPTY_SHIFT                   = 3;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELEMPTY_LOW                     = 3;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELEMPTY_HIGH                    = 3;
+localparam FUNNEL_TRFUNNELCONTROL_TRFUNNELEMPTY_WIDTH                   = 1;
+
+localparam FUNNEL_TRFUNNELCONTROL_RSVD314_MASK                          = 32'hFFFFFFF0;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD314_SHIFT                         = 4;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD314_LOW                           = 4;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD314_HIGH                          = 31;
+localparam FUNNEL_TRFUNNELCONTROL_RSVD314_WIDTH                         = 28;
+
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMAJOR_MASK                    = 32'hF;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMAJOR_SHIFT                   = 0;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMAJOR_LOW                     = 0;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMAJOR_HIGH                    = 3;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMAJOR_WIDTH                   = 4;
+
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMINOR_MASK                    = 32'hF0;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMINOR_SHIFT                   = 4;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMINOR_LOW                     = 4;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMINOR_HIGH                    = 7;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELVERMINOR_WIDTH                   = 4;
+
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELCOMPTYPE_MASK                    = 32'hF00;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELCOMPTYPE_SHIFT                   = 8;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELCOMPTYPE_LOW                     = 8;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELCOMPTYPE_HIGH                    = 11;
+localparam FUNNEL_TRFUNNELIMPL_TRFUNNELCOMPTYPE_WIDTH                   = 4;
+
+localparam FUNNEL_TRFUNNELIMPL_RSVD3112_MASK                            = 32'hFFFFF000;
+localparam FUNNEL_TRFUNNELIMPL_RSVD3112_SHIFT                           = 12;
+localparam FUNNEL_TRFUNNELIMPL_RSVD3112_LOW                             = 12;
+localparam FUNNEL_TRFUNNELIMPL_RSVD3112_HIGH                            = 31;
+localparam FUNNEL_TRFUNNELIMPL_RSVD3112_WIDTH                           = 20;
+
+localparam FUNNEL_TRFUNNELDISINPUT_TRFUNNELDISINPUT_MASK                = 32'hFFFF;
+localparam FUNNEL_TRFUNNELDISINPUT_TRFUNNELDISINPUT_SHIFT               = 0;
+localparam FUNNEL_TRFUNNELDISINPUT_TRFUNNELDISINPUT_LOW                 = 0;
+localparam FUNNEL_TRFUNNELDISINPUT_TRFUNNELDISINPUT_HIGH                = 15;
+localparam FUNNEL_TRFUNNELDISINPUT_TRFUNNELDISINPUT_WIDTH               = 16;
+
+localparam FUNNEL_TRFUNNELDISINPUT_RSVD3116_MASK                        = 32'hFFFF0000;
+localparam FUNNEL_TRFUNNELDISINPUT_RSVD3116_SHIFT                       = 16;
+localparam FUNNEL_TRFUNNELDISINPUT_RSVD3116_LOW                         = 16;
+localparam FUNNEL_TRFUNNELDISINPUT_RSVD3116_HIGH                        = 31;
+localparam FUNNEL_TRFUNNELDISINPUT_RSVD3116_WIDTH                       = 16;
+
+localparam FUNNEL_SCRATCHLO_DATA_MASK                                   = 32'hFFFFFFFF;
+localparam FUNNEL_SCRATCHLO_DATA_SHIFT                                  = 0;
+localparam FUNNEL_SCRATCHLO_DATA_LOW                                    = 0;
+localparam FUNNEL_SCRATCHLO_DATA_HIGH                                   = 31;
+localparam FUNNEL_SCRATCHLO_DATA_WIDTH                                  = 32;
+
+localparam FUNNEL_SCRATCHHI_DATA_MASK                                   = 32'hFFFFFFFF;
+localparam FUNNEL_SCRATCHHI_DATA_SHIFT                                  = 0;
+localparam FUNNEL_SCRATCHHI_DATA_LOW                                    = 0;
+localparam FUNNEL_SCRATCHHI_DATA_HIGH                                   = 31;
+localparam FUNNEL_SCRATCHHI_DATA_WIDTH                                  = 32;
+
+localparam FUNNEL_NUM_REGISTERS                                         = 5;
+
+typedef struct packed {
+  logic               FunnelMmrTrfunnelcontrolHit;
+  logic               FunnelMmrTrfunnelimplHit;
+  logic               FunnelMmrTrfunneldisinputHit;
+  logic               FunnelMmrScratchloHit;
+  logic               FunnelMmrScratchhiHit;
+} FunnelMmrHit_s;
+
+typedef struct packed {
+    logic   [27:0]        Rsvd314 ;
+    logic    [0:0]        Trfunnelempty ;
+    logic    [0:0]        Rsvd22 ;
+    logic    [0:0]        Trfunnelenable ;
+    logic    [0:0]        Trfunnelactive ;
+} FunnelTrfunnelcontrolMmr_s;
+
+typedef struct packed {
+    logic   [19:0]        Rsvd3112 ;
+    logic    [3:0]        Trfunnelcomptype ;
+    logic    [3:0]        Trfunnelverminor ;
+    logic    [3:0]        Trfunnelvermajor ;
+} FunnelTrfunnelimplMmr_s;
+
+typedef struct packed {
+    logic   [15:0]        Rsvd3116 ;
+    logic   [15:0]        Trfunneldisinput ;
+} FunnelTrfunneldisinputMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} FunnelScratchloMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} FunnelScratchhiMmr_s;
+
+typedef struct packed {
+    logic   [27:0]        Rsvd314 ;
+    logic    [0:0]        Trfunnelempty ;
+    logic    [0:0]        Rsvd22 ;
+    logic    [0:0]        Trfunnelenable ;
+    logic    [0:0]        Trfunnelactive ;
+} FunnelTrfunnelcontrolMmrUnpack_s;
+
+typedef struct packed {
+    logic   [19:0]        Rsvd3112 ;
+    logic    [3:0]        Trfunnelcomptype ;
+    logic    [3:0]        Trfunnelverminor ;
+    logic    [3:0]        Trfunnelvermajor ;
+} FunnelTrfunnelimplMmrUnpack_s;
+
+typedef struct packed {
+    logic   [15:0]        Rsvd3116 ;
+    logic   [15:0]        Trfunneldisinput ;
+} FunnelTrfunneldisinputMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} FunnelScratchloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} FunnelScratchhiMmrUnpack_s;
+
+typedef struct packed {
+    FunnelTrfunnelcontrolMmr_s Data;
+    logic                 Rsvd314WrEn ;
+    logic                 TrfunnelemptyWrEn ;
+    logic                 Rsvd22WrEn ;
+    logic                 TrfunnelenableWrEn ;
+    logic                 TrfunnelactiveWrEn ;
+} FunnelTrfunnelcontrolMmrWr_s;
+
+typedef struct packed {
+    FunnelTrfunneldisinputMmr_s Data;
+    logic                 Rsvd3116WrEn ;
+    logic                 TrfunneldisinputWrEn ;
+} FunnelTrfunneldisinputMmrWr_s;
+
+typedef struct packed {
+    FunnelTrfunnelcontrolMmr_s Trfunnelcontrol;
+    FunnelTrfunnelimplMmr_s Trfunnelimpl;
+    FunnelTrfunneldisinputMmr_s Trfunneldisinput;
+    FunnelScratchloMmr_s  Scratchlo;
+    FunnelScratchhiMmr_s  Scratchhi;
+} FunnelMmrs_s;
+
+typedef struct packed {
+    FunnelTrfunnelcontrolMmrWr_s TrfunnelcontrolWr;
+    FunnelTrfunneldisinputMmrWr_s TrfunneldisinputWr;
+} FunnelMmrsWr_s;
+
+function automatic FunnelTrfunnelcontrolMmrUnpack_s unpack_FunnelTrfunnelcontrolMmr;
+input FunnelTrfunnelcontrolMmr_s packed_mmr;
+begin
+    unpack_FunnelTrfunnelcontrolMmr = '0;
+    unpack_FunnelTrfunnelcontrolMmr.Trfunnelactive = packed_mmr.Trfunnelactive;
+    unpack_FunnelTrfunnelcontrolMmr.Trfunnelenable = packed_mmr.Trfunnelenable;
+    unpack_FunnelTrfunnelcontrolMmr.Rsvd22 = packed_mmr.Rsvd22;
+    unpack_FunnelTrfunnelcontrolMmr.Trfunnelempty = packed_mmr.Trfunnelempty;
+    unpack_FunnelTrfunnelcontrolMmr.Rsvd314 = packed_mmr.Rsvd314;
+end
+endfunction
+
+function automatic FunnelTrfunnelimplMmrUnpack_s unpack_FunnelTrfunnelimplMmr;
+input FunnelTrfunnelimplMmr_s packed_mmr;
+begin
+    unpack_FunnelTrfunnelimplMmr = '0;
+    unpack_FunnelTrfunnelimplMmr.Trfunnelvermajor = packed_mmr.Trfunnelvermajor;
+    unpack_FunnelTrfunnelimplMmr.Trfunnelverminor = packed_mmr.Trfunnelverminor;
+    unpack_FunnelTrfunnelimplMmr.Trfunnelcomptype = packed_mmr.Trfunnelcomptype;
+    unpack_FunnelTrfunnelimplMmr.Rsvd3112 = packed_mmr.Rsvd3112;
+end
+endfunction
+
+function automatic FunnelTrfunneldisinputMmrUnpack_s unpack_FunnelTrfunneldisinputMmr;
+input FunnelTrfunneldisinputMmr_s packed_mmr;
+begin
+    unpack_FunnelTrfunneldisinputMmr = '0;
+    unpack_FunnelTrfunneldisinputMmr.Trfunneldisinput = packed_mmr.Trfunneldisinput;
+    unpack_FunnelTrfunneldisinputMmr.Rsvd3116 = packed_mmr.Rsvd3116;
+end
+endfunction
+
+function automatic FunnelScratchloMmrUnpack_s unpack_FunnelScratchloMmr;
+input FunnelScratchloMmr_s packed_mmr;
+begin
+    unpack_FunnelScratchloMmr = '0;
+    unpack_FunnelScratchloMmr.Data = packed_mmr.Data;
+end
+endfunction
+
+function automatic FunnelScratchhiMmrUnpack_s unpack_FunnelScratchhiMmr;
+input FunnelScratchhiMmr_s packed_mmr;
+begin
+    unpack_FunnelScratchhiMmr = '0;
+    unpack_FunnelScratchhiMmr.Data = packed_mmr.Data;
+end
+endfunction
+
+function automatic FunnelTrfunnelcontrolMmr_s pack_FunnelTrfunnelcontrolMmr;
+input FunnelTrfunnelcontrolMmrUnpack_s unpacked_mmr;
+begin
+    pack_FunnelTrfunnelcontrolMmr.Trfunnelactive = unpacked_mmr.Trfunnelactive;
+    pack_FunnelTrfunnelcontrolMmr.Trfunnelenable = unpacked_mmr.Trfunnelenable;
+    pack_FunnelTrfunnelcontrolMmr.Rsvd22 = unpacked_mmr.Rsvd22;
+    pack_FunnelTrfunnelcontrolMmr.Trfunnelempty = unpacked_mmr.Trfunnelempty;
+    pack_FunnelTrfunnelcontrolMmr.Rsvd314 = unpacked_mmr.Rsvd314;
+end
+endfunction
+
+function automatic FunnelTrfunnelimplMmr_s pack_FunnelTrfunnelimplMmr;
+input FunnelTrfunnelimplMmrUnpack_s unpacked_mmr;
+begin
+    pack_FunnelTrfunnelimplMmr.Trfunnelvermajor = unpacked_mmr.Trfunnelvermajor;
+    pack_FunnelTrfunnelimplMmr.Trfunnelverminor = unpacked_mmr.Trfunnelverminor;
+    pack_FunnelTrfunnelimplMmr.Trfunnelcomptype = unpacked_mmr.Trfunnelcomptype;
+    pack_FunnelTrfunnelimplMmr.Rsvd3112 = unpacked_mmr.Rsvd3112;
+end
+endfunction
+
+function automatic FunnelTrfunneldisinputMmr_s pack_FunnelTrfunneldisinputMmr;
+input FunnelTrfunneldisinputMmrUnpack_s unpacked_mmr;
+begin
+    pack_FunnelTrfunneldisinputMmr.Trfunneldisinput = unpacked_mmr.Trfunneldisinput;
+    pack_FunnelTrfunneldisinputMmr.Rsvd3116 = unpacked_mmr.Rsvd3116;
+end
+endfunction
+
+function automatic FunnelScratchloMmr_s pack_FunnelScratchloMmr;
+input FunnelScratchloMmrUnpack_s unpacked_mmr;
+begin
+    pack_FunnelScratchloMmr.Data = unpacked_mmr.Data;
+end
+endfunction
+
+function automatic FunnelScratchhiMmr_s pack_FunnelScratchhiMmr;
+input FunnelScratchhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_FunnelScratchhiMmr.Data = unpacked_mmr.Data;
+end
+endfunction
+
+endpackage
+
+`endif

@@ -1,0 +1,7265 @@
+// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+`ifndef CLA_MMR_PKG_SVH
+`define CLA_MMR_PKG_SVH
+
+package cla_mmr_pkg;
+
+localparam CLA_REG_MAP_BASE_ADDR                                       = 12'h000;
+
+localparam CLA_CDBGCLACOUNTER0CFG_REG_OFFSET                           = 12'h100;
+localparam CLA_CDBGCLACOUNTER0CFG_REG_ADDR                             = 12'h100;
+localparam CLA_CDBGCLACOUNTER1CFG_REG_OFFSET                           = 12'h108;
+localparam CLA_CDBGCLACOUNTER1CFG_REG_ADDR                             = 12'h108;
+localparam CLA_CDBGCLACOUNTER2CFG_REG_OFFSET                           = 12'h110;
+localparam CLA_CDBGCLACOUNTER2CFG_REG_ADDR                             = 12'h110;
+localparam CLA_CDBGCLACOUNTER3CFG_REG_OFFSET                           = 12'h118;
+localparam CLA_CDBGCLACOUNTER3CFG_REG_ADDR                             = 12'h118;
+localparam CLA_CDBGNODE0EAP0_REG_OFFSET                                = 12'h120;
+localparam CLA_CDBGNODE0EAP0_REG_ADDR                                  = 12'h120;
+localparam CLA_CDBGNODE0EAP1_REG_OFFSET                                = 12'h128;
+localparam CLA_CDBGNODE0EAP1_REG_ADDR                                  = 12'h128;
+localparam CLA_CDBGNODE1EAP0_REG_OFFSET                                = 12'h130;
+localparam CLA_CDBGNODE1EAP0_REG_ADDR                                  = 12'h130;
+localparam CLA_CDBGNODE1EAP1_REG_OFFSET                                = 12'h138;
+localparam CLA_CDBGNODE1EAP1_REG_ADDR                                  = 12'h138;
+localparam CLA_CDBGNODE2EAP0_REG_OFFSET                                = 12'h140;
+localparam CLA_CDBGNODE2EAP0_REG_ADDR                                  = 12'h140;
+localparam CLA_CDBGNODE2EAP1_REG_OFFSET                                = 12'h148;
+localparam CLA_CDBGNODE2EAP1_REG_ADDR                                  = 12'h148;
+localparam CLA_CDBGNODE3EAP0_REG_OFFSET                                = 12'h150;
+localparam CLA_CDBGNODE3EAP0_REG_ADDR                                  = 12'h150;
+localparam CLA_CDBGNODE3EAP1_REG_OFFSET                                = 12'h158;
+localparam CLA_CDBGNODE3EAP1_REG_ADDR                                  = 12'h158;
+localparam CLA_CDBGSIGNALMASK0LO_REG_OFFSET                            = 12'h160;
+localparam CLA_CDBGSIGNALMASK0LO_REG_ADDR                              = 12'h160;
+localparam CLA_CDBGSIGNALMATCH0LO_REG_OFFSET                           = 12'h168;
+localparam CLA_CDBGSIGNALMATCH0LO_REG_ADDR                             = 12'h168;
+localparam CLA_CDBGSIGNALMASK1LO_REG_OFFSET                            = 12'h170;
+localparam CLA_CDBGSIGNALMASK1LO_REG_ADDR                              = 12'h170;
+localparam CLA_CDBGSIGNALMATCH1LO_REG_OFFSET                           = 12'h178;
+localparam CLA_CDBGSIGNALMATCH1LO_REG_ADDR                             = 12'h178;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_REG_OFFSET                      = 12'h180;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_REG_ADDR                        = 12'h180;
+localparam CLA_CDBGEAPSTATUS_REG_OFFSET                                = 12'h188;
+localparam CLA_CDBGEAPSTATUS_REG_ADDR                                  = 12'h188;
+localparam CLA_CDBGCLACTRLSTATUS_REG_OFFSET                            = 12'h190;
+localparam CLA_CDBGCLACTRLSTATUS_REG_ADDR                              = 12'h190;
+localparam CLA_CDBGMUXSELLO_REG_OFFSET                                 = 12'h198;
+localparam CLA_CDBGMUXSELLO_REG_ADDR                                   = 12'h198;
+localparam CLA_CDBGRSVD1_REG_OFFSET                                    = 12'h1A0;
+localparam CLA_CDBGRSVD1_REG_ADDR                                      = 12'h1A0;
+localparam CLA_CDBGRSVD2_REG_OFFSET                                    = 12'h1A8;
+localparam CLA_CDBGRSVD2_REG_ADDR                                      = 12'h1A8;
+localparam CLA_CDBGTRANSITIONMASKLO_REG_OFFSET                         = 12'h1B0;
+localparam CLA_CDBGTRANSITIONMASKLO_REG_ADDR                           = 12'h1B0;
+localparam CLA_CDBGTRANSITIONFROMVALUELO_REG_OFFSET                    = 12'h1B8;
+localparam CLA_CDBGTRANSITIONFROMVALUELO_REG_ADDR                      = 12'h1B8;
+localparam CLA_CDBGTRANSITIONTOVALUELO_REG_OFFSET                      = 12'h1C0;
+localparam CLA_CDBGTRANSITIONTOVALUELO_REG_ADDR                        = 12'h1C0;
+localparam CLA_CDBGONESCOUNTMASKLO_REG_OFFSET                          = 12'h1C8;
+localparam CLA_CDBGONESCOUNTMASKLO_REG_ADDR                            = 12'h1C8;
+localparam CLA_CDBGONESCOUNTVALUE_REG_OFFSET                           = 12'h1D0;
+localparam CLA_CDBGONESCOUNTVALUE_REG_ADDR                             = 12'h1D0;
+localparam CLA_CDBGANYCHANGELO_REG_OFFSET                              = 12'h1D8;
+localparam CLA_CDBGANYCHANGELO_REG_ADDR                                = 12'h1D8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_REG_OFFSET                = 12'h1E0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_REG_ADDR                  = 12'h1E0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_REG_OFFSET                = 12'h1E8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_REG_ADDR                  = 12'h1E8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_REG_OFFSET                = 12'h1F0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_REG_ADDR                  = 12'h1F0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_REG_OFFSET                = 12'h1F8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_REG_ADDR                  = 12'h1F8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_REG_OFFSET                = 12'h200;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_REG_ADDR                  = 12'h200;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_REG_OFFSET                = 12'h208;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_REG_ADDR                  = 12'h208;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_REG_OFFSET                = 12'h210;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_REG_ADDR                  = 12'h210;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_REG_OFFSET                = 12'h218;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_REG_ADDR                  = 12'h218;
+localparam CLA_CDBGCLATIMEMATCH_REG_OFFSET                             = 12'h220;
+localparam CLA_CDBGCLATIMEMATCH_REG_ADDR                               = 12'h220;
+localparam CLA_CDBGSIGNALMASK2LO_REG_OFFSET                            = 12'h228;
+localparam CLA_CDBGSIGNALMASK2LO_REG_ADDR                              = 12'h228;
+localparam CLA_CDBGSIGNALMATCH2LO_REG_OFFSET                           = 12'h230;
+localparam CLA_CDBGSIGNALMATCH2LO_REG_ADDR                             = 12'h230;
+localparam CLA_CDBGSIGNALMASK3LO_REG_OFFSET                            = 12'h238;
+localparam CLA_CDBGSIGNALMASK3LO_REG_ADDR                              = 12'h238;
+localparam CLA_CDBGSIGNALMATCH3LO_REG_OFFSET                           = 12'h240;
+localparam CLA_CDBGSIGNALMATCH3LO_REG_ADDR                             = 12'h240;
+localparam CLA_CDBGNODE0EAP2_REG_OFFSET                                = 12'h248;
+localparam CLA_CDBGNODE0EAP2_REG_ADDR                                  = 12'h248;
+localparam CLA_CDBGNODE0EAP3_REG_OFFSET                                = 12'h250;
+localparam CLA_CDBGNODE0EAP3_REG_ADDR                                  = 12'h250;
+localparam CLA_CDBGNODE1EAP2_REG_OFFSET                                = 12'h258;
+localparam CLA_CDBGNODE1EAP2_REG_ADDR                                  = 12'h258;
+localparam CLA_CDBGNODE1EAP3_REG_OFFSET                                = 12'h260;
+localparam CLA_CDBGNODE1EAP3_REG_ADDR                                  = 12'h260;
+localparam CLA_CDBGNODE2EAP2_REG_OFFSET                                = 12'h268;
+localparam CLA_CDBGNODE2EAP2_REG_ADDR                                  = 12'h268;
+localparam CLA_CDBGNODE2EAP3_REG_OFFSET                                = 12'h270;
+localparam CLA_CDBGNODE2EAP3_REG_ADDR                                  = 12'h270;
+localparam CLA_CDBGNODE3EAP2_REG_OFFSET                                = 12'h278;
+localparam CLA_CDBGNODE3EAP2_REG_ADDR                                  = 12'h278;
+localparam CLA_CDBGNODE3EAP3_REG_OFFSET                                = 12'h280;
+localparam CLA_CDBGNODE3EAP3_REG_ADDR                                  = 12'h280;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_REG_OFFSET                = 12'h288;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_REG_ADDR                  = 12'h288;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_REG_OFFSET                = 12'h290;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_REG_ADDR                  = 12'h290;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_REG_OFFSET                = 12'h298;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_REG_ADDR                  = 12'h298;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_REG_OFFSET                = 12'h2A0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_REG_ADDR                  = 12'h2A0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_REG_OFFSET                = 12'h2A8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_REG_ADDR                  = 12'h2A8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_REG_OFFSET                = 12'h2B0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_REG_ADDR                  = 12'h2B0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_REG_OFFSET                = 12'h2B8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_REG_ADDR                  = 12'h2B8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_REG_OFFSET                = 12'h2C0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_REG_ADDR                  = 12'h2C0;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_REG_OFFSET                        = 12'h2C8;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_REG_ADDR                          = 12'h2C8;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_REG_OFFSET                   = 12'h2D8;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_REG_ADDR                     = 12'h2D8;
+localparam CLA_CDBGCLATIMESTAMP_REG_OFFSET                             = 12'h2F0;
+localparam CLA_CDBGCLATIMESTAMP_REG_ADDR                               = 12'h2F0;
+localparam CLA_CDBGCLATIMESTAMPSYNC_REG_OFFSET                         = 12'h2F8;
+localparam CLA_CDBGCLATIMESTAMPSYNC_REG_ADDR                           = 12'h2F8;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_REG_OFFSET                       = 12'h300;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_REG_ADDR                         = 12'h300;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_REG_OFFSET                       = 12'h308;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_REG_ADDR                         = 12'h308;
+localparam CLA_CDBGSIGNALMASK0HI_REG_OFFSET                            = 12'h400;
+localparam CLA_CDBGSIGNALMASK0HI_REG_ADDR                              = 12'h400;
+localparam CLA_CDBGSIGNALMATCH0HI_REG_OFFSET                           = 12'h408;
+localparam CLA_CDBGSIGNALMATCH0HI_REG_ADDR                             = 12'h408;
+localparam CLA_CDBGSIGNALMASK1HI_REG_OFFSET                            = 12'h410;
+localparam CLA_CDBGSIGNALMASK1HI_REG_ADDR                              = 12'h410;
+localparam CLA_CDBGSIGNALMATCH1HI_REG_OFFSET                           = 12'h418;
+localparam CLA_CDBGSIGNALMATCH1HI_REG_ADDR                             = 12'h418;
+localparam CLA_CDBGSIGNALMASK2HI_REG_OFFSET                            = 12'h420;
+localparam CLA_CDBGSIGNALMASK2HI_REG_ADDR                              = 12'h420;
+localparam CLA_CDBGSIGNALMATCH2HI_REG_OFFSET                           = 12'h428;
+localparam CLA_CDBGSIGNALMATCH2HI_REG_ADDR                             = 12'h428;
+localparam CLA_CDBGSIGNALMASK3HI_REG_OFFSET                            = 12'h430;
+localparam CLA_CDBGSIGNALMASK3HI_REG_ADDR                              = 12'h430;
+localparam CLA_CDBGSIGNALMATCH3HI_REG_OFFSET                           = 12'h438;
+localparam CLA_CDBGSIGNALMATCH3HI_REG_ADDR                             = 12'h438;
+localparam CLA_CDBGMUXSELHI_REG_OFFSET                                 = 12'h440;
+localparam CLA_CDBGMUXSELHI_REG_ADDR                                   = 12'h440;
+localparam CLA_CDBGTRANSITIONMASKHI_REG_OFFSET                         = 12'h448;
+localparam CLA_CDBGTRANSITIONMASKHI_REG_ADDR                           = 12'h448;
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_REG_OFFSET                    = 12'h450;
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_REG_ADDR                      = 12'h450;
+localparam CLA_CDBGTRANSITIONTOVALUEHI_REG_OFFSET                      = 12'h458;
+localparam CLA_CDBGTRANSITIONTOVALUEHI_REG_ADDR                        = 12'h458;
+localparam CLA_CDBGONESCOUNTMASKHI_REG_OFFSET                          = 12'h460;
+localparam CLA_CDBGONESCOUNTMASKHI_REG_ADDR                            = 12'h460;
+localparam CLA_CDBGANYCHANGEHI_REG_OFFSET                              = 12'h468;
+localparam CLA_CDBGANYCHANGEHI_REG_ADDR                                = 12'h468;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_REG_OFFSET                = 12'h470;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_REG_ADDR                  = 12'h470;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_REG_OFFSET                = 12'h478;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_REG_ADDR                  = 12'h478;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_REG_OFFSET                = 12'h480;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_REG_ADDR                  = 12'h480;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_REG_OFFSET                = 12'h488;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_REG_ADDR                  = 12'h488;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_REG_OFFSET                = 12'h490;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_REG_ADDR                  = 12'h490;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_REG_OFFSET                = 12'h498;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_REG_ADDR                  = 12'h498;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_REG_OFFSET                = 12'h4A0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_REG_ADDR                  = 12'h4A0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_REG_OFFSET                = 12'h4A8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_REG_ADDR                  = 12'h4A8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_REG_OFFSET                = 12'h4B0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_REG_ADDR                  = 12'h4B0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_REG_OFFSET                = 12'h4B8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_REG_ADDR                  = 12'h4B8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_REG_OFFSET                = 12'h4C0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_REG_ADDR                  = 12'h4C0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_REG_OFFSET                = 12'h4C8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_REG_ADDR                  = 12'h4C8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_REG_OFFSET                = 12'h4D0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_REG_ADDR                  = 12'h4D0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_REG_OFFSET                = 12'h4D8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_REG_ADDR                  = 12'h4D8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_REG_OFFSET                = 12'h4E0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_REG_ADDR                  = 12'h4E0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_REG_OFFSET                = 12'h4E8;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_REG_ADDR                  = 12'h4E8;
+localparam CLA_CDBGLFSR_REG_OFFSET                                     = 12'h4F0;
+localparam CLA_CDBGLFSR_REG_ADDR                                       = 12'h4F0;
+localparam CLA_CDBGLFSRMASK_REG_OFFSET                                 = 12'h4F8;
+localparam CLA_CDBGLFSRMASK_REG_ADDR                                   = 12'h4F8;
+localparam CLA_CDBGTIMESTAMPCAPTURE_REG_OFFSET                         = 12'h500;
+localparam CLA_CDBGTIMESTAMPCAPTURE_REG_ADDR                           = 12'h500;
+localparam CLA_CDBGCOMPARE0LO_REG_OFFSET                               = 12'h508;
+localparam CLA_CDBGCOMPARE0LO_REG_ADDR                                 = 12'h508;
+localparam CLA_CDBGCOMPARE0MASKLO_REG_OFFSET                           = 12'h510;
+localparam CLA_CDBGCOMPARE0MASKLO_REG_ADDR                             = 12'h510;
+localparam CLA_CDBGCOMPARE1LO_REG_OFFSET                               = 12'h518;
+localparam CLA_CDBGCOMPARE1LO_REG_ADDR                                 = 12'h518;
+localparam CLA_CDBGCOMPARE1MASKLO_REG_OFFSET                           = 12'h520;
+localparam CLA_CDBGCOMPARE1MASKLO_REG_ADDR                             = 12'h520;
+localparam CLA_CDBGCOMPARE2LO_REG_OFFSET                               = 12'h528;
+localparam CLA_CDBGCOMPARE2LO_REG_ADDR                                 = 12'h528;
+localparam CLA_CDBGCOMPARE2MASKLO_REG_OFFSET                           = 12'h530;
+localparam CLA_CDBGCOMPARE2MASKLO_REG_ADDR                             = 12'h530;
+localparam CLA_CDBGCOMPARE3LO_REG_OFFSET                               = 12'h538;
+localparam CLA_CDBGCOMPARE3LO_REG_ADDR                                 = 12'h538;
+localparam CLA_CDBGCOMPARE3MASKLO_REG_OFFSET                           = 12'h540;
+localparam CLA_CDBGCOMPARE3MASKLO_REG_ADDR                             = 12'h540;
+localparam CLA_CDBGCOMPARE0HI_REG_OFFSET                               = 12'h548;
+localparam CLA_CDBGCOMPARE0HI_REG_ADDR                                 = 12'h548;
+localparam CLA_CDBGCOMPARE0MASKHI_REG_OFFSET                           = 12'h550;
+localparam CLA_CDBGCOMPARE0MASKHI_REG_ADDR                             = 12'h550;
+localparam CLA_CDBGCOMPARE1HI_REG_OFFSET                               = 12'h558;
+localparam CLA_CDBGCOMPARE1HI_REG_ADDR                                 = 12'h558;
+localparam CLA_CDBGCOMPARE1MASKHI_REG_OFFSET                           = 12'h560;
+localparam CLA_CDBGCOMPARE1MASKHI_REG_ADDR                             = 12'h560;
+localparam CLA_CDBGCOMPARE2HI_REG_OFFSET                               = 12'h568;
+localparam CLA_CDBGCOMPARE2HI_REG_ADDR                                 = 12'h568;
+localparam CLA_CDBGCOMPARE2MASKHI_REG_OFFSET                           = 12'h570;
+localparam CLA_CDBGCOMPARE2MASKHI_REG_ADDR                             = 12'h570;
+localparam CLA_CDBGCOMPARE3HI_REG_OFFSET                               = 12'h578;
+localparam CLA_CDBGCOMPARE3HI_REG_ADDR                                 = 12'h578;
+localparam CLA_CDBGCOMPARE3MASKHI_REG_OFFSET                           = 12'h580;
+localparam CLA_CDBGCOMPARE3MASKHI_REG_ADDR                             = 12'h580;
+localparam CLA_CDBGVERSION_REG_OFFSET                                  = 12'hFF0;
+localparam CLA_CDBGVERSION_REG_ADDR                                    = 12'hFF0;
+localparam CLA_SCRATCH_REG_OFFSET                                      = 12'hFF8;
+localparam CLA_SCRATCH_REG_ADDR                                        = 12'hFF8;
+
+localparam CLA_CDBGCLACOUNTER0CFG_COUNTER_MASK                          = 64'hFFFF;
+localparam CLA_CDBGCLACOUNTER0CFG_COUNTER_SHIFT                         = 0;
+localparam CLA_CDBGCLACOUNTER0CFG_COUNTER_LOW                           = 0;
+localparam CLA_CDBGCLACOUNTER0CFG_COUNTER_HIGH                          = 15;
+localparam CLA_CDBGCLACOUNTER0CFG_COUNTER_WIDTH                         = 16;
+
+localparam CLA_CDBGCLACOUNTER0CFG_TARGET_MASK                           = 64'hFFFF0000;
+localparam CLA_CDBGCLACOUNTER0CFG_TARGET_SHIFT                          = 16;
+localparam CLA_CDBGCLACOUNTER0CFG_TARGET_LOW                            = 16;
+localparam CLA_CDBGCLACOUNTER0CFG_TARGET_HIGH                           = 31;
+localparam CLA_CDBGCLACOUNTER0CFG_TARGET_WIDTH                          = 16;
+
+localparam CLA_CDBGCLACOUNTER0CFG_RESETONTARGET_MASK                    = 64'h100000000;
+localparam CLA_CDBGCLACOUNTER0CFG_RESETONTARGET_SHIFT                   = 32;
+localparam CLA_CDBGCLACOUNTER0CFG_RESETONTARGET_LOW                     = 32;
+localparam CLA_CDBGCLACOUNTER0CFG_RESETONTARGET_HIGH                    = 32;
+localparam CLA_CDBGCLACOUNTER0CFG_RESETONTARGET_WIDTH                   = 1;
+
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERCOUNTER_MASK                     = 64'hFFFE00000000;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERCOUNTER_SHIFT                    = 33;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERCOUNTER_LOW                      = 33;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERCOUNTER_HIGH                     = 47;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERCOUNTER_WIDTH                    = 15;
+
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERTARGET_MASK                      = 64'h7FFF000000000000;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERTARGET_SHIFT                     = 48;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERTARGET_LOW                       = 48;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERTARGET_HIGH                      = 62;
+localparam CLA_CDBGCLACOUNTER0CFG_UPPERTARGET_WIDTH                     = 15;
+
+localparam CLA_CDBGCLACOUNTER0CFG_RSVD_MASK                             = 64'h8000000000000000;
+localparam CLA_CDBGCLACOUNTER0CFG_RSVD_SHIFT                            = 63;
+localparam CLA_CDBGCLACOUNTER0CFG_RSVD_LOW                              = 63;
+localparam CLA_CDBGCLACOUNTER0CFG_RSVD_HIGH                             = 63;
+localparam CLA_CDBGCLACOUNTER0CFG_RSVD_WIDTH                            = 1;
+
+localparam CLA_CDBGCLACOUNTER1CFG_COUNTER_MASK                          = 64'hFFFF;
+localparam CLA_CDBGCLACOUNTER1CFG_COUNTER_SHIFT                         = 0;
+localparam CLA_CDBGCLACOUNTER1CFG_COUNTER_LOW                           = 0;
+localparam CLA_CDBGCLACOUNTER1CFG_COUNTER_HIGH                          = 15;
+localparam CLA_CDBGCLACOUNTER1CFG_COUNTER_WIDTH                         = 16;
+
+localparam CLA_CDBGCLACOUNTER1CFG_TARGET_MASK                           = 64'hFFFF0000;
+localparam CLA_CDBGCLACOUNTER1CFG_TARGET_SHIFT                          = 16;
+localparam CLA_CDBGCLACOUNTER1CFG_TARGET_LOW                            = 16;
+localparam CLA_CDBGCLACOUNTER1CFG_TARGET_HIGH                           = 31;
+localparam CLA_CDBGCLACOUNTER1CFG_TARGET_WIDTH                          = 16;
+
+localparam CLA_CDBGCLACOUNTER1CFG_RESETONTARGET_MASK                    = 64'h100000000;
+localparam CLA_CDBGCLACOUNTER1CFG_RESETONTARGET_SHIFT                   = 32;
+localparam CLA_CDBGCLACOUNTER1CFG_RESETONTARGET_LOW                     = 32;
+localparam CLA_CDBGCLACOUNTER1CFG_RESETONTARGET_HIGH                    = 32;
+localparam CLA_CDBGCLACOUNTER1CFG_RESETONTARGET_WIDTH                   = 1;
+
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERCOUNTER_MASK                     = 64'hFFFE00000000;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERCOUNTER_SHIFT                    = 33;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERCOUNTER_LOW                      = 33;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERCOUNTER_HIGH                     = 47;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERCOUNTER_WIDTH                    = 15;
+
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERTARGET_MASK                      = 64'h7FFF000000000000;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERTARGET_SHIFT                     = 48;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERTARGET_LOW                       = 48;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERTARGET_HIGH                      = 62;
+localparam CLA_CDBGCLACOUNTER1CFG_UPPERTARGET_WIDTH                     = 15;
+
+localparam CLA_CDBGCLACOUNTER1CFG_RSVD_MASK                             = 64'h8000000000000000;
+localparam CLA_CDBGCLACOUNTER1CFG_RSVD_SHIFT                            = 63;
+localparam CLA_CDBGCLACOUNTER1CFG_RSVD_LOW                              = 63;
+localparam CLA_CDBGCLACOUNTER1CFG_RSVD_HIGH                             = 63;
+localparam CLA_CDBGCLACOUNTER1CFG_RSVD_WIDTH                            = 1;
+
+localparam CLA_CDBGCLACOUNTER2CFG_COUNTER_MASK                          = 64'hFFFF;
+localparam CLA_CDBGCLACOUNTER2CFG_COUNTER_SHIFT                         = 0;
+localparam CLA_CDBGCLACOUNTER2CFG_COUNTER_LOW                           = 0;
+localparam CLA_CDBGCLACOUNTER2CFG_COUNTER_HIGH                          = 15;
+localparam CLA_CDBGCLACOUNTER2CFG_COUNTER_WIDTH                         = 16;
+
+localparam CLA_CDBGCLACOUNTER2CFG_TARGET_MASK                           = 64'hFFFF0000;
+localparam CLA_CDBGCLACOUNTER2CFG_TARGET_SHIFT                          = 16;
+localparam CLA_CDBGCLACOUNTER2CFG_TARGET_LOW                            = 16;
+localparam CLA_CDBGCLACOUNTER2CFG_TARGET_HIGH                           = 31;
+localparam CLA_CDBGCLACOUNTER2CFG_TARGET_WIDTH                          = 16;
+
+localparam CLA_CDBGCLACOUNTER2CFG_RESETONTARGET_MASK                    = 64'h100000000;
+localparam CLA_CDBGCLACOUNTER2CFG_RESETONTARGET_SHIFT                   = 32;
+localparam CLA_CDBGCLACOUNTER2CFG_RESETONTARGET_LOW                     = 32;
+localparam CLA_CDBGCLACOUNTER2CFG_RESETONTARGET_HIGH                    = 32;
+localparam CLA_CDBGCLACOUNTER2CFG_RESETONTARGET_WIDTH                   = 1;
+
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERCOUNTER_MASK                     = 64'hFFFE00000000;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERCOUNTER_SHIFT                    = 33;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERCOUNTER_LOW                      = 33;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERCOUNTER_HIGH                     = 47;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERCOUNTER_WIDTH                    = 15;
+
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERTARGET_MASK                      = 64'h7FFF000000000000;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERTARGET_SHIFT                     = 48;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERTARGET_LOW                       = 48;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERTARGET_HIGH                      = 62;
+localparam CLA_CDBGCLACOUNTER2CFG_UPPERTARGET_WIDTH                     = 15;
+
+localparam CLA_CDBGCLACOUNTER2CFG_RSVD_MASK                             = 64'h8000000000000000;
+localparam CLA_CDBGCLACOUNTER2CFG_RSVD_SHIFT                            = 63;
+localparam CLA_CDBGCLACOUNTER2CFG_RSVD_LOW                              = 63;
+localparam CLA_CDBGCLACOUNTER2CFG_RSVD_HIGH                             = 63;
+localparam CLA_CDBGCLACOUNTER2CFG_RSVD_WIDTH                            = 1;
+
+localparam CLA_CDBGCLACOUNTER3CFG_COUNTER_MASK                          = 64'hFFFF;
+localparam CLA_CDBGCLACOUNTER3CFG_COUNTER_SHIFT                         = 0;
+localparam CLA_CDBGCLACOUNTER3CFG_COUNTER_LOW                           = 0;
+localparam CLA_CDBGCLACOUNTER3CFG_COUNTER_HIGH                          = 15;
+localparam CLA_CDBGCLACOUNTER3CFG_COUNTER_WIDTH                         = 16;
+
+localparam CLA_CDBGCLACOUNTER3CFG_TARGET_MASK                           = 64'hFFFF0000;
+localparam CLA_CDBGCLACOUNTER3CFG_TARGET_SHIFT                          = 16;
+localparam CLA_CDBGCLACOUNTER3CFG_TARGET_LOW                            = 16;
+localparam CLA_CDBGCLACOUNTER3CFG_TARGET_HIGH                           = 31;
+localparam CLA_CDBGCLACOUNTER3CFG_TARGET_WIDTH                          = 16;
+
+localparam CLA_CDBGCLACOUNTER3CFG_RESETONTARGET_MASK                    = 64'h100000000;
+localparam CLA_CDBGCLACOUNTER3CFG_RESETONTARGET_SHIFT                   = 32;
+localparam CLA_CDBGCLACOUNTER3CFG_RESETONTARGET_LOW                     = 32;
+localparam CLA_CDBGCLACOUNTER3CFG_RESETONTARGET_HIGH                    = 32;
+localparam CLA_CDBGCLACOUNTER3CFG_RESETONTARGET_WIDTH                   = 1;
+
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERCOUNTER_MASK                     = 64'hFFFE00000000;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERCOUNTER_SHIFT                    = 33;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERCOUNTER_LOW                      = 33;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERCOUNTER_HIGH                     = 47;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERCOUNTER_WIDTH                    = 15;
+
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERTARGET_MASK                      = 64'h7FFF000000000000;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERTARGET_SHIFT                     = 48;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERTARGET_LOW                       = 48;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERTARGET_HIGH                      = 62;
+localparam CLA_CDBGCLACOUNTER3CFG_UPPERTARGET_WIDTH                     = 15;
+
+localparam CLA_CDBGCLACOUNTER3CFG_RSVD_MASK                             = 64'h8000000000000000;
+localparam CLA_CDBGCLACOUNTER3CFG_RSVD_SHIFT                            = 63;
+localparam CLA_CDBGCLACOUNTER3CFG_RSVD_LOW                              = 63;
+localparam CLA_CDBGCLACOUNTER3CFG_RSVD_HIGH                             = 63;
+localparam CLA_CDBGCLACOUNTER3CFG_RSVD_WIDTH                            = 1;
+
+localparam CLA_CDBGNODE0EAP0_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE0EAP0_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE0EAP0_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE0EAP0_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE0EAP0_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE0EAP0_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE0EAP0_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE0EAP0_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE0EAP0_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE0EAP0_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP0_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE0EAP0_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE0EAP0_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE0EAP0_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE0EAP0_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP0_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE0EAP0_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE0EAP0_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE0EAP0_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE0EAP0_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE0EAP0_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE0EAP0_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP0_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE0EAP0_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE0EAP0_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE0EAP0_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE0EAP0_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE0EAP0_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE0EAP0_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE0EAP0_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE0EAP0_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE0EAP0_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP0_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE0EAP0_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE0EAP0_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE0EAP0_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE0EAP0_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP1_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE0EAP1_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE0EAP1_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE0EAP1_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE0EAP1_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE0EAP1_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE0EAP1_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE0EAP1_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE0EAP1_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE0EAP1_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP1_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE0EAP1_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE0EAP1_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE0EAP1_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE0EAP1_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP1_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE0EAP1_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE0EAP1_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE0EAP1_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE0EAP1_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE0EAP1_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE0EAP1_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP1_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE0EAP1_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE0EAP1_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE0EAP1_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE0EAP1_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE0EAP1_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE0EAP1_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE0EAP1_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE0EAP1_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE0EAP1_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP1_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE0EAP1_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE0EAP1_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE0EAP1_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE0EAP1_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP0_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE1EAP0_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE1EAP0_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE1EAP0_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE1EAP0_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE1EAP0_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE1EAP0_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE1EAP0_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE1EAP0_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE1EAP0_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP0_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE1EAP0_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE1EAP0_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE1EAP0_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE1EAP0_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP0_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE1EAP0_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE1EAP0_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE1EAP0_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE1EAP0_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE1EAP0_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE1EAP0_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP0_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE1EAP0_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE1EAP0_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE1EAP0_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE1EAP0_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE1EAP0_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE1EAP0_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE1EAP0_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE1EAP0_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE1EAP0_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP0_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE1EAP0_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE1EAP0_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE1EAP0_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE1EAP0_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP1_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE1EAP1_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE1EAP1_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE1EAP1_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE1EAP1_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE1EAP1_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE1EAP1_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE1EAP1_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE1EAP1_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE1EAP1_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP1_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE1EAP1_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE1EAP1_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE1EAP1_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE1EAP1_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP1_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE1EAP1_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE1EAP1_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE1EAP1_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE1EAP1_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE1EAP1_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE1EAP1_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP1_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE1EAP1_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE1EAP1_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE1EAP1_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE1EAP1_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE1EAP1_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE1EAP1_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE1EAP1_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE1EAP1_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE1EAP1_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP1_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE1EAP1_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE1EAP1_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE1EAP1_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE1EAP1_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP0_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE2EAP0_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE2EAP0_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE2EAP0_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE2EAP0_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE2EAP0_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE2EAP0_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE2EAP0_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE2EAP0_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE2EAP0_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP0_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE2EAP0_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE2EAP0_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE2EAP0_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE2EAP0_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP0_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE2EAP0_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE2EAP0_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE2EAP0_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE2EAP0_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE2EAP0_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE2EAP0_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP0_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE2EAP0_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE2EAP0_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE2EAP0_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE2EAP0_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE2EAP0_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE2EAP0_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE2EAP0_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE2EAP0_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE2EAP0_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP0_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE2EAP0_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE2EAP0_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE2EAP0_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE2EAP0_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP1_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE2EAP1_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE2EAP1_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE2EAP1_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE2EAP1_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE2EAP1_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE2EAP1_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE2EAP1_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE2EAP1_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE2EAP1_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP1_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE2EAP1_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE2EAP1_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE2EAP1_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE2EAP1_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP1_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE2EAP1_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE2EAP1_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE2EAP1_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE2EAP1_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE2EAP1_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE2EAP1_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP1_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE2EAP1_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE2EAP1_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE2EAP1_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE2EAP1_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE2EAP1_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE2EAP1_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE2EAP1_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE2EAP1_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE2EAP1_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP1_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE2EAP1_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE2EAP1_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE2EAP1_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE2EAP1_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP0_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE3EAP0_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE3EAP0_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE3EAP0_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE3EAP0_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE3EAP0_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE3EAP0_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE3EAP0_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE3EAP0_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE3EAP0_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP0_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE3EAP0_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE3EAP0_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE3EAP0_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE3EAP0_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP0_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE3EAP0_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE3EAP0_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE3EAP0_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE3EAP0_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE3EAP0_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE3EAP0_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP0_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE3EAP0_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE3EAP0_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE3EAP0_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE3EAP0_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE3EAP0_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE3EAP0_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE3EAP0_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE3EAP0_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE3EAP0_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP0_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE3EAP0_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE3EAP0_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE3EAP0_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE3EAP0_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP1_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE3EAP1_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE3EAP1_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE3EAP1_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE3EAP1_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE3EAP1_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE3EAP1_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE3EAP1_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE3EAP1_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE3EAP1_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP1_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE3EAP1_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE3EAP1_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE3EAP1_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE3EAP1_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP1_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE3EAP1_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE3EAP1_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE3EAP1_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE3EAP1_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE3EAP1_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE3EAP1_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP1_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE3EAP1_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE3EAP1_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE3EAP1_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE3EAP1_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE3EAP1_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE3EAP1_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE3EAP1_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE3EAP1_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE3EAP1_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP1_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE3EAP1_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE3EAP1_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE3EAP1_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE3EAP1_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGSIGNALMASK0LO_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK0LO_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK0LO_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK0LO_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK0LO_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH0LO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH0LO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH0LO_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH0LO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH0LO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGSIGNALMASK1LO_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK1LO_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK1LO_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK1LO_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK1LO_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH1LO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH1LO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH1LO_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH1LO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH1LO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL0SELECT_MASK               = 64'h7F;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL0SELECT_SHIFT              = 0;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL0SELECT_LOW                = 0;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL0SELECT_HIGH               = 6;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL0SELECT_WIDTH              = 7;
+
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL0_MASK              = 64'h80;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL0_SHIFT             = 7;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL0_LOW               = 7;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL0_HIGH              = 7;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL0_WIDTH             = 1;
+
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL1SELECT_MASK               = 64'h7F00;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL1SELECT_SHIFT              = 8;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL1SELECT_LOW                = 8;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL1SELECT_HIGH               = 14;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_SIGNAL1SELECT_WIDTH              = 7;
+
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL1_MASK              = 64'h8000;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL1_SHIFT             = 15;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL1_LOW               = 15;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL1_HIGH              = 15;
+localparam CLA_CDBGSIGNALEDGEDETECTCFG_POSEDGESIGNAL1_WIDTH             = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0_MASK                             = 64'h1;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0_SHIFT                            = 0;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0_LOW                              = 0;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0_HIGH                             = 0;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1_MASK                             = 64'h2;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1_SHIFT                            = 1;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1_LOW                              = 1;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1_HIGH                             = 1;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2_MASK                             = 64'h4;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2_SHIFT                            = 2;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2_LOW                              = 2;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2_HIGH                             = 2;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3_MASK                             = 64'h8;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3_SHIFT                            = 3;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3_LOW                              = 3;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3_HIGH                             = 3;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0_MASK                             = 64'h10;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0_SHIFT                            = 4;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0_LOW                              = 4;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0_HIGH                             = 4;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1_MASK                             = 64'h20;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1_SHIFT                            = 5;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1_LOW                              = 5;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1_HIGH                             = 5;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2_MASK                             = 64'h40;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2_SHIFT                            = 6;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2_LOW                              = 6;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2_HIGH                             = 6;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3_MASK                             = 64'h80;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3_SHIFT                            = 7;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3_LOW                              = 7;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3_HIGH                             = 7;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0_MASK                             = 64'h100;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0_SHIFT                            = 8;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0_LOW                              = 8;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0_HIGH                             = 8;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1_MASK                             = 64'h200;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1_SHIFT                            = 9;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1_LOW                              = 9;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1_HIGH                             = 9;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2_MASK                             = 64'h400;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2_SHIFT                            = 10;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2_LOW                              = 10;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2_HIGH                             = 10;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3_MASK                             = 64'h800;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3_SHIFT                            = 11;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3_LOW                              = 11;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3_HIGH                             = 11;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0_MASK                             = 64'h1000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0_SHIFT                            = 12;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0_LOW                              = 12;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0_HIGH                             = 12;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1_MASK                             = 64'h2000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1_SHIFT                            = 13;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1_LOW                              = 13;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1_HIGH                             = 13;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2_MASK                             = 64'h4000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2_SHIFT                            = 14;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2_LOW                              = 14;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2_HIGH                             = 14;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3_MASK                             = 64'h8000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3_SHIFT                            = 15;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3_LOW                              = 15;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3_HIGH                             = 15;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3_WIDTH                            = 1;
+
+localparam CLA_CDBGEAPSTATUS_RSVD3116_MASK                              = 64'hFFFF0000;
+localparam CLA_CDBGEAPSTATUS_RSVD3116_SHIFT                             = 16;
+localparam CLA_CDBGEAPSTATUS_RSVD3116_LOW                               = 16;
+localparam CLA_CDBGEAPSTATUS_RSVD3116_HIGH                              = 31;
+localparam CLA_CDBGEAPSTATUS_RSVD3116_WIDTH                             = 16;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0W2C_MASK                          = 64'h100000000;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0W2C_SHIFT                         = 32;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0W2C_LOW                           = 32;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0W2C_HIGH                          = 32;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP0W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1W2C_MASK                          = 64'h200000000;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1W2C_SHIFT                         = 33;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1W2C_LOW                           = 33;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1W2C_HIGH                          = 33;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP1W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2W2C_MASK                          = 64'h400000000;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2W2C_SHIFT                         = 34;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2W2C_LOW                           = 34;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2W2C_HIGH                          = 34;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP2W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3W2C_MASK                          = 64'h800000000;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3W2C_SHIFT                         = 35;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3W2C_LOW                           = 35;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3W2C_HIGH                          = 35;
+localparam CLA_CDBGEAPSTATUS_NODE0EAP3W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0W2C_MASK                          = 64'h1000000000;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0W2C_SHIFT                         = 36;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0W2C_LOW                           = 36;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0W2C_HIGH                          = 36;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP0W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1W2C_MASK                          = 64'h2000000000;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1W2C_SHIFT                         = 37;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1W2C_LOW                           = 37;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1W2C_HIGH                          = 37;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP1W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2W2C_MASK                          = 64'h4000000000;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2W2C_SHIFT                         = 38;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2W2C_LOW                           = 38;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2W2C_HIGH                          = 38;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP2W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3W2C_MASK                          = 64'h8000000000;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3W2C_SHIFT                         = 39;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3W2C_LOW                           = 39;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3W2C_HIGH                          = 39;
+localparam CLA_CDBGEAPSTATUS_NODE1EAP3W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0W2C_MASK                          = 64'h10000000000;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0W2C_SHIFT                         = 40;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0W2C_LOW                           = 40;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0W2C_HIGH                          = 40;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP0W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1W2C_MASK                          = 64'h20000000000;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1W2C_SHIFT                         = 41;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1W2C_LOW                           = 41;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1W2C_HIGH                          = 41;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP1W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2W2C_MASK                          = 64'h40000000000;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2W2C_SHIFT                         = 42;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2W2C_LOW                           = 42;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2W2C_HIGH                          = 42;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP2W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3W2C_MASK                          = 64'h80000000000;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3W2C_SHIFT                         = 43;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3W2C_LOW                           = 43;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3W2C_HIGH                          = 43;
+localparam CLA_CDBGEAPSTATUS_NODE2EAP3W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0W2C_MASK                          = 64'h100000000000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0W2C_SHIFT                         = 44;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0W2C_LOW                           = 44;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0W2C_HIGH                          = 44;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP0W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1W2C_MASK                          = 64'h200000000000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1W2C_SHIFT                         = 45;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1W2C_LOW                           = 45;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1W2C_HIGH                          = 45;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP1W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2W2C_MASK                          = 64'h400000000000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2W2C_SHIFT                         = 46;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2W2C_LOW                           = 46;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2W2C_HIGH                          = 46;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP2W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3W2C_MASK                          = 64'h800000000000;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3W2C_SHIFT                         = 47;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3W2C_LOW                           = 47;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3W2C_HIGH                          = 47;
+localparam CLA_CDBGEAPSTATUS_NODE3EAP3W2C_WIDTH                         = 1;
+
+localparam CLA_CDBGCLACTRLSTATUS_CURRENTNODE_MASK                       = 64'h3;
+localparam CLA_CDBGCLACTRLSTATUS_CURRENTNODE_SHIFT                      = 0;
+localparam CLA_CDBGCLACTRLSTATUS_CURRENTNODE_LOW                        = 0;
+localparam CLA_CDBGCLACTRLSTATUS_CURRENTNODE_HIGH                       = 1;
+localparam CLA_CDBGCLACTRLSTATUS_CURRENTNODE_WIDTH                      = 2;
+
+localparam CLA_CDBGCLACTRLSTATUS_ENABLEEAP_MASK                         = 64'h20;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLEEAP_SHIFT                        = 5;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLEEAP_LOW                          = 5;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLEEAP_HIGH                         = 5;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLEEAP_WIDTH                        = 1;
+
+localparam CLA_CDBGCLACTRLSTATUS_ENABLECLA_MASK                         = 64'h40;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLECLA_SHIFT                        = 6;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLECLA_LOW                          = 6;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLECLA_HIGH                         = 6;
+localparam CLA_CDBGCLACTRLSTATUS_ENABLECLA_WIDTH                        = 1;
+
+localparam CLA_CDBGCLACTRLSTATUS_CLACHAINLOOPDELAY_MASK                 = 64'h3F80;
+localparam CLA_CDBGCLACTRLSTATUS_CLACHAINLOOPDELAY_SHIFT                = 7;
+localparam CLA_CDBGCLACTRLSTATUS_CLACHAINLOOPDELAY_LOW                  = 7;
+localparam CLA_CDBGCLACTRLSTATUS_CLACHAINLOOPDELAY_HIGH                 = 13;
+localparam CLA_CDBGCLACTRLSTATUS_CLACHAINLOOPDELAY_WIDTH                = 7;
+
+localparam CLA_CDBGCLACTRLSTATUS_DISABLEGLOBALCLOCKHALT_MASK            = 64'h4000;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLEGLOBALCLOCKHALT_SHIFT           = 14;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLEGLOBALCLOCKHALT_LOW             = 14;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLEGLOBALCLOCKHALT_HIGH            = 14;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLEGLOBALCLOCKHALT_WIDTH           = 1;
+
+localparam CLA_CDBGCLACTRLSTATUS_DISABLELOCALCLOCKHALT_MASK             = 64'h8000;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLELOCALCLOCKHALT_SHIFT            = 15;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLELOCALCLOCKHALT_LOW              = 15;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLELOCALCLOCKHALT_HIGH             = 15;
+localparam CLA_CDBGCLACTRLSTATUS_DISABLELOCALCLOCKHALT_WIDTH            = 1;
+
+localparam CLA_CDBGCLACTRLSTATUS_RSVD6216_MASK                          = 64'h7FFFFFFFFFFF0000;
+localparam CLA_CDBGCLACTRLSTATUS_RSVD6216_SHIFT                         = 16;
+localparam CLA_CDBGCLACTRLSTATUS_RSVD6216_LOW                           = 16;
+localparam CLA_CDBGCLACTRLSTATUS_RSVD6216_HIGH                          = 62;
+localparam CLA_CDBGCLACTRLSTATUS_RSVD6216_WIDTH                         = 47;
+
+localparam CLA_CDBGCLACTRLSTATUS_CLALOCK_MASK                           = 64'h8000000000000000;
+localparam CLA_CDBGCLACTRLSTATUS_CLALOCK_SHIFT                          = 63;
+localparam CLA_CDBGCLACTRLSTATUS_CLALOCK_LOW                            = 63;
+localparam CLA_CDBGCLACTRLSTATUS_CLALOCK_HIGH                           = 63;
+localparam CLA_CDBGCLACTRLSTATUS_CLALOCK_WIDTH                          = 1;
+
+localparam CLA_CDBGMUXSELLO_DBMMODE_MASK                                = 64'h3;
+localparam CLA_CDBGMUXSELLO_DBMMODE_SHIFT                               = 0;
+localparam CLA_CDBGMUXSELLO_DBMMODE_LOW                                 = 0;
+localparam CLA_CDBGMUXSELLO_DBMMODE_HIGH                                = 1;
+localparam CLA_CDBGMUXSELLO_DBMMODE_WIDTH                               = 2;
+
+localparam CLA_CDBGMUXSELLO_DBMID_MASK                                  = 64'hFC;
+localparam CLA_CDBGMUXSELLO_DBMID_SHIFT                                 = 2;
+localparam CLA_CDBGMUXSELLO_DBMID_LOW                                   = 2;
+localparam CLA_CDBGMUXSELLO_DBMID_HIGH                                  = 7;
+localparam CLA_CDBGMUXSELLO_DBMID_WIDTH                                 = 6;
+
+localparam CLA_CDBGMUXSELLO_FINEGRAINTIME_MASK                          = 64'h100;
+localparam CLA_CDBGMUXSELLO_FINEGRAINTIME_SHIFT                         = 8;
+localparam CLA_CDBGMUXSELLO_FINEGRAINTIME_LOW                           = 8;
+localparam CLA_CDBGMUXSELLO_FINEGRAINTIME_HIGH                          = 8;
+localparam CLA_CDBGMUXSELLO_FINEGRAINTIME_WIDTH                         = 1;
+
+localparam CLA_CDBGMUXSELLO_VALID_MASK                                  = 64'h200;
+localparam CLA_CDBGMUXSELLO_VALID_SHIFT                                 = 9;
+localparam CLA_CDBGMUXSELLO_VALID_LOW                                   = 9;
+localparam CLA_CDBGMUXSELLO_VALID_HIGH                                  = 9;
+localparam CLA_CDBGMUXSELLO_VALID_WIDTH                                 = 1;
+
+localparam CLA_CDBGMUXSELLO_RSVD1510_MASK                               = 64'hFC00;
+localparam CLA_CDBGMUXSELLO_RSVD1510_SHIFT                              = 10;
+localparam CLA_CDBGMUXSELLO_RSVD1510_LOW                                = 10;
+localparam CLA_CDBGMUXSELLO_RSVD1510_HIGH                               = 15;
+localparam CLA_CDBGMUXSELLO_RSVD1510_WIDTH                              = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG0_MASK                             = 64'h3F0000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG0_SHIFT                            = 16;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG0_LOW                              = 16;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG0_HIGH                             = 21;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG0_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG1_MASK                             = 64'hFC00000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG1_SHIFT                            = 22;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG1_LOW                              = 22;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG1_HIGH                             = 27;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG1_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG2_MASK                             = 64'h3F0000000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG2_SHIFT                            = 28;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG2_LOW                              = 28;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG2_HIGH                             = 33;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG2_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG3_MASK                             = 64'hFC00000000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG3_SHIFT                            = 34;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG3_LOW                              = 34;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG3_HIGH                             = 39;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG3_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG4_MASK                             = 64'h3F0000000000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG4_SHIFT                            = 40;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG4_LOW                              = 40;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG4_HIGH                             = 45;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG4_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG5_MASK                             = 64'hFC00000000000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG5_SHIFT                            = 46;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG5_LOW                              = 46;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG5_HIGH                             = 51;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG5_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG6_MASK                             = 64'h3F0000000000000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG6_SHIFT                            = 52;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG6_LOW                              = 52;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG6_HIGH                             = 57;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG6_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELLO_MUXSELSEG7_MASK                             = 64'hFC00000000000000;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG7_SHIFT                            = 58;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG7_LOW                              = 58;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG7_HIGH                             = 63;
+localparam CLA_CDBGMUXSELLO_MUXSELSEG7_WIDTH                            = 6;
+
+localparam CLA_CDBGRSVD1_VALUE_MASK                                     = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGRSVD1_VALUE_SHIFT                                    = 0;
+localparam CLA_CDBGRSVD1_VALUE_LOW                                      = 0;
+localparam CLA_CDBGRSVD1_VALUE_HIGH                                     = 63;
+localparam CLA_CDBGRSVD1_VALUE_WIDTH                                    = 64;
+
+localparam CLA_CDBGRSVD2_VALUE_MASK                                     = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGRSVD2_VALUE_SHIFT                                    = 0;
+localparam CLA_CDBGRSVD2_VALUE_LOW                                      = 0;
+localparam CLA_CDBGRSVD2_VALUE_HIGH                                     = 63;
+localparam CLA_CDBGRSVD2_VALUE_WIDTH                                    = 64;
+
+localparam CLA_CDBGTRANSITIONMASKLO_VALUE_MASK                          = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTRANSITIONMASKLO_VALUE_SHIFT                         = 0;
+localparam CLA_CDBGTRANSITIONMASKLO_VALUE_LOW                           = 0;
+localparam CLA_CDBGTRANSITIONMASKLO_VALUE_HIGH                          = 63;
+localparam CLA_CDBGTRANSITIONMASKLO_VALUE_WIDTH                         = 64;
+
+localparam CLA_CDBGTRANSITIONFROMVALUELO_VALUE_MASK                     = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTRANSITIONFROMVALUELO_VALUE_SHIFT                    = 0;
+localparam CLA_CDBGTRANSITIONFROMVALUELO_VALUE_LOW                      = 0;
+localparam CLA_CDBGTRANSITIONFROMVALUELO_VALUE_HIGH                     = 63;
+localparam CLA_CDBGTRANSITIONFROMVALUELO_VALUE_WIDTH                    = 64;
+
+localparam CLA_CDBGTRANSITIONTOVALUELO_VALUE_MASK                       = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTRANSITIONTOVALUELO_VALUE_SHIFT                      = 0;
+localparam CLA_CDBGTRANSITIONTOVALUELO_VALUE_LOW                        = 0;
+localparam CLA_CDBGTRANSITIONTOVALUELO_VALUE_HIGH                       = 63;
+localparam CLA_CDBGTRANSITIONTOVALUELO_VALUE_WIDTH                      = 64;
+
+localparam CLA_CDBGONESCOUNTMASKLO_VALUE_MASK                           = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGONESCOUNTMASKLO_VALUE_SHIFT                          = 0;
+localparam CLA_CDBGONESCOUNTMASKLO_VALUE_LOW                            = 0;
+localparam CLA_CDBGONESCOUNTMASKLO_VALUE_HIGH                           = 63;
+localparam CLA_CDBGONESCOUNTMASKLO_VALUE_WIDTH                          = 64;
+
+localparam CLA_CDBGONESCOUNTVALUE_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGONESCOUNTVALUE_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGONESCOUNTVALUE_VALUE_LOW                             = 0;
+localparam CLA_CDBGONESCOUNTVALUE_VALUE_HIGH                            = 63;
+localparam CLA_CDBGONESCOUNTVALUE_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGANYCHANGELO_MASK_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGANYCHANGELO_MASK_SHIFT                               = 0;
+localparam CLA_CDBGANYCHANGELO_MASK_LOW                                 = 0;
+localparam CLA_CDBGANYCHANGELO_MASK_HIGH                                = 63;
+localparam CLA_CDBGANYCHANGELO_MASK_WIDTH                               = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGCLATIMEMATCH_TIMEMATCHVAL_MASK                       = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCLATIMEMATCH_TIMEMATCHVAL_SHIFT                      = 0;
+localparam CLA_CDBGCLATIMEMATCH_TIMEMATCHVAL_LOW                        = 0;
+localparam CLA_CDBGCLATIMEMATCH_TIMEMATCHVAL_HIGH                       = 63;
+localparam CLA_CDBGCLATIMEMATCH_TIMEMATCHVAL_WIDTH                      = 64;
+
+localparam CLA_CDBGSIGNALMASK2LO_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK2LO_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK2LO_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK2LO_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK2LO_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH2LO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH2LO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH2LO_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH2LO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH2LO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGSIGNALMASK3LO_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK3LO_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK3LO_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK3LO_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK3LO_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH3LO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH3LO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH3LO_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH3LO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH3LO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGNODE0EAP2_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE0EAP2_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE0EAP2_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE0EAP2_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE0EAP2_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE0EAP2_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE0EAP2_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE0EAP2_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE0EAP2_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE0EAP2_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP2_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE0EAP2_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE0EAP2_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE0EAP2_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE0EAP2_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP2_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE0EAP2_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE0EAP2_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE0EAP2_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE0EAP2_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE0EAP2_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE0EAP2_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP2_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE0EAP2_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE0EAP2_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE0EAP2_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE0EAP2_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE0EAP2_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE0EAP2_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE0EAP2_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE0EAP2_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE0EAP2_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP2_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE0EAP2_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE0EAP2_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE0EAP2_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE0EAP2_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP3_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE0EAP3_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE0EAP3_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE0EAP3_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE0EAP3_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE0EAP3_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE0EAP3_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE0EAP3_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE0EAP3_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE0EAP3_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP3_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE0EAP3_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE0EAP3_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE0EAP3_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE0EAP3_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP3_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE0EAP3_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE0EAP3_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE0EAP3_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE0EAP3_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE0EAP3_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE0EAP3_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE0EAP3_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE0EAP3_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE0EAP3_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE0EAP3_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE0EAP3_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE0EAP3_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE0EAP3_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE0EAP3_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE0EAP3_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE0EAP3_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE0EAP3_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE0EAP3_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE0EAP3_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE0EAP3_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE0EAP3_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP2_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE1EAP2_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE1EAP2_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE1EAP2_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE1EAP2_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE1EAP2_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE1EAP2_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE1EAP2_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE1EAP2_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE1EAP2_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP2_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE1EAP2_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE1EAP2_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE1EAP2_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE1EAP2_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP2_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE1EAP2_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE1EAP2_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE1EAP2_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE1EAP2_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE1EAP2_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE1EAP2_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP2_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE1EAP2_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE1EAP2_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE1EAP2_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE1EAP2_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE1EAP2_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE1EAP2_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE1EAP2_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE1EAP2_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE1EAP2_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP2_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE1EAP2_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE1EAP2_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE1EAP2_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE1EAP2_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP3_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE1EAP3_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE1EAP3_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE1EAP3_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE1EAP3_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE1EAP3_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE1EAP3_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE1EAP3_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE1EAP3_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE1EAP3_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP3_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE1EAP3_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE1EAP3_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE1EAP3_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE1EAP3_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP3_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE1EAP3_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE1EAP3_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE1EAP3_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE1EAP3_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE1EAP3_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE1EAP3_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE1EAP3_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE1EAP3_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE1EAP3_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE1EAP3_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE1EAP3_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE1EAP3_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE1EAP3_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE1EAP3_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE1EAP3_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE1EAP3_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE1EAP3_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE1EAP3_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE1EAP3_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE1EAP3_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE1EAP3_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP2_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE2EAP2_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE2EAP2_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE2EAP2_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE2EAP2_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE2EAP2_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE2EAP2_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE2EAP2_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE2EAP2_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE2EAP2_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP2_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE2EAP2_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE2EAP2_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE2EAP2_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE2EAP2_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP2_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE2EAP2_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE2EAP2_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE2EAP2_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE2EAP2_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE2EAP2_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE2EAP2_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP2_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE2EAP2_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE2EAP2_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE2EAP2_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE2EAP2_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE2EAP2_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE2EAP2_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE2EAP2_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE2EAP2_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE2EAP2_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP2_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE2EAP2_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE2EAP2_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE2EAP2_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE2EAP2_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP3_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE2EAP3_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE2EAP3_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE2EAP3_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE2EAP3_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE2EAP3_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE2EAP3_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE2EAP3_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE2EAP3_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE2EAP3_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP3_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE2EAP3_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE2EAP3_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE2EAP3_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE2EAP3_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP3_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE2EAP3_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE2EAP3_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE2EAP3_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE2EAP3_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE2EAP3_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE2EAP3_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE2EAP3_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE2EAP3_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE2EAP3_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE2EAP3_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE2EAP3_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE2EAP3_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE2EAP3_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE2EAP3_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE2EAP3_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE2EAP3_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE2EAP3_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE2EAP3_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE2EAP3_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE2EAP3_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE2EAP3_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP2_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE3EAP2_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE3EAP2_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE3EAP2_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE3EAP2_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE3EAP2_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE3EAP2_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE3EAP2_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE3EAP2_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE3EAP2_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP2_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE3EAP2_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE3EAP2_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE3EAP2_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE3EAP2_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP2_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE3EAP2_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE3EAP2_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE3EAP2_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE3EAP2_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE3EAP2_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE3EAP2_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP2_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE3EAP2_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE3EAP2_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE3EAP2_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE3EAP2_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE3EAP2_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE3EAP2_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE3EAP2_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE3EAP2_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE3EAP2_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP2_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE3EAP2_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE3EAP2_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE3EAP2_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE3EAP2_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP3_DESTNODE_MASK                              = 64'h3;
+localparam CLA_CDBGNODE3EAP3_DESTNODE_SHIFT                             = 0;
+localparam CLA_CDBGNODE3EAP3_DESTNODE_LOW                               = 0;
+localparam CLA_CDBGNODE3EAP3_DESTNODE_HIGH                              = 1;
+localparam CLA_CDBGNODE3EAP3_DESTNODE_WIDTH                             = 2;
+
+localparam CLA_CDBGNODE3EAP3_ACTION0_MASK                               = 64'hFC;
+localparam CLA_CDBGNODE3EAP3_ACTION0_SHIFT                              = 2;
+localparam CLA_CDBGNODE3EAP3_ACTION0_LOW                                = 2;
+localparam CLA_CDBGNODE3EAP3_ACTION0_HIGH                               = 7;
+localparam CLA_CDBGNODE3EAP3_ACTION0_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP3_ACTION1_MASK                               = 64'h3F00;
+localparam CLA_CDBGNODE3EAP3_ACTION1_SHIFT                              = 8;
+localparam CLA_CDBGNODE3EAP3_ACTION1_LOW                                = 8;
+localparam CLA_CDBGNODE3EAP3_ACTION1_HIGH                               = 13;
+localparam CLA_CDBGNODE3EAP3_ACTION1_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP3_LOGICALOP_MASK                             = 64'hC000;
+localparam CLA_CDBGNODE3EAP3_LOGICALOP_SHIFT                            = 14;
+localparam CLA_CDBGNODE3EAP3_LOGICALOP_LOW                              = 14;
+localparam CLA_CDBGNODE3EAP3_LOGICALOP_HIGH                             = 15;
+localparam CLA_CDBGNODE3EAP3_LOGICALOP_WIDTH                            = 2;
+
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE0_MASK                            = 64'h3F0000;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE0_SHIFT                           = 16;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE0_LOW                             = 16;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE0_HIGH                            = 21;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE0_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE1_MASK                            = 64'hFC00000;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE1_SHIFT                           = 22;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE1_LOW                             = 22;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE1_HIGH                            = 27;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE1_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0_MASK                         = 64'hF0000000;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0_SHIFT                        = 28;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0_LOW                          = 28;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0_HIGH                         = 31;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1_MASK                         = 64'hF00000000;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1_SHIFT                        = 32;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1_LOW                          = 32;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1_HIGH                         = 35;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1_WIDTH                        = 4;
+
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0ENABLE_MASK                   = 64'h1000000000;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0ENABLE_SHIFT                  = 36;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0ENABLE_LOW                    = 36;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0ENABLE_HIGH                   = 36;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION0ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1ENABLE_MASK                   = 64'h2000000000;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1ENABLE_SHIFT                  = 37;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1ENABLE_LOW                    = 37;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1ENABLE_HIGH                   = 37;
+localparam CLA_CDBGNODE3EAP3_CUSTOMACTION1ENABLE_WIDTH                  = 1;
+
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE2_MASK                            = 64'hFC000000000;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE2_SHIFT                           = 38;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE2_LOW                             = 38;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE2_HIGH                            = 43;
+localparam CLA_CDBGNODE3EAP3_EVENTTYPE2_WIDTH                           = 6;
+
+localparam CLA_CDBGNODE3EAP3_UDF_MASK                                   = 64'hFF00000000000;
+localparam CLA_CDBGNODE3EAP3_UDF_SHIFT                                  = 44;
+localparam CLA_CDBGNODE3EAP3_UDF_LOW                                    = 44;
+localparam CLA_CDBGNODE3EAP3_UDF_HIGH                                   = 51;
+localparam CLA_CDBGNODE3EAP3_UDF_WIDTH                                  = 8;
+
+localparam CLA_CDBGNODE3EAP3_ACTION2_MASK                               = 64'h3F0000000000000;
+localparam CLA_CDBGNODE3EAP3_ACTION2_SHIFT                              = 52;
+localparam CLA_CDBGNODE3EAP3_ACTION2_LOW                                = 52;
+localparam CLA_CDBGNODE3EAP3_ACTION2_HIGH                               = 57;
+localparam CLA_CDBGNODE3EAP3_ACTION2_WIDTH                              = 6;
+
+localparam CLA_CDBGNODE3EAP3_ACTION3_MASK                               = 64'hFC00000000000000;
+localparam CLA_CDBGNODE3EAP3_ACTION3_SHIFT                              = 58;
+localparam CLA_CDBGNODE3EAP3_ACTION3_LOW                                = 58;
+localparam CLA_CDBGNODE3EAP3_ACTION3_HIGH                               = 63;
+localparam CLA_CDBGNODE3EAP3_ACTION3_WIDTH                              = 6;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3LO_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG0_MASK                    = 64'h3;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG0_SHIFT                   = 0;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG0_LOW                     = 0;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG0_HIGH                    = 1;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG0_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG1_MASK                    = 64'hC;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG1_SHIFT                   = 2;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG1_LOW                     = 2;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG1_HIGH                    = 3;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG1_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG2_MASK                    = 64'h30;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG2_SHIFT                   = 4;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG2_LOW                     = 4;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG2_HIGH                    = 5;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG2_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG3_MASK                    = 64'hC0;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG3_SHIFT                   = 6;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG3_LOW                     = 6;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG3_HIGH                    = 7;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG3_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG4_MASK                    = 64'h300;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG4_SHIFT                   = 8;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG4_LOW                     = 8;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG4_HIGH                    = 9;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG4_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG5_MASK                    = 64'hC00;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG5_SHIFT                   = 10;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG5_LOW                     = 10;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG5_HIGH                    = 11;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG5_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG6_MASK                    = 64'h3000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG6_SHIFT                   = 12;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG6_LOW                     = 12;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG6_HIGH                    = 13;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG6_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG7_MASK                    = 64'hC000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG7_SHIFT                   = 14;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG7_LOW                     = 14;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG7_HIGH                    = 15;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG7_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG8_MASK                    = 64'h30000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG8_SHIFT                   = 16;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG8_LOW                     = 16;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG8_HIGH                    = 17;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG8_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG9_MASK                    = 64'hC0000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG9_SHIFT                   = 18;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG9_LOW                     = 18;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG9_HIGH                    = 19;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG9_WIDTH                   = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG10_MASK                   = 64'h300000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG10_SHIFT                  = 20;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG10_LOW                    = 20;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG10_HIGH                   = 21;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG10_WIDTH                  = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG11_MASK                   = 64'hC00000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG11_SHIFT                  = 22;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG11_LOW                    = 22;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG11_HIGH                   = 23;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG11_WIDTH                  = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG12_MASK                   = 64'h3000000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG12_SHIFT                  = 24;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG12_LOW                    = 24;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG12_HIGH                   = 25;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG12_WIDTH                  = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG13_MASK                   = 64'hC000000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG13_SHIFT                  = 26;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG13_LOW                    = 26;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG13_HIGH                   = 27;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG13_WIDTH                  = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG14_MASK                   = 64'h30000000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG14_SHIFT                  = 28;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG14_LOW                    = 28;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG14_HIGH                   = 29;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG14_WIDTH                  = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG15_MASK                   = 64'hC0000000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG15_SHIFT                  = 30;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG15_LOW                    = 30;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG15_HIGH                   = 31;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_MUXSELSEG15_WIDTH                  = 2;
+
+localparam CLA_CDBGSIGNALDELAYMUXSEL_RSVD_MASK                          = 64'hFFFFFFFF00000000;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_RSVD_SHIFT                         = 32;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_RSVD_LOW                           = 32;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_RSVD_HIGH                          = 63;
+localparam CLA_CDBGSIGNALDELAYMUXSEL_RSVD_WIDTH                         = 32;
+
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER0STRETCH_MASK         = 64'hFF;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER0STRETCH_SHIFT        = 0;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER0STRETCH_LOW          = 0;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER0STRETCH_HIGH         = 7;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER0STRETCH_WIDTH        = 8;
+
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER1STRETCH_MASK         = 64'hFF00;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER1STRETCH_SHIFT        = 8;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER1STRETCH_LOW          = 8;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER1STRETCH_HIGH         = 15;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_XTRIGGER1STRETCH_WIDTH        = 8;
+
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_RSVD_MASK                     = 64'hFFFFFFFFFFFF0000;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_RSVD_SHIFT                    = 16;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_RSVD_LOW                      = 16;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_RSVD_HIGH                     = 63;
+localparam CLA_CDBGCLAXTRIGGERTIMESTRETCH_RSVD_WIDTH                    = 48;
+
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPLOWER_MASK                     = 64'hFF;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPLOWER_SHIFT                    = 0;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPLOWER_LOW                      = 0;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPLOWER_HIGH                     = 7;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPLOWER_WIDTH                    = 8;
+
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPUPPER_MASK                     = 64'hFFFFFFFFFFFFFF00;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPUPPER_SHIFT                    = 8;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPUPPER_LOW                      = 8;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPUPPER_HIGH                     = 63;
+localparam CLA_CDBGCLATIMESTAMP_TIMESTAMPUPPER_WIDTH                    = 56;
+
+localparam CLA_CDBGCLATIMESTAMPSYNC_TIMESTAMPSYNC_MASK                  = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCLATIMESTAMPSYNC_TIMESTAMPSYNC_SHIFT                 = 0;
+localparam CLA_CDBGCLATIMESTAMPSYNC_TIMESTAMPSYNC_LOW                   = 0;
+localparam CLA_CDBGCLATIMESTAMPSYNC_TIMESTAMPSYNC_HIGH                  = 63;
+localparam CLA_CDBGCLATIMESTAMPSYNC_TIMESTAMPSYNC_WIDTH                 = 64;
+
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RESYNC_MASK                       = 64'h1;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RESYNC_SHIFT                      = 0;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RESYNC_LOW                        = 0;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RESYNC_HIGH                       = 0;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RESYNC_WIDTH                      = 1;
+
+localparam CLA_CDBGCLATIMESTAMPCONFIG_DEBUGMARKER_MASK                  = 64'h1FE;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_DEBUGMARKER_SHIFT                 = 1;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_DEBUGMARKER_LOW                   = 1;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_DEBUGMARKER_HIGH                  = 8;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_DEBUGMARKER_WIDTH                 = 8;
+
+localparam CLA_CDBGCLATIMESTAMPCONFIG_TSCAPTURE_MASK                    = 64'h200;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_TSCAPTURE_SHIFT                   = 9;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_TSCAPTURE_LOW                     = 9;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_TSCAPTURE_HIGH                    = 9;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_TSCAPTURE_WIDTH                   = 1;
+
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RSVD1_MASK                        = 64'hFFFFFFFFFFFFFC00;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RSVD1_SHIFT                       = 10;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RSVD1_LOW                         = 10;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RSVD1_HIGH                        = 63;
+localparam CLA_CDBGCLATIMESTAMPCONFIG_RSVD1_WIDTH                       = 54;
+
+localparam CLA_CDBGCLATIMESTAMPOFFSET_OFFSET_MASK                       = 64'hFFFFFFFFFFFFFF;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_OFFSET_SHIFT                      = 0;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_OFFSET_LOW                        = 0;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_OFFSET_HIGH                       = 55;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_OFFSET_WIDTH                      = 56;
+
+localparam CLA_CDBGCLATIMESTAMPOFFSET_RSVD0_MASK                        = 64'hFF00000000000000;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_RSVD0_SHIFT                       = 56;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_RSVD0_LOW                         = 56;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_RSVD0_HIGH                        = 63;
+localparam CLA_CDBGCLATIMESTAMPOFFSET_RSVD0_WIDTH                       = 8;
+
+localparam CLA_CDBGSIGNALMASK0HI_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK0HI_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK0HI_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK0HI_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK0HI_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH0HI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH0HI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH0HI_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH0HI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH0HI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGSIGNALMASK1HI_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK1HI_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK1HI_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK1HI_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK1HI_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH1HI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH1HI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH1HI_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH1HI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH1HI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGSIGNALMASK2HI_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK2HI_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK2HI_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK2HI_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK2HI_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH2HI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH2HI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH2HI_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH2HI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH2HI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGSIGNALMASK3HI_VALUE_MASK                             = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMASK3HI_VALUE_SHIFT                            = 0;
+localparam CLA_CDBGSIGNALMASK3HI_VALUE_LOW                              = 0;
+localparam CLA_CDBGSIGNALMASK3HI_VALUE_HIGH                             = 63;
+localparam CLA_CDBGSIGNALMASK3HI_VALUE_WIDTH                            = 64;
+
+localparam CLA_CDBGSIGNALMATCH3HI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALMATCH3HI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGSIGNALMATCH3HI_VALUE_LOW                             = 0;
+localparam CLA_CDBGSIGNALMATCH3HI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGSIGNALMATCH3HI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGMUXSELHI_RSVD150_MASK                                = 64'hFFFF;
+localparam CLA_CDBGMUXSELHI_RSVD150_SHIFT                               = 0;
+localparam CLA_CDBGMUXSELHI_RSVD150_LOW                                 = 0;
+localparam CLA_CDBGMUXSELHI_RSVD150_HIGH                                = 15;
+localparam CLA_CDBGMUXSELHI_RSVD150_WIDTH                               = 16;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG8_MASK                             = 64'h3F0000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG8_SHIFT                            = 16;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG8_LOW                              = 16;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG8_HIGH                             = 21;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG8_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG9_MASK                             = 64'hFC00000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG9_SHIFT                            = 22;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG9_LOW                              = 22;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG9_HIGH                             = 27;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG9_WIDTH                            = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG10_MASK                            = 64'h3F0000000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG10_SHIFT                           = 28;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG10_LOW                             = 28;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG10_HIGH                            = 33;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG10_WIDTH                           = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG11_MASK                            = 64'hFC00000000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG11_SHIFT                           = 34;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG11_LOW                             = 34;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG11_HIGH                            = 39;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG11_WIDTH                           = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG12_MASK                            = 64'h3F0000000000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG12_SHIFT                           = 40;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG12_LOW                             = 40;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG12_HIGH                            = 45;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG12_WIDTH                           = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG13_MASK                            = 64'hFC00000000000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG13_SHIFT                           = 46;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG13_LOW                             = 46;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG13_HIGH                            = 51;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG13_WIDTH                           = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG14_MASK                            = 64'h3F0000000000000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG14_SHIFT                           = 52;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG14_LOW                             = 52;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG14_HIGH                            = 57;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG14_WIDTH                           = 6;
+
+localparam CLA_CDBGMUXSELHI_MUXSELSEG15_MASK                            = 64'hFC00000000000000;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG15_SHIFT                           = 58;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG15_LOW                             = 58;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG15_HIGH                            = 63;
+localparam CLA_CDBGMUXSELHI_MUXSELSEG15_WIDTH                           = 6;
+
+localparam CLA_CDBGTRANSITIONMASKHI_VALUE_MASK                          = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTRANSITIONMASKHI_VALUE_SHIFT                         = 0;
+localparam CLA_CDBGTRANSITIONMASKHI_VALUE_LOW                           = 0;
+localparam CLA_CDBGTRANSITIONMASKHI_VALUE_HIGH                          = 63;
+localparam CLA_CDBGTRANSITIONMASKHI_VALUE_WIDTH                         = 64;
+
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_VALUE_MASK                     = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_VALUE_SHIFT                    = 0;
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_VALUE_LOW                      = 0;
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_VALUE_HIGH                     = 63;
+localparam CLA_CDBGTRANSITIONFROMVALUEHI_VALUE_WIDTH                    = 64;
+
+localparam CLA_CDBGTRANSITIONTOVALUEHI_VALUE_MASK                       = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTRANSITIONTOVALUEHI_VALUE_SHIFT                      = 0;
+localparam CLA_CDBGTRANSITIONTOVALUEHI_VALUE_LOW                        = 0;
+localparam CLA_CDBGTRANSITIONTOVALUEHI_VALUE_HIGH                       = 63;
+localparam CLA_CDBGTRANSITIONTOVALUEHI_VALUE_WIDTH                      = 64;
+
+localparam CLA_CDBGONESCOUNTMASKHI_VALUE_MASK                           = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGONESCOUNTMASKHI_VALUE_SHIFT                          = 0;
+localparam CLA_CDBGONESCOUNTMASKHI_VALUE_LOW                            = 0;
+localparam CLA_CDBGONESCOUNTMASKHI_VALUE_HIGH                           = 63;
+localparam CLA_CDBGONESCOUNTMASKHI_VALUE_WIDTH                          = 64;
+
+localparam CLA_CDBGANYCHANGEHI_MASK_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGANYCHANGEHI_MASK_SHIFT                               = 0;
+localparam CLA_CDBGANYCHANGEHI_MASK_LOW                                 = 0;
+localparam CLA_CDBGANYCHANGEHI_MASK_HIGH                                = 63;
+localparam CLA_CDBGANYCHANGEHI_MASK_WIDTH                               = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP0HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP1HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP0HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP1HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP0HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP1HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP0HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP1HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP2HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE0EAP3HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP2HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE1EAP3HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP2HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE2EAP3HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP2HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_VALUE_MASK                 = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_VALUE_SHIFT                = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_VALUE_LOW                  = 0;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_VALUE_HIGH                 = 63;
+localparam CLA_CDBGSIGNALSNAPSHOTNODE3EAP3HI_VALUE_WIDTH                = 64;
+
+localparam CLA_CDBGLFSR_LFSRACTIVE_MASK                                 = 64'h1;
+localparam CLA_CDBGLFSR_LFSRACTIVE_SHIFT                                = 0;
+localparam CLA_CDBGLFSR_LFSRACTIVE_LOW                                  = 0;
+localparam CLA_CDBGLFSR_LFSRACTIVE_HIGH                                 = 0;
+localparam CLA_CDBGLFSR_LFSRACTIVE_WIDTH                                = 1;
+
+localparam CLA_CDBGLFSR_LFSR_MASK                                       = 64'hFFFFFFFFFFFFFFFE;
+localparam CLA_CDBGLFSR_LFSR_SHIFT                                      = 1;
+localparam CLA_CDBGLFSR_LFSR_LOW                                        = 1;
+localparam CLA_CDBGLFSR_LFSR_HIGH                                       = 63;
+localparam CLA_CDBGLFSR_LFSR_WIDTH                                      = 63;
+
+localparam CLA_CDBGLFSRMASK_RSVD0_MASK                                  = 64'h1;
+localparam CLA_CDBGLFSRMASK_RSVD0_SHIFT                                 = 0;
+localparam CLA_CDBGLFSRMASK_RSVD0_LOW                                   = 0;
+localparam CLA_CDBGLFSRMASK_RSVD0_HIGH                                  = 0;
+localparam CLA_CDBGLFSRMASK_RSVD0_WIDTH                                 = 1;
+
+localparam CLA_CDBGLFSRMASK_MASK_MASK                                   = 64'hFFFFFFFFFFFFFFFE;
+localparam CLA_CDBGLFSRMASK_MASK_SHIFT                                  = 1;
+localparam CLA_CDBGLFSRMASK_MASK_LOW                                    = 1;
+localparam CLA_CDBGLFSRMASK_MASK_HIGH                                   = 63;
+localparam CLA_CDBGLFSRMASK_MASK_WIDTH                                  = 63;
+
+localparam CLA_CDBGTIMESTAMPCAPTURE_TIMESTAMP_MASK                      = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGTIMESTAMPCAPTURE_TIMESTAMP_SHIFT                     = 0;
+localparam CLA_CDBGTIMESTAMPCAPTURE_TIMESTAMP_LOW                       = 0;
+localparam CLA_CDBGTIMESTAMPCAPTURE_TIMESTAMP_HIGH                      = 63;
+localparam CLA_CDBGTIMESTAMPCAPTURE_TIMESTAMP_WIDTH                     = 64;
+
+localparam CLA_CDBGCOMPARE0LO_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE0LO_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE0LO_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE0LO_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE0LO_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE0MASKLO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE0MASKLO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE0MASKLO_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE0MASKLO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE0MASKLO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE1LO_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE1LO_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE1LO_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE1LO_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE1LO_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE1MASKLO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE1MASKLO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE1MASKLO_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE1MASKLO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE1MASKLO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE2LO_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE2LO_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE2LO_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE2LO_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE2LO_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE2MASKLO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE2MASKLO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE2MASKLO_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE2MASKLO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE2MASKLO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE3LO_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE3LO_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE3LO_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE3LO_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE3LO_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE3MASKLO_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE3MASKLO_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE3MASKLO_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE3MASKLO_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE3MASKLO_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE0HI_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE0HI_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE0HI_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE0HI_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE0HI_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE0MASKHI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE0MASKHI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE0MASKHI_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE0MASKHI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE0MASKHI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE1HI_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE1HI_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE1HI_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE1HI_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE1HI_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE1MASKHI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE1MASKHI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE1MASKHI_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE1MASKHI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE1MASKHI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE2HI_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE2HI_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE2HI_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE2HI_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE2HI_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE2MASKHI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE2MASKHI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE2MASKHI_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE2MASKHI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE2MASKHI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGCOMPARE3HI_VALUE_MASK                                = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE3HI_VALUE_SHIFT                               = 0;
+localparam CLA_CDBGCOMPARE3HI_VALUE_LOW                                 = 0;
+localparam CLA_CDBGCOMPARE3HI_VALUE_HIGH                                = 63;
+localparam CLA_CDBGCOMPARE3HI_VALUE_WIDTH                               = 64;
+
+localparam CLA_CDBGCOMPARE3MASKHI_VALUE_MASK                            = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_CDBGCOMPARE3MASKHI_VALUE_SHIFT                           = 0;
+localparam CLA_CDBGCOMPARE3MASKHI_VALUE_LOW                             = 0;
+localparam CLA_CDBGCOMPARE3MASKHI_VALUE_HIGH                            = 63;
+localparam CLA_CDBGCOMPARE3MASKHI_VALUE_WIDTH                           = 64;
+
+localparam CLA_CDBGVERSION_PATCH_MASK                                   = 64'hF;
+localparam CLA_CDBGVERSION_PATCH_SHIFT                                  = 0;
+localparam CLA_CDBGVERSION_PATCH_LOW                                    = 0;
+localparam CLA_CDBGVERSION_PATCH_HIGH                                   = 3;
+localparam CLA_CDBGVERSION_PATCH_WIDTH                                  = 4;
+
+localparam CLA_CDBGVERSION_MINOR_MASK                                   = 64'hF0;
+localparam CLA_CDBGVERSION_MINOR_SHIFT                                  = 4;
+localparam CLA_CDBGVERSION_MINOR_LOW                                    = 4;
+localparam CLA_CDBGVERSION_MINOR_HIGH                                   = 7;
+localparam CLA_CDBGVERSION_MINOR_WIDTH                                  = 4;
+
+localparam CLA_CDBGVERSION_MAJOR_MASK                                   = 64'hF00;
+localparam CLA_CDBGVERSION_MAJOR_SHIFT                                  = 8;
+localparam CLA_CDBGVERSION_MAJOR_LOW                                    = 8;
+localparam CLA_CDBGVERSION_MAJOR_HIGH                                   = 11;
+localparam CLA_CDBGVERSION_MAJOR_WIDTH                                  = 4;
+
+localparam CLA_CDBGVERSION_RSVD6312_MASK                                = 64'hFFFFFFFFFFFFF000;
+localparam CLA_CDBGVERSION_RSVD6312_SHIFT                               = 12;
+localparam CLA_CDBGVERSION_RSVD6312_LOW                                 = 12;
+localparam CLA_CDBGVERSION_RSVD6312_HIGH                                = 63;
+localparam CLA_CDBGVERSION_RSVD6312_WIDTH                               = 52;
+
+localparam CLA_SCRATCH_DATA_MASK                                        = 64'hFFFFFFFFFFFFFFFF;
+localparam CLA_SCRATCH_DATA_SHIFT                                       = 0;
+localparam CLA_SCRATCH_DATA_LOW                                         = 0;
+localparam CLA_SCRATCH_DATA_HIGH                                        = 63;
+localparam CLA_SCRATCH_DATA_WIDTH                                       = 64;
+
+localparam CLA_NUM_REGISTERS                                            = 114;
+
+typedef struct packed {
+  logic               ClaMmrCdbgclacounter0CfgHit;
+  logic               ClaMmrCdbgclacounter1CfgHit;
+  logic               ClaMmrCdbgclacounter2CfgHit;
+  logic               ClaMmrCdbgclacounter3CfgHit;
+  logic               ClaMmrCdbgnode0Eap0Hit;
+  logic               ClaMmrCdbgnode0Eap1Hit;
+  logic               ClaMmrCdbgnode1Eap0Hit;
+  logic               ClaMmrCdbgnode1Eap1Hit;
+  logic               ClaMmrCdbgnode2Eap0Hit;
+  logic               ClaMmrCdbgnode2Eap1Hit;
+  logic               ClaMmrCdbgnode3Eap0Hit;
+  logic               ClaMmrCdbgnode3Eap1Hit;
+  logic               ClaMmrCdbgsignalmask0LoHit;
+  logic               ClaMmrCdbgsignalmatch0LoHit;
+  logic               ClaMmrCdbgsignalmask1LoHit;
+  logic               ClaMmrCdbgsignalmatch1LoHit;
+  logic               ClaMmrCdbgsignaledgedetectcfgHit;
+  logic               ClaMmrCdbgeapstatusHit;
+  logic               ClaMmrCdbgclactrlstatusHit;
+  logic               ClaMmrCdbgmuxselloHit;
+  logic               ClaMmrCdbgrsvd1Hit;
+  logic               ClaMmrCdbgrsvd2Hit;
+  logic               ClaMmrCdbgtransitionmaskloHit;
+  logic               ClaMmrCdbgtransitionfromvalueloHit;
+  logic               ClaMmrCdbgtransitiontovalueloHit;
+  logic               ClaMmrCdbgonescountmaskloHit;
+  logic               ClaMmrCdbgonescountvalueHit;
+  logic               ClaMmrCdbganychangeloHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap0LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap1LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap0LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap1LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap0LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap1LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap0LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap1LoHit;
+  logic               ClaMmrCdbgclatimematchHit;
+  logic               ClaMmrCdbgsignalmask2LoHit;
+  logic               ClaMmrCdbgsignalmatch2LoHit;
+  logic               ClaMmrCdbgsignalmask3LoHit;
+  logic               ClaMmrCdbgsignalmatch3LoHit;
+  logic               ClaMmrCdbgnode0Eap2Hit;
+  logic               ClaMmrCdbgnode0Eap3Hit;
+  logic               ClaMmrCdbgnode1Eap2Hit;
+  logic               ClaMmrCdbgnode1Eap3Hit;
+  logic               ClaMmrCdbgnode2Eap2Hit;
+  logic               ClaMmrCdbgnode2Eap3Hit;
+  logic               ClaMmrCdbgnode3Eap2Hit;
+  logic               ClaMmrCdbgnode3Eap3Hit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap2LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap3LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap2LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap3LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap2LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap3LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap2LoHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap3LoHit;
+  logic               ClaMmrCdbgsignaldelaymuxselHit;
+  logic               ClaMmrCdbgclaxtriggertimestretchHit;
+  logic               ClaMmrCdbgclatimestampHit;
+  logic               ClaMmrCdbgclatimestampsyncHit;
+  logic               ClaMmrCdbgclatimestampconfigHit;
+  logic               ClaMmrCdbgclatimestampoffsetHit;
+  logic               ClaMmrCdbgsignalmask0HiHit;
+  logic               ClaMmrCdbgsignalmatch0HiHit;
+  logic               ClaMmrCdbgsignalmask1HiHit;
+  logic               ClaMmrCdbgsignalmatch1HiHit;
+  logic               ClaMmrCdbgsignalmask2HiHit;
+  logic               ClaMmrCdbgsignalmatch2HiHit;
+  logic               ClaMmrCdbgsignalmask3HiHit;
+  logic               ClaMmrCdbgsignalmatch3HiHit;
+  logic               ClaMmrCdbgmuxselhiHit;
+  logic               ClaMmrCdbgtransitionmaskhiHit;
+  logic               ClaMmrCdbgtransitionfromvaluehiHit;
+  logic               ClaMmrCdbgtransitiontovaluehiHit;
+  logic               ClaMmrCdbgonescountmaskhiHit;
+  logic               ClaMmrCdbganychangehiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap0HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap1HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap0HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap1HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap0HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap1HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap0HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap1HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap2HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode0Eap3HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap2HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode1Eap3HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap2HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode2Eap3HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap2HiHit;
+  logic               ClaMmrCdbgsignalsnapshotnode3Eap3HiHit;
+  logic               ClaMmrCdbglfsrHit;
+  logic               ClaMmrCdbglfsrmaskHit;
+  logic               ClaMmrCdbgtimestampcaptureHit;
+  logic               ClaMmrCdbgcompare0LoHit;
+  logic               ClaMmrCdbgcompare0MaskloHit;
+  logic               ClaMmrCdbgcompare1LoHit;
+  logic               ClaMmrCdbgcompare1MaskloHit;
+  logic               ClaMmrCdbgcompare2LoHit;
+  logic               ClaMmrCdbgcompare2MaskloHit;
+  logic               ClaMmrCdbgcompare3LoHit;
+  logic               ClaMmrCdbgcompare3MaskloHit;
+  logic               ClaMmrCdbgcompare0HiHit;
+  logic               ClaMmrCdbgcompare0MaskhiHit;
+  logic               ClaMmrCdbgcompare1HiHit;
+  logic               ClaMmrCdbgcompare1MaskhiHit;
+  logic               ClaMmrCdbgcompare2HiHit;
+  logic               ClaMmrCdbgcompare2MaskhiHit;
+  logic               ClaMmrCdbgcompare3HiHit;
+  logic               ClaMmrCdbgcompare3MaskhiHit;
+  logic               ClaMmrCdbgversionHit;
+  logic               ClaMmrScratchHit;
+} ClaMmrHit_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter0CfgMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter1CfgMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter2CfgMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter3CfgMmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap0Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap1Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap0Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap1Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap0Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap1Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap0Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap1Mmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask1LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch1LoMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        PosEdgeSignal1 ;
+    logic    [6:0]        Signal1Select ;
+    logic    [0:0]        PosEdgeSignal0 ;
+    logic    [6:0]        Signal0Select ;
+} ClaCdbgsignaledgedetectcfgMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        Node3Eap3W2C ;
+    logic    [0:0]        Node3Eap2W2C ;
+    logic    [0:0]        Node3Eap1W2C ;
+    logic    [0:0]        Node3Eap0W2C ;
+    logic    [0:0]        Node2Eap3W2C ;
+    logic    [0:0]        Node2Eap2W2C ;
+    logic    [0:0]        Node2Eap1W2C ;
+    logic    [0:0]        Node2Eap0W2C ;
+    logic    [0:0]        Node1Eap3W2C ;
+    logic    [0:0]        Node1Eap2W2C ;
+    logic    [0:0]        Node1Eap1W2C ;
+    logic    [0:0]        Node1Eap0W2C ;
+    logic    [0:0]        Node0Eap3W2C ;
+    logic    [0:0]        Node0Eap2W2C ;
+    logic    [0:0]        Node0Eap1W2C ;
+    logic    [0:0]        Node0Eap0W2C ;
+    logic   [15:0]        Rsvd3116 ;
+    logic    [0:0]        Node3Eap3 ;
+    logic    [0:0]        Node3Eap2 ;
+    logic    [0:0]        Node3Eap1 ;
+    logic    [0:0]        Node3Eap0 ;
+    logic    [0:0]        Node2Eap3 ;
+    logic    [0:0]        Node2Eap2 ;
+    logic    [0:0]        Node2Eap1 ;
+    logic    [0:0]        Node2Eap0 ;
+    logic    [0:0]        Node1Eap3 ;
+    logic    [0:0]        Node1Eap2 ;
+    logic    [0:0]        Node1Eap1 ;
+    logic    [0:0]        Node1Eap0 ;
+    logic    [0:0]        Node0Eap3 ;
+    logic    [0:0]        Node0Eap2 ;
+    logic    [0:0]        Node0Eap1 ;
+    logic    [0:0]        Node0Eap0 ;
+} ClaCdbgeapstatusMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        ClaLock ;
+    logic   [46:0]        Rsvd6216 ;
+    logic    [0:0]        DisableLocalClockHalt ;
+    logic    [0:0]        DisableGlobalClockHalt ;
+    logic    [6:0]        ClaChainLoopDelay ;
+    logic    [0:0]        EnableCla ;
+    logic    [0:0]        EnableEap ;
+    logic    [1:0]        CurrentNode ;
+} ClaCdbgclactrlstatusMmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Muxselseg7 ;
+    logic    [5:0]        Muxselseg6 ;
+    logic    [5:0]        Muxselseg5 ;
+    logic    [5:0]        Muxselseg4 ;
+    logic    [5:0]        Muxselseg3 ;
+    logic    [5:0]        Muxselseg2 ;
+    logic    [5:0]        Muxselseg1 ;
+    logic    [5:0]        Muxselseg0 ;
+    logic    [5:0]        Rsvd1510 ;
+    logic    [0:0]        Valid ;
+    logic    [0:0]        Finegraintime ;
+    logic    [5:0]        Dbmid ;
+    logic    [1:0]        Dbmmode ;
+} ClaCdbgmuxselloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgrsvd1Mmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgrsvd2Mmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionmaskloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionfromvalueloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitiontovalueloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgonescountmaskloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgonescountvalueMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Mask ;
+} ClaCdbganychangeloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap1LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap1LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap1LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap1LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        TimeMatchVal ;
+} ClaCdbgclatimematchMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask3LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch3LoMmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap2Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap3Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap2Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap3Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap2Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap3Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap2Mmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap3Mmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap3LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap3LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap3LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap3LoMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Rsvd ;
+    logic    [1:0]        Muxselseg15 ;
+    logic    [1:0]        Muxselseg14 ;
+    logic    [1:0]        Muxselseg13 ;
+    logic    [1:0]        Muxselseg12 ;
+    logic    [1:0]        Muxselseg11 ;
+    logic    [1:0]        Muxselseg10 ;
+    logic    [1:0]        Muxselseg9 ;
+    logic    [1:0]        Muxselseg8 ;
+    logic    [1:0]        Muxselseg7 ;
+    logic    [1:0]        Muxselseg6 ;
+    logic    [1:0]        Muxselseg5 ;
+    logic    [1:0]        Muxselseg4 ;
+    logic    [1:0]        Muxselseg3 ;
+    logic    [1:0]        Muxselseg2 ;
+    logic    [1:0]        Muxselseg1 ;
+    logic    [1:0]        Muxselseg0 ;
+} ClaCdbgsignaldelaymuxselMmr_s;
+
+typedef struct packed {
+    logic   [47:0]        Rsvd ;
+    logic    [7:0]        Xtrigger1Stretch ;
+    logic    [7:0]        Xtrigger0Stretch ;
+} ClaCdbgclaxtriggertimestretchMmr_s;
+
+typedef struct packed {
+    logic   [55:0]        TimestampUpper ;
+    logic    [7:0]        TimestampLower ;
+} ClaCdbgclatimestampMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        TimestampSync ;
+} ClaCdbgclatimestampsyncMmr_s;
+
+typedef struct packed {
+    logic   [53:0]        Rsvd1 ;
+    logic    [0:0]        TsCapture ;
+    logic    [7:0]        DebugMarker ;
+    logic    [0:0]        Resync ;
+} ClaCdbgclatimestampconfigMmr_s;
+
+typedef struct packed {
+    logic    [7:0]        Rsvd0 ;
+    logic   [55:0]        Offset ;
+} ClaCdbgclatimestampoffsetMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask3HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch3HiMmr_s;
+
+typedef struct packed {
+    logic    [5:0]        Muxselseg15 ;
+    logic    [5:0]        Muxselseg14 ;
+    logic    [5:0]        Muxselseg13 ;
+    logic    [5:0]        Muxselseg12 ;
+    logic    [5:0]        Muxselseg11 ;
+    logic    [5:0]        Muxselseg10 ;
+    logic    [5:0]        Muxselseg9 ;
+    logic    [5:0]        Muxselseg8 ;
+    logic   [15:0]        Rsvd150 ;
+} ClaCdbgmuxselhiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionmaskhiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionfromvaluehiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitiontovaluehiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgonescountmaskhiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Mask ;
+} ClaCdbganychangehiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap3HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap3HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap3HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap3HiMmr_s;
+
+typedef struct packed {
+    logic   [62:0]        Lfsr ;
+    logic    [0:0]        LfsrActive ;
+} ClaCdbglfsrMmr_s;
+
+typedef struct packed {
+    logic   [62:0]        Mask ;
+    logic    [0:0]        Rsvd0 ;
+} ClaCdbglfsrmaskMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Timestamp ;
+} ClaCdbgtimestampcaptureMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0MaskloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1MaskloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2MaskloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3LoMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3MaskloMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0MaskhiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1MaskhiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2MaskhiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3HiMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3MaskhiMmr_s;
+
+typedef struct packed {
+    logic   [51:0]        Rsvd6312 ;
+    logic    [3:0]        Major ;
+    logic    [3:0]        Minor ;
+    logic    [3:0]        Patch ;
+} ClaCdbgversionMmr_s;
+
+typedef struct packed {
+    logic   [63:0]        Data ;
+} ClaScratchMmr_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter0CfgMmrUnpack_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter1CfgMmrUnpack_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter2CfgMmrUnpack_s;
+
+typedef struct packed {
+    logic    [0:0]        Rsvd ;
+    logic   [14:0]        UpperTarget ;
+    logic   [14:0]        UpperCounter ;
+    logic    [0:0]        ResetOnTarget ;
+    logic   [15:0]        Target ;
+    logic   [15:0]        Counter ;
+} ClaCdbgclacounter3CfgMmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap0MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap1MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap0MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap1MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap0MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap1MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap0MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap1MmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic    [47:0]        rsvd_0 ;
+    logic    [0:0]        PosEdgeSignal1 ;
+    logic    [6:0]        Signal1Select ;
+    logic    [0:0]        PosEdgeSignal0 ;
+    logic    [6:0]        Signal0Select ;
+} ClaCdbgsignaledgedetectcfgMmrUnpack_s;
+
+typedef struct packed {
+    logic    [15:0]        rsvd_0 ;
+    logic    [0:0]        Node3Eap3W2C ;
+    logic    [0:0]        Node3Eap2W2C ;
+    logic    [0:0]        Node3Eap1W2C ;
+    logic    [0:0]        Node3Eap0W2C ;
+    logic    [0:0]        Node2Eap3W2C ;
+    logic    [0:0]        Node2Eap2W2C ;
+    logic    [0:0]        Node2Eap1W2C ;
+    logic    [0:0]        Node2Eap0W2C ;
+    logic    [0:0]        Node1Eap3W2C ;
+    logic    [0:0]        Node1Eap2W2C ;
+    logic    [0:0]        Node1Eap1W2C ;
+    logic    [0:0]        Node1Eap0W2C ;
+    logic    [0:0]        Node0Eap3W2C ;
+    logic    [0:0]        Node0Eap2W2C ;
+    logic    [0:0]        Node0Eap1W2C ;
+    logic    [0:0]        Node0Eap0W2C ;
+    logic   [15:0]        Rsvd3116 ;
+    logic    [0:0]        Node3Eap3 ;
+    logic    [0:0]        Node3Eap2 ;
+    logic    [0:0]        Node3Eap1 ;
+    logic    [0:0]        Node3Eap0 ;
+    logic    [0:0]        Node2Eap3 ;
+    logic    [0:0]        Node2Eap2 ;
+    logic    [0:0]        Node2Eap1 ;
+    logic    [0:0]        Node2Eap0 ;
+    logic    [0:0]        Node1Eap3 ;
+    logic    [0:0]        Node1Eap2 ;
+    logic    [0:0]        Node1Eap1 ;
+    logic    [0:0]        Node1Eap0 ;
+    logic    [0:0]        Node0Eap3 ;
+    logic    [0:0]        Node0Eap2 ;
+    logic    [0:0]        Node0Eap1 ;
+    logic    [0:0]        Node0Eap0 ;
+} ClaCdbgeapstatusMmrUnpack_s;
+
+typedef struct packed {
+    logic    [0:0]        ClaLock ;
+    logic   [46:0]        Rsvd6216 ;
+    logic    [0:0]        DisableLocalClockHalt ;
+    logic    [0:0]        DisableGlobalClockHalt ;
+    logic    [6:0]        ClaChainLoopDelay ;
+    logic    [0:0]        EnableCla ;
+    logic    [0:0]        EnableEap ;
+    logic    [2:0]        rsvd_0 ;
+    logic    [1:0]        CurrentNode ;
+} ClaCdbgclactrlstatusMmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Muxselseg7 ;
+    logic    [5:0]        Muxselseg6 ;
+    logic    [5:0]        Muxselseg5 ;
+    logic    [5:0]        Muxselseg4 ;
+    logic    [5:0]        Muxselseg3 ;
+    logic    [5:0]        Muxselseg2 ;
+    logic    [5:0]        Muxselseg1 ;
+    logic    [5:0]        Muxselseg0 ;
+    logic    [5:0]        Rsvd1510 ;
+    logic    [0:0]        Valid ;
+    logic    [0:0]        Finegraintime ;
+    logic    [5:0]        Dbmid ;
+    logic    [1:0]        Dbmmode ;
+} ClaCdbgmuxselloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgrsvd1MmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgrsvd2MmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionmaskloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionfromvalueloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitiontovalueloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgonescountmaskloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgonescountvalueMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Mask ;
+} ClaCdbganychangeloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        TimeMatchVal ;
+} ClaCdbgclatimematchMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap2MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode0Eap3MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap2MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode1Eap3MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap2MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode2Eap3MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap2MmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Action3 ;
+    logic    [5:0]        Action2 ;
+    logic    [7:0]        Udf ;
+    logic    [5:0]        EventType2 ;
+    logic    [0:0]        CustomAction1Enable ;
+    logic    [0:0]        CustomAction0Enable ;
+    logic    [3:0]        CustomAction1 ;
+    logic    [3:0]        CustomAction0 ;
+    logic    [5:0]        EventType1 ;
+    logic    [5:0]        EventType0 ;
+    logic    [1:0]        LogicalOp ;
+    logic    [5:0]        Action1 ;
+    logic    [5:0]        Action0 ;
+    logic    [1:0]        DestNode ;
+} ClaCdbgnode3Eap3MmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Rsvd ;
+    logic    [1:0]        Muxselseg15 ;
+    logic    [1:0]        Muxselseg14 ;
+    logic    [1:0]        Muxselseg13 ;
+    logic    [1:0]        Muxselseg12 ;
+    logic    [1:0]        Muxselseg11 ;
+    logic    [1:0]        Muxselseg10 ;
+    logic    [1:0]        Muxselseg9 ;
+    logic    [1:0]        Muxselseg8 ;
+    logic    [1:0]        Muxselseg7 ;
+    logic    [1:0]        Muxselseg6 ;
+    logic    [1:0]        Muxselseg5 ;
+    logic    [1:0]        Muxselseg4 ;
+    logic    [1:0]        Muxselseg3 ;
+    logic    [1:0]        Muxselseg2 ;
+    logic    [1:0]        Muxselseg1 ;
+    logic    [1:0]        Muxselseg0 ;
+} ClaCdbgsignaldelaymuxselMmrUnpack_s;
+
+typedef struct packed {
+    logic   [47:0]        Rsvd ;
+    logic    [7:0]        Xtrigger1Stretch ;
+    logic    [7:0]        Xtrigger0Stretch ;
+} ClaCdbgclaxtriggertimestretchMmrUnpack_s;
+
+typedef struct packed {
+    logic   [55:0]        TimestampUpper ;
+    logic    [7:0]        TimestampLower ;
+} ClaCdbgclatimestampMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        TimestampSync ;
+} ClaCdbgclatimestampsyncMmrUnpack_s;
+
+typedef struct packed {
+    logic   [53:0]        Rsvd1 ;
+    logic    [0:0]        TsCapture ;
+    logic    [7:0]        DebugMarker ;
+    logic    [0:0]        Resync ;
+} ClaCdbgclatimestampconfigMmrUnpack_s;
+
+typedef struct packed {
+    logic    [7:0]        Rsvd0 ;
+    logic   [55:0]        Offset ;
+} ClaCdbgclatimestampoffsetMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmask3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalmatch3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic    [5:0]        Muxselseg15 ;
+    logic    [5:0]        Muxselseg14 ;
+    logic    [5:0]        Muxselseg13 ;
+    logic    [5:0]        Muxselseg12 ;
+    logic    [5:0]        Muxselseg11 ;
+    logic    [5:0]        Muxselseg10 ;
+    logic    [5:0]        Muxselseg9 ;
+    logic    [5:0]        Muxselseg8 ;
+    logic   [15:0]        Rsvd150 ;
+} ClaCdbgmuxselhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionmaskhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitionfromvaluehiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgtransitiontovaluehiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgonescountmaskhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Mask ;
+} ClaCdbganychangehiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode0Eap3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode1Eap3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode2Eap3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgsignalsnapshotnode3Eap3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [62:0]        Lfsr ;
+    logic    [0:0]        LfsrActive ;
+} ClaCdbglfsrMmrUnpack_s;
+
+typedef struct packed {
+    logic   [62:0]        Mask ;
+    logic    [0:0]        Rsvd0 ;
+} ClaCdbglfsrmaskMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Timestamp ;
+} ClaCdbgtimestampcaptureMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0MaskloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1MaskloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2MaskloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3LoMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3MaskloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare0MaskhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare1MaskhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare2MaskhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3HiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Value ;
+} ClaCdbgcompare3MaskhiMmrUnpack_s;
+
+typedef struct packed {
+    logic   [51:0]        Rsvd6312 ;
+    logic    [3:0]        Major ;
+    logic    [3:0]        Minor ;
+    logic    [3:0]        Patch ;
+} ClaCdbgversionMmrUnpack_s;
+
+typedef struct packed {
+    logic   [63:0]        Data ;
+} ClaScratchMmrUnpack_s;
+
+typedef struct packed {
+    ClaCdbgclacounter0CfgMmr_s Data;
+    logic                 UpperCounterWrEn ;
+    logic                 CounterWrEn ;
+} ClaCdbgclacounter0CfgMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclacounter1CfgMmr_s Data;
+    logic                 UpperCounterWrEn ;
+    logic                 CounterWrEn ;
+} ClaCdbgclacounter1CfgMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclacounter2CfgMmr_s Data;
+    logic                 UpperCounterWrEn ;
+    logic                 CounterWrEn ;
+} ClaCdbgclacounter2CfgMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclacounter3CfgMmr_s Data;
+    logic                 UpperCounterWrEn ;
+    logic                 CounterWrEn ;
+} ClaCdbgclacounter3CfgMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgeapstatusMmr_s Data;
+    logic                 Node3Eap3W2CWrEn ;
+    logic                 Node3Eap2W2CWrEn ;
+    logic                 Node3Eap1W2CWrEn ;
+    logic                 Node3Eap0W2CWrEn ;
+    logic                 Node2Eap3W2CWrEn ;
+    logic                 Node2Eap2W2CWrEn ;
+    logic                 Node2Eap1W2CWrEn ;
+    logic                 Node2Eap0W2CWrEn ;
+    logic                 Node1Eap3W2CWrEn ;
+    logic                 Node1Eap2W2CWrEn ;
+    logic                 Node1Eap1W2CWrEn ;
+    logic                 Node1Eap0W2CWrEn ;
+    logic                 Node0Eap3W2CWrEn ;
+    logic                 Node0Eap2W2CWrEn ;
+    logic                 Node0Eap1W2CWrEn ;
+    logic                 Node0Eap0W2CWrEn ;
+    logic                 Rsvd3116WrEn ;
+    logic                 Node3Eap3WrEn ;
+    logic                 Node3Eap2WrEn ;
+    logic                 Node3Eap1WrEn ;
+    logic                 Node3Eap0WrEn ;
+    logic                 Node2Eap3WrEn ;
+    logic                 Node2Eap2WrEn ;
+    logic                 Node2Eap1WrEn ;
+    logic                 Node2Eap0WrEn ;
+    logic                 Node1Eap3WrEn ;
+    logic                 Node1Eap2WrEn ;
+    logic                 Node1Eap1WrEn ;
+    logic                 Node1Eap0WrEn ;
+    logic                 Node0Eap3WrEn ;
+    logic                 Node0Eap2WrEn ;
+    logic                 Node0Eap1WrEn ;
+    logic                 Node0Eap0WrEn ;
+} ClaCdbgeapstatusMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclactrlstatusMmr_s Data;
+    logic                 CurrentNodeWrEn ;
+} ClaCdbgclactrlstatusMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgmuxselloMmr_s  Data;
+    logic                 ValidWrEn ;
+} ClaCdbgmuxselloMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap0LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap0LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap1LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap1LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap0LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap0LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap1LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap1LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap0LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap0LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap1LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap1LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap0LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap0LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap1LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap1LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap2LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap2LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap3LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap3LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap2LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap2LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap3LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap3LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap2LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap2LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap3LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap3LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap2LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap2LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap3LoMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap3LoMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclatimestampMmr_s Data;
+    logic                 TimestampUpperWrEn ;
+    logic                 TimestampLowerWrEn ;
+} ClaCdbgclatimestampMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclatimestampconfigMmr_s Data;
+    logic                 TsCaptureWrEn ;
+    logic                 ResyncWrEn ;
+} ClaCdbgclatimestampconfigMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap0HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap0HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap1HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap1HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap0HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap0HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap1HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap1HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap0HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap0HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap1HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap1HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap0HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap0HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap1HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap1HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap2HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap2HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode0Eap3HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode0Eap3HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap2HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap2HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode1Eap3HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode1Eap3HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap2HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap2HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode2Eap3HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode2Eap3HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap2HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap2HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgsignalsnapshotnode3Eap3HiMmr_s Data;
+    logic                 ValueWrEn ;
+} ClaCdbgsignalsnapshotnode3Eap3HiMmrWr_s;
+
+typedef struct packed {
+    ClaCdbglfsrMmr_s      Data;
+    logic                 LfsrWrEn ;
+} ClaCdbglfsrMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgtimestampcaptureMmr_s Data;
+    logic                 TimestampWrEn ;
+} ClaCdbgtimestampcaptureMmrWr_s;
+
+typedef struct packed {
+    ClaCdbgclacounter0CfgMmr_s Cdbgclacounter0Cfg;
+    ClaCdbgclacounter1CfgMmr_s Cdbgclacounter1Cfg;
+    ClaCdbgclacounter2CfgMmr_s Cdbgclacounter2Cfg;
+    ClaCdbgclacounter3CfgMmr_s Cdbgclacounter3Cfg;
+    ClaCdbgnode0Eap0Mmr_s Cdbgnode0Eap0;
+    ClaCdbgnode0Eap1Mmr_s Cdbgnode0Eap1;
+    ClaCdbgnode1Eap0Mmr_s Cdbgnode1Eap0;
+    ClaCdbgnode1Eap1Mmr_s Cdbgnode1Eap1;
+    ClaCdbgnode2Eap0Mmr_s Cdbgnode2Eap0;
+    ClaCdbgnode2Eap1Mmr_s Cdbgnode2Eap1;
+    ClaCdbgnode3Eap0Mmr_s Cdbgnode3Eap0;
+    ClaCdbgnode3Eap1Mmr_s Cdbgnode3Eap1;
+    ClaCdbgsignalmask0LoMmr_s Cdbgsignalmask0Lo;
+    ClaCdbgsignalmatch0LoMmr_s Cdbgsignalmatch0Lo;
+    ClaCdbgsignalmask1LoMmr_s Cdbgsignalmask1Lo;
+    ClaCdbgsignalmatch1LoMmr_s Cdbgsignalmatch1Lo;
+    ClaCdbgsignaledgedetectcfgMmr_s Cdbgsignaledgedetectcfg;
+    ClaCdbgeapstatusMmr_s Cdbgeapstatus;
+    ClaCdbgclactrlstatusMmr_s Cdbgclactrlstatus;
+    ClaCdbgmuxselloMmr_s  Cdbgmuxsello;
+    ClaCdbgrsvd1Mmr_s     Cdbgrsvd1;
+    ClaCdbgrsvd2Mmr_s     Cdbgrsvd2;
+    ClaCdbgtransitionmaskloMmr_s Cdbgtransitionmasklo;
+    ClaCdbgtransitionfromvalueloMmr_s Cdbgtransitionfromvaluelo;
+    ClaCdbgtransitiontovalueloMmr_s Cdbgtransitiontovaluelo;
+    ClaCdbgonescountmaskloMmr_s Cdbgonescountmasklo;
+    ClaCdbgonescountvalueMmr_s Cdbgonescountvalue;
+    ClaCdbganychangeloMmr_s Cdbganychangelo;
+    ClaCdbgsignalsnapshotnode0Eap0LoMmr_s Cdbgsignalsnapshotnode0Eap0Lo;
+    ClaCdbgsignalsnapshotnode0Eap1LoMmr_s Cdbgsignalsnapshotnode0Eap1Lo;
+    ClaCdbgsignalsnapshotnode1Eap0LoMmr_s Cdbgsignalsnapshotnode1Eap0Lo;
+    ClaCdbgsignalsnapshotnode1Eap1LoMmr_s Cdbgsignalsnapshotnode1Eap1Lo;
+    ClaCdbgsignalsnapshotnode2Eap0LoMmr_s Cdbgsignalsnapshotnode2Eap0Lo;
+    ClaCdbgsignalsnapshotnode2Eap1LoMmr_s Cdbgsignalsnapshotnode2Eap1Lo;
+    ClaCdbgsignalsnapshotnode3Eap0LoMmr_s Cdbgsignalsnapshotnode3Eap0Lo;
+    ClaCdbgsignalsnapshotnode3Eap1LoMmr_s Cdbgsignalsnapshotnode3Eap1Lo;
+    ClaCdbgclatimematchMmr_s Cdbgclatimematch;
+    ClaCdbgsignalmask2LoMmr_s Cdbgsignalmask2Lo;
+    ClaCdbgsignalmatch2LoMmr_s Cdbgsignalmatch2Lo;
+    ClaCdbgsignalmask3LoMmr_s Cdbgsignalmask3Lo;
+    ClaCdbgsignalmatch3LoMmr_s Cdbgsignalmatch3Lo;
+    ClaCdbgnode0Eap2Mmr_s Cdbgnode0Eap2;
+    ClaCdbgnode0Eap3Mmr_s Cdbgnode0Eap3;
+    ClaCdbgnode1Eap2Mmr_s Cdbgnode1Eap2;
+    ClaCdbgnode1Eap3Mmr_s Cdbgnode1Eap3;
+    ClaCdbgnode2Eap2Mmr_s Cdbgnode2Eap2;
+    ClaCdbgnode2Eap3Mmr_s Cdbgnode2Eap3;
+    ClaCdbgnode3Eap2Mmr_s Cdbgnode3Eap2;
+    ClaCdbgnode3Eap3Mmr_s Cdbgnode3Eap3;
+    ClaCdbgsignalsnapshotnode0Eap2LoMmr_s Cdbgsignalsnapshotnode0Eap2Lo;
+    ClaCdbgsignalsnapshotnode0Eap3LoMmr_s Cdbgsignalsnapshotnode0Eap3Lo;
+    ClaCdbgsignalsnapshotnode1Eap2LoMmr_s Cdbgsignalsnapshotnode1Eap2Lo;
+    ClaCdbgsignalsnapshotnode1Eap3LoMmr_s Cdbgsignalsnapshotnode1Eap3Lo;
+    ClaCdbgsignalsnapshotnode2Eap2LoMmr_s Cdbgsignalsnapshotnode2Eap2Lo;
+    ClaCdbgsignalsnapshotnode2Eap3LoMmr_s Cdbgsignalsnapshotnode2Eap3Lo;
+    ClaCdbgsignalsnapshotnode3Eap2LoMmr_s Cdbgsignalsnapshotnode3Eap2Lo;
+    ClaCdbgsignalsnapshotnode3Eap3LoMmr_s Cdbgsignalsnapshotnode3Eap3Lo;
+    ClaCdbgsignaldelaymuxselMmr_s Cdbgsignaldelaymuxsel;
+    ClaCdbgclaxtriggertimestretchMmr_s Cdbgclaxtriggertimestretch;
+    ClaCdbgclatimestampMmr_s Cdbgclatimestamp;
+    ClaCdbgclatimestampsyncMmr_s Cdbgclatimestampsync;
+    ClaCdbgclatimestampconfigMmr_s Cdbgclatimestampconfig;
+    ClaCdbgclatimestampoffsetMmr_s Cdbgclatimestampoffset;
+    ClaCdbgsignalmask0HiMmr_s Cdbgsignalmask0Hi;
+    ClaCdbgsignalmatch0HiMmr_s Cdbgsignalmatch0Hi;
+    ClaCdbgsignalmask1HiMmr_s Cdbgsignalmask1Hi;
+    ClaCdbgsignalmatch1HiMmr_s Cdbgsignalmatch1Hi;
+    ClaCdbgsignalmask2HiMmr_s Cdbgsignalmask2Hi;
+    ClaCdbgsignalmatch2HiMmr_s Cdbgsignalmatch2Hi;
+    ClaCdbgsignalmask3HiMmr_s Cdbgsignalmask3Hi;
+    ClaCdbgsignalmatch3HiMmr_s Cdbgsignalmatch3Hi;
+    ClaCdbgmuxselhiMmr_s  Cdbgmuxselhi;
+    ClaCdbgtransitionmaskhiMmr_s Cdbgtransitionmaskhi;
+    ClaCdbgtransitionfromvaluehiMmr_s Cdbgtransitionfromvaluehi;
+    ClaCdbgtransitiontovaluehiMmr_s Cdbgtransitiontovaluehi;
+    ClaCdbgonescountmaskhiMmr_s Cdbgonescountmaskhi;
+    ClaCdbganychangehiMmr_s Cdbganychangehi;
+    ClaCdbgsignalsnapshotnode0Eap0HiMmr_s Cdbgsignalsnapshotnode0Eap0Hi;
+    ClaCdbgsignalsnapshotnode0Eap1HiMmr_s Cdbgsignalsnapshotnode0Eap1Hi;
+    ClaCdbgsignalsnapshotnode1Eap0HiMmr_s Cdbgsignalsnapshotnode1Eap0Hi;
+    ClaCdbgsignalsnapshotnode1Eap1HiMmr_s Cdbgsignalsnapshotnode1Eap1Hi;
+    ClaCdbgsignalsnapshotnode2Eap0HiMmr_s Cdbgsignalsnapshotnode2Eap0Hi;
+    ClaCdbgsignalsnapshotnode2Eap1HiMmr_s Cdbgsignalsnapshotnode2Eap1Hi;
+    ClaCdbgsignalsnapshotnode3Eap0HiMmr_s Cdbgsignalsnapshotnode3Eap0Hi;
+    ClaCdbgsignalsnapshotnode3Eap1HiMmr_s Cdbgsignalsnapshotnode3Eap1Hi;
+    ClaCdbgsignalsnapshotnode0Eap2HiMmr_s Cdbgsignalsnapshotnode0Eap2Hi;
+    ClaCdbgsignalsnapshotnode0Eap3HiMmr_s Cdbgsignalsnapshotnode0Eap3Hi;
+    ClaCdbgsignalsnapshotnode1Eap2HiMmr_s Cdbgsignalsnapshotnode1Eap2Hi;
+    ClaCdbgsignalsnapshotnode1Eap3HiMmr_s Cdbgsignalsnapshotnode1Eap3Hi;
+    ClaCdbgsignalsnapshotnode2Eap2HiMmr_s Cdbgsignalsnapshotnode2Eap2Hi;
+    ClaCdbgsignalsnapshotnode2Eap3HiMmr_s Cdbgsignalsnapshotnode2Eap3Hi;
+    ClaCdbgsignalsnapshotnode3Eap2HiMmr_s Cdbgsignalsnapshotnode3Eap2Hi;
+    ClaCdbgsignalsnapshotnode3Eap3HiMmr_s Cdbgsignalsnapshotnode3Eap3Hi;
+    ClaCdbglfsrMmr_s      Cdbglfsr;
+    ClaCdbglfsrmaskMmr_s  Cdbglfsrmask;
+    ClaCdbgtimestampcaptureMmr_s Cdbgtimestampcapture;
+    ClaCdbgcompare0LoMmr_s Cdbgcompare0Lo;
+    ClaCdbgcompare0MaskloMmr_s Cdbgcompare0Masklo;
+    ClaCdbgcompare1LoMmr_s Cdbgcompare1Lo;
+    ClaCdbgcompare1MaskloMmr_s Cdbgcompare1Masklo;
+    ClaCdbgcompare2LoMmr_s Cdbgcompare2Lo;
+    ClaCdbgcompare2MaskloMmr_s Cdbgcompare2Masklo;
+    ClaCdbgcompare3LoMmr_s Cdbgcompare3Lo;
+    ClaCdbgcompare3MaskloMmr_s Cdbgcompare3Masklo;
+    ClaCdbgcompare0HiMmr_s Cdbgcompare0Hi;
+    ClaCdbgcompare0MaskhiMmr_s Cdbgcompare0Maskhi;
+    ClaCdbgcompare1HiMmr_s Cdbgcompare1Hi;
+    ClaCdbgcompare1MaskhiMmr_s Cdbgcompare1Maskhi;
+    ClaCdbgcompare2HiMmr_s Cdbgcompare2Hi;
+    ClaCdbgcompare2MaskhiMmr_s Cdbgcompare2Maskhi;
+    ClaCdbgcompare3HiMmr_s Cdbgcompare3Hi;
+    ClaCdbgcompare3MaskhiMmr_s Cdbgcompare3Maskhi;
+    ClaCdbgversionMmr_s   Cdbgversion;
+    ClaScratchMmr_s       Scratch;
+} ClaMmrs_s;
+
+typedef struct packed {
+    ClaCdbgclacounter0CfgMmrWr_s Cdbgclacounter0CfgWr;
+    ClaCdbgclacounter1CfgMmrWr_s Cdbgclacounter1CfgWr;
+    ClaCdbgclacounter2CfgMmrWr_s Cdbgclacounter2CfgWr;
+    ClaCdbgclacounter3CfgMmrWr_s Cdbgclacounter3CfgWr;
+    ClaCdbgeapstatusMmrWr_s CdbgeapstatusWr;
+    ClaCdbgclactrlstatusMmrWr_s CdbgclactrlstatusWr;
+    ClaCdbgmuxselloMmrWr_s CdbgmuxselloWr;
+    ClaCdbgsignalsnapshotnode0Eap0LoMmrWr_s Cdbgsignalsnapshotnode0Eap0LoWr;
+    ClaCdbgsignalsnapshotnode0Eap1LoMmrWr_s Cdbgsignalsnapshotnode0Eap1LoWr;
+    ClaCdbgsignalsnapshotnode1Eap0LoMmrWr_s Cdbgsignalsnapshotnode1Eap0LoWr;
+    ClaCdbgsignalsnapshotnode1Eap1LoMmrWr_s Cdbgsignalsnapshotnode1Eap1LoWr;
+    ClaCdbgsignalsnapshotnode2Eap0LoMmrWr_s Cdbgsignalsnapshotnode2Eap0LoWr;
+    ClaCdbgsignalsnapshotnode2Eap1LoMmrWr_s Cdbgsignalsnapshotnode2Eap1LoWr;
+    ClaCdbgsignalsnapshotnode3Eap0LoMmrWr_s Cdbgsignalsnapshotnode3Eap0LoWr;
+    ClaCdbgsignalsnapshotnode3Eap1LoMmrWr_s Cdbgsignalsnapshotnode3Eap1LoWr;
+    ClaCdbgsignalsnapshotnode0Eap2LoMmrWr_s Cdbgsignalsnapshotnode0Eap2LoWr;
+    ClaCdbgsignalsnapshotnode0Eap3LoMmrWr_s Cdbgsignalsnapshotnode0Eap3LoWr;
+    ClaCdbgsignalsnapshotnode1Eap2LoMmrWr_s Cdbgsignalsnapshotnode1Eap2LoWr;
+    ClaCdbgsignalsnapshotnode1Eap3LoMmrWr_s Cdbgsignalsnapshotnode1Eap3LoWr;
+    ClaCdbgsignalsnapshotnode2Eap2LoMmrWr_s Cdbgsignalsnapshotnode2Eap2LoWr;
+    ClaCdbgsignalsnapshotnode2Eap3LoMmrWr_s Cdbgsignalsnapshotnode2Eap3LoWr;
+    ClaCdbgsignalsnapshotnode3Eap2LoMmrWr_s Cdbgsignalsnapshotnode3Eap2LoWr;
+    ClaCdbgsignalsnapshotnode3Eap3LoMmrWr_s Cdbgsignalsnapshotnode3Eap3LoWr;
+    ClaCdbgclatimestampMmrWr_s CdbgclatimestampWr;
+    ClaCdbgclatimestampconfigMmrWr_s CdbgclatimestampconfigWr;
+    ClaCdbgsignalsnapshotnode0Eap0HiMmrWr_s Cdbgsignalsnapshotnode0Eap0HiWr;
+    ClaCdbgsignalsnapshotnode0Eap1HiMmrWr_s Cdbgsignalsnapshotnode0Eap1HiWr;
+    ClaCdbgsignalsnapshotnode1Eap0HiMmrWr_s Cdbgsignalsnapshotnode1Eap0HiWr;
+    ClaCdbgsignalsnapshotnode1Eap1HiMmrWr_s Cdbgsignalsnapshotnode1Eap1HiWr;
+    ClaCdbgsignalsnapshotnode2Eap0HiMmrWr_s Cdbgsignalsnapshotnode2Eap0HiWr;
+    ClaCdbgsignalsnapshotnode2Eap1HiMmrWr_s Cdbgsignalsnapshotnode2Eap1HiWr;
+    ClaCdbgsignalsnapshotnode3Eap0HiMmrWr_s Cdbgsignalsnapshotnode3Eap0HiWr;
+    ClaCdbgsignalsnapshotnode3Eap1HiMmrWr_s Cdbgsignalsnapshotnode3Eap1HiWr;
+    ClaCdbgsignalsnapshotnode0Eap2HiMmrWr_s Cdbgsignalsnapshotnode0Eap2HiWr;
+    ClaCdbgsignalsnapshotnode0Eap3HiMmrWr_s Cdbgsignalsnapshotnode0Eap3HiWr;
+    ClaCdbgsignalsnapshotnode1Eap2HiMmrWr_s Cdbgsignalsnapshotnode1Eap2HiWr;
+    ClaCdbgsignalsnapshotnode1Eap3HiMmrWr_s Cdbgsignalsnapshotnode1Eap3HiWr;
+    ClaCdbgsignalsnapshotnode2Eap2HiMmrWr_s Cdbgsignalsnapshotnode2Eap2HiWr;
+    ClaCdbgsignalsnapshotnode2Eap3HiMmrWr_s Cdbgsignalsnapshotnode2Eap3HiWr;
+    ClaCdbgsignalsnapshotnode3Eap2HiMmrWr_s Cdbgsignalsnapshotnode3Eap2HiWr;
+    ClaCdbgsignalsnapshotnode3Eap3HiMmrWr_s Cdbgsignalsnapshotnode3Eap3HiWr;
+    ClaCdbglfsrMmrWr_s    CdbglfsrWr;
+    ClaCdbgtimestampcaptureMmrWr_s CdbgtimestampcaptureWr;
+} ClaMmrsWr_s;
+
+function automatic ClaCdbgclacounter0CfgMmrUnpack_s unpack_ClaCdbgclacounter0CfgMmr;
+input ClaCdbgclacounter0CfgMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclacounter0CfgMmr = '0;
+    unpack_ClaCdbgclacounter0CfgMmr.Counter = packed_mmr.Counter;
+    unpack_ClaCdbgclacounter0CfgMmr.Target = packed_mmr.Target;
+    unpack_ClaCdbgclacounter0CfgMmr.ResetOnTarget = packed_mmr.ResetOnTarget;
+    unpack_ClaCdbgclacounter0CfgMmr.UpperCounter = packed_mmr.UpperCounter;
+    unpack_ClaCdbgclacounter0CfgMmr.UpperTarget = packed_mmr.UpperTarget;
+    unpack_ClaCdbgclacounter0CfgMmr.Rsvd = packed_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclacounter1CfgMmrUnpack_s unpack_ClaCdbgclacounter1CfgMmr;
+input ClaCdbgclacounter1CfgMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclacounter1CfgMmr = '0;
+    unpack_ClaCdbgclacounter1CfgMmr.Counter = packed_mmr.Counter;
+    unpack_ClaCdbgclacounter1CfgMmr.Target = packed_mmr.Target;
+    unpack_ClaCdbgclacounter1CfgMmr.ResetOnTarget = packed_mmr.ResetOnTarget;
+    unpack_ClaCdbgclacounter1CfgMmr.UpperCounter = packed_mmr.UpperCounter;
+    unpack_ClaCdbgclacounter1CfgMmr.UpperTarget = packed_mmr.UpperTarget;
+    unpack_ClaCdbgclacounter1CfgMmr.Rsvd = packed_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclacounter2CfgMmrUnpack_s unpack_ClaCdbgclacounter2CfgMmr;
+input ClaCdbgclacounter2CfgMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclacounter2CfgMmr = '0;
+    unpack_ClaCdbgclacounter2CfgMmr.Counter = packed_mmr.Counter;
+    unpack_ClaCdbgclacounter2CfgMmr.Target = packed_mmr.Target;
+    unpack_ClaCdbgclacounter2CfgMmr.ResetOnTarget = packed_mmr.ResetOnTarget;
+    unpack_ClaCdbgclacounter2CfgMmr.UpperCounter = packed_mmr.UpperCounter;
+    unpack_ClaCdbgclacounter2CfgMmr.UpperTarget = packed_mmr.UpperTarget;
+    unpack_ClaCdbgclacounter2CfgMmr.Rsvd = packed_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclacounter3CfgMmrUnpack_s unpack_ClaCdbgclacounter3CfgMmr;
+input ClaCdbgclacounter3CfgMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclacounter3CfgMmr = '0;
+    unpack_ClaCdbgclacounter3CfgMmr.Counter = packed_mmr.Counter;
+    unpack_ClaCdbgclacounter3CfgMmr.Target = packed_mmr.Target;
+    unpack_ClaCdbgclacounter3CfgMmr.ResetOnTarget = packed_mmr.ResetOnTarget;
+    unpack_ClaCdbgclacounter3CfgMmr.UpperCounter = packed_mmr.UpperCounter;
+    unpack_ClaCdbgclacounter3CfgMmr.UpperTarget = packed_mmr.UpperTarget;
+    unpack_ClaCdbgclacounter3CfgMmr.Rsvd = packed_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap0MmrUnpack_s unpack_ClaCdbgnode0Eap0Mmr;
+input ClaCdbgnode0Eap0Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode0Eap0Mmr = '0;
+    unpack_ClaCdbgnode0Eap0Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode0Eap0Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode0Eap0Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode0Eap0Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode0Eap0Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode0Eap0Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode0Eap0Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode0Eap0Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode0Eap0Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode0Eap0Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode0Eap0Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode0Eap0Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode0Eap0Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode0Eap0Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap1MmrUnpack_s unpack_ClaCdbgnode0Eap1Mmr;
+input ClaCdbgnode0Eap1Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode0Eap1Mmr = '0;
+    unpack_ClaCdbgnode0Eap1Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode0Eap1Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode0Eap1Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode0Eap1Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode0Eap1Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode0Eap1Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode0Eap1Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode0Eap1Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode0Eap1Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode0Eap1Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode0Eap1Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode0Eap1Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode0Eap1Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode0Eap1Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap0MmrUnpack_s unpack_ClaCdbgnode1Eap0Mmr;
+input ClaCdbgnode1Eap0Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode1Eap0Mmr = '0;
+    unpack_ClaCdbgnode1Eap0Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode1Eap0Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode1Eap0Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode1Eap0Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode1Eap0Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode1Eap0Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode1Eap0Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode1Eap0Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode1Eap0Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode1Eap0Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode1Eap0Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode1Eap0Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode1Eap0Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode1Eap0Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap1MmrUnpack_s unpack_ClaCdbgnode1Eap1Mmr;
+input ClaCdbgnode1Eap1Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode1Eap1Mmr = '0;
+    unpack_ClaCdbgnode1Eap1Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode1Eap1Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode1Eap1Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode1Eap1Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode1Eap1Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode1Eap1Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode1Eap1Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode1Eap1Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode1Eap1Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode1Eap1Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode1Eap1Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode1Eap1Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode1Eap1Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode1Eap1Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap0MmrUnpack_s unpack_ClaCdbgnode2Eap0Mmr;
+input ClaCdbgnode2Eap0Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode2Eap0Mmr = '0;
+    unpack_ClaCdbgnode2Eap0Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode2Eap0Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode2Eap0Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode2Eap0Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode2Eap0Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode2Eap0Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode2Eap0Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode2Eap0Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode2Eap0Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode2Eap0Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode2Eap0Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode2Eap0Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode2Eap0Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode2Eap0Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap1MmrUnpack_s unpack_ClaCdbgnode2Eap1Mmr;
+input ClaCdbgnode2Eap1Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode2Eap1Mmr = '0;
+    unpack_ClaCdbgnode2Eap1Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode2Eap1Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode2Eap1Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode2Eap1Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode2Eap1Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode2Eap1Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode2Eap1Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode2Eap1Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode2Eap1Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode2Eap1Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode2Eap1Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode2Eap1Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode2Eap1Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode2Eap1Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap0MmrUnpack_s unpack_ClaCdbgnode3Eap0Mmr;
+input ClaCdbgnode3Eap0Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode3Eap0Mmr = '0;
+    unpack_ClaCdbgnode3Eap0Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode3Eap0Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode3Eap0Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode3Eap0Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode3Eap0Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode3Eap0Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode3Eap0Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode3Eap0Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode3Eap0Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode3Eap0Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode3Eap0Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode3Eap0Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode3Eap0Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode3Eap0Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap1MmrUnpack_s unpack_ClaCdbgnode3Eap1Mmr;
+input ClaCdbgnode3Eap1Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode3Eap1Mmr = '0;
+    unpack_ClaCdbgnode3Eap1Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode3Eap1Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode3Eap1Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode3Eap1Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode3Eap1Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode3Eap1Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode3Eap1Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode3Eap1Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode3Eap1Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode3Eap1Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode3Eap1Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode3Eap1Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode3Eap1Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode3Eap1Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask0LoMmrUnpack_s unpack_ClaCdbgsignalmask0LoMmr;
+input ClaCdbgsignalmask0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask0LoMmr = '0;
+    unpack_ClaCdbgsignalmask0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch0LoMmrUnpack_s unpack_ClaCdbgsignalmatch0LoMmr;
+input ClaCdbgsignalmatch0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch0LoMmr = '0;
+    unpack_ClaCdbgsignalmatch0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask1LoMmrUnpack_s unpack_ClaCdbgsignalmask1LoMmr;
+input ClaCdbgsignalmask1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask1LoMmr = '0;
+    unpack_ClaCdbgsignalmask1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch1LoMmrUnpack_s unpack_ClaCdbgsignalmatch1LoMmr;
+input ClaCdbgsignalmatch1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch1LoMmr = '0;
+    unpack_ClaCdbgsignalmatch1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignaledgedetectcfgMmrUnpack_s unpack_ClaCdbgsignaledgedetectcfgMmr;
+input ClaCdbgsignaledgedetectcfgMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignaledgedetectcfgMmr = '0;
+    unpack_ClaCdbgsignaledgedetectcfgMmr.Signal0Select = packed_mmr.Signal0Select;
+    unpack_ClaCdbgsignaledgedetectcfgMmr.PosEdgeSignal0 = packed_mmr.PosEdgeSignal0;
+    unpack_ClaCdbgsignaledgedetectcfgMmr.Signal1Select = packed_mmr.Signal1Select;
+    unpack_ClaCdbgsignaledgedetectcfgMmr.PosEdgeSignal1 = packed_mmr.PosEdgeSignal1;
+end
+endfunction
+
+function automatic ClaCdbgeapstatusMmrUnpack_s unpack_ClaCdbgeapstatusMmr;
+input ClaCdbgeapstatusMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgeapstatusMmr = '0;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap0 = packed_mmr.Node0Eap0;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap1 = packed_mmr.Node0Eap1;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap2 = packed_mmr.Node0Eap2;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap3 = packed_mmr.Node0Eap3;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap0 = packed_mmr.Node1Eap0;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap1 = packed_mmr.Node1Eap1;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap2 = packed_mmr.Node1Eap2;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap3 = packed_mmr.Node1Eap3;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap0 = packed_mmr.Node2Eap0;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap1 = packed_mmr.Node2Eap1;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap2 = packed_mmr.Node2Eap2;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap3 = packed_mmr.Node2Eap3;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap0 = packed_mmr.Node3Eap0;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap1 = packed_mmr.Node3Eap1;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap2 = packed_mmr.Node3Eap2;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap3 = packed_mmr.Node3Eap3;
+    unpack_ClaCdbgeapstatusMmr.Rsvd3116 = packed_mmr.Rsvd3116;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap0W2C = packed_mmr.Node0Eap0W2C;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap1W2C = packed_mmr.Node0Eap1W2C;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap2W2C = packed_mmr.Node0Eap2W2C;
+    unpack_ClaCdbgeapstatusMmr.Node0Eap3W2C = packed_mmr.Node0Eap3W2C;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap0W2C = packed_mmr.Node1Eap0W2C;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap1W2C = packed_mmr.Node1Eap1W2C;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap2W2C = packed_mmr.Node1Eap2W2C;
+    unpack_ClaCdbgeapstatusMmr.Node1Eap3W2C = packed_mmr.Node1Eap3W2C;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap0W2C = packed_mmr.Node2Eap0W2C;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap1W2C = packed_mmr.Node2Eap1W2C;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap2W2C = packed_mmr.Node2Eap2W2C;
+    unpack_ClaCdbgeapstatusMmr.Node2Eap3W2C = packed_mmr.Node2Eap3W2C;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap0W2C = packed_mmr.Node3Eap0W2C;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap1W2C = packed_mmr.Node3Eap1W2C;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap2W2C = packed_mmr.Node3Eap2W2C;
+    unpack_ClaCdbgeapstatusMmr.Node3Eap3W2C = packed_mmr.Node3Eap3W2C;
+end
+endfunction
+
+function automatic ClaCdbgclactrlstatusMmrUnpack_s unpack_ClaCdbgclactrlstatusMmr;
+input ClaCdbgclactrlstatusMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclactrlstatusMmr = '0;
+    unpack_ClaCdbgclactrlstatusMmr.CurrentNode = packed_mmr.CurrentNode;
+    unpack_ClaCdbgclactrlstatusMmr.EnableEap = packed_mmr.EnableEap;
+    unpack_ClaCdbgclactrlstatusMmr.EnableCla = packed_mmr.EnableCla;
+    unpack_ClaCdbgclactrlstatusMmr.ClaChainLoopDelay = packed_mmr.ClaChainLoopDelay;
+    unpack_ClaCdbgclactrlstatusMmr.DisableGlobalClockHalt = packed_mmr.DisableGlobalClockHalt;
+    unpack_ClaCdbgclactrlstatusMmr.DisableLocalClockHalt = packed_mmr.DisableLocalClockHalt;
+    unpack_ClaCdbgclactrlstatusMmr.Rsvd6216 = packed_mmr.Rsvd6216;
+    unpack_ClaCdbgclactrlstatusMmr.ClaLock = packed_mmr.ClaLock;
+end
+endfunction
+
+function automatic ClaCdbgmuxselloMmrUnpack_s unpack_ClaCdbgmuxselloMmr;
+input ClaCdbgmuxselloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgmuxselloMmr = '0;
+    unpack_ClaCdbgmuxselloMmr.Dbmmode = packed_mmr.Dbmmode;
+    unpack_ClaCdbgmuxselloMmr.Dbmid = packed_mmr.Dbmid;
+    unpack_ClaCdbgmuxselloMmr.Finegraintime = packed_mmr.Finegraintime;
+    unpack_ClaCdbgmuxselloMmr.Valid = packed_mmr.Valid;
+    unpack_ClaCdbgmuxselloMmr.Rsvd1510 = packed_mmr.Rsvd1510;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg0 = packed_mmr.Muxselseg0;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg1 = packed_mmr.Muxselseg1;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg2 = packed_mmr.Muxselseg2;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg3 = packed_mmr.Muxselseg3;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg4 = packed_mmr.Muxselseg4;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg5 = packed_mmr.Muxselseg5;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg6 = packed_mmr.Muxselseg6;
+    unpack_ClaCdbgmuxselloMmr.Muxselseg7 = packed_mmr.Muxselseg7;
+end
+endfunction
+
+function automatic ClaCdbgrsvd1MmrUnpack_s unpack_ClaCdbgrsvd1Mmr;
+input ClaCdbgrsvd1Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgrsvd1Mmr = '0;
+    unpack_ClaCdbgrsvd1Mmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgrsvd2MmrUnpack_s unpack_ClaCdbgrsvd2Mmr;
+input ClaCdbgrsvd2Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgrsvd2Mmr = '0;
+    unpack_ClaCdbgrsvd2Mmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitionmaskloMmrUnpack_s unpack_ClaCdbgtransitionmaskloMmr;
+input ClaCdbgtransitionmaskloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtransitionmaskloMmr = '0;
+    unpack_ClaCdbgtransitionmaskloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitionfromvalueloMmrUnpack_s unpack_ClaCdbgtransitionfromvalueloMmr;
+input ClaCdbgtransitionfromvalueloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtransitionfromvalueloMmr = '0;
+    unpack_ClaCdbgtransitionfromvalueloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitiontovalueloMmrUnpack_s unpack_ClaCdbgtransitiontovalueloMmr;
+input ClaCdbgtransitiontovalueloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtransitiontovalueloMmr = '0;
+    unpack_ClaCdbgtransitiontovalueloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgonescountmaskloMmrUnpack_s unpack_ClaCdbgonescountmaskloMmr;
+input ClaCdbgonescountmaskloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgonescountmaskloMmr = '0;
+    unpack_ClaCdbgonescountmaskloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgonescountvalueMmrUnpack_s unpack_ClaCdbgonescountvalueMmr;
+input ClaCdbgonescountvalueMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgonescountvalueMmr = '0;
+    unpack_ClaCdbgonescountvalueMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbganychangeloMmrUnpack_s unpack_ClaCdbganychangeloMmr;
+input ClaCdbganychangeloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbganychangeloMmr = '0;
+    unpack_ClaCdbganychangeloMmr.Mask = packed_mmr.Mask;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap0LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap0LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap1LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap1LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap0LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap0LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap1LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap1LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap0LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap0LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap1LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap1LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap0LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap0LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap1LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap1LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgclatimematchMmrUnpack_s unpack_ClaCdbgclatimematchMmr;
+input ClaCdbgclatimematchMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclatimematchMmr = '0;
+    unpack_ClaCdbgclatimematchMmr.TimeMatchVal = packed_mmr.TimeMatchVal;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask2LoMmrUnpack_s unpack_ClaCdbgsignalmask2LoMmr;
+input ClaCdbgsignalmask2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask2LoMmr = '0;
+    unpack_ClaCdbgsignalmask2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch2LoMmrUnpack_s unpack_ClaCdbgsignalmatch2LoMmr;
+input ClaCdbgsignalmatch2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch2LoMmr = '0;
+    unpack_ClaCdbgsignalmatch2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask3LoMmrUnpack_s unpack_ClaCdbgsignalmask3LoMmr;
+input ClaCdbgsignalmask3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask3LoMmr = '0;
+    unpack_ClaCdbgsignalmask3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch3LoMmrUnpack_s unpack_ClaCdbgsignalmatch3LoMmr;
+input ClaCdbgsignalmatch3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch3LoMmr = '0;
+    unpack_ClaCdbgsignalmatch3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap2MmrUnpack_s unpack_ClaCdbgnode0Eap2Mmr;
+input ClaCdbgnode0Eap2Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode0Eap2Mmr = '0;
+    unpack_ClaCdbgnode0Eap2Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode0Eap2Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode0Eap2Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode0Eap2Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode0Eap2Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode0Eap2Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode0Eap2Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode0Eap2Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode0Eap2Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode0Eap2Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode0Eap2Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode0Eap2Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode0Eap2Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode0Eap2Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap3MmrUnpack_s unpack_ClaCdbgnode0Eap3Mmr;
+input ClaCdbgnode0Eap3Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode0Eap3Mmr = '0;
+    unpack_ClaCdbgnode0Eap3Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode0Eap3Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode0Eap3Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode0Eap3Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode0Eap3Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode0Eap3Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode0Eap3Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode0Eap3Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode0Eap3Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode0Eap3Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode0Eap3Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode0Eap3Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode0Eap3Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode0Eap3Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap2MmrUnpack_s unpack_ClaCdbgnode1Eap2Mmr;
+input ClaCdbgnode1Eap2Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode1Eap2Mmr = '0;
+    unpack_ClaCdbgnode1Eap2Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode1Eap2Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode1Eap2Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode1Eap2Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode1Eap2Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode1Eap2Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode1Eap2Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode1Eap2Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode1Eap2Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode1Eap2Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode1Eap2Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode1Eap2Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode1Eap2Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode1Eap2Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap3MmrUnpack_s unpack_ClaCdbgnode1Eap3Mmr;
+input ClaCdbgnode1Eap3Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode1Eap3Mmr = '0;
+    unpack_ClaCdbgnode1Eap3Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode1Eap3Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode1Eap3Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode1Eap3Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode1Eap3Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode1Eap3Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode1Eap3Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode1Eap3Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode1Eap3Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode1Eap3Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode1Eap3Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode1Eap3Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode1Eap3Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode1Eap3Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap2MmrUnpack_s unpack_ClaCdbgnode2Eap2Mmr;
+input ClaCdbgnode2Eap2Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode2Eap2Mmr = '0;
+    unpack_ClaCdbgnode2Eap2Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode2Eap2Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode2Eap2Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode2Eap2Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode2Eap2Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode2Eap2Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode2Eap2Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode2Eap2Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode2Eap2Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode2Eap2Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode2Eap2Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode2Eap2Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode2Eap2Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode2Eap2Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap3MmrUnpack_s unpack_ClaCdbgnode2Eap3Mmr;
+input ClaCdbgnode2Eap3Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode2Eap3Mmr = '0;
+    unpack_ClaCdbgnode2Eap3Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode2Eap3Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode2Eap3Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode2Eap3Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode2Eap3Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode2Eap3Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode2Eap3Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode2Eap3Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode2Eap3Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode2Eap3Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode2Eap3Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode2Eap3Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode2Eap3Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode2Eap3Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap2MmrUnpack_s unpack_ClaCdbgnode3Eap2Mmr;
+input ClaCdbgnode3Eap2Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode3Eap2Mmr = '0;
+    unpack_ClaCdbgnode3Eap2Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode3Eap2Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode3Eap2Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode3Eap2Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode3Eap2Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode3Eap2Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode3Eap2Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode3Eap2Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode3Eap2Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode3Eap2Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode3Eap2Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode3Eap2Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode3Eap2Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode3Eap2Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap3MmrUnpack_s unpack_ClaCdbgnode3Eap3Mmr;
+input ClaCdbgnode3Eap3Mmr_s packed_mmr;
+begin
+    unpack_ClaCdbgnode3Eap3Mmr = '0;
+    unpack_ClaCdbgnode3Eap3Mmr.DestNode = packed_mmr.DestNode;
+    unpack_ClaCdbgnode3Eap3Mmr.Action0 = packed_mmr.Action0;
+    unpack_ClaCdbgnode3Eap3Mmr.Action1 = packed_mmr.Action1;
+    unpack_ClaCdbgnode3Eap3Mmr.LogicalOp = packed_mmr.LogicalOp;
+    unpack_ClaCdbgnode3Eap3Mmr.EventType0 = packed_mmr.EventType0;
+    unpack_ClaCdbgnode3Eap3Mmr.EventType1 = packed_mmr.EventType1;
+    unpack_ClaCdbgnode3Eap3Mmr.CustomAction0 = packed_mmr.CustomAction0;
+    unpack_ClaCdbgnode3Eap3Mmr.CustomAction1 = packed_mmr.CustomAction1;
+    unpack_ClaCdbgnode3Eap3Mmr.CustomAction0Enable = packed_mmr.CustomAction0Enable;
+    unpack_ClaCdbgnode3Eap3Mmr.CustomAction1Enable = packed_mmr.CustomAction1Enable;
+    unpack_ClaCdbgnode3Eap3Mmr.EventType2 = packed_mmr.EventType2;
+    unpack_ClaCdbgnode3Eap3Mmr.Udf = packed_mmr.Udf;
+    unpack_ClaCdbgnode3Eap3Mmr.Action2 = packed_mmr.Action2;
+    unpack_ClaCdbgnode3Eap3Mmr.Action3 = packed_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap2LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap2LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap3LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap3LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap2LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap2LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap3LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap3LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap2LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap2LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap3LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap3LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap2LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap2LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap3LoMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap3LoMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignaldelaymuxselMmrUnpack_s unpack_ClaCdbgsignaldelaymuxselMmr;
+input ClaCdbgsignaldelaymuxselMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignaldelaymuxselMmr = '0;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg0 = packed_mmr.Muxselseg0;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg1 = packed_mmr.Muxselseg1;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg2 = packed_mmr.Muxselseg2;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg3 = packed_mmr.Muxselseg3;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg4 = packed_mmr.Muxselseg4;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg5 = packed_mmr.Muxselseg5;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg6 = packed_mmr.Muxselseg6;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg7 = packed_mmr.Muxselseg7;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg8 = packed_mmr.Muxselseg8;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg9 = packed_mmr.Muxselseg9;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg10 = packed_mmr.Muxselseg10;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg11 = packed_mmr.Muxselseg11;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg12 = packed_mmr.Muxselseg12;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg13 = packed_mmr.Muxselseg13;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg14 = packed_mmr.Muxselseg14;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Muxselseg15 = packed_mmr.Muxselseg15;
+    unpack_ClaCdbgsignaldelaymuxselMmr.Rsvd = packed_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclaxtriggertimestretchMmrUnpack_s unpack_ClaCdbgclaxtriggertimestretchMmr;
+input ClaCdbgclaxtriggertimestretchMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclaxtriggertimestretchMmr = '0;
+    unpack_ClaCdbgclaxtriggertimestretchMmr.Xtrigger0Stretch = packed_mmr.Xtrigger0Stretch;
+    unpack_ClaCdbgclaxtriggertimestretchMmr.Xtrigger1Stretch = packed_mmr.Xtrigger1Stretch;
+    unpack_ClaCdbgclaxtriggertimestretchMmr.Rsvd = packed_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampMmrUnpack_s unpack_ClaCdbgclatimestampMmr;
+input ClaCdbgclatimestampMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclatimestampMmr = '0;
+    unpack_ClaCdbgclatimestampMmr.TimestampLower = packed_mmr.TimestampLower;
+    unpack_ClaCdbgclatimestampMmr.TimestampUpper = packed_mmr.TimestampUpper;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampsyncMmrUnpack_s unpack_ClaCdbgclatimestampsyncMmr;
+input ClaCdbgclatimestampsyncMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclatimestampsyncMmr = '0;
+    unpack_ClaCdbgclatimestampsyncMmr.TimestampSync = packed_mmr.TimestampSync;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampconfigMmrUnpack_s unpack_ClaCdbgclatimestampconfigMmr;
+input ClaCdbgclatimestampconfigMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclatimestampconfigMmr = '0;
+    unpack_ClaCdbgclatimestampconfigMmr.Resync = packed_mmr.Resync;
+    unpack_ClaCdbgclatimestampconfigMmr.DebugMarker = packed_mmr.DebugMarker;
+    unpack_ClaCdbgclatimestampconfigMmr.TsCapture = packed_mmr.TsCapture;
+    unpack_ClaCdbgclatimestampconfigMmr.Rsvd1 = packed_mmr.Rsvd1;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampoffsetMmrUnpack_s unpack_ClaCdbgclatimestampoffsetMmr;
+input ClaCdbgclatimestampoffsetMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgclatimestampoffsetMmr = '0;
+    unpack_ClaCdbgclatimestampoffsetMmr.Offset = packed_mmr.Offset;
+    unpack_ClaCdbgclatimestampoffsetMmr.Rsvd0 = packed_mmr.Rsvd0;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask0HiMmrUnpack_s unpack_ClaCdbgsignalmask0HiMmr;
+input ClaCdbgsignalmask0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask0HiMmr = '0;
+    unpack_ClaCdbgsignalmask0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch0HiMmrUnpack_s unpack_ClaCdbgsignalmatch0HiMmr;
+input ClaCdbgsignalmatch0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch0HiMmr = '0;
+    unpack_ClaCdbgsignalmatch0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask1HiMmrUnpack_s unpack_ClaCdbgsignalmask1HiMmr;
+input ClaCdbgsignalmask1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask1HiMmr = '0;
+    unpack_ClaCdbgsignalmask1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch1HiMmrUnpack_s unpack_ClaCdbgsignalmatch1HiMmr;
+input ClaCdbgsignalmatch1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch1HiMmr = '0;
+    unpack_ClaCdbgsignalmatch1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask2HiMmrUnpack_s unpack_ClaCdbgsignalmask2HiMmr;
+input ClaCdbgsignalmask2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask2HiMmr = '0;
+    unpack_ClaCdbgsignalmask2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch2HiMmrUnpack_s unpack_ClaCdbgsignalmatch2HiMmr;
+input ClaCdbgsignalmatch2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch2HiMmr = '0;
+    unpack_ClaCdbgsignalmatch2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask3HiMmrUnpack_s unpack_ClaCdbgsignalmask3HiMmr;
+input ClaCdbgsignalmask3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmask3HiMmr = '0;
+    unpack_ClaCdbgsignalmask3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch3HiMmrUnpack_s unpack_ClaCdbgsignalmatch3HiMmr;
+input ClaCdbgsignalmatch3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalmatch3HiMmr = '0;
+    unpack_ClaCdbgsignalmatch3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgmuxselhiMmrUnpack_s unpack_ClaCdbgmuxselhiMmr;
+input ClaCdbgmuxselhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgmuxselhiMmr = '0;
+    unpack_ClaCdbgmuxselhiMmr.Rsvd150 = packed_mmr.Rsvd150;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg8 = packed_mmr.Muxselseg8;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg9 = packed_mmr.Muxselseg9;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg10 = packed_mmr.Muxselseg10;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg11 = packed_mmr.Muxselseg11;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg12 = packed_mmr.Muxselseg12;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg13 = packed_mmr.Muxselseg13;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg14 = packed_mmr.Muxselseg14;
+    unpack_ClaCdbgmuxselhiMmr.Muxselseg15 = packed_mmr.Muxselseg15;
+end
+endfunction
+
+function automatic ClaCdbgtransitionmaskhiMmrUnpack_s unpack_ClaCdbgtransitionmaskhiMmr;
+input ClaCdbgtransitionmaskhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtransitionmaskhiMmr = '0;
+    unpack_ClaCdbgtransitionmaskhiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitionfromvaluehiMmrUnpack_s unpack_ClaCdbgtransitionfromvaluehiMmr;
+input ClaCdbgtransitionfromvaluehiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtransitionfromvaluehiMmr = '0;
+    unpack_ClaCdbgtransitionfromvaluehiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitiontovaluehiMmrUnpack_s unpack_ClaCdbgtransitiontovaluehiMmr;
+input ClaCdbgtransitiontovaluehiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtransitiontovaluehiMmr = '0;
+    unpack_ClaCdbgtransitiontovaluehiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgonescountmaskhiMmrUnpack_s unpack_ClaCdbgonescountmaskhiMmr;
+input ClaCdbgonescountmaskhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgonescountmaskhiMmr = '0;
+    unpack_ClaCdbgonescountmaskhiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbganychangehiMmrUnpack_s unpack_ClaCdbganychangehiMmr;
+input ClaCdbganychangehiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbganychangehiMmr = '0;
+    unpack_ClaCdbganychangehiMmr.Mask = packed_mmr.Mask;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap0HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap0HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap1HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap1HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap0HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap0HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap1HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap1HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap0HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap0HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap1HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap1HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap0HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap0HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap1HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap1HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap2HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap2HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap3HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode0Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode0Eap3HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode0Eap3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap2HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap2HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap3HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode1Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode1Eap3HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode1Eap3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap2HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap2HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap3HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode2Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode2Eap3HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode2Eap3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap2HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap2HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap3HiMmrUnpack_s unpack_ClaCdbgsignalsnapshotnode3Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgsignalsnapshotnode3Eap3HiMmr = '0;
+    unpack_ClaCdbgsignalsnapshotnode3Eap3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbglfsrMmrUnpack_s unpack_ClaCdbglfsrMmr;
+input ClaCdbglfsrMmr_s packed_mmr;
+begin
+    unpack_ClaCdbglfsrMmr = '0;
+    unpack_ClaCdbglfsrMmr.LfsrActive = packed_mmr.LfsrActive;
+    unpack_ClaCdbglfsrMmr.Lfsr = packed_mmr.Lfsr;
+end
+endfunction
+
+function automatic ClaCdbglfsrmaskMmrUnpack_s unpack_ClaCdbglfsrmaskMmr;
+input ClaCdbglfsrmaskMmr_s packed_mmr;
+begin
+    unpack_ClaCdbglfsrmaskMmr = '0;
+    unpack_ClaCdbglfsrmaskMmr.Rsvd0 = packed_mmr.Rsvd0;
+    unpack_ClaCdbglfsrmaskMmr.Mask = packed_mmr.Mask;
+end
+endfunction
+
+function automatic ClaCdbgtimestampcaptureMmrUnpack_s unpack_ClaCdbgtimestampcaptureMmr;
+input ClaCdbgtimestampcaptureMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgtimestampcaptureMmr = '0;
+    unpack_ClaCdbgtimestampcaptureMmr.Timestamp = packed_mmr.Timestamp;
+end
+endfunction
+
+function automatic ClaCdbgcompare0LoMmrUnpack_s unpack_ClaCdbgcompare0LoMmr;
+input ClaCdbgcompare0LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare0LoMmr = '0;
+    unpack_ClaCdbgcompare0LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare0MaskloMmrUnpack_s unpack_ClaCdbgcompare0MaskloMmr;
+input ClaCdbgcompare0MaskloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare0MaskloMmr = '0;
+    unpack_ClaCdbgcompare0MaskloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1LoMmrUnpack_s unpack_ClaCdbgcompare1LoMmr;
+input ClaCdbgcompare1LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare1LoMmr = '0;
+    unpack_ClaCdbgcompare1LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1MaskloMmrUnpack_s unpack_ClaCdbgcompare1MaskloMmr;
+input ClaCdbgcompare1MaskloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare1MaskloMmr = '0;
+    unpack_ClaCdbgcompare1MaskloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2LoMmrUnpack_s unpack_ClaCdbgcompare2LoMmr;
+input ClaCdbgcompare2LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare2LoMmr = '0;
+    unpack_ClaCdbgcompare2LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2MaskloMmrUnpack_s unpack_ClaCdbgcompare2MaskloMmr;
+input ClaCdbgcompare2MaskloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare2MaskloMmr = '0;
+    unpack_ClaCdbgcompare2MaskloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3LoMmrUnpack_s unpack_ClaCdbgcompare3LoMmr;
+input ClaCdbgcompare3LoMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare3LoMmr = '0;
+    unpack_ClaCdbgcompare3LoMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3MaskloMmrUnpack_s unpack_ClaCdbgcompare3MaskloMmr;
+input ClaCdbgcompare3MaskloMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare3MaskloMmr = '0;
+    unpack_ClaCdbgcompare3MaskloMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare0HiMmrUnpack_s unpack_ClaCdbgcompare0HiMmr;
+input ClaCdbgcompare0HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare0HiMmr = '0;
+    unpack_ClaCdbgcompare0HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare0MaskhiMmrUnpack_s unpack_ClaCdbgcompare0MaskhiMmr;
+input ClaCdbgcompare0MaskhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare0MaskhiMmr = '0;
+    unpack_ClaCdbgcompare0MaskhiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1HiMmrUnpack_s unpack_ClaCdbgcompare1HiMmr;
+input ClaCdbgcompare1HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare1HiMmr = '0;
+    unpack_ClaCdbgcompare1HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1MaskhiMmrUnpack_s unpack_ClaCdbgcompare1MaskhiMmr;
+input ClaCdbgcompare1MaskhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare1MaskhiMmr = '0;
+    unpack_ClaCdbgcompare1MaskhiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2HiMmrUnpack_s unpack_ClaCdbgcompare2HiMmr;
+input ClaCdbgcompare2HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare2HiMmr = '0;
+    unpack_ClaCdbgcompare2HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2MaskhiMmrUnpack_s unpack_ClaCdbgcompare2MaskhiMmr;
+input ClaCdbgcompare2MaskhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare2MaskhiMmr = '0;
+    unpack_ClaCdbgcompare2MaskhiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3HiMmrUnpack_s unpack_ClaCdbgcompare3HiMmr;
+input ClaCdbgcompare3HiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare3HiMmr = '0;
+    unpack_ClaCdbgcompare3HiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3MaskhiMmrUnpack_s unpack_ClaCdbgcompare3MaskhiMmr;
+input ClaCdbgcompare3MaskhiMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgcompare3MaskhiMmr = '0;
+    unpack_ClaCdbgcompare3MaskhiMmr.Value = packed_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgversionMmrUnpack_s unpack_ClaCdbgversionMmr;
+input ClaCdbgversionMmr_s packed_mmr;
+begin
+    unpack_ClaCdbgversionMmr = '0;
+    unpack_ClaCdbgversionMmr.Patch = packed_mmr.Patch;
+    unpack_ClaCdbgversionMmr.Minor = packed_mmr.Minor;
+    unpack_ClaCdbgversionMmr.Major = packed_mmr.Major;
+    unpack_ClaCdbgversionMmr.Rsvd6312 = packed_mmr.Rsvd6312;
+end
+endfunction
+
+function automatic ClaScratchMmrUnpack_s unpack_ClaScratchMmr;
+input ClaScratchMmr_s packed_mmr;
+begin
+    unpack_ClaScratchMmr = '0;
+    unpack_ClaScratchMmr.Data = packed_mmr.Data;
+end
+endfunction
+
+function automatic ClaCdbgclacounter0CfgMmr_s pack_ClaCdbgclacounter0CfgMmr;
+input ClaCdbgclacounter0CfgMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclacounter0CfgMmr.Counter = unpacked_mmr.Counter;
+    pack_ClaCdbgclacounter0CfgMmr.Target = unpacked_mmr.Target;
+    pack_ClaCdbgclacounter0CfgMmr.ResetOnTarget = unpacked_mmr.ResetOnTarget;
+    pack_ClaCdbgclacounter0CfgMmr.UpperCounter = unpacked_mmr.UpperCounter;
+    pack_ClaCdbgclacounter0CfgMmr.UpperTarget = unpacked_mmr.UpperTarget;
+    pack_ClaCdbgclacounter0CfgMmr.Rsvd = unpacked_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclacounter1CfgMmr_s pack_ClaCdbgclacounter1CfgMmr;
+input ClaCdbgclacounter1CfgMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclacounter1CfgMmr.Counter = unpacked_mmr.Counter;
+    pack_ClaCdbgclacounter1CfgMmr.Target = unpacked_mmr.Target;
+    pack_ClaCdbgclacounter1CfgMmr.ResetOnTarget = unpacked_mmr.ResetOnTarget;
+    pack_ClaCdbgclacounter1CfgMmr.UpperCounter = unpacked_mmr.UpperCounter;
+    pack_ClaCdbgclacounter1CfgMmr.UpperTarget = unpacked_mmr.UpperTarget;
+    pack_ClaCdbgclacounter1CfgMmr.Rsvd = unpacked_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclacounter2CfgMmr_s pack_ClaCdbgclacounter2CfgMmr;
+input ClaCdbgclacounter2CfgMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclacounter2CfgMmr.Counter = unpacked_mmr.Counter;
+    pack_ClaCdbgclacounter2CfgMmr.Target = unpacked_mmr.Target;
+    pack_ClaCdbgclacounter2CfgMmr.ResetOnTarget = unpacked_mmr.ResetOnTarget;
+    pack_ClaCdbgclacounter2CfgMmr.UpperCounter = unpacked_mmr.UpperCounter;
+    pack_ClaCdbgclacounter2CfgMmr.UpperTarget = unpacked_mmr.UpperTarget;
+    pack_ClaCdbgclacounter2CfgMmr.Rsvd = unpacked_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclacounter3CfgMmr_s pack_ClaCdbgclacounter3CfgMmr;
+input ClaCdbgclacounter3CfgMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclacounter3CfgMmr.Counter = unpacked_mmr.Counter;
+    pack_ClaCdbgclacounter3CfgMmr.Target = unpacked_mmr.Target;
+    pack_ClaCdbgclacounter3CfgMmr.ResetOnTarget = unpacked_mmr.ResetOnTarget;
+    pack_ClaCdbgclacounter3CfgMmr.UpperCounter = unpacked_mmr.UpperCounter;
+    pack_ClaCdbgclacounter3CfgMmr.UpperTarget = unpacked_mmr.UpperTarget;
+    pack_ClaCdbgclacounter3CfgMmr.Rsvd = unpacked_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap0Mmr_s pack_ClaCdbgnode0Eap0Mmr;
+input ClaCdbgnode0Eap0MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode0Eap0Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode0Eap0Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode0Eap0Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode0Eap0Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode0Eap0Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode0Eap0Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode0Eap0Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode0Eap0Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode0Eap0Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode0Eap0Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode0Eap0Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode0Eap0Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode0Eap0Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode0Eap0Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap1Mmr_s pack_ClaCdbgnode0Eap1Mmr;
+input ClaCdbgnode0Eap1MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode0Eap1Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode0Eap1Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode0Eap1Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode0Eap1Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode0Eap1Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode0Eap1Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode0Eap1Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode0Eap1Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode0Eap1Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode0Eap1Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode0Eap1Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode0Eap1Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode0Eap1Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode0Eap1Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap0Mmr_s pack_ClaCdbgnode1Eap0Mmr;
+input ClaCdbgnode1Eap0MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode1Eap0Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode1Eap0Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode1Eap0Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode1Eap0Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode1Eap0Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode1Eap0Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode1Eap0Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode1Eap0Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode1Eap0Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode1Eap0Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode1Eap0Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode1Eap0Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode1Eap0Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode1Eap0Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap1Mmr_s pack_ClaCdbgnode1Eap1Mmr;
+input ClaCdbgnode1Eap1MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode1Eap1Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode1Eap1Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode1Eap1Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode1Eap1Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode1Eap1Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode1Eap1Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode1Eap1Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode1Eap1Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode1Eap1Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode1Eap1Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode1Eap1Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode1Eap1Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode1Eap1Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode1Eap1Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap0Mmr_s pack_ClaCdbgnode2Eap0Mmr;
+input ClaCdbgnode2Eap0MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode2Eap0Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode2Eap0Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode2Eap0Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode2Eap0Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode2Eap0Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode2Eap0Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode2Eap0Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode2Eap0Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode2Eap0Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode2Eap0Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode2Eap0Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode2Eap0Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode2Eap0Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode2Eap0Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap1Mmr_s pack_ClaCdbgnode2Eap1Mmr;
+input ClaCdbgnode2Eap1MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode2Eap1Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode2Eap1Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode2Eap1Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode2Eap1Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode2Eap1Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode2Eap1Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode2Eap1Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode2Eap1Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode2Eap1Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode2Eap1Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode2Eap1Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode2Eap1Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode2Eap1Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode2Eap1Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap0Mmr_s pack_ClaCdbgnode3Eap0Mmr;
+input ClaCdbgnode3Eap0MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode3Eap0Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode3Eap0Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode3Eap0Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode3Eap0Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode3Eap0Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode3Eap0Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode3Eap0Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode3Eap0Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode3Eap0Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode3Eap0Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode3Eap0Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode3Eap0Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode3Eap0Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode3Eap0Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap1Mmr_s pack_ClaCdbgnode3Eap1Mmr;
+input ClaCdbgnode3Eap1MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode3Eap1Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode3Eap1Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode3Eap1Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode3Eap1Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode3Eap1Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode3Eap1Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode3Eap1Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode3Eap1Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode3Eap1Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode3Eap1Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode3Eap1Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode3Eap1Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode3Eap1Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode3Eap1Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask0LoMmr_s pack_ClaCdbgsignalmask0LoMmr;
+input ClaCdbgsignalmask0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch0LoMmr_s pack_ClaCdbgsignalmatch0LoMmr;
+input ClaCdbgsignalmatch0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask1LoMmr_s pack_ClaCdbgsignalmask1LoMmr;
+input ClaCdbgsignalmask1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch1LoMmr_s pack_ClaCdbgsignalmatch1LoMmr;
+input ClaCdbgsignalmatch1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignaledgedetectcfgMmr_s pack_ClaCdbgsignaledgedetectcfgMmr;
+input ClaCdbgsignaledgedetectcfgMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignaledgedetectcfgMmr.Signal0Select = unpacked_mmr.Signal0Select;
+    pack_ClaCdbgsignaledgedetectcfgMmr.PosEdgeSignal0 = unpacked_mmr.PosEdgeSignal0;
+    pack_ClaCdbgsignaledgedetectcfgMmr.Signal1Select = unpacked_mmr.Signal1Select;
+    pack_ClaCdbgsignaledgedetectcfgMmr.PosEdgeSignal1 = unpacked_mmr.PosEdgeSignal1;
+end
+endfunction
+
+function automatic ClaCdbgeapstatusMmr_s pack_ClaCdbgeapstatusMmr;
+input ClaCdbgeapstatusMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgeapstatusMmr.Node0Eap0 = unpacked_mmr.Node0Eap0;
+    pack_ClaCdbgeapstatusMmr.Node0Eap1 = unpacked_mmr.Node0Eap1;
+    pack_ClaCdbgeapstatusMmr.Node0Eap2 = unpacked_mmr.Node0Eap2;
+    pack_ClaCdbgeapstatusMmr.Node0Eap3 = unpacked_mmr.Node0Eap3;
+    pack_ClaCdbgeapstatusMmr.Node1Eap0 = unpacked_mmr.Node1Eap0;
+    pack_ClaCdbgeapstatusMmr.Node1Eap1 = unpacked_mmr.Node1Eap1;
+    pack_ClaCdbgeapstatusMmr.Node1Eap2 = unpacked_mmr.Node1Eap2;
+    pack_ClaCdbgeapstatusMmr.Node1Eap3 = unpacked_mmr.Node1Eap3;
+    pack_ClaCdbgeapstatusMmr.Node2Eap0 = unpacked_mmr.Node2Eap0;
+    pack_ClaCdbgeapstatusMmr.Node2Eap1 = unpacked_mmr.Node2Eap1;
+    pack_ClaCdbgeapstatusMmr.Node2Eap2 = unpacked_mmr.Node2Eap2;
+    pack_ClaCdbgeapstatusMmr.Node2Eap3 = unpacked_mmr.Node2Eap3;
+    pack_ClaCdbgeapstatusMmr.Node3Eap0 = unpacked_mmr.Node3Eap0;
+    pack_ClaCdbgeapstatusMmr.Node3Eap1 = unpacked_mmr.Node3Eap1;
+    pack_ClaCdbgeapstatusMmr.Node3Eap2 = unpacked_mmr.Node3Eap2;
+    pack_ClaCdbgeapstatusMmr.Node3Eap3 = unpacked_mmr.Node3Eap3;
+    pack_ClaCdbgeapstatusMmr.Rsvd3116 = unpacked_mmr.Rsvd3116;
+    pack_ClaCdbgeapstatusMmr.Node0Eap0W2C = unpacked_mmr.Node0Eap0W2C;
+    pack_ClaCdbgeapstatusMmr.Node0Eap1W2C = unpacked_mmr.Node0Eap1W2C;
+    pack_ClaCdbgeapstatusMmr.Node0Eap2W2C = unpacked_mmr.Node0Eap2W2C;
+    pack_ClaCdbgeapstatusMmr.Node0Eap3W2C = unpacked_mmr.Node0Eap3W2C;
+    pack_ClaCdbgeapstatusMmr.Node1Eap0W2C = unpacked_mmr.Node1Eap0W2C;
+    pack_ClaCdbgeapstatusMmr.Node1Eap1W2C = unpacked_mmr.Node1Eap1W2C;
+    pack_ClaCdbgeapstatusMmr.Node1Eap2W2C = unpacked_mmr.Node1Eap2W2C;
+    pack_ClaCdbgeapstatusMmr.Node1Eap3W2C = unpacked_mmr.Node1Eap3W2C;
+    pack_ClaCdbgeapstatusMmr.Node2Eap0W2C = unpacked_mmr.Node2Eap0W2C;
+    pack_ClaCdbgeapstatusMmr.Node2Eap1W2C = unpacked_mmr.Node2Eap1W2C;
+    pack_ClaCdbgeapstatusMmr.Node2Eap2W2C = unpacked_mmr.Node2Eap2W2C;
+    pack_ClaCdbgeapstatusMmr.Node2Eap3W2C = unpacked_mmr.Node2Eap3W2C;
+    pack_ClaCdbgeapstatusMmr.Node3Eap0W2C = unpacked_mmr.Node3Eap0W2C;
+    pack_ClaCdbgeapstatusMmr.Node3Eap1W2C = unpacked_mmr.Node3Eap1W2C;
+    pack_ClaCdbgeapstatusMmr.Node3Eap2W2C = unpacked_mmr.Node3Eap2W2C;
+    pack_ClaCdbgeapstatusMmr.Node3Eap3W2C = unpacked_mmr.Node3Eap3W2C;
+end
+endfunction
+
+function automatic ClaCdbgclactrlstatusMmr_s pack_ClaCdbgclactrlstatusMmr;
+input ClaCdbgclactrlstatusMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclactrlstatusMmr.CurrentNode = unpacked_mmr.CurrentNode;
+    pack_ClaCdbgclactrlstatusMmr.EnableEap = unpacked_mmr.EnableEap;
+    pack_ClaCdbgclactrlstatusMmr.EnableCla = unpacked_mmr.EnableCla;
+    pack_ClaCdbgclactrlstatusMmr.ClaChainLoopDelay = unpacked_mmr.ClaChainLoopDelay;
+    pack_ClaCdbgclactrlstatusMmr.DisableGlobalClockHalt = unpacked_mmr.DisableGlobalClockHalt;
+    pack_ClaCdbgclactrlstatusMmr.DisableLocalClockHalt = unpacked_mmr.DisableLocalClockHalt;
+    pack_ClaCdbgclactrlstatusMmr.Rsvd6216 = unpacked_mmr.Rsvd6216;
+    pack_ClaCdbgclactrlstatusMmr.ClaLock = unpacked_mmr.ClaLock;
+end
+endfunction
+
+function automatic ClaCdbgmuxselloMmr_s pack_ClaCdbgmuxselloMmr;
+input ClaCdbgmuxselloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgmuxselloMmr.Dbmmode = unpacked_mmr.Dbmmode;
+    pack_ClaCdbgmuxselloMmr.Dbmid = unpacked_mmr.Dbmid;
+    pack_ClaCdbgmuxselloMmr.Finegraintime = unpacked_mmr.Finegraintime;
+    pack_ClaCdbgmuxselloMmr.Valid = unpacked_mmr.Valid;
+    pack_ClaCdbgmuxselloMmr.Rsvd1510 = unpacked_mmr.Rsvd1510;
+    pack_ClaCdbgmuxselloMmr.Muxselseg0 = unpacked_mmr.Muxselseg0;
+    pack_ClaCdbgmuxselloMmr.Muxselseg1 = unpacked_mmr.Muxselseg1;
+    pack_ClaCdbgmuxselloMmr.Muxselseg2 = unpacked_mmr.Muxselseg2;
+    pack_ClaCdbgmuxselloMmr.Muxselseg3 = unpacked_mmr.Muxselseg3;
+    pack_ClaCdbgmuxselloMmr.Muxselseg4 = unpacked_mmr.Muxselseg4;
+    pack_ClaCdbgmuxselloMmr.Muxselseg5 = unpacked_mmr.Muxselseg5;
+    pack_ClaCdbgmuxselloMmr.Muxselseg6 = unpacked_mmr.Muxselseg6;
+    pack_ClaCdbgmuxselloMmr.Muxselseg7 = unpacked_mmr.Muxselseg7;
+end
+endfunction
+
+function automatic ClaCdbgrsvd1Mmr_s pack_ClaCdbgrsvd1Mmr;
+input ClaCdbgrsvd1MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgrsvd1Mmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgrsvd2Mmr_s pack_ClaCdbgrsvd2Mmr;
+input ClaCdbgrsvd2MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgrsvd2Mmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitionmaskloMmr_s pack_ClaCdbgtransitionmaskloMmr;
+input ClaCdbgtransitionmaskloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtransitionmaskloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitionfromvalueloMmr_s pack_ClaCdbgtransitionfromvalueloMmr;
+input ClaCdbgtransitionfromvalueloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtransitionfromvalueloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitiontovalueloMmr_s pack_ClaCdbgtransitiontovalueloMmr;
+input ClaCdbgtransitiontovalueloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtransitiontovalueloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgonescountmaskloMmr_s pack_ClaCdbgonescountmaskloMmr;
+input ClaCdbgonescountmaskloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgonescountmaskloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgonescountvalueMmr_s pack_ClaCdbgonescountvalueMmr;
+input ClaCdbgonescountvalueMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgonescountvalueMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbganychangeloMmr_s pack_ClaCdbganychangeloMmr;
+input ClaCdbganychangeloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbganychangeloMmr.Mask = unpacked_mmr.Mask;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap0LoMmr_s pack_ClaCdbgsignalsnapshotnode0Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap1LoMmr_s pack_ClaCdbgsignalsnapshotnode0Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap0LoMmr_s pack_ClaCdbgsignalsnapshotnode1Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap1LoMmr_s pack_ClaCdbgsignalsnapshotnode1Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap0LoMmr_s pack_ClaCdbgsignalsnapshotnode2Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap1LoMmr_s pack_ClaCdbgsignalsnapshotnode2Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap0LoMmr_s pack_ClaCdbgsignalsnapshotnode3Eap0LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap1LoMmr_s pack_ClaCdbgsignalsnapshotnode3Eap1LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgclatimematchMmr_s pack_ClaCdbgclatimematchMmr;
+input ClaCdbgclatimematchMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclatimematchMmr.TimeMatchVal = unpacked_mmr.TimeMatchVal;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask2LoMmr_s pack_ClaCdbgsignalmask2LoMmr;
+input ClaCdbgsignalmask2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch2LoMmr_s pack_ClaCdbgsignalmatch2LoMmr;
+input ClaCdbgsignalmatch2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask3LoMmr_s pack_ClaCdbgsignalmask3LoMmr;
+input ClaCdbgsignalmask3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch3LoMmr_s pack_ClaCdbgsignalmatch3LoMmr;
+input ClaCdbgsignalmatch3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap2Mmr_s pack_ClaCdbgnode0Eap2Mmr;
+input ClaCdbgnode0Eap2MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode0Eap2Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode0Eap2Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode0Eap2Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode0Eap2Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode0Eap2Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode0Eap2Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode0Eap2Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode0Eap2Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode0Eap2Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode0Eap2Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode0Eap2Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode0Eap2Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode0Eap2Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode0Eap2Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode0Eap3Mmr_s pack_ClaCdbgnode0Eap3Mmr;
+input ClaCdbgnode0Eap3MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode0Eap3Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode0Eap3Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode0Eap3Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode0Eap3Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode0Eap3Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode0Eap3Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode0Eap3Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode0Eap3Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode0Eap3Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode0Eap3Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode0Eap3Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode0Eap3Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode0Eap3Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode0Eap3Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap2Mmr_s pack_ClaCdbgnode1Eap2Mmr;
+input ClaCdbgnode1Eap2MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode1Eap2Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode1Eap2Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode1Eap2Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode1Eap2Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode1Eap2Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode1Eap2Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode1Eap2Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode1Eap2Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode1Eap2Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode1Eap2Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode1Eap2Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode1Eap2Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode1Eap2Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode1Eap2Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode1Eap3Mmr_s pack_ClaCdbgnode1Eap3Mmr;
+input ClaCdbgnode1Eap3MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode1Eap3Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode1Eap3Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode1Eap3Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode1Eap3Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode1Eap3Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode1Eap3Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode1Eap3Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode1Eap3Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode1Eap3Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode1Eap3Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode1Eap3Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode1Eap3Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode1Eap3Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode1Eap3Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap2Mmr_s pack_ClaCdbgnode2Eap2Mmr;
+input ClaCdbgnode2Eap2MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode2Eap2Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode2Eap2Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode2Eap2Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode2Eap2Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode2Eap2Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode2Eap2Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode2Eap2Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode2Eap2Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode2Eap2Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode2Eap2Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode2Eap2Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode2Eap2Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode2Eap2Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode2Eap2Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode2Eap3Mmr_s pack_ClaCdbgnode2Eap3Mmr;
+input ClaCdbgnode2Eap3MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode2Eap3Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode2Eap3Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode2Eap3Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode2Eap3Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode2Eap3Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode2Eap3Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode2Eap3Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode2Eap3Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode2Eap3Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode2Eap3Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode2Eap3Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode2Eap3Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode2Eap3Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode2Eap3Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap2Mmr_s pack_ClaCdbgnode3Eap2Mmr;
+input ClaCdbgnode3Eap2MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode3Eap2Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode3Eap2Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode3Eap2Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode3Eap2Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode3Eap2Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode3Eap2Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode3Eap2Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode3Eap2Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode3Eap2Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode3Eap2Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode3Eap2Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode3Eap2Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode3Eap2Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode3Eap2Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgnode3Eap3Mmr_s pack_ClaCdbgnode3Eap3Mmr;
+input ClaCdbgnode3Eap3MmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgnode3Eap3Mmr.DestNode = unpacked_mmr.DestNode;
+    pack_ClaCdbgnode3Eap3Mmr.Action0 = unpacked_mmr.Action0;
+    pack_ClaCdbgnode3Eap3Mmr.Action1 = unpacked_mmr.Action1;
+    pack_ClaCdbgnode3Eap3Mmr.LogicalOp = unpacked_mmr.LogicalOp;
+    pack_ClaCdbgnode3Eap3Mmr.EventType0 = unpacked_mmr.EventType0;
+    pack_ClaCdbgnode3Eap3Mmr.EventType1 = unpacked_mmr.EventType1;
+    pack_ClaCdbgnode3Eap3Mmr.CustomAction0 = unpacked_mmr.CustomAction0;
+    pack_ClaCdbgnode3Eap3Mmr.CustomAction1 = unpacked_mmr.CustomAction1;
+    pack_ClaCdbgnode3Eap3Mmr.CustomAction0Enable = unpacked_mmr.CustomAction0Enable;
+    pack_ClaCdbgnode3Eap3Mmr.CustomAction1Enable = unpacked_mmr.CustomAction1Enable;
+    pack_ClaCdbgnode3Eap3Mmr.EventType2 = unpacked_mmr.EventType2;
+    pack_ClaCdbgnode3Eap3Mmr.Udf = unpacked_mmr.Udf;
+    pack_ClaCdbgnode3Eap3Mmr.Action2 = unpacked_mmr.Action2;
+    pack_ClaCdbgnode3Eap3Mmr.Action3 = unpacked_mmr.Action3;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap2LoMmr_s pack_ClaCdbgsignalsnapshotnode0Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap3LoMmr_s pack_ClaCdbgsignalsnapshotnode0Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode0Eap3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap2LoMmr_s pack_ClaCdbgsignalsnapshotnode1Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap3LoMmr_s pack_ClaCdbgsignalsnapshotnode1Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode1Eap3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap2LoMmr_s pack_ClaCdbgsignalsnapshotnode2Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap3LoMmr_s pack_ClaCdbgsignalsnapshotnode2Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode2Eap3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap2LoMmr_s pack_ClaCdbgsignalsnapshotnode3Eap2LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap3LoMmr_s pack_ClaCdbgsignalsnapshotnode3Eap3LoMmr;
+input ClaCdbgsignalsnapshotnode3Eap3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignaldelaymuxselMmr_s pack_ClaCdbgsignaldelaymuxselMmr;
+input ClaCdbgsignaldelaymuxselMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg0 = unpacked_mmr.Muxselseg0;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg1 = unpacked_mmr.Muxselseg1;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg2 = unpacked_mmr.Muxselseg2;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg3 = unpacked_mmr.Muxselseg3;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg4 = unpacked_mmr.Muxselseg4;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg5 = unpacked_mmr.Muxselseg5;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg6 = unpacked_mmr.Muxselseg6;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg7 = unpacked_mmr.Muxselseg7;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg8 = unpacked_mmr.Muxselseg8;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg9 = unpacked_mmr.Muxselseg9;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg10 = unpacked_mmr.Muxselseg10;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg11 = unpacked_mmr.Muxselseg11;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg12 = unpacked_mmr.Muxselseg12;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg13 = unpacked_mmr.Muxselseg13;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg14 = unpacked_mmr.Muxselseg14;
+    pack_ClaCdbgsignaldelaymuxselMmr.Muxselseg15 = unpacked_mmr.Muxselseg15;
+    pack_ClaCdbgsignaldelaymuxselMmr.Rsvd = unpacked_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclaxtriggertimestretchMmr_s pack_ClaCdbgclaxtriggertimestretchMmr;
+input ClaCdbgclaxtriggertimestretchMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclaxtriggertimestretchMmr.Xtrigger0Stretch = unpacked_mmr.Xtrigger0Stretch;
+    pack_ClaCdbgclaxtriggertimestretchMmr.Xtrigger1Stretch = unpacked_mmr.Xtrigger1Stretch;
+    pack_ClaCdbgclaxtriggertimestretchMmr.Rsvd = unpacked_mmr.Rsvd;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampMmr_s pack_ClaCdbgclatimestampMmr;
+input ClaCdbgclatimestampMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclatimestampMmr.TimestampLower = unpacked_mmr.TimestampLower;
+    pack_ClaCdbgclatimestampMmr.TimestampUpper = unpacked_mmr.TimestampUpper;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampsyncMmr_s pack_ClaCdbgclatimestampsyncMmr;
+input ClaCdbgclatimestampsyncMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclatimestampsyncMmr.TimestampSync = unpacked_mmr.TimestampSync;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampconfigMmr_s pack_ClaCdbgclatimestampconfigMmr;
+input ClaCdbgclatimestampconfigMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclatimestampconfigMmr.Resync = unpacked_mmr.Resync;
+    pack_ClaCdbgclatimestampconfigMmr.DebugMarker = unpacked_mmr.DebugMarker;
+    pack_ClaCdbgclatimestampconfigMmr.TsCapture = unpacked_mmr.TsCapture;
+    pack_ClaCdbgclatimestampconfigMmr.Rsvd1 = unpacked_mmr.Rsvd1;
+end
+endfunction
+
+function automatic ClaCdbgclatimestampoffsetMmr_s pack_ClaCdbgclatimestampoffsetMmr;
+input ClaCdbgclatimestampoffsetMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgclatimestampoffsetMmr.Offset = unpacked_mmr.Offset;
+    pack_ClaCdbgclatimestampoffsetMmr.Rsvd0 = unpacked_mmr.Rsvd0;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask0HiMmr_s pack_ClaCdbgsignalmask0HiMmr;
+input ClaCdbgsignalmask0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch0HiMmr_s pack_ClaCdbgsignalmatch0HiMmr;
+input ClaCdbgsignalmatch0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask1HiMmr_s pack_ClaCdbgsignalmask1HiMmr;
+input ClaCdbgsignalmask1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch1HiMmr_s pack_ClaCdbgsignalmatch1HiMmr;
+input ClaCdbgsignalmatch1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask2HiMmr_s pack_ClaCdbgsignalmask2HiMmr;
+input ClaCdbgsignalmask2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch2HiMmr_s pack_ClaCdbgsignalmatch2HiMmr;
+input ClaCdbgsignalmatch2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmask3HiMmr_s pack_ClaCdbgsignalmask3HiMmr;
+input ClaCdbgsignalmask3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmask3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalmatch3HiMmr_s pack_ClaCdbgsignalmatch3HiMmr;
+input ClaCdbgsignalmatch3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalmatch3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgmuxselhiMmr_s pack_ClaCdbgmuxselhiMmr;
+input ClaCdbgmuxselhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgmuxselhiMmr.Rsvd150 = unpacked_mmr.Rsvd150;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg8 = unpacked_mmr.Muxselseg8;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg9 = unpacked_mmr.Muxselseg9;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg10 = unpacked_mmr.Muxselseg10;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg11 = unpacked_mmr.Muxselseg11;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg12 = unpacked_mmr.Muxselseg12;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg13 = unpacked_mmr.Muxselseg13;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg14 = unpacked_mmr.Muxselseg14;
+    pack_ClaCdbgmuxselhiMmr.Muxselseg15 = unpacked_mmr.Muxselseg15;
+end
+endfunction
+
+function automatic ClaCdbgtransitionmaskhiMmr_s pack_ClaCdbgtransitionmaskhiMmr;
+input ClaCdbgtransitionmaskhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtransitionmaskhiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitionfromvaluehiMmr_s pack_ClaCdbgtransitionfromvaluehiMmr;
+input ClaCdbgtransitionfromvaluehiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtransitionfromvaluehiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgtransitiontovaluehiMmr_s pack_ClaCdbgtransitiontovaluehiMmr;
+input ClaCdbgtransitiontovaluehiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtransitiontovaluehiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgonescountmaskhiMmr_s pack_ClaCdbgonescountmaskhiMmr;
+input ClaCdbgonescountmaskhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgonescountmaskhiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbganychangehiMmr_s pack_ClaCdbganychangehiMmr;
+input ClaCdbganychangehiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbganychangehiMmr.Mask = unpacked_mmr.Mask;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap0HiMmr_s pack_ClaCdbgsignalsnapshotnode0Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap1HiMmr_s pack_ClaCdbgsignalsnapshotnode0Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap0HiMmr_s pack_ClaCdbgsignalsnapshotnode1Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap1HiMmr_s pack_ClaCdbgsignalsnapshotnode1Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap0HiMmr_s pack_ClaCdbgsignalsnapshotnode2Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap1HiMmr_s pack_ClaCdbgsignalsnapshotnode2Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap0HiMmr_s pack_ClaCdbgsignalsnapshotnode3Eap0HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap1HiMmr_s pack_ClaCdbgsignalsnapshotnode3Eap1HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap2HiMmr_s pack_ClaCdbgsignalsnapshotnode0Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode0Eap3HiMmr_s pack_ClaCdbgsignalsnapshotnode0Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode0Eap3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode0Eap3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap2HiMmr_s pack_ClaCdbgsignalsnapshotnode1Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode1Eap3HiMmr_s pack_ClaCdbgsignalsnapshotnode1Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode1Eap3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode1Eap3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap2HiMmr_s pack_ClaCdbgsignalsnapshotnode2Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode2Eap3HiMmr_s pack_ClaCdbgsignalsnapshotnode2Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode2Eap3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode2Eap3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap2HiMmr_s pack_ClaCdbgsignalsnapshotnode3Eap2HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgsignalsnapshotnode3Eap3HiMmr_s pack_ClaCdbgsignalsnapshotnode3Eap3HiMmr;
+input ClaCdbgsignalsnapshotnode3Eap3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgsignalsnapshotnode3Eap3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbglfsrMmr_s pack_ClaCdbglfsrMmr;
+input ClaCdbglfsrMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbglfsrMmr.LfsrActive = unpacked_mmr.LfsrActive;
+    pack_ClaCdbglfsrMmr.Lfsr = unpacked_mmr.Lfsr;
+end
+endfunction
+
+function automatic ClaCdbglfsrmaskMmr_s pack_ClaCdbglfsrmaskMmr;
+input ClaCdbglfsrmaskMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbglfsrmaskMmr.Rsvd0 = unpacked_mmr.Rsvd0;
+    pack_ClaCdbglfsrmaskMmr.Mask = unpacked_mmr.Mask;
+end
+endfunction
+
+function automatic ClaCdbgtimestampcaptureMmr_s pack_ClaCdbgtimestampcaptureMmr;
+input ClaCdbgtimestampcaptureMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgtimestampcaptureMmr.Timestamp = unpacked_mmr.Timestamp;
+end
+endfunction
+
+function automatic ClaCdbgcompare0LoMmr_s pack_ClaCdbgcompare0LoMmr;
+input ClaCdbgcompare0LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare0LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare0MaskloMmr_s pack_ClaCdbgcompare0MaskloMmr;
+input ClaCdbgcompare0MaskloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare0MaskloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1LoMmr_s pack_ClaCdbgcompare1LoMmr;
+input ClaCdbgcompare1LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare1LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1MaskloMmr_s pack_ClaCdbgcompare1MaskloMmr;
+input ClaCdbgcompare1MaskloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare1MaskloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2LoMmr_s pack_ClaCdbgcompare2LoMmr;
+input ClaCdbgcompare2LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare2LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2MaskloMmr_s pack_ClaCdbgcompare2MaskloMmr;
+input ClaCdbgcompare2MaskloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare2MaskloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3LoMmr_s pack_ClaCdbgcompare3LoMmr;
+input ClaCdbgcompare3LoMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare3LoMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3MaskloMmr_s pack_ClaCdbgcompare3MaskloMmr;
+input ClaCdbgcompare3MaskloMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare3MaskloMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare0HiMmr_s pack_ClaCdbgcompare0HiMmr;
+input ClaCdbgcompare0HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare0HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare0MaskhiMmr_s pack_ClaCdbgcompare0MaskhiMmr;
+input ClaCdbgcompare0MaskhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare0MaskhiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1HiMmr_s pack_ClaCdbgcompare1HiMmr;
+input ClaCdbgcompare1HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare1HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare1MaskhiMmr_s pack_ClaCdbgcompare1MaskhiMmr;
+input ClaCdbgcompare1MaskhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare1MaskhiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2HiMmr_s pack_ClaCdbgcompare2HiMmr;
+input ClaCdbgcompare2HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare2HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare2MaskhiMmr_s pack_ClaCdbgcompare2MaskhiMmr;
+input ClaCdbgcompare2MaskhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare2MaskhiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3HiMmr_s pack_ClaCdbgcompare3HiMmr;
+input ClaCdbgcompare3HiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare3HiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgcompare3MaskhiMmr_s pack_ClaCdbgcompare3MaskhiMmr;
+input ClaCdbgcompare3MaskhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgcompare3MaskhiMmr.Value = unpacked_mmr.Value;
+end
+endfunction
+
+function automatic ClaCdbgversionMmr_s pack_ClaCdbgversionMmr;
+input ClaCdbgversionMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaCdbgversionMmr.Patch = unpacked_mmr.Patch;
+    pack_ClaCdbgversionMmr.Minor = unpacked_mmr.Minor;
+    pack_ClaCdbgversionMmr.Major = unpacked_mmr.Major;
+    pack_ClaCdbgversionMmr.Rsvd6312 = unpacked_mmr.Rsvd6312;
+end
+endfunction
+
+function automatic ClaScratchMmr_s pack_ClaScratchMmr;
+input ClaScratchMmrUnpack_s unpacked_mmr;
+begin
+    pack_ClaScratchMmr.Data = unpacked_mmr.Data;
+end
+endfunction
+
+endpackage
+
+`endif

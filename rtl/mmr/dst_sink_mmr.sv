@@ -1,0 +1,1055 @@
+// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+module dst_sink_mmr
+import dst_sink_mmr_pkg::*;
+`include "dst_sink_mmr_pkg_list.svh"
+`include "generic_macro_assertion.vh"
+#(
+    parameter BASE_ADDR    = 0,
+    parameter ADDR_W       = 12,
+    parameter ADDR_W_INDIR = 64,
+    parameter FLOP_IN_REQ  = 1,
+    parameter FLOP_RD_DATA = 1,
+    parameter INSTR_TYPE_W = 2,
+
+    parameter MMR_TRDSTRAMSTARTLOW_F_TRDSTRAMSTARTLOW_RESET_VALUE = 0
+) (
+
+input  logic                                    clk,
+input  logic                                    reset_n,
+
+input  logic                                    MmrCs,
+input  logic                                    MmrWrEn,
+input  logic                        [1:0]       MmrWrStrb,
+input  logic                                    MmrRegSel,
+input  logic                       [ADDR_W-1:0] MmrAddr,
+input  logic                             [31:0] MmrWrData,
+input  logic                 [INSTR_TYPE_W-1:0] MmrWrInstrType,
+output logic                                    MmrWrReady,
+output logic                                    MmrHit,
+output DstSinkMmrHit_s                           MmrHitList,
+output logic                             [31:0] MmrRdData,
+
+output DstSinkTrdstramcontrolMmr_s              DstSinkMmrTrdstramcontrol,
+output DstSinkTrdstramimplMmr_s                 DstSinkMmrTrdstramimpl,
+output DstSinkTrdstramstartlowMmr_s             DstSinkMmrTrdstramstartlow,
+output DstSinkTrdstramstarthighMmr_s            DstSinkMmrTrdstramstarthigh,
+output DstSinkTrdstramlimitlowMmr_s             DstSinkMmrTrdstramlimitlow,
+output DstSinkTrdstramlimithighMmr_s            DstSinkMmrTrdstramlimithigh,
+output DstSinkTrdstramwplowMmr_s                DstSinkMmrTrdstramwplow,
+output DstSinkTrdstramwphighMmr_s               DstSinkMmrTrdstramwphigh,
+output DstSinkTrdstramrplowMmr_s                DstSinkMmrTrdstramrplow,
+output DstSinkTrdstramrphighMmr_s               DstSinkMmrTrdstramrphigh,
+output DstSinkTrdstramdataMmr_s                 DstSinkMmrTrdstramdata,
+output DstSinkScratchloMmr_s                    DstSinkMmrScratchlo,
+output DstSinkScratchhiMmr_s                    DstSinkMmrScratchhi,
+
+input DstSinkTrdstramcontrolMmrWr_s             DstSinkMmrTrdstramcontrolWr,
+input DstSinkTrdstramstartlowMmrWr_s            DstSinkMmrTrdstramstartlowWr,
+input DstSinkTrdstramstarthighMmrWr_s           DstSinkMmrTrdstramstarthighWr,
+input DstSinkTrdstramlimitlowMmrWr_s            DstSinkMmrTrdstramlimitlowWr,
+input DstSinkTrdstramlimithighMmrWr_s           DstSinkMmrTrdstramlimithighWr,
+input DstSinkTrdstramwplowMmrWr_s               DstSinkMmrTrdstramwplowWr,
+input DstSinkTrdstramwphighMmrWr_s              DstSinkMmrTrdstramwphighWr,
+input DstSinkTrdstramrplowMmrWr_s               DstSinkMmrTrdstramrplowWr,
+input DstSinkTrdstramrphighMmrWr_s              DstSinkMmrTrdstramrphighWr,
+input DstSinkTrdstramdataMmrWr_s                DstSinkMmrTrdstramdataWr,
+
+output logic                                    MmrUpdateEn,
+output logic                       [ADDR_W-1:0] MmrUpdateAddr,
+output logic                       [ADDR_W_INDIR-1:0] MmrUpdateIndirAddr,
+output logic                             [31:0] MmrUpdateData
+
+);
+
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMCONTROL       = ADDR_W'(BASE_ADDR + 'h0);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMIMPL          = ADDR_W'(BASE_ADDR + 'h4);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMSTARTLOW      = ADDR_W'(BASE_ADDR + 'h10);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMSTARTHIGH     = ADDR_W'(BASE_ADDR + 'h14);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMLIMITLOW      = ADDR_W'(BASE_ADDR + 'h18);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMLIMITHIGH     = ADDR_W'(BASE_ADDR + 'h1C);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMWPLOW         = ADDR_W'(BASE_ADDR + 'h20);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMWPHIGH        = ADDR_W'(BASE_ADDR + 'h24);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMRPLOW         = ADDR_W'(BASE_ADDR + 'h28);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMRPHIGH        = ADDR_W'(BASE_ADDR + 'h2C);
+localparam   [ADDR_W-1:0] ADDR_MMR_TRDSTRAMDATA          = ADDR_W'(BASE_ADDR + 'h40);
+localparam   [ADDR_W-1:0] ADDR_MMR_SCRATCHLO             = ADDR_W'(BASE_ADDR + 'hFF8);
+localparam   [ADDR_W-1:0] ADDR_MMR_SCRATCHHI             = ADDR_W'(BASE_ADDR + 'hFFC);
+
+logic                       reg_cs;
+logic                       reg_wr_en;
+logic           [1:0]       reg_wr_strb;
+logic          [ADDR_W-1:0] reg_addr;
+logic                       reg_wr_sel;
+logic                       reg_rd_sel;
+logic                [31:0] reg_wr_data;
+logic    [INSTR_TYPE_W-1:0] reg_wr_instr_type;
+
+logic                       reg_wr_ready;
+DstSinkMmrHit_s              reg_prehit;
+logic                       reg_hit;
+logic                [31:0] reg_rd_data;
+
+logic                       reg_write;
+logic                       reg_read;
+
+logic          [ADDR_W-1:0] reg_addr_d1;
+logic          [ADDR_W_INDIR-1:0] reg_addr_select_d1;
+logic                       reg_write_d1;
+logic                       reg_hit_d1;
+logic                [31:0] reg_rd_data_d1;
+
+logic                [31:0] MMR_Trdstramcontrol;
+logic                [31:0] MMR_Trdstramimpl;
+logic                [31:0] MMR_Trdstramstartlow;
+logic                [31:0] MMR_Trdstramstarthigh;
+logic                [31:0] MMR_Trdstramlimitlow;
+logic                [31:0] MMR_Trdstramlimithigh;
+logic                [31:0] MMR_Trdstramwplow;
+logic                [31:0] MMR_Trdstramwphigh;
+logic                [31:0] MMR_Trdstramrplow;
+logic                [31:0] MMR_Trdstramrphigh;
+logic                [31:0] MMR_Trdstramdata;
+logic                [31:0] MMR_ScratchLo;
+logic                [31:0] MMR_ScratchHi;
+
+logic                [22:0] MMR_Trdstramcontrol_F_Rsvd319;
+logic                 [0:0] MMR_Trdstramcontrol_F_Trdstramstoponwrap;
+logic                 [2:0] MMR_Trdstramcontrol_F_Rsvd75;
+logic                 [0:0] MMR_Trdstramcontrol_F_Trdstrammode;
+logic                 [0:0] MMR_Trdstramcontrol_F_Trdstramempty;
+logic                 [0:0] MMR_Trdstramcontrol_F_Rsvd22;
+logic                 [0:0] MMR_Trdstramcontrol_F_Trdstramenable;
+logic                 [0:0] MMR_Trdstramcontrol_F_Trdstramactive;
+logic                 [3:0] MMR_Trdstramimpl_F_Rsvd3128;
+logic                 [3:0] MMR_Trdstramimpl_F_Trdstramvendorframelength;
+logic                 [9:0] MMR_Trdstramimpl_F_Rsvd2314;
+logic                 [0:0] MMR_Trdstramimpl_F_Trdstramhassmem;
+logic                 [0:0] MMR_Trdstramimpl_F_Trdstramhassram;
+logic                 [3:0] MMR_Trdstramimpl_F_Trdstramcomptype;
+logic                 [3:0] MMR_Trdstramimpl_F_Trdstramverminor;
+logic                 [3:0] MMR_Trdstramimpl_F_Trdstramvermajor;
+logic                [29:0] MMR_Trdstramstartlow_F_Trdstramstartlow;
+logic                 [1:0] MMR_Trdstramstartlow_F_Rsvd10;
+logic                [31:0] MMR_Trdstramstarthigh_F_Trdstramstarthigh;
+logic                [29:0] MMR_Trdstramlimitlow_F_Trdstramlimitlow;
+logic                 [1:0] MMR_Trdstramlimitlow_F_Rsvd10;
+logic                [31:0] MMR_Trdstramlimithigh_F_Trdstramlimithigh;
+logic                [29:0] MMR_Trdstramwplow_F_Trdstramwplow;
+logic                 [0:0] MMR_Trdstramwplow_F_Rsvd11;
+logic                 [0:0] MMR_Trdstramwplow_F_Trdstramwrap;
+logic                [31:0] MMR_Trdstramwphigh_F_Trdstramwphigh;
+logic                [29:0] MMR_Trdstramrplow_F_Trdstramrplow;
+logic                 [1:0] MMR_Trdstramrplow_F_Rsvd10;
+logic                [31:0] MMR_Trdstramrphigh_F_Trdstramrphigh;
+logic                [31:0] MMR_Trdstramdata_F_Trdstramdata;
+logic                [31:0] MMR_ScratchLo_F_Data;
+logic                [31:0] MMR_ScratchHi_F_Data;
+
+if (FLOP_IN_REQ) begin : flop_in_req
+    generic_dff #(
+        .WIDTH ($bits(logic)),
+        .RESET_VALUE (0)
+    ) reg_cs_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs|reg_cs),
+        .in (MmrCs),
+        .out (reg_cs)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic)),
+        .RESET_VALUE (0)
+    ) reg_wr_en_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs),
+        .in (MmrWrEn),
+        .out (reg_wr_en)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic [1:0])),
+        .RESET_VALUE (0)
+    ) reg_wr_strb_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs),
+        .in (MmrWrStrb),
+        .out (reg_wr_strb)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic [ADDR_W-1:0])),
+        .RESET_VALUE (0)
+    ) reg_addr_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs),
+        .in (MmrAddr),
+        .out (reg_addr)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic [32-1:0])),
+        .RESET_VALUE (0)
+    ) reg_wr_data_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs),
+        .in (MmrWrData),
+        .out (reg_wr_data)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic [INSTR_TYPE_W-1:0])),
+        .RESET_VALUE (0)
+    ) reg_wr_instr_type_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs),
+        .in (MmrWrInstrType),
+        .out (reg_wr_instr_type)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic)),
+        .RESET_VALUE (0)
+    ) reg_wr_ready_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (MmrCs),
+        .in (MmrCs & MmrWrEn),
+        .out (reg_wr_ready)
+    );
+    generic_dff #(
+        .WIDTH       ($bits(logic)),
+        .RESET_VALUE ('0)
+    ) reg_rd_sel_ff (
+        .clk   (clk),
+        .rst_n (reset_n),
+        .en    (MmrCs),
+        .in    (~MmrRegSel),
+        .out   (reg_rd_sel)
+    );
+    generic_dff #(
+        .WIDTH       ($bits(logic)),
+        .RESET_VALUE ('0)
+    ) reg_wr_sel_ff (
+        .clk   (clk),
+        .rst_n (reset_n),
+        .en    (MmrCs),
+        .in    (MmrRegSel),
+        .out   (reg_wr_sel)
+    );
+end else begin : no_flop_in_req
+    assign reg_cs                          = MmrCs;
+    assign reg_wr_en                       = MmrWrEn;
+    assign reg_wr_strb                     = MmrWrStrb;
+    assign reg_addr                        = MmrAddr;
+    assign reg_wr_data                     = MmrWrData;
+    assign reg_wr_instr_type               = MmrWrInstrType;
+    assign reg_wr_ready                    = MmrCs & MmrWrEn;
+    assign reg_rd_sel                      = ~MmrRegSel;
+    assign reg_wr_sel                      = MmrRegSel;
+end
+
+assign reg_write    = reg_cs &  reg_wr_en;
+assign reg_read     = reg_cs;
+
+generic_dff #(
+    .WIDTH ($bits(logic [ADDR_W-1:0])),
+    .RESET_VALUE (0)
+) reg_addr_d1_ff (
+    .clk (clk),
+    .rst_n (reset_n),
+    .en (reg_cs),
+    .in (reg_addr),
+    .out (reg_addr_d1)
+);
+generic_dff #(
+    .WIDTH ($bits(logic)),
+    .RESET_VALUE (0)
+) reg_wren_d1_ff (
+    .clk (clk),
+    .rst_n (reset_n),
+    .en (reg_cs | reg_write_d1),
+    .in (reg_write),
+    .out (reg_write_d1)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Rsvd319_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd319_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd319_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd319_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd319_Data_prev;
+assign MMR_Trdstramcontrol_F_Rsvd319_DataEff = {reg_wr_data[31:9]};
+assign MMR_Trdstramcontrol_F_Rsvd319_Data = (DstSinkMmrTrdstramcontrolWr.Data.Rsvd319);
+assign MMR_Trdstramcontrol_F_Rsvd319_WrEn = ((DstSinkMmrTrdstramcontrolWr.Rsvd319WrEn));
+assign MMR_Trdstramcontrol_F_Rsvd319_Data_prev = MMR_Trdstramcontrol_F_Rsvd319;
+assign MMR_Trdstramcontrol_F_Rsvd319_Data_muxed = MMR_Trdstramcontrol_F_Rsvd319_WrEn ? MMR_Trdstramcontrol_F_Rsvd319_Data : MMR_Trdstramcontrol_F_Rsvd319_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Rsvd319_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Rsvd319_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Rsvd319_Data),
+    .out   (MMR_Trdstramcontrol_F_Rsvd319)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramstoponwrap_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data_prev;
+assign MMR_Trdstramcontrol_F_Trdstramstoponwrap_DataEff = {reg_wr_data[8:8]};
+assign MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) ? DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH'(update_value(64'(MMR_Trdstramcontrol_F_Trdstramstoponwrap), 64'(MMR_Trdstramcontrol_F_Trdstramstoponwrap_DataEff[0:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramcontrolWr.Data.Trdstramstoponwrap);
+assign MMR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) | DstSinkMmrTrdstramcontrolWr.TrdstramstoponwrapWrEn));
+assign MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data_prev = MMR_Trdstramcontrol_F_Trdstramstoponwrap;
+assign MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data_muxed = MMR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn ? MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data : MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Trdstramstoponwrap_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Trdstramstoponwrap_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data),
+    .out   (MMR_Trdstramcontrol_F_Trdstramstoponwrap)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Rsvd75_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd75_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd75_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd75_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd75_Data_prev;
+assign MMR_Trdstramcontrol_F_Rsvd75_DataEff = {reg_wr_data[7:5]};
+assign MMR_Trdstramcontrol_F_Rsvd75_Data = (DstSinkMmrTrdstramcontrolWr.Data.Rsvd75);
+assign MMR_Trdstramcontrol_F_Rsvd75_WrEn = ((DstSinkMmrTrdstramcontrolWr.Rsvd75WrEn));
+assign MMR_Trdstramcontrol_F_Rsvd75_Data_prev = MMR_Trdstramcontrol_F_Rsvd75;
+assign MMR_Trdstramcontrol_F_Rsvd75_Data_muxed = MMR_Trdstramcontrol_F_Rsvd75_WrEn ? MMR_Trdstramcontrol_F_Rsvd75_Data : MMR_Trdstramcontrol_F_Rsvd75_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Rsvd75_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Rsvd75_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Rsvd75_Data),
+    .out   (MMR_Trdstramcontrol_F_Rsvd75)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Trdstrammode_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstrammode_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstrammode_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstrammode_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstrammode_Data_prev;
+assign MMR_Trdstramcontrol_F_Trdstrammode_DataEff = {reg_wr_data[4:4]};
+assign MMR_Trdstramcontrol_F_Trdstrammode_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) ? DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH'(update_value(64'(MMR_Trdstramcontrol_F_Trdstrammode), 64'(MMR_Trdstramcontrol_F_Trdstrammode_DataEff[0:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramcontrolWr.Data.Trdstrammode);
+assign MMR_Trdstramcontrol_F_Trdstrammode_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) | DstSinkMmrTrdstramcontrolWr.TrdstrammodeWrEn));
+assign MMR_Trdstramcontrol_F_Trdstrammode_Data_prev = MMR_Trdstramcontrol_F_Trdstrammode;
+assign MMR_Trdstramcontrol_F_Trdstrammode_Data_muxed = MMR_Trdstramcontrol_F_Trdstrammode_WrEn ? MMR_Trdstramcontrol_F_Trdstrammode_Data : MMR_Trdstramcontrol_F_Trdstrammode_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Trdstrammode_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Trdstrammode_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Trdstrammode_Data),
+    .out   (MMR_Trdstramcontrol_F_Trdstrammode)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Trdstramempty_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramempty_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramempty_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramempty_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramempty_Data_prev;
+assign MMR_Trdstramcontrol_F_Trdstramempty_DataEff = {reg_wr_data[3:3]};
+assign MMR_Trdstramcontrol_F_Trdstramempty_Data = (DstSinkMmrTrdstramcontrolWr.Data.Trdstramempty);
+assign MMR_Trdstramcontrol_F_Trdstramempty_WrEn = ((DstSinkMmrTrdstramcontrolWr.TrdstramemptyWrEn));
+assign MMR_Trdstramcontrol_F_Trdstramempty_Data_prev = MMR_Trdstramcontrol_F_Trdstramempty;
+assign MMR_Trdstramcontrol_F_Trdstramempty_Data_muxed = MMR_Trdstramcontrol_F_Trdstramempty_WrEn ? MMR_Trdstramcontrol_F_Trdstramempty_Data : MMR_Trdstramcontrol_F_Trdstramempty_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH'(1))
+) MMR_Trdstramcontrol_F_Trdstramempty_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Trdstramempty_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Trdstramempty_Data),
+    .out   (MMR_Trdstramcontrol_F_Trdstramempty)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Rsvd22_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd22_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd22_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd22_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH-1:0] MMR_Trdstramcontrol_F_Rsvd22_Data_prev;
+assign MMR_Trdstramcontrol_F_Rsvd22_DataEff = {reg_wr_data[2:2]};
+assign MMR_Trdstramcontrol_F_Rsvd22_Data = (DstSinkMmrTrdstramcontrolWr.Data.Rsvd22);
+assign MMR_Trdstramcontrol_F_Rsvd22_WrEn = ((DstSinkMmrTrdstramcontrolWr.Rsvd22WrEn));
+assign MMR_Trdstramcontrol_F_Rsvd22_Data_prev = MMR_Trdstramcontrol_F_Rsvd22;
+assign MMR_Trdstramcontrol_F_Rsvd22_Data_muxed = MMR_Trdstramcontrol_F_Rsvd22_WrEn ? MMR_Trdstramcontrol_F_Rsvd22_Data : MMR_Trdstramcontrol_F_Rsvd22_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Rsvd22_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Rsvd22_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Rsvd22_Data),
+    .out   (MMR_Trdstramcontrol_F_Rsvd22)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Trdstramenable_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramenable_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramenable_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramenable_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramenable_Data_prev;
+assign MMR_Trdstramcontrol_F_Trdstramenable_DataEff = {reg_wr_data[1:1]};
+assign MMR_Trdstramcontrol_F_Trdstramenable_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) ? DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH'(update_value(64'(MMR_Trdstramcontrol_F_Trdstramenable), 64'(MMR_Trdstramcontrol_F_Trdstramenable_DataEff[0:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramcontrolWr.Data.Trdstramenable);
+assign MMR_Trdstramcontrol_F_Trdstramenable_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) | DstSinkMmrTrdstramcontrolWr.TrdstramenableWrEn));
+assign MMR_Trdstramcontrol_F_Trdstramenable_Data_prev = MMR_Trdstramcontrol_F_Trdstramenable;
+assign MMR_Trdstramcontrol_F_Trdstramenable_Data_muxed = MMR_Trdstramcontrol_F_Trdstramenable_WrEn ? MMR_Trdstramcontrol_F_Trdstramenable_Data : MMR_Trdstramcontrol_F_Trdstramenable_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Trdstramenable_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Trdstramenable_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Trdstramenable_Data),
+    .out   (MMR_Trdstramcontrol_F_Trdstramenable)
+);
+
+logic                                           MMR_Trdstramcontrol_F_Trdstramactive_WrEn;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramactive_Data;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramactive_DataEff;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramactive_Data_muxed;
+logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0] MMR_Trdstramcontrol_F_Trdstramactive_Data_prev;
+assign MMR_Trdstramcontrol_F_Trdstramactive_DataEff = {reg_wr_data[0:0]};
+assign MMR_Trdstramcontrol_F_Trdstramactive_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) ? DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH'(update_value(64'(MMR_Trdstramcontrol_F_Trdstramactive), 64'(MMR_Trdstramcontrol_F_Trdstramactive_DataEff[0:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramcontrolWr.Data.Trdstramactive);
+assign MMR_Trdstramcontrol_F_Trdstramactive_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMCONTROL)) | DstSinkMmrTrdstramcontrolWr.TrdstramactiveWrEn));
+assign MMR_Trdstramcontrol_F_Trdstramactive_Data_prev = MMR_Trdstramcontrol_F_Trdstramactive;
+assign MMR_Trdstramcontrol_F_Trdstramactive_Data_muxed = MMR_Trdstramcontrol_F_Trdstramactive_WrEn ? MMR_Trdstramcontrol_F_Trdstramactive_Data : MMR_Trdstramcontrol_F_Trdstramactive_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH'(0))
+) MMR_Trdstramcontrol_F_Trdstramactive_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramcontrol_F_Trdstramactive_WrEn),
+    .in    (MMR_Trdstramcontrol_F_Trdstramactive_Data),
+    .out   (MMR_Trdstramcontrol_F_Trdstramactive)
+);
+
+assign MMR_Trdstramimpl_F_Rsvd3128 = 4'h0;
+
+logic                                           MMR_Trdstramimpl_F_Trdstramvendorframelength_WrEn;
+logic [DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH-1:0] MMR_Trdstramimpl_F_Trdstramvendorframelength_Data;
+logic [DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH-1:0] MMR_Trdstramimpl_F_Trdstramvendorframelength_DataEff;
+logic [DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH-1:0] MMR_Trdstramimpl_F_Trdstramvendorframelength_Data_muxed;
+logic [DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH-1:0] MMR_Trdstramimpl_F_Trdstramvendorframelength_Data_prev;
+assign MMR_Trdstramimpl_F_Trdstramvendorframelength_DataEff = {reg_wr_data[27:24]};
+assign MMR_Trdstramimpl_F_Trdstramvendorframelength_Data = (DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH'(update_value(64'(MMR_Trdstramimpl_F_Trdstramvendorframelength), 64'(MMR_Trdstramimpl_F_Trdstramvendorframelength_DataEff[3:0]), reg_wr_instr_type)));
+assign MMR_Trdstramimpl_F_Trdstramvendorframelength_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMIMPL))));
+assign MMR_Trdstramimpl_F_Trdstramvendorframelength_Data_prev = MMR_Trdstramimpl_F_Trdstramvendorframelength;
+assign MMR_Trdstramimpl_F_Trdstramvendorframelength_Data_muxed = MMR_Trdstramimpl_F_Trdstramvendorframelength_WrEn ? MMR_Trdstramimpl_F_Trdstramvendorframelength_Data : MMR_Trdstramimpl_F_Trdstramvendorframelength_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH'(1))
+) MMR_Trdstramimpl_F_Trdstramvendorframelength_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramimpl_F_Trdstramvendorframelength_WrEn),
+    .in    (MMR_Trdstramimpl_F_Trdstramvendorframelength_Data),
+    .out   (MMR_Trdstramimpl_F_Trdstramvendorframelength)
+);
+
+assign MMR_Trdstramimpl_F_Rsvd2314 = 10'h0;
+
+assign MMR_Trdstramimpl_F_Trdstramhassmem = 1'h1;
+
+assign MMR_Trdstramimpl_F_Trdstramhassram = 1'h1;
+
+assign MMR_Trdstramimpl_F_Trdstramcomptype = 4'h9;
+
+assign MMR_Trdstramimpl_F_Trdstramverminor = 4'h0;
+
+assign MMR_Trdstramimpl_F_Trdstramvermajor = 4'h1;
+
+logic                                           MMR_Trdstramstartlow_F_Trdstramstartlow_WrEn;
+logic [DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH-1:0] MMR_Trdstramstartlow_F_Trdstramstartlow_Data;
+logic [DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH-1:0] MMR_Trdstramstartlow_F_Trdstramstartlow_DataEff;
+logic [DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH-1:0] MMR_Trdstramstartlow_F_Trdstramstartlow_Data_muxed;
+logic [DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH-1:0] MMR_Trdstramstartlow_F_Trdstramstartlow_Data_prev;
+assign MMR_Trdstramstartlow_F_Trdstramstartlow_DataEff = {reg_wr_data[31:2]};
+assign MMR_Trdstramstartlow_F_Trdstramstartlow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMSTARTLOW)) ? DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH'(update_value(64'(MMR_Trdstramstartlow_F_Trdstramstartlow), 64'(MMR_Trdstramstartlow_F_Trdstramstartlow_DataEff[29:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramstartlowWr.Data.Trdstramstartlow);
+assign MMR_Trdstramstartlow_F_Trdstramstartlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMSTARTLOW)) | DstSinkMmrTrdstramstartlowWr.TrdstramstartlowWrEn));
+assign MMR_Trdstramstartlow_F_Trdstramstartlow_Data_prev = MMR_Trdstramstartlow_F_Trdstramstartlow;
+assign MMR_Trdstramstartlow_F_Trdstramstartlow_Data_muxed = MMR_Trdstramstartlow_F_Trdstramstartlow_WrEn ? MMR_Trdstramstartlow_F_Trdstramstartlow_Data : MMR_Trdstramstartlow_F_Trdstramstartlow_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH'(MMR_TRDSTRAMSTARTLOW_F_TRDSTRAMSTARTLOW_RESET_VALUE))
+) MMR_Trdstramstartlow_F_Trdstramstartlow_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramstartlow_F_Trdstramstartlow_WrEn),
+    .in    (MMR_Trdstramstartlow_F_Trdstramstartlow_Data),
+    .out   (MMR_Trdstramstartlow_F_Trdstramstartlow)
+);
+
+assign MMR_Trdstramstartlow_F_Rsvd10 = 2'h0;
+
+logic                                           MMR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn;
+logic [DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH-1:0] MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data;
+logic [DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH-1:0] MMR_Trdstramstarthigh_F_Trdstramstarthigh_DataEff;
+logic [DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH-1:0] MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data_muxed;
+logic [DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH-1:0] MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data_prev;
+assign MMR_Trdstramstarthigh_F_Trdstramstarthigh_DataEff = {reg_wr_data[31:0]};
+assign MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMSTARTHIGH)) ? DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH'(update_value(64'(MMR_Trdstramstarthigh_F_Trdstramstarthigh), 64'(MMR_Trdstramstarthigh_F_Trdstramstarthigh_DataEff[31:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramstarthighWr.Data.Trdstramstarthigh);
+assign MMR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMSTARTHIGH)) | DstSinkMmrTrdstramstarthighWr.TrdstramstarthighWrEn));
+assign MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data_prev = MMR_Trdstramstarthigh_F_Trdstramstarthigh;
+assign MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data_muxed = MMR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn ? MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data : MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH'(0))
+) MMR_Trdstramstarthigh_F_Trdstramstarthigh_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramstarthigh_F_Trdstramstarthigh_WrEn),
+    .in    (MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data),
+    .out   (MMR_Trdstramstarthigh_F_Trdstramstarthigh)
+);
+
+logic                                           MMR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn;
+logic [DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH-1:0] MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data;
+logic [DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH-1:0] MMR_Trdstramlimitlow_F_Trdstramlimitlow_DataEff;
+logic [DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH-1:0] MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data_muxed;
+logic [DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH-1:0] MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data_prev;
+assign MMR_Trdstramlimitlow_F_Trdstramlimitlow_DataEff = {reg_wr_data[31:2]};
+assign MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMLIMITLOW)) ? DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH'(update_value(64'(MMR_Trdstramlimitlow_F_Trdstramlimitlow), 64'(MMR_Trdstramlimitlow_F_Trdstramlimitlow_DataEff[29:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramlimitlowWr.Data.Trdstramlimitlow);
+assign MMR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMLIMITLOW)) | DstSinkMmrTrdstramlimitlowWr.TrdstramlimitlowWrEn));
+assign MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data_prev = MMR_Trdstramlimitlow_F_Trdstramlimitlow;
+assign MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data_muxed = MMR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn ? MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data : MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH'(0))
+) MMR_Trdstramlimitlow_F_Trdstramlimitlow_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramlimitlow_F_Trdstramlimitlow_WrEn),
+    .in    (MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data),
+    .out   (MMR_Trdstramlimitlow_F_Trdstramlimitlow)
+);
+
+assign MMR_Trdstramlimitlow_F_Rsvd10 = 2'h0;
+
+logic                                           MMR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn;
+logic [DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH-1:0] MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data;
+logic [DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH-1:0] MMR_Trdstramlimithigh_F_Trdstramlimithigh_DataEff;
+logic [DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH-1:0] MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data_muxed;
+logic [DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH-1:0] MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data_prev;
+assign MMR_Trdstramlimithigh_F_Trdstramlimithigh_DataEff = {reg_wr_data[31:0]};
+assign MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMLIMITHIGH)) ? DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH'(update_value(64'(MMR_Trdstramlimithigh_F_Trdstramlimithigh), 64'(MMR_Trdstramlimithigh_F_Trdstramlimithigh_DataEff[31:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramlimithighWr.Data.Trdstramlimithigh);
+assign MMR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMLIMITHIGH)) | DstSinkMmrTrdstramlimithighWr.TrdstramlimithighWrEn));
+assign MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data_prev = MMR_Trdstramlimithigh_F_Trdstramlimithigh;
+assign MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data_muxed = MMR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn ? MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data : MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH'(0))
+) MMR_Trdstramlimithigh_F_Trdstramlimithigh_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramlimithigh_F_Trdstramlimithigh_WrEn),
+    .in    (MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data),
+    .out   (MMR_Trdstramlimithigh_F_Trdstramlimithigh)
+);
+
+logic                                           MMR_Trdstramwplow_F_Trdstramwplow_WrEn;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwplow_Data;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwplow_DataEff;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwplow_Data_muxed;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwplow_Data_prev;
+assign MMR_Trdstramwplow_F_Trdstramwplow_DataEff = {reg_wr_data[31:2]};
+assign MMR_Trdstramwplow_F_Trdstramwplow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMWPLOW)) ? DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH'(update_value(64'(MMR_Trdstramwplow_F_Trdstramwplow), 64'(MMR_Trdstramwplow_F_Trdstramwplow_DataEff[29:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramwplowWr.Data.Trdstramwplow);
+assign MMR_Trdstramwplow_F_Trdstramwplow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMWPLOW)) | DstSinkMmrTrdstramwplowWr.TrdstramwplowWrEn));
+assign MMR_Trdstramwplow_F_Trdstramwplow_Data_prev = MMR_Trdstramwplow_F_Trdstramwplow;
+assign MMR_Trdstramwplow_F_Trdstramwplow_Data_muxed = MMR_Trdstramwplow_F_Trdstramwplow_WrEn ? MMR_Trdstramwplow_F_Trdstramwplow_Data : MMR_Trdstramwplow_F_Trdstramwplow_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH'(0))
+) MMR_Trdstramwplow_F_Trdstramwplow_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramwplow_F_Trdstramwplow_WrEn),
+    .in    (MMR_Trdstramwplow_F_Trdstramwplow_Data),
+    .out   (MMR_Trdstramwplow_F_Trdstramwplow)
+);
+
+logic                                           MMR_Trdstramwplow_F_Rsvd11_WrEn;
+logic [DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH-1:0] MMR_Trdstramwplow_F_Rsvd11_Data;
+logic [DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH-1:0] MMR_Trdstramwplow_F_Rsvd11_DataEff;
+logic [DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH-1:0] MMR_Trdstramwplow_F_Rsvd11_Data_muxed;
+logic [DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH-1:0] MMR_Trdstramwplow_F_Rsvd11_Data_prev;
+assign MMR_Trdstramwplow_F_Rsvd11_DataEff = {reg_wr_data[1:1]};
+assign MMR_Trdstramwplow_F_Rsvd11_Data = (DstSinkMmrTrdstramwplowWr.Data.Rsvd11);
+assign MMR_Trdstramwplow_F_Rsvd11_WrEn = ((DstSinkMmrTrdstramwplowWr.Rsvd11WrEn));
+assign MMR_Trdstramwplow_F_Rsvd11_Data_prev = MMR_Trdstramwplow_F_Rsvd11;
+assign MMR_Trdstramwplow_F_Rsvd11_Data_muxed = MMR_Trdstramwplow_F_Rsvd11_WrEn ? MMR_Trdstramwplow_F_Rsvd11_Data : MMR_Trdstramwplow_F_Rsvd11_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH'(0))
+) MMR_Trdstramwplow_F_Rsvd11_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramwplow_F_Rsvd11_WrEn),
+    .in    (MMR_Trdstramwplow_F_Rsvd11_Data),
+    .out   (MMR_Trdstramwplow_F_Rsvd11)
+);
+
+logic                                           MMR_Trdstramwplow_F_Trdstramwrap_WrEn;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwrap_Data;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwrap_DataEff;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwrap_Data_muxed;
+logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0] MMR_Trdstramwplow_F_Trdstramwrap_Data_prev;
+assign MMR_Trdstramwplow_F_Trdstramwrap_DataEff = {reg_wr_data[0:0]};
+assign MMR_Trdstramwplow_F_Trdstramwrap_Data = (DstSinkMmrTrdstramwplowWr.Data.Trdstramwrap);
+assign MMR_Trdstramwplow_F_Trdstramwrap_WrEn = ((DstSinkMmrTrdstramwplowWr.TrdstramwrapWrEn));
+assign MMR_Trdstramwplow_F_Trdstramwrap_Data_prev = MMR_Trdstramwplow_F_Trdstramwrap;
+assign MMR_Trdstramwplow_F_Trdstramwrap_Data_muxed = MMR_Trdstramwplow_F_Trdstramwrap_WrEn ? MMR_Trdstramwplow_F_Trdstramwrap_Data : MMR_Trdstramwplow_F_Trdstramwrap_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH'(0))
+) MMR_Trdstramwplow_F_Trdstramwrap_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramwplow_F_Trdstramwrap_WrEn),
+    .in    (MMR_Trdstramwplow_F_Trdstramwrap_Data),
+    .out   (MMR_Trdstramwplow_F_Trdstramwrap)
+);
+
+logic                                           MMR_Trdstramwphigh_F_Trdstramwphigh_WrEn;
+logic [DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH-1:0] MMR_Trdstramwphigh_F_Trdstramwphigh_Data;
+logic [DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH-1:0] MMR_Trdstramwphigh_F_Trdstramwphigh_DataEff;
+logic [DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH-1:0] MMR_Trdstramwphigh_F_Trdstramwphigh_Data_muxed;
+logic [DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH-1:0] MMR_Trdstramwphigh_F_Trdstramwphigh_Data_prev;
+assign MMR_Trdstramwphigh_F_Trdstramwphigh_DataEff = {reg_wr_data[31:0]};
+assign MMR_Trdstramwphigh_F_Trdstramwphigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMWPHIGH)) ? DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH'(update_value(64'(MMR_Trdstramwphigh_F_Trdstramwphigh), 64'(MMR_Trdstramwphigh_F_Trdstramwphigh_DataEff[31:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramwphighWr.Data.Trdstramwphigh);
+assign MMR_Trdstramwphigh_F_Trdstramwphigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMWPHIGH)) | DstSinkMmrTrdstramwphighWr.TrdstramwphighWrEn));
+assign MMR_Trdstramwphigh_F_Trdstramwphigh_Data_prev = MMR_Trdstramwphigh_F_Trdstramwphigh;
+assign MMR_Trdstramwphigh_F_Trdstramwphigh_Data_muxed = MMR_Trdstramwphigh_F_Trdstramwphigh_WrEn ? MMR_Trdstramwphigh_F_Trdstramwphigh_Data : MMR_Trdstramwphigh_F_Trdstramwphigh_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH'(0))
+) MMR_Trdstramwphigh_F_Trdstramwphigh_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramwphigh_F_Trdstramwphigh_WrEn),
+    .in    (MMR_Trdstramwphigh_F_Trdstramwphigh_Data),
+    .out   (MMR_Trdstramwphigh_F_Trdstramwphigh)
+);
+
+logic                                           MMR_Trdstramrplow_F_Trdstramrplow_WrEn;
+logic [DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH-1:0] MMR_Trdstramrplow_F_Trdstramrplow_Data;
+logic [DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH-1:0] MMR_Trdstramrplow_F_Trdstramrplow_DataEff;
+logic [DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH-1:0] MMR_Trdstramrplow_F_Trdstramrplow_Data_muxed;
+logic [DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH-1:0] MMR_Trdstramrplow_F_Trdstramrplow_Data_prev;
+assign MMR_Trdstramrplow_F_Trdstramrplow_DataEff = {reg_wr_data[31:2]};
+assign MMR_Trdstramrplow_F_Trdstramrplow_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMRPLOW)) ? DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH'(update_value(64'(MMR_Trdstramrplow_F_Trdstramrplow), 64'(MMR_Trdstramrplow_F_Trdstramrplow_DataEff[29:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramrplowWr.Data.Trdstramrplow);
+assign MMR_Trdstramrplow_F_Trdstramrplow_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMRPLOW)) | DstSinkMmrTrdstramrplowWr.TrdstramrplowWrEn));
+assign MMR_Trdstramrplow_F_Trdstramrplow_Data_prev = MMR_Trdstramrplow_F_Trdstramrplow;
+assign MMR_Trdstramrplow_F_Trdstramrplow_Data_muxed = MMR_Trdstramrplow_F_Trdstramrplow_WrEn ? MMR_Trdstramrplow_F_Trdstramrplow_Data : MMR_Trdstramrplow_F_Trdstramrplow_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH'(0))
+) MMR_Trdstramrplow_F_Trdstramrplow_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramrplow_F_Trdstramrplow_WrEn),
+    .in    (MMR_Trdstramrplow_F_Trdstramrplow_Data),
+    .out   (MMR_Trdstramrplow_F_Trdstramrplow)
+);
+
+assign MMR_Trdstramrplow_F_Rsvd10 = 2'h0;
+
+logic                                           MMR_Trdstramrphigh_F_Trdstramrphigh_WrEn;
+logic [DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH-1:0] MMR_Trdstramrphigh_F_Trdstramrphigh_Data;
+logic [DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH-1:0] MMR_Trdstramrphigh_F_Trdstramrphigh_DataEff;
+logic [DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH-1:0] MMR_Trdstramrphigh_F_Trdstramrphigh_Data_muxed;
+logic [DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH-1:0] MMR_Trdstramrphigh_F_Trdstramrphigh_Data_prev;
+assign MMR_Trdstramrphigh_F_Trdstramrphigh_DataEff = {reg_wr_data[31:0]};
+assign MMR_Trdstramrphigh_F_Trdstramrphigh_Data = ((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMRPHIGH)) ? DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH'(update_value(64'(MMR_Trdstramrphigh_F_Trdstramrphigh), 64'(MMR_Trdstramrphigh_F_Trdstramrphigh_DataEff[31:0]), reg_wr_instr_type)) : DstSinkMmrTrdstramrphighWr.Data.Trdstramrphigh);
+assign MMR_Trdstramrphigh_F_Trdstramrphigh_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_TRDSTRAMRPHIGH)) | DstSinkMmrTrdstramrphighWr.TrdstramrphighWrEn));
+assign MMR_Trdstramrphigh_F_Trdstramrphigh_Data_prev = MMR_Trdstramrphigh_F_Trdstramrphigh;
+assign MMR_Trdstramrphigh_F_Trdstramrphigh_Data_muxed = MMR_Trdstramrphigh_F_Trdstramrphigh_WrEn ? MMR_Trdstramrphigh_F_Trdstramrphigh_Data : MMR_Trdstramrphigh_F_Trdstramrphigh_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH'(0))
+) MMR_Trdstramrphigh_F_Trdstramrphigh_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramrphigh_F_Trdstramrphigh_WrEn),
+    .in    (MMR_Trdstramrphigh_F_Trdstramrphigh_Data),
+    .out   (MMR_Trdstramrphigh_F_Trdstramrphigh)
+);
+
+logic                                           MMR_Trdstramdata_F_Trdstramdata_WrEn;
+logic [DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH-1:0] MMR_Trdstramdata_F_Trdstramdata_Data;
+logic [DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH-1:0] MMR_Trdstramdata_F_Trdstramdata_DataEff;
+logic [DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH-1:0] MMR_Trdstramdata_F_Trdstramdata_Data_muxed;
+logic [DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH-1:0] MMR_Trdstramdata_F_Trdstramdata_Data_prev;
+assign MMR_Trdstramdata_F_Trdstramdata_DataEff = {reg_wr_data[31:0]};
+assign MMR_Trdstramdata_F_Trdstramdata_Data = (DstSinkMmrTrdstramdataWr.Data.Trdstramdata);
+assign MMR_Trdstramdata_F_Trdstramdata_WrEn = ((DstSinkMmrTrdstramdataWr.TrdstramdataWrEn));
+assign MMR_Trdstramdata_F_Trdstramdata_Data_prev = MMR_Trdstramdata_F_Trdstramdata;
+assign MMR_Trdstramdata_F_Trdstramdata_Data_muxed = MMR_Trdstramdata_F_Trdstramdata_WrEn ? MMR_Trdstramdata_F_Trdstramdata_Data : MMR_Trdstramdata_F_Trdstramdata_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH'(0))
+) MMR_Trdstramdata_F_Trdstramdata_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_Trdstramdata_F_Trdstramdata_WrEn),
+    .in    (MMR_Trdstramdata_F_Trdstramdata_Data),
+    .out   (MMR_Trdstramdata_F_Trdstramdata)
+);
+
+logic                                           MMR_ScratchLo_F_Data_WrEn;
+logic [DST_SINK_SCRATCHLO_DATA_WIDTH      -1:0] MMR_ScratchLo_F_Data_Data;
+logic [DST_SINK_SCRATCHLO_DATA_WIDTH      -1:0] MMR_ScratchLo_F_Data_DataEff;
+logic [DST_SINK_SCRATCHLO_DATA_WIDTH      -1:0] MMR_ScratchLo_F_Data_Data_muxed;
+logic [DST_SINK_SCRATCHLO_DATA_WIDTH      -1:0] MMR_ScratchLo_F_Data_Data_prev;
+assign MMR_ScratchLo_F_Data_DataEff = {reg_wr_data[31:0]};
+assign MMR_ScratchLo_F_Data_Data = (DST_SINK_SCRATCHLO_DATA_WIDTH'(update_value(64'(MMR_ScratchLo_F_Data), 64'(MMR_ScratchLo_F_Data_DataEff[31:0]), reg_wr_instr_type)));
+assign MMR_ScratchLo_F_Data_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_SCRATCHLO))));
+assign MMR_ScratchLo_F_Data_Data_prev = MMR_ScratchLo_F_Data;
+assign MMR_ScratchLo_F_Data_Data_muxed = MMR_ScratchLo_F_Data_WrEn ? MMR_ScratchLo_F_Data_Data : MMR_ScratchLo_F_Data_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_SCRATCHLO_DATA_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_SCRATCHLO_DATA_WIDTH'(0))
+) MMR_ScratchLo_F_Data_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_ScratchLo_F_Data_WrEn),
+    .in    (MMR_ScratchLo_F_Data_Data),
+    .out   (MMR_ScratchLo_F_Data)
+);
+
+logic                                           MMR_ScratchHi_F_Data_WrEn;
+logic [DST_SINK_SCRATCHHI_DATA_WIDTH      -1:0] MMR_ScratchHi_F_Data_Data;
+logic [DST_SINK_SCRATCHHI_DATA_WIDTH      -1:0] MMR_ScratchHi_F_Data_DataEff;
+logic [DST_SINK_SCRATCHHI_DATA_WIDTH      -1:0] MMR_ScratchHi_F_Data_Data_muxed;
+logic [DST_SINK_SCRATCHHI_DATA_WIDTH      -1:0] MMR_ScratchHi_F_Data_Data_prev;
+assign MMR_ScratchHi_F_Data_DataEff = {reg_wr_data[31:0]};
+assign MMR_ScratchHi_F_Data_Data = (DST_SINK_SCRATCHHI_DATA_WIDTH'(update_value(64'(MMR_ScratchHi_F_Data), 64'(MMR_ScratchHi_F_Data_DataEff[31:0]), reg_wr_instr_type)));
+assign MMR_ScratchHi_F_Data_WrEn = (((reg_write & reg_wr_strb[0] & (reg_addr == ADDR_MMR_SCRATCHHI))));
+assign MMR_ScratchHi_F_Data_Data_prev = MMR_ScratchHi_F_Data;
+assign MMR_ScratchHi_F_Data_Data_muxed = MMR_ScratchHi_F_Data_WrEn ? MMR_ScratchHi_F_Data_Data : MMR_ScratchHi_F_Data_Data_prev;
+generic_dff #(
+    .WIDTH       ($bits(logic [DST_SINK_SCRATCHHI_DATA_WIDTH-1:0])),
+    .RESET_VALUE (DST_SINK_SCRATCHHI_DATA_WIDTH'(0))
+) MMR_ScratchHi_F_Data_ff (
+    .clk   (clk),
+    .rst_n (reset_n),
+    .en    (MMR_ScratchHi_F_Data_WrEn),
+    .in    (MMR_ScratchHi_F_Data_Data),
+    .out   (MMR_ScratchHi_F_Data)
+);
+
+assign MMR_Trdstramcontrol = {
+    MMR_Trdstramcontrol_F_Rsvd319,
+    MMR_Trdstramcontrol_F_Trdstramstoponwrap,
+    MMR_Trdstramcontrol_F_Rsvd75,
+    MMR_Trdstramcontrol_F_Trdstrammode,
+    MMR_Trdstramcontrol_F_Trdstramempty,
+    MMR_Trdstramcontrol_F_Rsvd22,
+    MMR_Trdstramcontrol_F_Trdstramenable,
+    MMR_Trdstramcontrol_F_Trdstramactive
+};
+logic [31:0] MMR_Trdstramcontrol_muxed;
+assign MMR_Trdstramcontrol_muxed = {
+    MMR_Trdstramcontrol_F_Rsvd319_Data_muxed,
+    MMR_Trdstramcontrol_F_Trdstramstoponwrap_Data_muxed,
+    MMR_Trdstramcontrol_F_Rsvd75_Data_muxed,
+    MMR_Trdstramcontrol_F_Trdstrammode_Data_muxed,
+    MMR_Trdstramcontrol_F_Trdstramempty_Data_muxed,
+    MMR_Trdstramcontrol_F_Rsvd22_Data_muxed,
+    MMR_Trdstramcontrol_F_Trdstramenable_Data_muxed,
+    MMR_Trdstramcontrol_F_Trdstramactive_Data_muxed
+};
+assign MMR_Trdstramimpl = {
+    MMR_Trdstramimpl_F_Rsvd3128,
+    MMR_Trdstramimpl_F_Trdstramvendorframelength,
+    MMR_Trdstramimpl_F_Rsvd2314,
+    MMR_Trdstramimpl_F_Trdstramhassmem,
+    MMR_Trdstramimpl_F_Trdstramhassram,
+    MMR_Trdstramimpl_F_Trdstramcomptype,
+    MMR_Trdstramimpl_F_Trdstramverminor,
+    MMR_Trdstramimpl_F_Trdstramvermajor
+};
+logic [31:0] MMR_Trdstramimpl_muxed;
+assign MMR_Trdstramimpl_muxed = {
+    MMR_Trdstramimpl_F_Rsvd3128,
+    MMR_Trdstramimpl_F_Trdstramvendorframelength_Data_muxed,
+    MMR_Trdstramimpl_F_Rsvd2314,
+    MMR_Trdstramimpl_F_Trdstramhassmem,
+    MMR_Trdstramimpl_F_Trdstramhassram,
+    MMR_Trdstramimpl_F_Trdstramcomptype,
+    MMR_Trdstramimpl_F_Trdstramverminor,
+    MMR_Trdstramimpl_F_Trdstramvermajor
+};
+assign MMR_Trdstramstartlow = {
+    MMR_Trdstramstartlow_F_Trdstramstartlow,
+    MMR_Trdstramstartlow_F_Rsvd10
+};
+logic [31:0] MMR_Trdstramstartlow_muxed;
+assign MMR_Trdstramstartlow_muxed = {
+    MMR_Trdstramstartlow_F_Trdstramstartlow_Data_muxed,
+    MMR_Trdstramstartlow_F_Rsvd10
+};
+assign MMR_Trdstramstarthigh = {
+    MMR_Trdstramstarthigh_F_Trdstramstarthigh
+};
+logic [31:0] MMR_Trdstramstarthigh_muxed;
+assign MMR_Trdstramstarthigh_muxed = {
+    MMR_Trdstramstarthigh_F_Trdstramstarthigh_Data_muxed
+};
+assign MMR_Trdstramlimitlow = {
+    MMR_Trdstramlimitlow_F_Trdstramlimitlow,
+    MMR_Trdstramlimitlow_F_Rsvd10
+};
+logic [31:0] MMR_Trdstramlimitlow_muxed;
+assign MMR_Trdstramlimitlow_muxed = {
+    MMR_Trdstramlimitlow_F_Trdstramlimitlow_Data_muxed,
+    MMR_Trdstramlimitlow_F_Rsvd10
+};
+assign MMR_Trdstramlimithigh = {
+    MMR_Trdstramlimithigh_F_Trdstramlimithigh
+};
+logic [31:0] MMR_Trdstramlimithigh_muxed;
+assign MMR_Trdstramlimithigh_muxed = {
+    MMR_Trdstramlimithigh_F_Trdstramlimithigh_Data_muxed
+};
+assign MMR_Trdstramwplow = {
+    MMR_Trdstramwplow_F_Trdstramwplow,
+    MMR_Trdstramwplow_F_Rsvd11,
+    MMR_Trdstramwplow_F_Trdstramwrap
+};
+logic [31:0] MMR_Trdstramwplow_muxed;
+assign MMR_Trdstramwplow_muxed = {
+    MMR_Trdstramwplow_F_Trdstramwplow_Data_muxed,
+    MMR_Trdstramwplow_F_Rsvd11_Data_muxed,
+    MMR_Trdstramwplow_F_Trdstramwrap_Data_muxed
+};
+assign MMR_Trdstramwphigh = {
+    MMR_Trdstramwphigh_F_Trdstramwphigh
+};
+logic [31:0] MMR_Trdstramwphigh_muxed;
+assign MMR_Trdstramwphigh_muxed = {
+    MMR_Trdstramwphigh_F_Trdstramwphigh_Data_muxed
+};
+assign MMR_Trdstramrplow = {
+    MMR_Trdstramrplow_F_Trdstramrplow,
+    MMR_Trdstramrplow_F_Rsvd10
+};
+logic [31:0] MMR_Trdstramrplow_muxed;
+assign MMR_Trdstramrplow_muxed = {
+    MMR_Trdstramrplow_F_Trdstramrplow_Data_muxed,
+    MMR_Trdstramrplow_F_Rsvd10
+};
+assign MMR_Trdstramrphigh = {
+    MMR_Trdstramrphigh_F_Trdstramrphigh
+};
+logic [31:0] MMR_Trdstramrphigh_muxed;
+assign MMR_Trdstramrphigh_muxed = {
+    MMR_Trdstramrphigh_F_Trdstramrphigh_Data_muxed
+};
+assign MMR_Trdstramdata = {
+    MMR_Trdstramdata_F_Trdstramdata
+};
+logic [31:0] MMR_Trdstramdata_muxed;
+assign MMR_Trdstramdata_muxed = {
+    MMR_Trdstramdata_F_Trdstramdata_Data_muxed
+};
+assign MMR_ScratchLo = {
+    MMR_ScratchLo_F_Data
+};
+logic [31:0] MMR_ScratchLo_muxed;
+assign MMR_ScratchLo_muxed = {
+    MMR_ScratchLo_F_Data_Data_muxed
+};
+assign MMR_ScratchHi = {
+    MMR_ScratchHi_F_Data
+};
+logic [31:0] MMR_ScratchHi_muxed;
+assign MMR_ScratchHi_muxed = {
+    MMR_ScratchHi_F_Data_Data_muxed
+};
+
+always_comb begin : mmr_rd_comb
+    reg_prehit  = '0;
+    reg_rd_data = '0;
+    unique case (reg_addr)
+        ADDR_MMR_TRDSTRAMCONTROL                : begin : mmr_rd_hit_MMR_Trdstramcontrol reg_prehit.DstSinkMmrTrdstramcontrolHit = 1'b1; reg_rd_data = {MMR_Trdstramcontrol}; end
+        ADDR_MMR_TRDSTRAMIMPL                   : begin : mmr_rd_hit_MMR_Trdstramimpl reg_prehit.DstSinkMmrTrdstramimplHit = 1'b1; reg_rd_data = {MMR_Trdstramimpl}; end
+        ADDR_MMR_TRDSTRAMSTARTLOW               : begin : mmr_rd_hit_MMR_Trdstramstartlow reg_prehit.DstSinkMmrTrdstramstartlowHit = 1'b1; reg_rd_data = {MMR_Trdstramstartlow}; end
+        ADDR_MMR_TRDSTRAMSTARTHIGH              : begin : mmr_rd_hit_MMR_Trdstramstarthigh reg_prehit.DstSinkMmrTrdstramstarthighHit = 1'b1; reg_rd_data = {MMR_Trdstramstarthigh}; end
+        ADDR_MMR_TRDSTRAMLIMITLOW               : begin : mmr_rd_hit_MMR_Trdstramlimitlow reg_prehit.DstSinkMmrTrdstramlimitlowHit = 1'b1; reg_rd_data = {MMR_Trdstramlimitlow}; end
+        ADDR_MMR_TRDSTRAMLIMITHIGH              : begin : mmr_rd_hit_MMR_Trdstramlimithigh reg_prehit.DstSinkMmrTrdstramlimithighHit = 1'b1; reg_rd_data = {MMR_Trdstramlimithigh}; end
+        ADDR_MMR_TRDSTRAMWPLOW                  : begin : mmr_rd_hit_MMR_Trdstramwplow reg_prehit.DstSinkMmrTrdstramwplowHit = 1'b1; reg_rd_data = {MMR_Trdstramwplow}; end
+        ADDR_MMR_TRDSTRAMWPHIGH                 : begin : mmr_rd_hit_MMR_Trdstramwphigh reg_prehit.DstSinkMmrTrdstramwphighHit = 1'b1; reg_rd_data = {MMR_Trdstramwphigh}; end
+        ADDR_MMR_TRDSTRAMRPLOW                  : begin : mmr_rd_hit_MMR_Trdstramrplow reg_prehit.DstSinkMmrTrdstramrplowHit = 1'b1; reg_rd_data = {MMR_Trdstramrplow}; end
+        ADDR_MMR_TRDSTRAMRPHIGH                 : begin : mmr_rd_hit_MMR_Trdstramrphigh reg_prehit.DstSinkMmrTrdstramrphighHit = 1'b1; reg_rd_data = {MMR_Trdstramrphigh}; end
+        ADDR_MMR_TRDSTRAMDATA                   : begin : mmr_rd_hit_MMR_Trdstramdata reg_prehit.DstSinkMmrTrdstramdataHit = 1'b1; reg_rd_data = {MMR_Trdstramdata}; end
+        ADDR_MMR_SCRATCHLO                      : begin : mmr_rd_hit_MMR_ScratchLo reg_prehit.DstSinkMmrScratchloHit = 1'b1; reg_rd_data = {MMR_ScratchLo}; end
+        ADDR_MMR_SCRATCHHI                      : begin : mmr_rd_hit_MMR_ScratchHi reg_prehit.DstSinkMmrScratchhiHit = 1'b1; reg_rd_data = {MMR_ScratchHi}; end
+        default:  begin : mmr_rd_default
+            reg_prehit  = '0;
+            reg_rd_data = '0;
+        end
+    endcase
+end
+
+assign reg_hit = reg_read & |reg_prehit;
+
+generic_dff #(
+    .WIDTH ($bits(logic)),
+    .RESET_VALUE (0)
+) reg_hit_d1_ff (
+    .clk (clk),
+    .rst_n (reset_n),
+    .en (reg_cs | reg_hit_d1),
+    .in (reg_hit),
+    .out (reg_hit_d1)
+);
+
+always_comb begin : mmr_rd_d1_comb
+    reg_addr_select_d1 = '0;
+    unique case (reg_addr_d1)
+        ADDR_MMR_TRDSTRAMCONTROL                : begin : mmr_rd_d1_MMR_Trdstramcontrol reg_rd_data_d1 = {MMR_Trdstramcontrol}; end
+        ADDR_MMR_TRDSTRAMIMPL                   : begin : mmr_rd_d1_MMR_Trdstramimpl reg_rd_data_d1 = {MMR_Trdstramimpl}; end
+        ADDR_MMR_TRDSTRAMSTARTLOW               : begin : mmr_rd_d1_MMR_Trdstramstartlow reg_rd_data_d1 = {MMR_Trdstramstartlow}; end
+        ADDR_MMR_TRDSTRAMSTARTHIGH              : begin : mmr_rd_d1_MMR_Trdstramstarthigh reg_rd_data_d1 = {MMR_Trdstramstarthigh}; end
+        ADDR_MMR_TRDSTRAMLIMITLOW               : begin : mmr_rd_d1_MMR_Trdstramlimitlow reg_rd_data_d1 = {MMR_Trdstramlimitlow}; end
+        ADDR_MMR_TRDSTRAMLIMITHIGH              : begin : mmr_rd_d1_MMR_Trdstramlimithigh reg_rd_data_d1 = {MMR_Trdstramlimithigh}; end
+        ADDR_MMR_TRDSTRAMWPLOW                  : begin : mmr_rd_d1_MMR_Trdstramwplow reg_rd_data_d1 = {MMR_Trdstramwplow}; end
+        ADDR_MMR_TRDSTRAMWPHIGH                 : begin : mmr_rd_d1_MMR_Trdstramwphigh reg_rd_data_d1 = {MMR_Trdstramwphigh}; end
+        ADDR_MMR_TRDSTRAMRPLOW                  : begin : mmr_rd_d1_MMR_Trdstramrplow reg_rd_data_d1 = {MMR_Trdstramrplow}; end
+        ADDR_MMR_TRDSTRAMRPHIGH                 : begin : mmr_rd_d1_MMR_Trdstramrphigh reg_rd_data_d1 = {MMR_Trdstramrphigh}; end
+        ADDR_MMR_TRDSTRAMDATA                   : begin : mmr_rd_d1_MMR_Trdstramdata reg_rd_data_d1 = {MMR_Trdstramdata}; end
+        ADDR_MMR_SCRATCHLO                      : begin : mmr_rd_d1_MMR_ScratchLo reg_rd_data_d1 = {MMR_ScratchLo}; end
+        ADDR_MMR_SCRATCHHI                      : begin : mmr_rd_d1_MMR_ScratchHi reg_rd_data_d1 = {MMR_ScratchHi}; end
+        default:  begin : mmr_rd_d1_default
+            reg_rd_data_d1 = '0;
+        end
+    endcase
+end
+
+assign MmrWrReady = reg_wr_ready;
+
+if (FLOP_RD_DATA) begin : flop_rd_data
+    assign MmrHit     = reg_hit_d1;
+    generic_dff #(
+        .WIDTH ($bits(logic [DST_SINK_NUM_REGISTERS-1:0])),
+        .RESET_VALUE (0)
+    ) Mmr_Hit_List_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (reg_cs | MmrHit),
+        .in (reg_prehit),
+        .out (MmrHitList)
+    );
+    generic_dff #(
+        .WIDTH ($bits(logic [32-1:0])),
+        .RESET_VALUE (0)
+    ) Mmr_RdData_ff (
+        .clk (clk),
+        .rst_n (reset_n),
+        .en (reg_cs),
+        .in (reg_rd_data),
+        .out (MmrRdData)
+    );
+end else begin : no_flop_rd_data
+    assign MmrHit                     = reg_hit;
+    assign MmrHitList                 = reg_prehit;
+    assign MmrRdData                  = reg_rd_data;
+end
+
+assign MmrUpdateEn                              = reg_write_d1 & reg_hit_d1;
+assign MmrUpdateAddr                            = reg_addr_d1;
+assign MmrUpdateIndirAddr                       = reg_addr_select_d1;
+assign MmrUpdateData                            = reg_rd_data_d1;
+
+`ASSERT_MACRO(ERR_BROADCAST_BUS_MISSING_UPDATE_EN, clk, reset_n, $past(MmrCs & MmrWrEn, 1 + FLOP_IN_REQ) & $past(reg_hit, 1), MmrUpdateEn, "Broadcast bus signal MmrUpdateEn is not high 1 cycle after a SW write.")
+`ASSERT_MACRO(ERR_BROADCAST_BUS_INCORRECT_ADDRESS, clk, reset_n, $past(MmrCs & MmrWrEn, 1 + FLOP_IN_REQ), MmrUpdateAddr == $past(MmrAddr, 1 + FLOP_IN_REQ), "Broadcast bus signal MmrUpdateAddr does not match SW write address.")
+`ASSERT_MACRO(ERR_BROADCAST_BUS_INCORRECT_DATA, clk, reset_n, $past(MmrCs & MmrWrEn, 1 + FLOP_IN_REQ) & $past(reg_hit, 1), MmrUpdateData == get_register_value($past(MmrAddr, 1 + FLOP_IN_REQ)), "Broadcast bus signal MmrUpdateData does not match the value which was written.")
+
+assign DstSinkMmrTrdstramcontrol.Rsvd319        = MMR_Trdstramcontrol_F_Rsvd319;
+assign DstSinkMmrTrdstramcontrol.Trdstramstoponwrap = MMR_Trdstramcontrol_F_Trdstramstoponwrap;
+assign DstSinkMmrTrdstramcontrol.Rsvd75         = MMR_Trdstramcontrol_F_Rsvd75;
+assign DstSinkMmrTrdstramcontrol.Trdstrammode   = MMR_Trdstramcontrol_F_Trdstrammode;
+assign DstSinkMmrTrdstramcontrol.Trdstramempty  = MMR_Trdstramcontrol_F_Trdstramempty;
+assign DstSinkMmrTrdstramcontrol.Rsvd22         = MMR_Trdstramcontrol_F_Rsvd22;
+assign DstSinkMmrTrdstramcontrol.Trdstramenable = MMR_Trdstramcontrol_F_Trdstramenable;
+assign DstSinkMmrTrdstramcontrol.Trdstramactive = MMR_Trdstramcontrol_F_Trdstramactive;
+assign DstSinkMmrTrdstramimpl.Rsvd3128          = MMR_Trdstramimpl_F_Rsvd3128;
+assign DstSinkMmrTrdstramimpl.Trdstramvendorframelength = MMR_Trdstramimpl_F_Trdstramvendorframelength;
+assign DstSinkMmrTrdstramimpl.Rsvd2314          = MMR_Trdstramimpl_F_Rsvd2314;
+assign DstSinkMmrTrdstramimpl.Trdstramhassmem   = MMR_Trdstramimpl_F_Trdstramhassmem;
+assign DstSinkMmrTrdstramimpl.Trdstramhassram   = MMR_Trdstramimpl_F_Trdstramhassram;
+assign DstSinkMmrTrdstramimpl.Trdstramcomptype  = MMR_Trdstramimpl_F_Trdstramcomptype;
+assign DstSinkMmrTrdstramimpl.Trdstramverminor  = MMR_Trdstramimpl_F_Trdstramverminor;
+assign DstSinkMmrTrdstramimpl.Trdstramvermajor  = MMR_Trdstramimpl_F_Trdstramvermajor;
+assign DstSinkMmrTrdstramstartlow.Trdstramstartlow = MMR_Trdstramstartlow_F_Trdstramstartlow;
+assign DstSinkMmrTrdstramstartlow.Rsvd10        = MMR_Trdstramstartlow_F_Rsvd10;
+assign DstSinkMmrTrdstramstarthigh.Trdstramstarthigh = MMR_Trdstramstarthigh_F_Trdstramstarthigh;
+assign DstSinkMmrTrdstramlimitlow.Trdstramlimitlow = MMR_Trdstramlimitlow_F_Trdstramlimitlow;
+assign DstSinkMmrTrdstramlimitlow.Rsvd10        = MMR_Trdstramlimitlow_F_Rsvd10;
+assign DstSinkMmrTrdstramlimithigh.Trdstramlimithigh = MMR_Trdstramlimithigh_F_Trdstramlimithigh;
+assign DstSinkMmrTrdstramwplow.Trdstramwplow    = MMR_Trdstramwplow_F_Trdstramwplow;
+assign DstSinkMmrTrdstramwplow.Rsvd11           = MMR_Trdstramwplow_F_Rsvd11;
+assign DstSinkMmrTrdstramwplow.Trdstramwrap     = MMR_Trdstramwplow_F_Trdstramwrap;
+assign DstSinkMmrTrdstramwphigh.Trdstramwphigh  = MMR_Trdstramwphigh_F_Trdstramwphigh;
+assign DstSinkMmrTrdstramrplow.Trdstramrplow    = MMR_Trdstramrplow_F_Trdstramrplow;
+assign DstSinkMmrTrdstramrplow.Rsvd10           = MMR_Trdstramrplow_F_Rsvd10;
+assign DstSinkMmrTrdstramrphigh.Trdstramrphigh  = MMR_Trdstramrphigh_F_Trdstramrphigh;
+assign DstSinkMmrTrdstramdata.Trdstramdata      = MMR_Trdstramdata_F_Trdstramdata;
+assign DstSinkMmrScratchlo.Data                 = MMR_ScratchLo_F_Data;
+assign DstSinkMmrScratchhi.Data                 = MMR_ScratchHi_F_Data;
+
+function automatic [63:0] update_value;
+input [63:0] old_value;
+input [63:0] op1;
+input  [1:0] instr_type;
+  begin : upd_value_body
+    if (instr_type == 2'b01)
+       update_value = old_value | op1;
+    else if (instr_type == 2'b10)
+       update_value = old_value & ~op1;
+    else
+       update_value = op1;
+  end
+endfunction
+
+function automatic [31:0] get_register_value;
+input [ADDR_W-1:0] addr;
+  begin : get_reg_val_body
+    unique case (addr)
+        ADDR_MMR_TRDSTRAMCONTROL                : begin : get_reg_val_MMR_Trdstramcontrol get_register_value = {MMR_Trdstramcontrol}; end
+        ADDR_MMR_TRDSTRAMIMPL                   : begin : get_reg_val_MMR_Trdstramimpl get_register_value = {MMR_Trdstramimpl}; end
+        ADDR_MMR_TRDSTRAMSTARTLOW               : begin : get_reg_val_MMR_Trdstramstartlow get_register_value = {MMR_Trdstramstartlow}; end
+        ADDR_MMR_TRDSTRAMSTARTHIGH              : begin : get_reg_val_MMR_Trdstramstarthigh get_register_value = {MMR_Trdstramstarthigh}; end
+        ADDR_MMR_TRDSTRAMLIMITLOW               : begin : get_reg_val_MMR_Trdstramlimitlow get_register_value = {MMR_Trdstramlimitlow}; end
+        ADDR_MMR_TRDSTRAMLIMITHIGH              : begin : get_reg_val_MMR_Trdstramlimithigh get_register_value = {MMR_Trdstramlimithigh}; end
+        ADDR_MMR_TRDSTRAMWPLOW                  : begin : get_reg_val_MMR_Trdstramwplow get_register_value = {MMR_Trdstramwplow}; end
+        ADDR_MMR_TRDSTRAMWPHIGH                 : begin : get_reg_val_MMR_Trdstramwphigh get_register_value = {MMR_Trdstramwphigh}; end
+        ADDR_MMR_TRDSTRAMRPLOW                  : begin : get_reg_val_MMR_Trdstramrplow get_register_value = {MMR_Trdstramrplow}; end
+        ADDR_MMR_TRDSTRAMRPHIGH                 : begin : get_reg_val_MMR_Trdstramrphigh get_register_value = {MMR_Trdstramrphigh}; end
+        ADDR_MMR_TRDSTRAMDATA                   : begin : get_reg_val_MMR_Trdstramdata get_register_value = {MMR_Trdstramdata}; end
+        ADDR_MMR_SCRATCHLO                      : begin : get_reg_val_MMR_ScratchLo get_register_value = {MMR_ScratchLo}; end
+        ADDR_MMR_SCRATCHHI                      : begin : get_reg_val_MMR_ScratchHi get_register_value = {MMR_ScratchHi}; end
+        default                                 : begin : get_reg_val_default get_register_value = 'x; end
+    endcase
+  end
+endfunction
+
+endmodule

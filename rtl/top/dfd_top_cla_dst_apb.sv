@@ -1,0 +1,646 @@
+// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+module dfd_top_cla_dst_apb
+  import cla_mmr_pkg::*;
+  import ntr_sink_mmr_pkg::*;
+  import dst_sink_mmr_pkg::*;
+  import funnel_mmr_pkg::*;
+  import ntr_mmr_pkg::*;
+  import dst_mmr_pkg::*;
+  import cla_pkg::*;
+  import dst_pkg::*;
+  import tt_dbm_pkg::*;
+  import te_pkg::*;
+  import packetizer_pkg::*;
+  import tn_pkg::*;
+ #(
+    parameter DEBUGMARKER_WIDTH = 8,
+    parameter DEBUG_SIGNAL_WIDTH = 128,
+    parameter LANE_WIDTH = 16,
+    parameter MMR_ADDR_WIDTH = 17,
+    parameter MMR_AXI_ID_WIDTH = 4,
+    parameter MMR_AXI_USER_WIDTH = 8,
+    parameter MMR_DATA_WIDTH = 32,
+    parameter int unsigned NUM_CLA_INST = 8,
+    parameter int unsigned NUM_DST_INST = 8,
+    parameter NUM_INPUT_LANES = 8,
+    parameter bit OCTS_TS_OUTPUT = 0,
+    parameter bit TIMESTAMP_SYNC_SCHEME = 1,
+    parameter TRC_AXI_ADDR_WIDTH = 52,
+    parameter TRC_AXI_DATA_WIDTH = 512,
+    parameter TRC_AXI_ID_WIDTH = 4,
+    parameter TRC_AXI_USER_WIDTH = 8,
+    parameter TRC_BASE_ADDR = 0,
+    parameter TRC_RAM_INDEX = 256,
+    parameter TRC_SIZE_IN_KB = 16,
+    parameter TSEL_CONFIGURABLE = 0,
+    parameter MMR_BASE_ADDRESS = (MMR_ADDR_WIDTH)'('h0),
+    localparam MAX_DST_NTR_INST_DST_WRAPPER = ((0) > NUM_DST_INST) ? (0) : NUM_DST_INST,
+    localparam MMR_PSTRB_WIDTH_MMRS = MMR_DATA_WIDTH / 8,
+    localparam NUM_CLA_INST_SAFE_MMRS = (NUM_CLA_INST    > 0) ? NUM_CLA_INST    : 32'd1,
+    localparam NUM_DST_INST_SAFE_MMRS = (NUM_DST_INST    > 0) ? NUM_DST_INST    : 32'd1,
+    localparam int unsigned NUM_NTRACE_INST = 0,
+    localparam TIMESTAMP_UPPER_WIDTH_CLA_WRAPPER = 56,
+    localparam NUM_CORES_TRACE_WRAPPER = (NUM_DST_INST > NUM_NTRACE_INST) ? NUM_DST_INST : NUM_NTRACE_INST,
+    localparam NUM_CORES_WIDTH_TRACE_WRAPPER = (NUM_CORES_TRACE_WRAPPER == 1) ? 1 : $clog2(NUM_CORES_TRACE_WRAPPER)
+) (
+    input logic [NUM_CLA_INST-1:0] i_cla_ext_posedge,
+    input logic [NUM_CLA_INST-1:0] i_cla_time_tick,
+    input logic [NUM_CLA_INST-1:0] [XTRIGGER_WIDTH-1:0] i_cla_xtrigger,
+    input logic i_clk,
+    input logic i_critical_signal_hold,
+    input logic [NUM_CLA_INST-1:0] [NUM_INPUT_LANES-1:0] [LANE_WIDTH-1:0] i_debug_bus_signals,
+    input logic [MMR_ADDR_WIDTH-1:0] i_jtag_mmr_req_addr,
+    input logic [MMR_DATA_WIDTH-1:0] i_jtag_mmr_req_data,
+    input logic i_jtag_mmr_req_vld,
+    input logic i_jtag_mmr_req_we,
+    input logic [10:0] i_mem_tsel_settings,
+    input logic [NUM_CLA_INST-1:0] [63:0] i_octs_timestamp,
+    input logic [NUM_CLA_INST-1:0] [TIMESTAMP_UPPER_WIDTH_CLA_WRAPPER-1:0] i_ref_timestamp,
+    input logic i_rst_n,
+    input logic [MAX_DST_NTR_INST_DST_WRAPPER-1:0] [1:0] i_sdtrig_control,
+    input logic i_test_icg_en,
+    input logic [NUM_CLA_INST-1:0] [63:0] i_timestamp,
+    input logic [NUM_CORES_TRACE_WRAPPER-1:0] [NUM_CORES_WIDTH_TRACE_WRAPPER-1:0] i_vid_map,
+    input logic m_trc_axi_arready,
+    input logic m_trc_axi_awready,
+    input logic [TRC_AXI_ID_WIDTH-1:0] m_trc_axi_bid,
+    input logic [1:0] m_trc_axi_bresp,
+    input logic [TRC_AXI_USER_WIDTH-1:0] m_trc_axi_buser,
+    input logic m_trc_axi_bvalid,
+    input logic [TRC_AXI_DATA_WIDTH-1:0] m_trc_axi_rdata,
+    input logic [TRC_AXI_ID_WIDTH-1:0] m_trc_axi_rid,
+    input logic m_trc_axi_rlast,
+    input logic [1:0] m_trc_axi_rresp,
+    input logic [TRC_AXI_USER_WIDTH-1:0] m_trc_axi_ruser,
+    input logic m_trc_axi_rvalid,
+    input logic m_trc_axi_wready,
+    output logic [TRC_AXI_ADDR_WIDTH-1:0] m_trc_axi_araddr,
+    output logic [1:0] m_trc_axi_arburst,
+    output logic [3:0] m_trc_axi_arcache,
+    output logic [TRC_AXI_ID_WIDTH-1:0] m_trc_axi_arid,
+    output logic [7:0] m_trc_axi_arlen,
+    output logic m_trc_axi_arlock,
+    output logic [2:0] m_trc_axi_arprot,
+    output logic [3:0] m_trc_axi_arqos,
+    output logic [3:0] m_trc_axi_arregion,
+    output logic [2:0] m_trc_axi_arsize,
+    output logic [TRC_AXI_USER_WIDTH-1:0] m_trc_axi_aruser,
+    output logic m_trc_axi_arvalid,
+    output logic [TRC_AXI_ADDR_WIDTH-1:0] m_trc_axi_awaddr,
+    output logic [5:0] m_trc_axi_awatop,
+    output logic [1:0] m_trc_axi_awburst,
+    output logic [3:0] m_trc_axi_awcache,
+    output logic [TRC_AXI_ID_WIDTH-1:0] m_trc_axi_awid,
+    output logic [7:0] m_trc_axi_awlen,
+    output logic m_trc_axi_awlock,
+    output logic [2:0] m_trc_axi_awprot,
+    output logic [3:0] m_trc_axi_awqos,
+    output logic [3:0] m_trc_axi_awregion,
+    output logic [2:0] m_trc_axi_awsize,
+    output logic [TRC_AXI_USER_WIDTH-1:0] m_trc_axi_awuser,
+    output logic m_trc_axi_awvalid,
+    output logic m_trc_axi_bready,
+    output logic m_trc_axi_rready,
+    output logic [TRC_AXI_DATA_WIDTH-1:0] m_trc_axi_wdata,
+    output logic m_trc_axi_wlast,
+    output logic [(TRC_AXI_DATA_WIDTH/8)-1:0] m_trc_axi_wstrb,
+    output logic [TRC_AXI_USER_WIDTH-1:0] m_trc_axi_wuser,
+    output logic m_trc_axi_wvalid,
+    output logic [NUM_CLA_INST-1:0] [DEBUGMARKER_WIDTH-1:0] o_cla_debug_marker,
+    output logic [NUM_CLA_INST-1:0] [CLA_NUMBER_OF_CUSTOM_ACTIONS-1:0] o_cla_external_action_custom,
+    output logic [NUM_CLA_INST-1:0] o_cla_external_action_debug_interrupt_out,
+    output logic [NUM_CLA_INST-1:0] o_cla_external_action_halt_clock_local_out,
+    output logic [NUM_CLA_INST-1:0] o_cla_external_action_halt_clock_out,
+    output logic [NUM_CLA_INST-1:0] o_cla_external_action_toggle_gpio_out,
+    output logic [NUM_CLA_INST-1:0] [XTRIGGER_WIDTH-1:0] o_cla_xtrigger,
+    output DbgMuxSelMmr_s [NUM_CLA_INST-1:0] o_debug_mux_sel,
+    output logic [MMR_DATA_WIDTH-1:0] o_jtag_mmr_rsp_data,
+    output logic o_jtag_mmr_rsp_vld,
+    input logic [MMR_ADDR_WIDTH-1:0] paddr,
+    input logic penable,
+    output logic [MMR_DATA_WIDTH-1:0] prdata,
+    output logic pready,
+    input logic psel,
+    output logic pslverr,
+    input logic [MMR_PSTRB_WIDTH_MMRS-1:0] pstrb,
+    input logic [MMR_DATA_WIDTH-1:0] pwdata,
+    input logic pwrite
+);
+
+  localparam CLA_W_CLK_RST_WRAPPER = (NUM_CLA_INST    == 0) ? 32'd1 : NUM_CLA_INST;
+  localparam CLA_W_DST_WRAPPER = (NUM_CLA_INST == 0) ? 1 : NUM_CLA_INST;
+  localparam DATA_WIDTH_DST_WRAPPER = 128;
+  localparam DATA_WIDTH_TNIF_WRAPPER = 128;
+  localparam DATA_WIDTH_TRACE_WRAPPER = 128;
+  localparam DST_W_CLK_RST_WRAPPER = (NUM_DST_INST    == 0) ? 32'd1 : NUM_DST_INST;
+  localparam DST_W_TNIF_WRAPPER = (NUM_DST_INST     == 0) ? 32'd1 : NUM_DST_INST;
+  localparam NTR_W_CLK_RST_WRAPPER = ((0) == 0) ? 32'd1 : (0);
+  localparam NTR_W_TNIF_WRAPPER = ((0)  == 0) ? 32'd1 : (0);
+  localparam NUM_DST_INST_SAFE_TRACE_WRAPPER = (NUM_DST_INST > 0) ? NUM_DST_INST : 32'd1;
+  localparam NUM_NTRACE_INST_SAFE_MMRS = ((0) > 0) ? (0) : 32'd1;
+  localparam TNIF_CONNECTIONS_TNIF_WRAPPER = ((0) > NUM_DST_INST) ? (0) : NUM_DST_INST;
+  localparam TNIF_W_CLK_RST_WRAPPER = ((NUM_DST_INST == 0) && ((0) == 0)) ? 32'd1
+                                     : (((0) > NUM_DST_INST) ? (0) : NUM_DST_INST);
+  localparam TNIF_W_TNIF_WRAPPER = ((NUM_DST_INST == 0) && ((0) == 0)) ? 32'd1
+                                         : (((0) > NUM_DST_INST) ? (0) : NUM_DST_INST);
+  localparam NUM_NTRACE_INST_SAFE_TRACE_WRAPPER = (NUM_NTRACE_INST > 0) ? NUM_NTRACE_INST : 32'd1;
+
+  wire ClaMmrs_s [NUM_CLA_INST_SAFE_MMRS-1:0] ClaMmrs;
+
+  wire ClaMmrsWrMinimal_s [NUM_CLA_INST-1:0] ClaMmrsWr;
+
+  wire DstMmrs_s [NUM_DST_INST_SAFE_MMRS-1:0] DstMmrs;
+
+  wire DstMmrsWr_s [NUM_DST_INST-1:0] DstMmrsWr;
+
+  DstSinkMmrs_s DstSinkMmrs;
+
+  DstSinkMmrsWr_s DstSinkMmrsWr;
+
+  FunnelMmrs_s FunnelMmrs;
+
+  FunnelMmrsWr_s FunnelMmrsWr;
+
+  wire NtrMmrs_s [NUM_NTRACE_INST_SAFE_MMRS-1:0] NtrMmrs;
+
+  NtrSinkMmrs_s NtrSinkMmrs;
+
+  NtrSinkMmrsWr_s NtrSinkMmrsWr;
+
+  logic TraceRamWrEn;
+
+  logic [NUM_CLA_INST_SAFE_MMRS-1:0] cla_func_enable;
+
+  logic [CLA_W_CLK_RST_WRAPPER-1:0] cla_gated_clock;
+
+  logic [CLA_W_CLK_RST_WRAPPER-1:0] cla_gated_func_clamp;
+
+  logic [CLA_W_CLK_RST_WRAPPER-1:0] cla_gated_reset_n;
+
+  logic [CLA_W_CLK_RST_WRAPPER-1:0] cla_gated_reset_n_warm_ovrride;
+
+  logic [NUM_CLA_INST-1:0] [DEBUG_SIGNAL_WIDTH-1:0] debug_bus;
+
+  logic [NUM_DST_INST_SAFE_MMRS-1:0] dst_func_enable;
+
+  logic [DST_W_CLK_RST_WRAPPER-1:0] dst_gated_clock;
+
+  logic [DST_W_CLK_RST_WRAPPER-1:0] dst_gated_func_clamp;
+
+  logic [DST_W_CLK_RST_WRAPPER-1:0] dst_gated_reset_n;
+
+  logic [DST_W_CLK_RST_WRAPPER-1:0] dst_gated_reset_n_warm_ovrride;
+
+  logic dst_sink_func_enable;
+
+  logic dst_sink_gated_clock;
+
+  logic dst_sink_gated_func_clamp;
+
+  logic dst_sink_gated_reset_n;
+
+  logic dst_sink_gated_reset_n_warm_ovrride;
+
+  logic [NUM_DST_INST-1:0] [DATA_WIDTH_DST_WRAPPER-1:0] dst_tnif_data;
+
+  logic [NUM_DST_INST-1:0] dst_tnif_req;
+
+  logic funnel_func_enable;
+
+  logic funnel_gated_clock;
+
+  logic funnel_gated_func_clamp;
+
+  logic funnel_gated_reset_n;
+
+  logic funnel_gated_reset_n_warm_ovrride;
+
+  logic [NUM_NTRACE_INST_SAFE_MMRS-1:0] ntr_func_enable;
+
+  logic [NTR_W_CLK_RST_WRAPPER-1:0] ntr_gated_clock;
+
+  logic [NTR_W_CLK_RST_WRAPPER-1:0] ntr_gated_func_clamp;
+
+  logic [NTR_W_CLK_RST_WRAPPER-1:0] ntr_gated_reset_n;
+
+  logic [NTR_W_CLK_RST_WRAPPER-1:0] ntr_gated_reset_n_warm_ovrride;
+
+  logic ntr_sink_func_enable;
+
+  logic ntr_sink_gated_clock;
+
+  logic ntr_sink_gated_func_clamp;
+
+  logic ntr_sink_gated_reset_n;
+
+  logic ntr_sink_gated_reset_n_warm_ovrride;
+
+  logic [NUM_CLA_INST-1:0] o_cla_external_action_trace_pulse;
+
+  logic [NUM_CLA_INST-1:0] o_cla_external_action_trace_start;
+
+  logic [NUM_CLA_INST-1:0] o_cla_external_action_trace_stop;
+
+  logic s_mmr_axi_arready;
+
+  logic s_mmr_axi_awready;
+
+  logic [MMR_AXI_ID_WIDTH-1:0] s_mmr_axi_bid;
+
+  logic [1:0] s_mmr_axi_bresp;
+
+  logic [MMR_AXI_USER_WIDTH-1:0] s_mmr_axi_buser;
+
+  logic s_mmr_axi_bvalid;
+
+  logic [MMR_DATA_WIDTH-1:0] s_mmr_axi_rdata;
+
+  logic [MMR_AXI_ID_WIDTH-1:0] s_mmr_axi_rid;
+
+  logic s_mmr_axi_rlast;
+
+  logic [1:0] s_mmr_axi_rresp;
+
+  logic [MMR_AXI_USER_WIDTH-1:0] s_mmr_axi_ruser;
+
+  logic s_mmr_axi_rvalid;
+
+  logic s_mmr_axi_wready;
+
+  wire dst_pkg::timestamp_s [NUM_CLA_INST-1:0] timesync_cla_timestamp;
+
+  logic [DST_W_TNIF_WRAPPER-1:0] tnif_dst_bp;
+
+  logic [DST_W_TNIF_WRAPPER-1:0] tnif_dst_flush;
+
+  logic [DST_W_TNIF_WRAPPER-1:0] tnif_dst_pull;
+
+  logic [TNIF_W_CLK_RST_WRAPPER-1:0] tnif_gated_clock;
+
+  logic [TNIF_W_CLK_RST_WRAPPER-1:0] tnif_gated_func_clamp;
+
+  logic [TNIF_W_CLK_RST_WRAPPER-1:0] tnif_gated_reset_n;
+
+  logic [TNIF_W_CLK_RST_WRAPPER-1:0] tnif_gated_reset_n_warm_ovrride;
+
+  logic [NTR_W_TNIF_WRAPPER-1:0] tnif_ntr_bp;
+
+  logic [NTR_W_TNIF_WRAPPER-1:0] tnif_ntr_flush;
+
+  logic [NTR_W_TNIF_WRAPPER-1:0] tnif_ntr_pull;
+
+  logic [TNIF_W_TNIF_WRAPPER-1:0] [DATA_WIDTH_TNIF_WRAPPER-1:0] tnif_tr_data;
+
+  logic [TNIF_W_TNIF_WRAPPER-1:0] tnif_tr_src;
+
+  logic [TNIF_W_TNIF_WRAPPER-1:0] tnif_tr_valid;
+
+  logic trRamDataRdEn;
+
+  logic [NUM_CORES_TRACE_WRAPPER-1:0] tr_tnif_dst_bp;
+
+  logic [NUM_CORES_TRACE_WRAPPER-1:0] tr_tnif_dst_flush;
+
+  logic [NUM_CORES_TRACE_WRAPPER-1:0] tr_tnif_gnt;
+
+  logic [NUM_CORES_TRACE_WRAPPER-1:0] tr_tnif_ntr_bp;
+
+  logic [NUM_CORES_TRACE_WRAPPER-1:0] tr_tnif_ntr_flush;
+
+  logic trdstRamDataRdEn;
+
+  cla_wrapper #(
+    .DEBUGMARKER_WIDTH(DEBUGMARKER_WIDTH),
+    .DEBUG_SIGNAL_WIDTH(DEBUG_SIGNAL_WIDTH),
+    .LANE_WIDTH(LANE_WIDTH),
+    .NUM_CLA_INST(NUM_CLA_INST),
+    .NUM_INPUT_LANES(NUM_INPUT_LANES),
+    .OCTS_TS_OUTPUT(OCTS_TS_OUTPUT),
+    .TIMESTAMP_SYNC_SCHEME(TIMESTAMP_SYNC_SCHEME)
+  ) cla_wrapper (
+    .i_cla_ext_posedge(i_cla_ext_posedge),
+    .i_cla_time_tick(i_cla_time_tick),
+    .i_cla_xtrigger(i_cla_xtrigger),
+    .i_debug_bus_signals(i_debug_bus_signals),
+    .i_octs_timestamp(i_octs_timestamp),
+    .i_ref_timestamp(i_ref_timestamp),
+    .i_test_icg_en(i_test_icg_en),
+    .i_timestamp(i_timestamp),
+    .o_cla_debug_marker(o_cla_debug_marker),
+    .o_cla_external_action_custom(o_cla_external_action_custom),
+    .o_cla_external_action_debug_interrupt_out(o_cla_external_action_debug_interrupt_out),
+    .o_cla_external_action_halt_clock_local_out(o_cla_external_action_halt_clock_local_out),
+    .o_cla_external_action_halt_clock_out(o_cla_external_action_halt_clock_out),
+    .o_cla_external_action_toggle_gpio_out(o_cla_external_action_toggle_gpio_out),
+    .o_cla_xtrigger(o_cla_xtrigger),
+    .o_debug_mux_sel(o_debug_mux_sel),
+    .cla_gated_reset_n_warm_ovrride(cla_gated_reset_n_warm_ovrride),
+    .cla_gated_func_clamp(cla_gated_func_clamp),
+    .ClaMmrs(ClaMmrs),
+    .cla_gated_clock(cla_gated_clock),
+    .cla_gated_reset_n(cla_gated_reset_n),
+    .timesync_cla_timestamp(timesync_cla_timestamp),
+    .debug_bus(debug_bus),
+    .o_cla_external_action_trace_start(o_cla_external_action_trace_start),
+    .o_cla_external_action_trace_stop(o_cla_external_action_trace_stop),
+    .o_cla_external_action_trace_pulse(o_cla_external_action_trace_pulse),
+    .ClaMmrsWr(ClaMmrsWr)
+  );
+
+  clk_rst_wrapper #(
+    .NUM_CLA_INST(NUM_CLA_INST),
+    .NUM_DST_INST(NUM_DST_INST),
+    .NUM_NTRACE_INST(0)
+  ) clk_rst_wrapper (
+    .ntr_gated_reset_n(ntr_gated_reset_n),
+    .dst_sink_gated_reset_n_warm_ovrride(dst_sink_gated_reset_n_warm_ovrride),
+    .tnif_gated_reset_n_warm_ovrride(tnif_gated_reset_n_warm_ovrride),
+    .ntr_sink_gated_reset_n_warm_ovrride(ntr_sink_gated_reset_n_warm_ovrride),
+    .cla_gated_reset_n_warm_ovrride(cla_gated_reset_n_warm_ovrride),
+    .funnel_gated_reset_n_warm_ovrride(funnel_gated_reset_n_warm_ovrride),
+    .dst_gated_reset_n_warm_ovrride(dst_gated_reset_n_warm_ovrride),
+    .ntr_gated_clock(ntr_gated_clock),
+    .ntr_gated_reset_n_warm_ovrride(ntr_gated_reset_n_warm_ovrride),
+    .cla_gated_func_clamp(cla_gated_func_clamp),
+    .cla_gated_clock(cla_gated_clock),
+    .cla_gated_reset_n(cla_gated_reset_n),
+    .i_clk(i_clk),
+    .i_critical_signal_hold(i_critical_signal_hold),
+    .i_rst_n(i_rst_n),
+    .i_test_icg_en(i_test_icg_en),
+    .cla_func_enable(cla_func_enable),
+    .funnel_func_enable(funnel_func_enable),
+    .ntr_sink_func_enable(ntr_sink_func_enable),
+    .dst_sink_func_enable(dst_sink_func_enable),
+    .dst_func_enable(dst_func_enable),
+    .ntr_func_enable('0),
+    .dst_gated_reset_n(dst_gated_reset_n),
+    .dst_gated_clock(dst_gated_clock),
+    .dst_gated_func_clamp(dst_gated_func_clamp),
+    .tnif_gated_reset_n(tnif_gated_reset_n),
+    .tnif_gated_func_clamp(tnif_gated_func_clamp),
+    .tnif_gated_clock(tnif_gated_clock),
+    .ntr_gated_func_clamp(ntr_gated_func_clamp),
+    .dst_sink_gated_clock(dst_sink_gated_clock),
+    .dst_sink_gated_func_clamp(dst_sink_gated_func_clamp),
+    .funnel_gated_func_clamp(funnel_gated_func_clamp),
+    .ntr_sink_gated_func_clamp(ntr_sink_gated_func_clamp),
+    .funnel_gated_clock(funnel_gated_clock),
+    .dst_sink_gated_reset_n(dst_sink_gated_reset_n),
+    .ntr_sink_gated_clock(ntr_sink_gated_clock),
+    .ntr_sink_gated_reset_n(ntr_sink_gated_reset_n),
+    .funnel_gated_reset_n(funnel_gated_reset_n)
+  );
+
+  dst_wrapper #(
+    .DEBUG_SIGNAL_WIDTH(DEBUG_SIGNAL_WIDTH),
+    .NUM_CLA_INST(NUM_CLA_INST),
+    .NUM_DST_INST(NUM_DST_INST),
+    .NUM_NTRACE_INST(0)
+  ) dst_wrapper (
+    .i_sdtrig_control(i_sdtrig_control),
+    .i_timestamp(i_timestamp),
+    .tnif_dst_pull(tnif_dst_pull),
+    .tnif_dst_flush(tnif_dst_flush),
+    .timesync_cla_timestamp(timesync_cla_timestamp),
+    .dst_gated_reset_n_warm_ovrride(dst_gated_reset_n_warm_ovrride),
+    .tnif_dst_bp(tnif_dst_bp),
+    .dst_gated_reset_n(dst_gated_reset_n),
+    .DstMmrs(DstMmrs),
+    .debug_bus(debug_bus),
+    .dst_gated_clock(dst_gated_clock),
+    .dst_gated_func_clamp(dst_gated_func_clamp),
+    .cla_trigger_trace_start(o_cla_external_action_trace_start),
+    .cla_trigger_trace_stop(o_cla_external_action_trace_stop),
+    .cla_trigger_trace_pulse(o_cla_external_action_trace_pulse),
+    .DstMmrsWr(DstMmrsWr),
+    .dst_tnif_data(dst_tnif_data),
+    .dst_tnif_req(dst_tnif_req)
+  );
+
+  mmrs #(
+    .DEBUG_SIGNAL_WIDTH(DEBUG_SIGNAL_WIDTH),
+    .MMR_ADDR_WIDTH(MMR_ADDR_WIDTH),
+    .MMR_AXI_ID_WIDTH(MMR_AXI_ID_WIDTH),
+    .MMR_AXI_USER_WIDTH(MMR_AXI_USER_WIDTH),
+    .MMR_BASE_ADDRESS(MMR_BASE_ADDRESS),
+    .MMR_DATA_WIDTH(MMR_DATA_WIDTH),
+    .NUM_CLA_INST(NUM_CLA_INST),
+    .NUM_DST_INST(NUM_DST_INST),
+    .NUM_NTRACE_INST(0),
+    .TRC_SIZE_IN_KB(TRC_SIZE_IN_KB),
+    .USE_AXI_INTF(0),
+    .NTRACE_SUPPORT(0),
+    .TRACE_SINK_SUPPORT(1)
+  ) mmrs (
+    .s_mmr_axi_rdata(s_mmr_axi_rdata),
+    .s_mmr_axi_bresp(s_mmr_axi_bresp),
+    .s_mmr_axi_wready(s_mmr_axi_wready),
+    .s_mmr_axi_rid(s_mmr_axi_rid),
+    .s_mmr_axi_arready(s_mmr_axi_arready),
+    .s_mmr_axi_buser(s_mmr_axi_buser),
+    .NtrMmrs(NtrMmrs),
+    .s_mmr_axi_ruser(s_mmr_axi_ruser),
+    .s_mmr_axi_bvalid(s_mmr_axi_bvalid),
+    .NtrSinkMmrs(NtrSinkMmrs),
+    .s_mmr_axi_bid(s_mmr_axi_bid),
+    .trRamDataRdEn(trRamDataRdEn),
+    .s_mmr_axi_awready(s_mmr_axi_awready),
+    .s_mmr_axi_rresp(s_mmr_axi_rresp),
+    .s_mmr_axi_rvalid(s_mmr_axi_rvalid),
+    .s_mmr_axi_rlast(s_mmr_axi_rlast),
+    .ntr_func_enable(ntr_func_enable),
+    .ClaMmrs(ClaMmrs),
+    .cla_func_enable(cla_func_enable),
+    .funnel_func_enable(funnel_func_enable),
+    .ntr_sink_func_enable(ntr_sink_func_enable),
+    .dst_sink_func_enable(dst_sink_func_enable),
+    .dst_func_enable(dst_func_enable),
+    .DstMmrs(DstMmrs),
+    .i_clk(i_clk),
+    .i_critical_signal_hold(i_critical_signal_hold),
+    .i_jtag_mmr_req_addr(i_jtag_mmr_req_addr),
+    .i_jtag_mmr_req_data(i_jtag_mmr_req_data),
+    .i_jtag_mmr_req_vld(i_jtag_mmr_req_vld),
+    .i_jtag_mmr_req_we(i_jtag_mmr_req_we),
+    .i_rst_n(i_rst_n),
+    .paddr(paddr),
+    .penable(penable),
+    .psel(psel),
+    .pstrb(pstrb),
+    .pwdata(pwdata),
+    .pwrite(pwrite),
+    .o_jtag_mmr_rsp_data(o_jtag_mmr_rsp_data),
+    .o_jtag_mmr_rsp_vld(o_jtag_mmr_rsp_vld),
+    .prdata(prdata),
+    .pready(pready),
+    .pslverr(pslverr),
+    .DstSinkMmrsWr(DstSinkMmrsWr),
+    .FunnelMmrsWr(FunnelMmrsWr),
+    .DstMmrsWr(DstMmrsWr),
+    .TraceRamWrEn(TraceRamWrEn),
+    .ClaMmrsWr(ClaMmrsWr),
+    .s_mmr_axi_awid('0),
+    .s_mmr_axi_awaddr('0),
+    .s_mmr_axi_awlen('0),
+    .s_mmr_axi_awsize('0),
+    .s_mmr_axi_awburst('0),
+    .s_mmr_axi_awlock('0),
+    .s_mmr_axi_awcache('0),
+    .s_mmr_axi_awprot('0),
+    .s_mmr_axi_awqos('0),
+    .s_mmr_axi_awregion('0),
+    .s_mmr_axi_awatop('0),
+    .s_mmr_axi_awuser('0),
+    .s_mmr_axi_awvalid('0),
+    .s_mmr_axi_wdata('0),
+    .s_mmr_axi_wstrb('0),
+    .s_mmr_axi_wlast('0),
+    .s_mmr_axi_wuser('0),
+    .s_mmr_axi_wvalid('0),
+    .s_mmr_axi_bready('0),
+    .s_mmr_axi_arid('0),
+    .s_mmr_axi_araddr('0),
+    .s_mmr_axi_arlen('0),
+    .s_mmr_axi_arsize('0),
+    .s_mmr_axi_arburst('0),
+    .s_mmr_axi_arlock('0),
+    .s_mmr_axi_arcache('0),
+    .s_mmr_axi_arprot('0),
+    .s_mmr_axi_arqos('0),
+    .s_mmr_axi_arregion('0),
+    .s_mmr_axi_aruser('0),
+    .s_mmr_axi_arvalid('0),
+    .s_mmr_axi_rready('0),
+    .NtrSinkMmrsWr('0),
+    .NtrMmrsWr('0),
+    .trdstRamDataRdEn(trdstRamDataRdEn),
+    .FunnelMmrs(FunnelMmrs),
+    .DstSinkMmrs(DstSinkMmrs)
+  );
+
+  tnif_wrapper #(
+    .NUM_DST_INST(NUM_DST_INST),
+    .NUM_NTRACE_INST(0)
+  ) tnif_wrapper (
+    .tnif_ntr_pull(tnif_ntr_pull),
+    .tnif_ntr_bp(tnif_ntr_bp),
+    .tnif_ntr_flush(tnif_ntr_flush),
+    .tnif_dst_pull(tnif_dst_pull),
+    .tnif_dst_flush(tnif_dst_flush),
+    .tnif_dst_bp(tnif_dst_bp),
+    .dst_tnif_data(dst_tnif_data),
+    .tnif_gated_reset_n_warm_ovrride(tnif_gated_reset_n_warm_ovrride),
+    .tnif_gated_reset_n(tnif_gated_reset_n),
+    .tnif_gated_func_clamp(tnif_gated_func_clamp),
+    .tr_tnif_ntr_flush(tr_tnif_ntr_flush),
+    .tr_tnif_ntr_bp(tr_tnif_ntr_bp),
+    .tr_tnif_dst_bp(tr_tnif_dst_bp),
+    .tnif_gated_clock(tnif_gated_clock),
+    .dst_tnif_req(dst_tnif_req),
+    .tr_tnif_dst_flush(tr_tnif_dst_flush),
+    .tr_tnif_gnt(tr_tnif_gnt),
+    .dst_gated_func_clamp(dst_gated_func_clamp),
+    .ntr_gated_func_clamp(ntr_gated_func_clamp),
+    .ntr_tnif_req('0),
+    .ntr_tnif_data('0),
+    .tnif_tr_src(tnif_tr_src),
+    .tnif_tr_data(tnif_tr_data),
+    .tnif_tr_valid(tnif_tr_valid)
+  );
+
+  trace_wrapper #(
+    .NUM_DST_INST(NUM_DST_INST),
+    .NUM_NTRACE_INST(NUM_NTRACE_INST),
+
+    .TRC_AXI_ADDR_WIDTH(TRC_AXI_ADDR_WIDTH),
+    .TRC_AXI_DATA_WIDTH(TRC_AXI_DATA_WIDTH),
+    .TRC_AXI_ID_WIDTH(TRC_AXI_ID_WIDTH),
+    .TRC_AXI_USER_WIDTH(TRC_AXI_USER_WIDTH),
+    .TRC_BASE_ADDR(TRC_BASE_ADDR),
+    .TRC_RAM_INDEX(TRC_RAM_INDEX),
+    .TRC_SIZE_IN_KB(TRC_SIZE_IN_KB),
+    .TSEL_CONFIGURABLE(TSEL_CONFIGURABLE)
+  ) trace_wrapper (
+    .NtrSinkMmrsWr(NtrSinkMmrsWr),
+    .DstSinkMmrsWr(DstSinkMmrsWr),
+    .FunnelMmrsWr(FunnelMmrsWr),
+    .TraceRamWrEn(TraceRamWrEn),
+    .tr_tnif_ntr_flush(tr_tnif_ntr_flush),
+    .tr_tnif_ntr_bp(tr_tnif_ntr_bp),
+    .tr_tnif_dst_bp(tr_tnif_dst_bp),
+    .tr_tnif_dst_flush(tr_tnif_dst_flush),
+    .tr_tnif_gnt(tr_tnif_gnt),
+    .i_mem_tsel_settings(i_mem_tsel_settings),
+    .i_vid_map(i_vid_map),
+    .m_trc_axi_arready(m_trc_axi_arready),
+    .m_trc_axi_awready(m_trc_axi_awready),
+    .m_trc_axi_bid(m_trc_axi_bid),
+    .m_trc_axi_bresp(m_trc_axi_bresp),
+    .m_trc_axi_buser(m_trc_axi_buser),
+    .m_trc_axi_bvalid(m_trc_axi_bvalid),
+    .m_trc_axi_rdata(m_trc_axi_rdata),
+    .m_trc_axi_rid(m_trc_axi_rid),
+    .m_trc_axi_rlast(m_trc_axi_rlast),
+    .m_trc_axi_rresp(m_trc_axi_rresp),
+    .m_trc_axi_ruser(m_trc_axi_ruser),
+    .m_trc_axi_rvalid(m_trc_axi_rvalid),
+    .m_trc_axi_wready(m_trc_axi_wready),
+    .m_trc_axi_araddr(m_trc_axi_araddr),
+    .m_trc_axi_arburst(m_trc_axi_arburst),
+    .m_trc_axi_arcache(m_trc_axi_arcache),
+    .m_trc_axi_arid(m_trc_axi_arid),
+    .m_trc_axi_arlen(m_trc_axi_arlen),
+    .m_trc_axi_arlock(m_trc_axi_arlock),
+    .m_trc_axi_arprot(m_trc_axi_arprot),
+    .m_trc_axi_arqos(m_trc_axi_arqos),
+    .m_trc_axi_arregion(m_trc_axi_arregion),
+    .m_trc_axi_arsize(m_trc_axi_arsize),
+    .m_trc_axi_aruser(m_trc_axi_aruser),
+    .m_trc_axi_arvalid(m_trc_axi_arvalid),
+    .m_trc_axi_awaddr(m_trc_axi_awaddr),
+    .m_trc_axi_awatop(m_trc_axi_awatop),
+    .m_trc_axi_awburst(m_trc_axi_awburst),
+    .m_trc_axi_awcache(m_trc_axi_awcache),
+    .m_trc_axi_awid(m_trc_axi_awid),
+    .m_trc_axi_awlen(m_trc_axi_awlen),
+    .m_trc_axi_awlock(m_trc_axi_awlock),
+    .m_trc_axi_awprot(m_trc_axi_awprot),
+    .m_trc_axi_awqos(m_trc_axi_awqos),
+    .m_trc_axi_awregion(m_trc_axi_awregion),
+    .m_trc_axi_awsize(m_trc_axi_awsize),
+    .m_trc_axi_awuser(m_trc_axi_awuser),
+    .m_trc_axi_awvalid(m_trc_axi_awvalid),
+    .m_trc_axi_bready(m_trc_axi_bready),
+    .m_trc_axi_rready(m_trc_axi_rready),
+    .m_trc_axi_wdata(m_trc_axi_wdata),
+    .m_trc_axi_wlast(m_trc_axi_wlast),
+    .m_trc_axi_wstrb(m_trc_axi_wstrb),
+    .m_trc_axi_wuser(m_trc_axi_wuser),
+    .m_trc_axi_wvalid(m_trc_axi_wvalid),
+    .dst_sink_gated_clock(dst_sink_gated_clock),
+    .dst_sink_gated_func_clamp(dst_sink_gated_func_clamp),
+    .trdstRamDataRdEn(trdstRamDataRdEn),
+    .tnif_tr_src(tnif_tr_src),
+    .FunnelMmrs(FunnelMmrs),
+    .funnel_gated_reset_n_warm_ovrride(funnel_gated_reset_n_warm_ovrride),
+    .funnel_gated_func_clamp(funnel_gated_func_clamp),
+    .ntr_sink_gated_func_clamp(ntr_sink_gated_func_clamp),
+    .tnif_tr_data(tnif_tr_data),
+    .ntr_sink_gated_reset_n_warm_ovrride(ntr_sink_gated_reset_n_warm_ovrride),
+    .tnif_tr_valid(tnif_tr_valid),
+    .funnel_gated_clock(funnel_gated_clock),
+    .DstSinkMmrs(DstSinkMmrs),
+    .dst_sink_gated_reset_n_warm_ovrride(dst_sink_gated_reset_n_warm_ovrride),
+    .dst_sink_gated_reset_n(dst_sink_gated_reset_n),
+    .ntr_sink_gated_clock(ntr_sink_gated_clock),
+    .ntr_sink_gated_reset_n(ntr_sink_gated_reset_n),
+    .NtrSinkMmrs(NtrSinkMmrs),
+    .funnel_gated_reset_n(funnel_gated_reset_n),
+    .dst_gated_func_clamp(dst_gated_func_clamp),
+    .ntr_gated_func_clamp(ntr_gated_func_clamp),
+    .trRamDataRdEn('0)
+  );
+
+endmodule

@@ -1,0 +1,181 @@
+{
+  "generator": {
+    "name": "gen-csr create_reg_rtl.py",
+    "script_sha256": "0d5cde573e1c6c81f8b67f1fc952bcce6bc5fc6c1168174212cb5f619bd11512"
+  },
+  "inputs": [
+    {
+      "module": "cla",
+      "yaml_sha256": "702df8e9e2cafbe6147f9628de45c67966042566123b35b73dbf73b91c066b94"
+    },
+    {
+      "module": "dst",
+      "yaml_sha256": "17304942f0419293be6b7d28a765398fd6db88e71dee78a337b91883eba79603"
+    },
+    {
+      "module": "dst_sink",
+      "yaml_sha256": "b9af4f349bcbb8abdd823c50d3a2f042849eba4bbb9360a9248e61be30933d81"
+    },
+    {
+      "module": "funnel",
+      "yaml_sha256": "4a9574ad81e0026e79039a50efc6485cca08fc307b6e7a74715f1ed70dd4e90f"
+    },
+    {
+      "module": "ntr",
+      "yaml_sha256": "04e3348cf9bbe66866a8ebb6658904ae51f21424168e90969beaa45f6a8f87b5"
+    },
+    {
+      "module": "ntr_sink",
+      "yaml_sha256": "338c2e85acac188b4b7b2ae1b83ca262c8cd42facf0b684006bd96cfaca0720a"
+    }
+  ],
+  "outputs": [
+    {
+      "kind": "mmr_pkg.svh",
+      "module": "cla",
+      "released_sha256": "2a22221e5977ea1c7f175960725493ab06f9f26240ad4163dab258a5a81bfb7d",
+      "source_sha256": "263f1350d7a265e47d96de947c200c90ac20c94a83a2d2ffcfe2e73876905e49"
+    },
+    {
+      "kind": "mmr_pkg_list.svh",
+      "module": "cla",
+      "released_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804",
+      "source_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804"
+    },
+    {
+      "kind": "mmr_hit.sv",
+      "module": "cla",
+      "released_sha256": "409f672608528f42069023c49b1dbc681a523a766b383b44d0ed4f9343aa5f42",
+      "source_sha256": "75d29a0bf4ba3b13c7c391fe987aae21c150e0ee4a3e32dd3351024890ab0743"
+    },
+    {
+      "kind": "mmr.sv",
+      "module": "cla",
+      "released_sha256": "aa8623330dd7fbf76a94ca12311284821ab69aa851a7de5dc4d8a539ba552df2",
+      "source_sha256": "244958d1ce2ef4bac61135a12d7b6a2d9b85aaac0d423e52ad46c367a491b304"
+    },
+    {
+      "kind": "mmr_pkg.svh",
+      "module": "dst",
+      "released_sha256": "d905fa410a78d2b6d2e7701f8fe350a3148472c32353d2961c1f50b05ae34860",
+      "source_sha256": "4e12a94ab728a4b301d17054d4231cf46aaeea20bac8044de9f073b63ed6fb0e"
+    },
+    {
+      "kind": "mmr_pkg_list.svh",
+      "module": "dst",
+      "released_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804",
+      "source_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804"
+    },
+    {
+      "kind": "mmr_hit.sv",
+      "module": "dst",
+      "released_sha256": "d2ef69bec9233643d7498018ee6191f0e3418fdef63774b6260569394690e51e",
+      "source_sha256": "b3a2da40889a4d62bcda96e1957a637f37194f92772f5f016c720cf7b94e1d63"
+    },
+    {
+      "kind": "mmr.sv",
+      "module": "dst",
+      "released_sha256": "8760c6322436113eeb9d0ce0007373d6fabf17d6e3eafe108c093daca234c6ee",
+      "source_sha256": "b0c7643dfdb6d117bf8ca0f3981496dd6c3916847b25f3f1da5f9968a9ed1d3d"
+    },
+    {
+      "kind": "mmr_pkg.svh",
+      "module": "dst_sink",
+      "released_sha256": "0166c9eb944950816566e8a20fd4d676e772e03c4bf59c51812913a065005e24",
+      "source_sha256": "cfca742cfbded6a6e95140786db69b6f927c8605b174c6924e7695110d2bc187"
+    },
+    {
+      "kind": "mmr_pkg_list.svh",
+      "module": "dst_sink",
+      "released_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804",
+      "source_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804"
+    },
+    {
+      "kind": "mmr_hit.sv",
+      "module": "dst_sink",
+      "released_sha256": "564029ed96a16298a77b4c870cc78becfaf8dfba7135faef80a00ddb6c5db611",
+      "source_sha256": "b2cc221bf5fe80cfaf082aa37327e54e118efcf005a47631fb21a2e7a3f5dc9b"
+    },
+    {
+      "kind": "mmr.sv",
+      "module": "dst_sink",
+      "released_sha256": "be48cce01f679856e0deb25d231ba5c9975975c6cbcfa38fd0f35fb346eeac80",
+      "source_sha256": "8f5a327997eb058943309a703dbaf9867eabfe25994ab0622f4db500e93dcbf0"
+    },
+    {
+      "kind": "mmr_pkg.svh",
+      "module": "funnel",
+      "released_sha256": "a02ed49bfc9fa47d7bebe68c74855f0349bf389038244cbcf085e812a32d8f20",
+      "source_sha256": "7cb9bdf0bd96c2bf7f2267d0cd570a91e0134176e2e3e9bd866bae42a551ccc0"
+    },
+    {
+      "kind": "mmr_pkg_list.svh",
+      "module": "funnel",
+      "released_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804",
+      "source_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804"
+    },
+    {
+      "kind": "mmr_hit.sv",
+      "module": "funnel",
+      "released_sha256": "05957ae71a262f42388a00837be9767e328c2a9ce0bb64d4c5be6fe2b2770a9c",
+      "source_sha256": "d1b60ea5c1069d83905045558aeb3ca2a24c654673fa03405bd7037f4a4e08cb"
+    },
+    {
+      "kind": "mmr.sv",
+      "module": "funnel",
+      "released_sha256": "13da354448ef3269c4e71e386f0a5145bddacb5f58d9a2dbb5f95891c1411c93",
+      "source_sha256": "e57e8f5402544a5134993037ca8739b76513d7cdeeb18c08d184d2ae56dd5f78"
+    },
+    {
+      "kind": "mmr_pkg.svh",
+      "module": "ntr",
+      "released_sha256": "aeaf7aa9e067b4c8544536612c5f4978acb52b4609966f7dcb8b5959a7a67209",
+      "source_sha256": "0f8ebb53fa6334fb0c8da241fefc70d35bbb9dd3023768fee083072e971d3051"
+    },
+    {
+      "kind": "mmr_pkg_list.svh",
+      "module": "ntr",
+      "released_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804",
+      "source_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804"
+    },
+    {
+      "kind": "mmr_hit.sv",
+      "module": "ntr",
+      "released_sha256": "bc659c8be73f34fdfcaa95caf0f7212087c7a26421c1ceca18055a9792674b8c",
+      "source_sha256": "97948376c541235af1a9bd1dc13798db8b585123fde42aaf442a15538e06d530"
+    },
+    {
+      "kind": "mmr.sv",
+      "module": "ntr",
+      "released_sha256": "87c2319c999f617c3d8067ee86d3c93b2cbfefb19d689a848aa9b2ea7835c0fb",
+      "source_sha256": "aa097e327572e97c5ba7c3946300e5b11963fc7d1120329e335b4cf348be97cb"
+    },
+    {
+      "kind": "mmr_pkg.svh",
+      "module": "ntr_sink",
+      "released_sha256": "442b6fc574642bebc8e2d5e329f38dca9fcf210b6c18d3de3d47d31b00d5796c",
+      "source_sha256": "3f1d14fec0388c07a76958f37ca868818680892d12654724ed46fc36b5d95406"
+    },
+    {
+      "kind": "mmr_pkg_list.svh",
+      "module": "ntr_sink",
+      "released_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804",
+      "source_sha256": "9f3c8e885ffe2666fc5ed471506880049cab725f45006eb1049068dddc00e804"
+    },
+    {
+      "kind": "mmr_hit.sv",
+      "module": "ntr_sink",
+      "released_sha256": "80a5931611c921d718ba3434fd7568dea9ccc5fd987fdf7f7d46cdd43e7de280",
+      "source_sha256": "2992f4a0f06d12f809ba2338aad80143d2e253f247722a8442685425e4a638c9"
+    },
+    {
+      "kind": "mmr.sv",
+      "module": "ntr_sink",
+      "released_sha256": "2205a9f49b3bf22b63b96a9dfbe872cacabd28362585f120c70ee645ab9c4653",
+      "source_sha256": "f0b1b4c84bf7a429dbd429db558cb508a3cff871f8c657340338f1a0cfbea721"
+    }
+  ],
+  "schema_version": 1,
+  "source_commit": "799fdd290c15b1eced228b0a9acf58c694bd665e",
+  "swapout_map_sha256": "91db60b129855de5ba9fe2861e7c5a84f800d45e02c9a59f8bc871e8e491ee50"
+}
