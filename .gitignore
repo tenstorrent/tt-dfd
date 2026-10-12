@@ -13,9 +13,11 @@ Bender.local
 verdi_config_file
 .dvt*
 tt_dfd.f
+tt_dfd.verilator.f
 cust_rtl.stamp
 
 # Directories
+build/
 venv/
 __pycache__
 deps/

@@ -1,0 +1,712 @@
+// SPDX-FileCopyrightText: Copyright 2026 Tenstorrent AI ULC
+// SPDX-License-Identifier: Apache-2.0
+`ifndef DST_SINK_MMR_PKG_SVH
+`define DST_SINK_MMR_PKG_SVH
+
+package dst_sink_mmr_pkg;
+
+localparam DST_SINK_REG_MAP_BASE_ADDR                                  = 12'h000;
+
+localparam DST_SINK_TRDSTRAMCONTROL_REG_OFFSET                         = 12'h000;
+localparam DST_SINK_TRDSTRAMCONTROL_REG_ADDR                           = 12'h000;
+localparam DST_SINK_TRDSTRAMIMPL_REG_OFFSET                            = 12'h004;
+localparam DST_SINK_TRDSTRAMIMPL_REG_ADDR                              = 12'h004;
+localparam DST_SINK_TRDSTRAMSTARTLOW_REG_OFFSET                        = 12'h010;
+localparam DST_SINK_TRDSTRAMSTARTLOW_REG_ADDR                          = 12'h010;
+localparam DST_SINK_TRDSTRAMSTARTHIGH_REG_OFFSET                       = 12'h014;
+localparam DST_SINK_TRDSTRAMSTARTHIGH_REG_ADDR                         = 12'h014;
+localparam DST_SINK_TRDSTRAMLIMITLOW_REG_OFFSET                        = 12'h018;
+localparam DST_SINK_TRDSTRAMLIMITLOW_REG_ADDR                          = 12'h018;
+localparam DST_SINK_TRDSTRAMLIMITHIGH_REG_OFFSET                       = 12'h01C;
+localparam DST_SINK_TRDSTRAMLIMITHIGH_REG_ADDR                         = 12'h01C;
+localparam DST_SINK_TRDSTRAMWPLOW_REG_OFFSET                           = 12'h020;
+localparam DST_SINK_TRDSTRAMWPLOW_REG_ADDR                             = 12'h020;
+localparam DST_SINK_TRDSTRAMWPHIGH_REG_OFFSET                          = 12'h024;
+localparam DST_SINK_TRDSTRAMWPHIGH_REG_ADDR                            = 12'h024;
+localparam DST_SINK_TRDSTRAMRPLOW_REG_OFFSET                           = 12'h028;
+localparam DST_SINK_TRDSTRAMRPLOW_REG_ADDR                             = 12'h028;
+localparam DST_SINK_TRDSTRAMRPHIGH_REG_OFFSET                          = 12'h02C;
+localparam DST_SINK_TRDSTRAMRPHIGH_REG_ADDR                            = 12'h02C;
+localparam DST_SINK_TRDSTRAMDATA_REG_OFFSET                            = 12'h040;
+localparam DST_SINK_TRDSTRAMDATA_REG_ADDR                              = 12'h040;
+localparam DST_SINK_SCRATCHLO_REG_OFFSET                               = 12'hFF8;
+localparam DST_SINK_SCRATCHLO_REG_ADDR                                 = 12'hFF8;
+localparam DST_SINK_SCRATCHHI_REG_OFFSET                               = 12'hFFC;
+localparam DST_SINK_SCRATCHHI_REG_ADDR                                 = 12'hFFC;
+
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_MASK                 = 32'h1;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_SHIFT                = 0;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_LOW                  = 0;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_HIGH                 = 0;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMACTIVE_WIDTH                = 1;
+
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_MASK                 = 32'h2;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_SHIFT                = 1;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_LOW                  = 1;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_HIGH                 = 1;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMENABLE_WIDTH                = 1;
+
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD22_MASK                         = 32'h4;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD22_SHIFT                        = 2;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD22_LOW                          = 2;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD22_HIGH                         = 2;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD22_WIDTH                        = 1;
+
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_MASK                  = 32'h8;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_SHIFT                 = 3;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_LOW                   = 3;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_HIGH                  = 3;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMEMPTY_WIDTH                 = 1;
+
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_MASK                   = 32'h10;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_SHIFT                  = 4;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_LOW                    = 4;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_HIGH                   = 4;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMMODE_WIDTH                  = 1;
+
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD75_MASK                         = 32'hE0;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD75_SHIFT                        = 5;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD75_LOW                          = 5;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD75_HIGH                         = 7;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD75_WIDTH                        = 3;
+
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_MASK             = 32'h100;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_SHIFT            = 8;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_LOW              = 8;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_HIGH             = 8;
+localparam DST_SINK_TRDSTRAMCONTROL_TRDSTRAMSTOPONWRAP_WIDTH            = 1;
+
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD319_MASK                        = 32'hFFFFFE00;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD319_SHIFT                       = 9;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD319_LOW                         = 9;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD319_HIGH                        = 31;
+localparam DST_SINK_TRDSTRAMCONTROL_RSVD319_WIDTH                       = 23;
+
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMAJOR_MASK                  = 32'hF;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMAJOR_SHIFT                 = 0;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMAJOR_LOW                   = 0;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMAJOR_HIGH                  = 3;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMAJOR_WIDTH                 = 4;
+
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMINOR_MASK                  = 32'hF0;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMINOR_SHIFT                 = 4;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMINOR_LOW                   = 4;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMINOR_HIGH                  = 7;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVERMINOR_WIDTH                 = 4;
+
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMCOMPTYPE_MASK                  = 32'hF00;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMCOMPTYPE_SHIFT                 = 8;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMCOMPTYPE_LOW                   = 8;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMCOMPTYPE_HIGH                  = 11;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMCOMPTYPE_WIDTH                 = 4;
+
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSRAM_MASK                   = 32'h1000;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSRAM_SHIFT                  = 12;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSRAM_LOW                    = 12;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSRAM_HIGH                   = 12;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSRAM_WIDTH                  = 1;
+
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSMEM_MASK                   = 32'h2000;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSMEM_SHIFT                  = 13;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSMEM_LOW                    = 13;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSMEM_HIGH                   = 13;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMHASSMEM_WIDTH                  = 1;
+
+localparam DST_SINK_TRDSTRAMIMPL_RSVD2314_MASK                          = 32'hFFC000;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD2314_SHIFT                         = 14;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD2314_LOW                           = 14;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD2314_HIGH                          = 23;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD2314_WIDTH                         = 10;
+
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_MASK         = 32'hF000000;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_SHIFT        = 24;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_LOW          = 24;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_HIGH         = 27;
+localparam DST_SINK_TRDSTRAMIMPL_TRDSTRAMVENDORFRAMELENGTH_WIDTH        = 4;
+
+localparam DST_SINK_TRDSTRAMIMPL_RSVD3128_MASK                          = 32'hF0000000;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD3128_SHIFT                         = 28;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD3128_LOW                           = 28;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD3128_HIGH                          = 31;
+localparam DST_SINK_TRDSTRAMIMPL_RSVD3128_WIDTH                         = 4;
+
+localparam DST_SINK_TRDSTRAMSTARTLOW_RSVD10_MASK                        = 32'h3;
+localparam DST_SINK_TRDSTRAMSTARTLOW_RSVD10_SHIFT                       = 0;
+localparam DST_SINK_TRDSTRAMSTARTLOW_RSVD10_LOW                         = 0;
+localparam DST_SINK_TRDSTRAMSTARTLOW_RSVD10_HIGH                        = 1;
+localparam DST_SINK_TRDSTRAMSTARTLOW_RSVD10_WIDTH                       = 2;
+
+localparam DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_MASK              = 32'hFFFFFFFC;
+localparam DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_SHIFT             = 2;
+localparam DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_LOW               = 2;
+localparam DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_HIGH              = 31;
+localparam DST_SINK_TRDSTRAMSTARTLOW_TRDSTRAMSTARTLOW_WIDTH             = 30;
+
+localparam DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_MASK            = 32'hFFFFFFFF;
+localparam DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_SHIFT           = 0;
+localparam DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_LOW             = 0;
+localparam DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_HIGH            = 31;
+localparam DST_SINK_TRDSTRAMSTARTHIGH_TRDSTRAMSTARTHIGH_WIDTH           = 32;
+
+localparam DST_SINK_TRDSTRAMLIMITLOW_RSVD10_MASK                        = 32'h3;
+localparam DST_SINK_TRDSTRAMLIMITLOW_RSVD10_SHIFT                       = 0;
+localparam DST_SINK_TRDSTRAMLIMITLOW_RSVD10_LOW                         = 0;
+localparam DST_SINK_TRDSTRAMLIMITLOW_RSVD10_HIGH                        = 1;
+localparam DST_SINK_TRDSTRAMLIMITLOW_RSVD10_WIDTH                       = 2;
+
+localparam DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_MASK              = 32'hFFFFFFFC;
+localparam DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_SHIFT             = 2;
+localparam DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_LOW               = 2;
+localparam DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_HIGH              = 31;
+localparam DST_SINK_TRDSTRAMLIMITLOW_TRDSTRAMLIMITLOW_WIDTH             = 30;
+
+localparam DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_MASK            = 32'hFFFFFFFF;
+localparam DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_SHIFT           = 0;
+localparam DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_LOW             = 0;
+localparam DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_HIGH            = 31;
+localparam DST_SINK_TRDSTRAMLIMITHIGH_TRDSTRAMLIMITHIGH_WIDTH           = 32;
+
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_MASK                     = 32'h1;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_SHIFT                    = 0;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_LOW                      = 0;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_HIGH                     = 0;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWRAP_WIDTH                    = 1;
+
+localparam DST_SINK_TRDSTRAMWPLOW_RSVD11_MASK                           = 32'h2;
+localparam DST_SINK_TRDSTRAMWPLOW_RSVD11_SHIFT                          = 1;
+localparam DST_SINK_TRDSTRAMWPLOW_RSVD11_LOW                            = 1;
+localparam DST_SINK_TRDSTRAMWPLOW_RSVD11_HIGH                           = 1;
+localparam DST_SINK_TRDSTRAMWPLOW_RSVD11_WIDTH                          = 1;
+
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_MASK                    = 32'hFFFFFFFC;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_SHIFT                   = 2;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_LOW                     = 2;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_HIGH                    = 31;
+localparam DST_SINK_TRDSTRAMWPLOW_TRDSTRAMWPLOW_WIDTH                   = 30;
+
+localparam DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_MASK                  = 32'hFFFFFFFF;
+localparam DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_SHIFT                 = 0;
+localparam DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_LOW                   = 0;
+localparam DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_HIGH                  = 31;
+localparam DST_SINK_TRDSTRAMWPHIGH_TRDSTRAMWPHIGH_WIDTH                 = 32;
+
+localparam DST_SINK_TRDSTRAMRPLOW_RSVD10_MASK                           = 32'h3;
+localparam DST_SINK_TRDSTRAMRPLOW_RSVD10_SHIFT                          = 0;
+localparam DST_SINK_TRDSTRAMRPLOW_RSVD10_LOW                            = 0;
+localparam DST_SINK_TRDSTRAMRPLOW_RSVD10_HIGH                           = 1;
+localparam DST_SINK_TRDSTRAMRPLOW_RSVD10_WIDTH                          = 2;
+
+localparam DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_MASK                    = 32'hFFFFFFFC;
+localparam DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_SHIFT                   = 2;
+localparam DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_LOW                     = 2;
+localparam DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_HIGH                    = 31;
+localparam DST_SINK_TRDSTRAMRPLOW_TRDSTRAMRPLOW_WIDTH                   = 30;
+
+localparam DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_MASK                  = 32'hFFFFFFFF;
+localparam DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_SHIFT                 = 0;
+localparam DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_LOW                   = 0;
+localparam DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_HIGH                  = 31;
+localparam DST_SINK_TRDSTRAMRPHIGH_TRDSTRAMRPHIGH_WIDTH                 = 32;
+
+localparam DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_MASK                      = 32'hFFFFFFFF;
+localparam DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_SHIFT                     = 0;
+localparam DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_LOW                       = 0;
+localparam DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_HIGH                      = 31;
+localparam DST_SINK_TRDSTRAMDATA_TRDSTRAMDATA_WIDTH                     = 32;
+
+localparam DST_SINK_SCRATCHLO_DATA_MASK                                 = 32'hFFFFFFFF;
+localparam DST_SINK_SCRATCHLO_DATA_SHIFT                                = 0;
+localparam DST_SINK_SCRATCHLO_DATA_LOW                                  = 0;
+localparam DST_SINK_SCRATCHLO_DATA_HIGH                                 = 31;
+localparam DST_SINK_SCRATCHLO_DATA_WIDTH                                = 32;
+
+localparam DST_SINK_SCRATCHHI_DATA_MASK                                 = 32'hFFFFFFFF;
+localparam DST_SINK_SCRATCHHI_DATA_SHIFT                                = 0;
+localparam DST_SINK_SCRATCHHI_DATA_LOW                                  = 0;
+localparam DST_SINK_SCRATCHHI_DATA_HIGH                                 = 31;
+localparam DST_SINK_SCRATCHHI_DATA_WIDTH                                = 32;
+
+localparam DST_SINK_NUM_REGISTERS                                       = 13;
+
+typedef struct packed {
+  logic               DstSinkMmrTrdstramcontrolHit;
+  logic               DstSinkMmrTrdstramimplHit;
+  logic               DstSinkMmrTrdstramstartlowHit;
+  logic               DstSinkMmrTrdstramstarthighHit;
+  logic               DstSinkMmrTrdstramlimitlowHit;
+  logic               DstSinkMmrTrdstramlimithighHit;
+  logic               DstSinkMmrTrdstramwplowHit;
+  logic               DstSinkMmrTrdstramwphighHit;
+  logic               DstSinkMmrTrdstramrplowHit;
+  logic               DstSinkMmrTrdstramrphighHit;
+  logic               DstSinkMmrTrdstramdataHit;
+  logic               DstSinkMmrScratchloHit;
+  logic               DstSinkMmrScratchhiHit;
+} DstSinkMmrHit_s;
+
+typedef struct packed {
+    logic   [22:0]        Rsvd319 ;
+    logic    [0:0]        Trdstramstoponwrap ;
+    logic    [2:0]        Rsvd75 ;
+    logic    [0:0]        Trdstrammode ;
+    logic    [0:0]        Trdstramempty ;
+    logic    [0:0]        Rsvd22 ;
+    logic    [0:0]        Trdstramenable ;
+    logic    [0:0]        Trdstramactive ;
+} DstSinkTrdstramcontrolMmr_s;
+
+typedef struct packed {
+    logic    [3:0]        Rsvd3128 ;
+    logic    [3:0]        Trdstramvendorframelength ;
+    logic    [9:0]        Rsvd2314 ;
+    logic    [0:0]        Trdstramhassmem ;
+    logic    [0:0]        Trdstramhassram ;
+    logic    [3:0]        Trdstramcomptype ;
+    logic    [3:0]        Trdstramverminor ;
+    logic    [3:0]        Trdstramvermajor ;
+} DstSinkTrdstramimplMmr_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramstartlow ;
+    logic    [1:0]        Rsvd10 ;
+} DstSinkTrdstramstartlowMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramstarthigh ;
+} DstSinkTrdstramstarthighMmr_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramlimitlow ;
+    logic    [1:0]        Rsvd10 ;
+} DstSinkTrdstramlimitlowMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramlimithigh ;
+} DstSinkTrdstramlimithighMmr_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramwplow ;
+    logic    [0:0]        Rsvd11 ;
+    logic    [0:0]        Trdstramwrap ;
+} DstSinkTrdstramwplowMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramwphigh ;
+} DstSinkTrdstramwphighMmr_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramrplow ;
+    logic    [1:0]        Rsvd10 ;
+} DstSinkTrdstramrplowMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramrphigh ;
+} DstSinkTrdstramrphighMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramdata ;
+} DstSinkTrdstramdataMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} DstSinkScratchloMmr_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} DstSinkScratchhiMmr_s;
+
+typedef struct packed {
+    logic   [22:0]        Rsvd319 ;
+    logic    [0:0]        Trdstramstoponwrap ;
+    logic    [2:0]        Rsvd75 ;
+    logic    [0:0]        Trdstrammode ;
+    logic    [0:0]        Trdstramempty ;
+    logic    [0:0]        Rsvd22 ;
+    logic    [0:0]        Trdstramenable ;
+    logic    [0:0]        Trdstramactive ;
+} DstSinkTrdstramcontrolMmrUnpack_s;
+
+typedef struct packed {
+    logic    [3:0]        Rsvd3128 ;
+    logic    [3:0]        Trdstramvendorframelength ;
+    logic    [9:0]        Rsvd2314 ;
+    logic    [0:0]        Trdstramhassmem ;
+    logic    [0:0]        Trdstramhassram ;
+    logic    [3:0]        Trdstramcomptype ;
+    logic    [3:0]        Trdstramverminor ;
+    logic    [3:0]        Trdstramvermajor ;
+} DstSinkTrdstramimplMmrUnpack_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramstartlow ;
+    logic    [1:0]        Rsvd10 ;
+} DstSinkTrdstramstartlowMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramstarthigh ;
+} DstSinkTrdstramstarthighMmrUnpack_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramlimitlow ;
+    logic    [1:0]        Rsvd10 ;
+} DstSinkTrdstramlimitlowMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramlimithigh ;
+} DstSinkTrdstramlimithighMmrUnpack_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramwplow ;
+    logic    [0:0]        Rsvd11 ;
+    logic    [0:0]        Trdstramwrap ;
+} DstSinkTrdstramwplowMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramwphigh ;
+} DstSinkTrdstramwphighMmrUnpack_s;
+
+typedef struct packed {
+    logic   [29:0]        Trdstramrplow ;
+    logic    [1:0]        Rsvd10 ;
+} DstSinkTrdstramrplowMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramrphigh ;
+} DstSinkTrdstramrphighMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Trdstramdata ;
+} DstSinkTrdstramdataMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} DstSinkScratchloMmrUnpack_s;
+
+typedef struct packed {
+    logic   [31:0]        Data ;
+} DstSinkScratchhiMmrUnpack_s;
+
+typedef struct packed {
+    DstSinkTrdstramcontrolMmr_s Data;
+    logic                 Rsvd319WrEn ;
+    logic                 TrdstramstoponwrapWrEn ;
+    logic                 Rsvd75WrEn ;
+    logic                 TrdstrammodeWrEn ;
+    logic                 TrdstramemptyWrEn ;
+    logic                 Rsvd22WrEn ;
+    logic                 TrdstramenableWrEn ;
+    logic                 TrdstramactiveWrEn ;
+} DstSinkTrdstramcontrolMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramstartlowMmr_s Data;
+    logic                 TrdstramstartlowWrEn ;
+} DstSinkTrdstramstartlowMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramstarthighMmr_s Data;
+    logic                 TrdstramstarthighWrEn ;
+} DstSinkTrdstramstarthighMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramlimitlowMmr_s Data;
+    logic                 TrdstramlimitlowWrEn ;
+} DstSinkTrdstramlimitlowMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramlimithighMmr_s Data;
+    logic                 TrdstramlimithighWrEn ;
+} DstSinkTrdstramlimithighMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramwplowMmr_s Data;
+    logic                 TrdstramwplowWrEn ;
+    logic                 Rsvd11WrEn ;
+    logic                 TrdstramwrapWrEn ;
+} DstSinkTrdstramwplowMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramwphighMmr_s Data;
+    logic                 TrdstramwphighWrEn ;
+} DstSinkTrdstramwphighMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramrplowMmr_s Data;
+    logic                 TrdstramrplowWrEn ;
+} DstSinkTrdstramrplowMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramrphighMmr_s Data;
+    logic                 TrdstramrphighWrEn ;
+} DstSinkTrdstramrphighMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramdataMmr_s Data;
+    logic                 TrdstramdataWrEn ;
+} DstSinkTrdstramdataMmrWr_s;
+
+typedef struct packed {
+    DstSinkTrdstramcontrolMmr_s Trdstramcontrol;
+    DstSinkTrdstramimplMmr_s Trdstramimpl;
+    DstSinkTrdstramstartlowMmr_s Trdstramstartlow;
+    DstSinkTrdstramstarthighMmr_s Trdstramstarthigh;
+    DstSinkTrdstramlimitlowMmr_s Trdstramlimitlow;
+    DstSinkTrdstramlimithighMmr_s Trdstramlimithigh;
+    DstSinkTrdstramwplowMmr_s Trdstramwplow;
+    DstSinkTrdstramwphighMmr_s Trdstramwphigh;
+    DstSinkTrdstramrplowMmr_s Trdstramrplow;
+    DstSinkTrdstramrphighMmr_s Trdstramrphigh;
+    DstSinkTrdstramdataMmr_s Trdstramdata;
+    DstSinkScratchloMmr_s Scratchlo;
+    DstSinkScratchhiMmr_s Scratchhi;
+} DstSinkMmrs_s;
+
+typedef struct packed {
+    DstSinkTrdstramcontrolMmrWr_s TrdstramcontrolWr;
+    DstSinkTrdstramstartlowMmrWr_s TrdstramstartlowWr;
+    DstSinkTrdstramstarthighMmrWr_s TrdstramstarthighWr;
+    DstSinkTrdstramlimitlowMmrWr_s TrdstramlimitlowWr;
+    DstSinkTrdstramlimithighMmrWr_s TrdstramlimithighWr;
+    DstSinkTrdstramwplowMmrWr_s TrdstramwplowWr;
+    DstSinkTrdstramwphighMmrWr_s TrdstramwphighWr;
+    DstSinkTrdstramrplowMmrWr_s TrdstramrplowWr;
+    DstSinkTrdstramrphighMmrWr_s TrdstramrphighWr;
+    DstSinkTrdstramdataMmrWr_s TrdstramdataWr;
+} DstSinkMmrsWr_s;
+
+function automatic DstSinkTrdstramcontrolMmrUnpack_s unpack_DstSinkTrdstramcontrolMmr;
+input DstSinkTrdstramcontrolMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramcontrolMmr = '0;
+    unpack_DstSinkTrdstramcontrolMmr.Trdstramactive = packed_mmr.Trdstramactive;
+    unpack_DstSinkTrdstramcontrolMmr.Trdstramenable = packed_mmr.Trdstramenable;
+    unpack_DstSinkTrdstramcontrolMmr.Rsvd22 = packed_mmr.Rsvd22;
+    unpack_DstSinkTrdstramcontrolMmr.Trdstramempty = packed_mmr.Trdstramempty;
+    unpack_DstSinkTrdstramcontrolMmr.Trdstrammode = packed_mmr.Trdstrammode;
+    unpack_DstSinkTrdstramcontrolMmr.Rsvd75 = packed_mmr.Rsvd75;
+    unpack_DstSinkTrdstramcontrolMmr.Trdstramstoponwrap = packed_mmr.Trdstramstoponwrap;
+    unpack_DstSinkTrdstramcontrolMmr.Rsvd319 = packed_mmr.Rsvd319;
+end
+endfunction
+
+function automatic DstSinkTrdstramimplMmrUnpack_s unpack_DstSinkTrdstramimplMmr;
+input DstSinkTrdstramimplMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramimplMmr = '0;
+    unpack_DstSinkTrdstramimplMmr.Trdstramvermajor = packed_mmr.Trdstramvermajor;
+    unpack_DstSinkTrdstramimplMmr.Trdstramverminor = packed_mmr.Trdstramverminor;
+    unpack_DstSinkTrdstramimplMmr.Trdstramcomptype = packed_mmr.Trdstramcomptype;
+    unpack_DstSinkTrdstramimplMmr.Trdstramhassram = packed_mmr.Trdstramhassram;
+    unpack_DstSinkTrdstramimplMmr.Trdstramhassmem = packed_mmr.Trdstramhassmem;
+    unpack_DstSinkTrdstramimplMmr.Rsvd2314 = packed_mmr.Rsvd2314;
+    unpack_DstSinkTrdstramimplMmr.Trdstramvendorframelength = packed_mmr.Trdstramvendorframelength;
+    unpack_DstSinkTrdstramimplMmr.Rsvd3128 = packed_mmr.Rsvd3128;
+end
+endfunction
+
+function automatic DstSinkTrdstramstartlowMmrUnpack_s unpack_DstSinkTrdstramstartlowMmr;
+input DstSinkTrdstramstartlowMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramstartlowMmr = '0;
+    unpack_DstSinkTrdstramstartlowMmr.Rsvd10 = packed_mmr.Rsvd10;
+    unpack_DstSinkTrdstramstartlowMmr.Trdstramstartlow = packed_mmr.Trdstramstartlow;
+end
+endfunction
+
+function automatic DstSinkTrdstramstarthighMmrUnpack_s unpack_DstSinkTrdstramstarthighMmr;
+input DstSinkTrdstramstarthighMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramstarthighMmr = '0;
+    unpack_DstSinkTrdstramstarthighMmr.Trdstramstarthigh = packed_mmr.Trdstramstarthigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramlimitlowMmrUnpack_s unpack_DstSinkTrdstramlimitlowMmr;
+input DstSinkTrdstramlimitlowMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramlimitlowMmr = '0;
+    unpack_DstSinkTrdstramlimitlowMmr.Rsvd10 = packed_mmr.Rsvd10;
+    unpack_DstSinkTrdstramlimitlowMmr.Trdstramlimitlow = packed_mmr.Trdstramlimitlow;
+end
+endfunction
+
+function automatic DstSinkTrdstramlimithighMmrUnpack_s unpack_DstSinkTrdstramlimithighMmr;
+input DstSinkTrdstramlimithighMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramlimithighMmr = '0;
+    unpack_DstSinkTrdstramlimithighMmr.Trdstramlimithigh = packed_mmr.Trdstramlimithigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramwplowMmrUnpack_s unpack_DstSinkTrdstramwplowMmr;
+input DstSinkTrdstramwplowMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramwplowMmr = '0;
+    unpack_DstSinkTrdstramwplowMmr.Trdstramwrap = packed_mmr.Trdstramwrap;
+    unpack_DstSinkTrdstramwplowMmr.Rsvd11 = packed_mmr.Rsvd11;
+    unpack_DstSinkTrdstramwplowMmr.Trdstramwplow = packed_mmr.Trdstramwplow;
+end
+endfunction
+
+function automatic DstSinkTrdstramwphighMmrUnpack_s unpack_DstSinkTrdstramwphighMmr;
+input DstSinkTrdstramwphighMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramwphighMmr = '0;
+    unpack_DstSinkTrdstramwphighMmr.Trdstramwphigh = packed_mmr.Trdstramwphigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramrplowMmrUnpack_s unpack_DstSinkTrdstramrplowMmr;
+input DstSinkTrdstramrplowMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramrplowMmr = '0;
+    unpack_DstSinkTrdstramrplowMmr.Rsvd10 = packed_mmr.Rsvd10;
+    unpack_DstSinkTrdstramrplowMmr.Trdstramrplow = packed_mmr.Trdstramrplow;
+end
+endfunction
+
+function automatic DstSinkTrdstramrphighMmrUnpack_s unpack_DstSinkTrdstramrphighMmr;
+input DstSinkTrdstramrphighMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramrphighMmr = '0;
+    unpack_DstSinkTrdstramrphighMmr.Trdstramrphigh = packed_mmr.Trdstramrphigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramdataMmrUnpack_s unpack_DstSinkTrdstramdataMmr;
+input DstSinkTrdstramdataMmr_s packed_mmr;
+begin
+    unpack_DstSinkTrdstramdataMmr = '0;
+    unpack_DstSinkTrdstramdataMmr.Trdstramdata = packed_mmr.Trdstramdata;
+end
+endfunction
+
+function automatic DstSinkScratchloMmrUnpack_s unpack_DstSinkScratchloMmr;
+input DstSinkScratchloMmr_s packed_mmr;
+begin
+    unpack_DstSinkScratchloMmr = '0;
+    unpack_DstSinkScratchloMmr.Data = packed_mmr.Data;
+end
+endfunction
+
+function automatic DstSinkScratchhiMmrUnpack_s unpack_DstSinkScratchhiMmr;
+input DstSinkScratchhiMmr_s packed_mmr;
+begin
+    unpack_DstSinkScratchhiMmr = '0;
+    unpack_DstSinkScratchhiMmr.Data = packed_mmr.Data;
+end
+endfunction
+
+function automatic DstSinkTrdstramcontrolMmr_s pack_DstSinkTrdstramcontrolMmr;
+input DstSinkTrdstramcontrolMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramcontrolMmr.Trdstramactive = unpacked_mmr.Trdstramactive;
+    pack_DstSinkTrdstramcontrolMmr.Trdstramenable = unpacked_mmr.Trdstramenable;
+    pack_DstSinkTrdstramcontrolMmr.Rsvd22 = unpacked_mmr.Rsvd22;
+    pack_DstSinkTrdstramcontrolMmr.Trdstramempty = unpacked_mmr.Trdstramempty;
+    pack_DstSinkTrdstramcontrolMmr.Trdstrammode = unpacked_mmr.Trdstrammode;
+    pack_DstSinkTrdstramcontrolMmr.Rsvd75 = unpacked_mmr.Rsvd75;
+    pack_DstSinkTrdstramcontrolMmr.Trdstramstoponwrap = unpacked_mmr.Trdstramstoponwrap;
+    pack_DstSinkTrdstramcontrolMmr.Rsvd319 = unpacked_mmr.Rsvd319;
+end
+endfunction
+
+function automatic DstSinkTrdstramimplMmr_s pack_DstSinkTrdstramimplMmr;
+input DstSinkTrdstramimplMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramimplMmr.Trdstramvermajor = unpacked_mmr.Trdstramvermajor;
+    pack_DstSinkTrdstramimplMmr.Trdstramverminor = unpacked_mmr.Trdstramverminor;
+    pack_DstSinkTrdstramimplMmr.Trdstramcomptype = unpacked_mmr.Trdstramcomptype;
+    pack_DstSinkTrdstramimplMmr.Trdstramhassram = unpacked_mmr.Trdstramhassram;
+    pack_DstSinkTrdstramimplMmr.Trdstramhassmem = unpacked_mmr.Trdstramhassmem;
+    pack_DstSinkTrdstramimplMmr.Rsvd2314 = unpacked_mmr.Rsvd2314;
+    pack_DstSinkTrdstramimplMmr.Trdstramvendorframelength = unpacked_mmr.Trdstramvendorframelength;
+    pack_DstSinkTrdstramimplMmr.Rsvd3128 = unpacked_mmr.Rsvd3128;
+end
+endfunction
+
+function automatic DstSinkTrdstramstartlowMmr_s pack_DstSinkTrdstramstartlowMmr;
+input DstSinkTrdstramstartlowMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramstartlowMmr.Rsvd10 = unpacked_mmr.Rsvd10;
+    pack_DstSinkTrdstramstartlowMmr.Trdstramstartlow = unpacked_mmr.Trdstramstartlow;
+end
+endfunction
+
+function automatic DstSinkTrdstramstarthighMmr_s pack_DstSinkTrdstramstarthighMmr;
+input DstSinkTrdstramstarthighMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramstarthighMmr.Trdstramstarthigh = unpacked_mmr.Trdstramstarthigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramlimitlowMmr_s pack_DstSinkTrdstramlimitlowMmr;
+input DstSinkTrdstramlimitlowMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramlimitlowMmr.Rsvd10 = unpacked_mmr.Rsvd10;
+    pack_DstSinkTrdstramlimitlowMmr.Trdstramlimitlow = unpacked_mmr.Trdstramlimitlow;
+end
+endfunction
+
+function automatic DstSinkTrdstramlimithighMmr_s pack_DstSinkTrdstramlimithighMmr;
+input DstSinkTrdstramlimithighMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramlimithighMmr.Trdstramlimithigh = unpacked_mmr.Trdstramlimithigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramwplowMmr_s pack_DstSinkTrdstramwplowMmr;
+input DstSinkTrdstramwplowMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramwplowMmr.Trdstramwrap = unpacked_mmr.Trdstramwrap;
+    pack_DstSinkTrdstramwplowMmr.Rsvd11 = unpacked_mmr.Rsvd11;
+    pack_DstSinkTrdstramwplowMmr.Trdstramwplow = unpacked_mmr.Trdstramwplow;
+end
+endfunction
+
+function automatic DstSinkTrdstramwphighMmr_s pack_DstSinkTrdstramwphighMmr;
+input DstSinkTrdstramwphighMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramwphighMmr.Trdstramwphigh = unpacked_mmr.Trdstramwphigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramrplowMmr_s pack_DstSinkTrdstramrplowMmr;
+input DstSinkTrdstramrplowMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramrplowMmr.Rsvd10 = unpacked_mmr.Rsvd10;
+    pack_DstSinkTrdstramrplowMmr.Trdstramrplow = unpacked_mmr.Trdstramrplow;
+end
+endfunction
+
+function automatic DstSinkTrdstramrphighMmr_s pack_DstSinkTrdstramrphighMmr;
+input DstSinkTrdstramrphighMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramrphighMmr.Trdstramrphigh = unpacked_mmr.Trdstramrphigh;
+end
+endfunction
+
+function automatic DstSinkTrdstramdataMmr_s pack_DstSinkTrdstramdataMmr;
+input DstSinkTrdstramdataMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkTrdstramdataMmr.Trdstramdata = unpacked_mmr.Trdstramdata;
+end
+endfunction
+
+function automatic DstSinkScratchloMmr_s pack_DstSinkScratchloMmr;
+input DstSinkScratchloMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkScratchloMmr.Data = unpacked_mmr.Data;
+end
+endfunction
+
+function automatic DstSinkScratchhiMmr_s pack_DstSinkScratchhiMmr;
+input DstSinkScratchhiMmrUnpack_s unpacked_mmr;
+begin
+    pack_DstSinkScratchhiMmr.Data = unpacked_mmr.Data;
+end
+endfunction
+
+endpackage
+
+`endif
