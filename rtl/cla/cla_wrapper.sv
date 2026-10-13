@@ -112,6 +112,7 @@ module cla_wrapper
         core_logic_analyzer #(
             .CORE_INSTANCE(1'b1),
             .DEBUG_SIGNAL_WIDTH(DEBUG_SIGNAL_WIDTH),
+            .LANE_WIDTH(LANE_WIDTH),
             .TIMESTAMP_SYNC_SCHEME(TIMESTAMP_SYNC_SCHEME)
         ) cla_inst (
             .clock								(cla_gated_clock[ii]),

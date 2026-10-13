@@ -30,10 +30,13 @@ assign debug_signal_shift_mux_sel[0] = DebugSignalDelayMuxsel.Muxselseg0;
 assign debug_signal_shift_mux_sel[1] = DebugSignalDelayMuxsel.Muxselseg1;
 assign debug_signal_shift_mux_sel[2] = DebugSignalDelayMuxsel.Muxselseg2;
 assign debug_signal_shift_mux_sel[3] = DebugSignalDelayMuxsel.Muxselseg3;
-assign debug_signal_shift_mux_sel[4] = DebugSignalDelayMuxsel.Muxselseg4;
-assign debug_signal_shift_mux_sel[5] = DebugSignalDelayMuxsel.Muxselseg5;
-assign debug_signal_shift_mux_sel[6] = DebugSignalDelayMuxsel.Muxselseg6;
-assign debug_signal_shift_mux_sel[7] = DebugSignalDelayMuxsel.Muxselseg7;
+
+if (NUM_OUTPUT_LANES > 4) begin : shift_mux_sel_4_to_7
+  assign debug_signal_shift_mux_sel[4] = DebugSignalDelayMuxsel.Muxselseg4;
+  assign debug_signal_shift_mux_sel[5] = DebugSignalDelayMuxsel.Muxselseg5;
+  assign debug_signal_shift_mux_sel[6] = DebugSignalDelayMuxsel.Muxselseg6;
+  assign debug_signal_shift_mux_sel[7] = DebugSignalDelayMuxsel.Muxselseg7;
+end
 
 if (NUM_OUTPUT_LANES > 8) begin : shift_mux_sel_8_to_15
   assign debug_signal_shift_mux_sel[8] = DebugSignalDelayMuxsel.Muxselseg8;
