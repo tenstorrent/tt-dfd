@@ -184,7 +184,7 @@ logic   [63:0] cla_sync_timestamp;
 
 debug_signal_shift_mux #(
   .DEBUG_MUX_OUTPUT_WIDTH(DEBUG_SIGNAL_WIDTH),
-  .LANE_WIDTH(LANE_WIDTH),
+  .LANE_WIDTH(LANE_WIDTH)
 ) debug_signal_shift_mux_inst (
   .clock(clock),
   .reset_n(i_reset_n),
