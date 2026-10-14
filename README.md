@@ -64,8 +64,9 @@ The `scripts/` directory contains:
 
 - CLA DocGen: generates documentation for CLA muxes from a JSON description (inputs, widths, topology)
 - CLA Compiler: builds a CLA programming sequence from the mux documentation JSON and a CLA program YAML
+  - `--claBaseAddress`/`--numCla` place the program at the CLA instances of the MMR map; `scripts/cla_compiler/claBaseAddress.sh` calculates the CLA base from the MMR base and the blocks present
 
-After producing a value-dump YAML of MMR fields to program, you can generate an APB write script with:
+After producing a value-dump YAML of MMR fields to program (it contains the absolute register addresses), you can generate an APB write script with (use `--cla N` to select one CLA instance):
 
 ```bash
 python3 dv/dfd/yamlToApbTraffic.py <path/to/value_dump.yaml> -o apb_write.txt

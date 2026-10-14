@@ -15,7 +15,7 @@ import traceback
 ###################################
 # Global vars
 ###################################
-g_program_version = "1.1.0"
+g_program_version = "2.0.0"
 g_defaultMmrSpecPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "rtl", "mmr", "spec", "cla_mmrs.yml")
 
 
@@ -86,13 +86,19 @@ g_logger = None
 g_debugSignals = {}
 g_debugMuxes = {}
 g_busConfigProvided = False
+g_lfsrConfig = None
 g_claCounterAliases = []
 
-g_claDebugInputWidth = 64
+g_claDebugInputWidth = 128
+g_claMmrWindowSize = 0x1000  #Size of the MMR window of a single CLA instance
+g_claMmrWidth = 64
+g_mmrSpecDict = None  #Parsed CLA MMR spec. Used for register offsets and layout checks
 g_availableMatchRegs = 4
 g_availableCounters = 4
 g_availableEdgeDetects = 2
 g_availableTransitionDetects = 1
+g_availableCompareRegs = 4
+g_availableLfsrs = 1
 g_availableCountOneRegs = 1
 g_availableAnyChangeRegs = 1
 g_availableNodes = 4
@@ -166,8 +172,13 @@ g_eventOpcodes = {
   "MATCH_2": 0x1c,
   "NOT_MATCH_2": 0x1d,
   "MATCH_3": 0x1e,
-  "NOT_MATCH_3": 0x1f
+  "NOT_MATCH_3": 0x1f,
+  "LFSR": 0x20
 }
+#Arithmetic compare events. 4 events per compare register, starting at 0x21
+for _compIndx in range(4):
+  for _eventOffset, _eventName in enumerate(["LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL"]):
+    g_eventOpcodes["COMPARE_{}_{}".format(_compIndx, _eventName)] = 0x21 + (4 * _compIndx) + _eventOffset
 
 g_eap_keywords = [
   "debug_mux_reg",
@@ -187,7 +198,7 @@ def str2int(valueStr):
     return valueStr
 
   valueBase = 10
-  if (len(valueStr) > 3):
+  if (len(valueStr) > 2):
     if (valueStr[0:2] == "0x"):
       valueBase = 16
 
@@ -223,6 +234,21 @@ class TRIGGER_TYPE(Enum):
   TRANSITION = 11
   COUNT_ONES = 12
   PERIOD_TICK = 13
+  LFSR = 14
+  COMPARE_LESS = 15
+  COMPARE_LESS_EQUAL = 16
+  COMPARE_GREATER = 17
+  COMPARE_GREATER_EQUAL = 18
+
+g_compareOperators = {
+  TRIGGER_TYPE.COMPARE_LESS: "<",
+  TRIGGER_TYPE.COMPARE_LESS_EQUAL: "<=",
+  TRIGGER_TYPE.COMPARE_GREATER: ">",
+  TRIGGER_TYPE.COMPARE_GREATER_EQUAL: ">="
+}
+
+#Trigger types that read signals through the debug mux
+g_muxSignalTriggerTypes = [TRIGGER_TYPE.EQUAL, TRIGGER_TYPE.NOT_EQUAL, TRIGGER_TYPE.POSEDGE, TRIGGER_TYPE.NEGEDGE, TRIGGER_TYPE.TRANSITION, TRIGGER_TYPE.COUNT_ONES, TRIGGER_TYPE.ANY_CHANGE] + list(g_compareOperators.keys())
 
 class TriggerCondition:
   def __init__ (self, parentEventTrigger, conditionStr):
@@ -230,7 +256,7 @@ class TriggerCondition:
 
     if not isinstance(conditionStr, str):
       g_logger.error("Non-string trigger condition defined for \"{}.{}.{}\"".format(self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-      sys.exit()
+      sys.exit(1)
 
     self.conditionStr = conditionStr
     self.type, self.signal, self.value, self.from_value = self.parseCondition(conditionStr)
@@ -253,7 +279,7 @@ class TriggerCondition:
       operandList = conditionStr.split("==")
       if (len(operandList) != 2):
         g_logger.error("Invalid expression \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
       #Get signal name
       signal = operandList[0].strip()
       #Get comparison value
@@ -262,7 +288,7 @@ class TriggerCondition:
         value = str2int(value)
       except:
         g_logger.error("Could not convert RHS of \"{}\" into a numerical value in \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
       
     #Not equals
     if ("!=" in conditionStr):
@@ -271,70 +297,46 @@ class TriggerCondition:
       operandList = conditionStr.split("!=")
       if (len(operandList) != 2):
         g_logger.error("Invalid expression \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
       #Get signal name
       signal = operandList[0].strip()
       if (signal in g_claCounterAliases):
         g_logger.error("Invalid condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
         g_logger.error("Not equals comparison not supported for CLA counters")
-        sys.exit()
+        sys.exit(1)
       #Get comparison value
       value = operandList[1].strip()
       try:
         value = str2int(value)
       except:
         g_logger.error("Could not convert RHS of \"{}\" into a numerical value in event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
-    #Greater than
-    if (">" in conditionStr):
-      triggerType = TRIGGER_TYPE.GREATER
-      #Check operation
-      if (">=" in conditionStr):
-        unsuportedCondition = True
-      #Parse operands
-      operandList = conditionStr.split(">")
-      if (len(operandList) != 2):
-        g_logger.error("Invalid expression \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
-      #Get signal name
-      signal = operandList[0].strip()
-      if not (signal in g_claCounterAliases):
+    #Greater/less than (counters use >,< only. Debug signals use arithmetic compare and also support >=,<=)
+    compareMatch = re.match(r"^\s*([^<>=!\s]+)\s*(>=|<=|>|<)\s*([^<>=!\s]+)\s*$", conditionStr)
+    if (compareMatch):
+      signal = compareMatch.group(1).strip()
+      compareOp = compareMatch.group(2)
+      isCounter = (signal in g_claCounterAliases)
+      if (isCounter and (compareOp in [">=", "<="])):
         g_logger.error("Invalid condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        g_logger.error("Greater than comparison only supported for CLA counters. \"{}\" not found in the program counters list {}".format(signal, g_claCounterAliases))
-        sys.exit()
-      #Get comparison value
-      value = operandList[1].strip()
-      try:
-        value = str2int(value)
-      except:
-        g_logger.error("Could not convert RHS of \"{}\" into a numerical value in event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        g_logger.error("\"{}\" comparison not supported for CLA counters. Use > or <".format(compareOp))
+        sys.exit(1)
 
-    #Less than
-    if ("<" in conditionStr):
-      triggerType = TRIGGER_TYPE.LESS
-      #Check operation
-      if ("<=" in conditionStr):
-        unsuportedCondition = True
-      #Parse operands
-      operandList = conditionStr.split("<")
-      if (len(operandList) != 2):
-        g_logger.error("Invalid expression \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
-      #Get signal name
-      signal = operandList[0].strip()
-      if not (signal in g_claCounterAliases):
-        g_logger.error("Invalid condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        g_logger.error("Greater than comparison only supported for CLA counters. \"{}\" not found in the program counters list {}".format(signal, g_claCounterAliases))
-        sys.exit()
+      if (isCounter):
+        triggerType = TRIGGER_TYPE.GREATER if (compareOp == ">") else TRIGGER_TYPE.LESS
+      else:
+        triggerType = {">": TRIGGER_TYPE.COMPARE_GREATER, ">=": TRIGGER_TYPE.COMPARE_GREATER_EQUAL, "<": TRIGGER_TYPE.COMPARE_LESS, "<=": TRIGGER_TYPE.COMPARE_LESS_EQUAL}[compareOp]
+
       #Get comparison value
-      value = operandList[1].strip()
       try:
-        value = str2int(value)
+        value = str2int(compareMatch.group(3).strip())
       except:
         g_logger.error("Could not convert RHS of \"{}\" into a numerical value in event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
+    elif ((">" in conditionStr) or ("<" in conditionStr)) and (not ("==" in conditionStr)) and (not ("!=" in conditionStr)):
+      g_logger.error("Invalid expression \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
+      sys.exit(1)
 
     #Posedge
     if (re.search(r"posedge\s", conditionStr)):
@@ -343,7 +345,7 @@ class TriggerCondition:
       signal = conditionStr[conditionStr.find("posedge")+len("posedge"):].strip()
       if (len(signal) < 1):
         g_logger.error("Signal name not found in condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
     #Negedge
     if (re.search(r"negedge\s", conditionStr)):
@@ -366,6 +368,10 @@ class TriggerCondition:
     if ("PERIOD_TICK" in conditionStr):
       triggerType = TRIGGER_TYPE.PERIOD_TICK
 
+    #LFSR
+    if (conditionStr.strip() == "LFSR"):
+      triggerType = TRIGGER_TYPE.LFSR
+
     #Any change
     if (re.search(r"anychange\s*\(", conditionStr)):
       triggerType = TRIGGER_TYPE.ANY_CHANGE
@@ -375,13 +381,13 @@ class TriggerCondition:
         signal = conditionStr[conditionStr.find("(")+1:conditionStr.find(")")].strip()
         if (len(signal) < 1):
           g_logger.error("Signal name not found in condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-          sys.exit()
+          sys.exit(1)
         if (len(signal.split(",")) > 1):
           g_logger.error("{} arguments \"{}\" defined for anychange trigger in event \"{}.{}.{}\". Only one argument expected".format(len(signal.split(",")), conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-          sys.exit()
+          sys.exit(1)
       except:
         g_logger.error("Could not parse anychange condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
     #Transition
     if (re.search(r"transition\s*\(", conditionStr)):
@@ -391,13 +397,13 @@ class TriggerCondition:
         transitionArgs = conditionStr[conditionStr.find("(")+1:conditionStr.find(")")].strip().split(",")
         if (len(transitionArgs) != 3):
           g_logger.error("Could not parse transition condition \"{}\" defined for event \"{}.{}.{}\". 3 transition arguments required, only {} provided".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name, len(transitionArgs)))
-          sys.exit()
+          sys.exit(1)
 
         #Get signal name
         signal = transitionArgs[0].strip()
         if (len(signal) < 1):
           g_logger.error("Signal name not found in condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-          sys.exit()
+          sys.exit(1)
 
         #Get transition values
         try:
@@ -405,10 +411,10 @@ class TriggerCondition:
           value = str2int(transitionArgs[2].strip())
         except:
           g_logger.error("Invalid value defined for transition condition \"{}\" in event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-          sys.exit()
+          sys.exit(1)
       except:
         g_logger.error("Could not parse transition condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
     #Count ones
     if (re.search(r"countones\s*\(", conditionStr)):
@@ -417,7 +423,7 @@ class TriggerCondition:
       operandList = conditionStr.split("==")
       if (len(operandList) != 2):
         g_logger.error("Invalid expression \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
       #Get comparison value
       value = operandList[1].strip()
@@ -425,7 +431,7 @@ class TriggerCondition:
         value = str2int(value)
       except:
         g_logger.error("Could not convert RHS of \"{}\" into a numerical value in event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
       #Get signal name
       #TODO: Add support for multiple signals?
@@ -433,18 +439,18 @@ class TriggerCondition:
         signal = conditionStr[conditionStr.find("(")+1:conditionStr.find(")")].strip()
         if (len(signal) < 1):
           g_logger.error("Signal name not found in condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-          sys.exit()
+          sys.exit(1)
         if (len(signal.split(",")) > 1):
           g_logger.error("{} arguments \"{}\" defined for count ones trigger in event \"{}.{}.{}\". Only one argument expected".format(len(signal.split(",")), conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-          sys.exit()
+          sys.exit(1)
       except:
         g_logger.error("Could not parse count ones condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-        sys.exit()
+        sys.exit(1)
 
     #Unsupported
     if ((triggerType is None) or unsuportedCondition):
       g_logger.error("Unsupported or invalid condition \"{}\" defined for event \"{}.{}.{}\"".format(conditionStr, self.parentEventTrigger.parentEap.parentNode.name, self.parentEventTrigger.parentEap.name, self.parentEventTrigger.name))
-      sys.exit()
+      sys.exit(1)
 
     return triggerType, signal, value, from_value
 
@@ -456,6 +462,10 @@ class TriggerCondition:
       return "(ALWAYS)"
     if (self.type == TRIGGER_TYPE.PERIOD_TICK):
       return "(PERIOD_TICK)"
+    if (self.type == TRIGGER_TYPE.LFSR):
+      return "(LFSR)"
+    if (self.type in g_compareOperators):
+      return "({} {} {})".format(self.signal, g_compareOperators[self.type], self.value)
     if (self.type == TRIGGER_TYPE.EQUAL):
       return "({} == {})".format(self.signal, self.value)
     if (self.type == TRIGGER_TYPE.NOT_EQUAL):
@@ -490,7 +500,7 @@ class EventTrigger:
   def extractTriggerConditions(self, triggerList):
     if (not isinstance(triggerList, list)) and (not isinstance(triggerList, str)):
       g_logger.error("Triggers for event \"{}.{}.{}\" not defined as a list or string".format(self.parentEap.parentNode.name, self.parentEap.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     triggerConditions = []
     if isinstance(triggerList, str):
@@ -515,12 +525,12 @@ class EventTrigger:
 
     if (len(triggerTypes) > 1) or eventTypeConflict:
       g_logger.error("Multiple event types {} implied by trigger conditions for event \"{}.{}.{}\"".format(list(triggerTypes.keys()), self.parentEap.parentNode.name, self.parentEap.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     for triggerType in triggerTypes:
       if ((triggerType != TRIGGER_TYPE.EQUAL) and (triggerType != TRIGGER_TYPE.TRANSITION) and (triggerType != TRIGGER_TYPE.ANY_CHANGE)) and (len(triggerTypes[triggerType]) > 1):
         g_logger.error("Multiple cases not supported by {} for event \"{}.{}.{}\"".format(triggerType, self.parentEap.parentNode.name, self.parentEap.name, self.name))
-        sys.exit()
+        sys.exit(1)
       
     return triggerConditions
 
@@ -576,7 +586,7 @@ class EventActionPair:
     debug_mux_reg = eapDict["debug_mux_reg"]
     if not isinstance(debug_mux_reg, str):
       g_logger.error("\"{}.{}\" Field \"debug_mux_reg\" must be a string".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     return debug_mux_reg
 
@@ -588,7 +598,7 @@ class EventActionPair:
 
     if not isinstance(eapDict["event_triggers"], dict):
       g_logger.error("Field \"event_triggers\" must be a dict")
-      sys.exit()
+      sys.exit(1)
 
     #Check for keywords in event names for possible whitespace issues
     eventNameList = eapDict["event_triggers"].keys()
@@ -600,11 +610,11 @@ class EventActionPair:
     for eventName in eapDict["event_triggers"]:
       if (eventName in event_triggers):
         g_logger.error("Event \"{}\" already defined for  \"{}.{}\"".format(eventName, self.parentNode.name, self.name))
-        sys.exit()
+        sys.exit(1)
 
       if (len(event_triggers) >= g_availableEventsPerEap):
         g_logger.error("More than {} events defined for  \"{}.{}\"".format(g_availableEventsPerEap, self.parentNode.name, self.name))
-        sys.exit()
+        sys.exit(1)
 
       event_triggers[eventName] = EventTrigger(self, eventName, eapDict["event_triggers"][eventName])
 
@@ -626,17 +636,17 @@ class EventActionPair:
     g_logger.debug("Extracting logical op for EventActionPair {}.{}".format(self.parentNode.name, self.name))
     if not ("event_logical_op" in eapDict):
       g_logger.error("Required field \"event_logical_op\" not defined for EAP \"{}.{}\"".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     event_logical_op = eapDict["event_logical_op"]
     if not isinstance(event_logical_op, str):
       g_logger.error("\"{}.{}\" Field \"event_logical_op\" must be a string".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     event_logical_op = event_logical_op.strip()
     if (event_logical_op in g_logicalOpcodes):
       g_logger.error("Deprecated logical opcode \"{}\" defined for \"{}.{}\". Logical opcodes are no longer supported. Use a logical expression instead".format(event_logical_op, self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     return event_logical_op
 
@@ -648,11 +658,11 @@ class EventActionPair:
 
     if not isinstance(actions, list):
       g_logger.error("\"{}.{}\" Field \"actions\" must be a list".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     if (len(actions) > g_availableActionsPerEap):
       g_logger.error("More than {} actions defined for \"{}.{}\"".format(g_availableActionsPerEap, self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     return actions
 
@@ -664,11 +674,11 @@ class EventActionPair:
 
     if not isinstance(custom_actions, list):
       g_logger.error("\"{}.{}\" Field \"custom_actions\" must be a list".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     if (len(custom_actions) > g_availableCustomActionsPerEap):
       g_logger.error("More than {} custom actions defined for \"{}.{}\"".format(g_availableCustomActionsPerEap, self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     return custom_actions
 
@@ -680,7 +690,7 @@ class EventActionPair:
 
     if not isinstance(snapshot_signals, list):
       g_logger.error("\"{}.{}\" Field \"snapshot_signals\" must be a list".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     return snapshot_signals
 
@@ -692,7 +702,7 @@ class EventActionPair:
 
     if not isinstance(next_state_node, str):
       g_logger.error("\"{}.{}\" Field \"next_state_node\" must be a string".format(self.parentNode.name, self.name))
-      sys.exit()
+      sys.exit(1)
 
     return next_state_node
 
@@ -710,10 +720,10 @@ class StateNode:
     g_logger.debug("Adding EAP {} to StateNode {}".format(eapName, self.name))
     if (len(self.eaps) >= g_availableEapsPerNode):
       g_logger.error("More than {} event actions pairs defined for state node \"{}\"".format(g_availableEapsPerNode, self.name))
-      sys.exit()
+      sys.exit(1)
     if (eapName in self.eaps):
       g_logger.error("Event action pair \"{}\" already defined for state node \"{}\"".format(eapName, self.name))
-      sys.exit()
+      sys.exit(1)
 
     self.eaps[eapName] = EventActionPair(self, eapName, eapDict)
 
@@ -735,7 +745,8 @@ class DebugMux():
       
     self.mux_id = mux_id
     self.lane_width = int(lane_width)
-    self.output_lanes = int(int(output_width)/int(lane_width))
+    self.output_lanes = None
+    self.output_lane_mappings = {}
 
     self.required_input_sigs = {}
     for csrName in self.mux_select_csrs:
@@ -745,11 +756,17 @@ class DebugMux():
     for csrName in self.mux_select_csrs:
       self.required_input_lanes[csrName] = []
 
+    self.setOutputWidth(output_width)
+
+    self.output_signals = []
+
+  def setOutputWidth(self, output_width):
+    #Width of the debug bus driven by this mux. Muxes that feed another mux can be narrower than the CLA debug bus
+    self.output_width = int(output_width)
+    self.output_lanes = int(self.output_width/self.lane_width)
     self.output_lane_mappings = {}
     for csrName in self.mux_select_csrs:
       self.output_lane_mappings[csrName] = [i for i in range(0, self.output_lanes)]
-
-    self.output_signals = []
 
   def addRequiredInputSignal(self, signal_obj):
     csrName = signal_obj.muxsel_csr
@@ -758,7 +775,7 @@ class DebugMux():
 
     if not (csrName in self.mux_select_csrs):
       g_logger.error("Specified CSR reg \"{}\" is not connected to mux instance \"{}\" needed for signal \"{}\". Connected csrs = {}. Check your CLA config file".format(csrName, self.name, signal_obj.name, self.mux_select_csrs, self.name))
-      sys.exit()
+      sys.exit(1)
 
     self.required_input_sigs[csrName].append(signal_obj)
 
@@ -781,7 +798,7 @@ class DebugMux():
         for dbmSignalObj in self.required_input_sigs[csrName]:
           listStr += "\n{}".format(str(dbmSignalObj))
         g_logger.error(listStr)
-        sys.exit()
+        sys.exit(1)
 
       self.required_input_lanes[csrName] = lanes
 
@@ -826,7 +843,7 @@ class DebugMux():
 
       if (len(usedCsrs) > 1):
         g_logger.error("Mux output signals required for the next mux level are unclear due to multiple mux select CSRs {} in use for \"{}\"".format(usedCsrs, self.name))
-        sys.exit()
+        sys.exit(1)
 
     #TODO: Add comment
     for csrName in self.mux_select_csrs:
@@ -962,7 +979,7 @@ class DebugBusSignal:
       indxEnd = self.name.find("]")
       if ((indxEnd == -1) or (indxStart == -1) or (indxStart >= len(self.name))):
         g_logger.error("Could not parse bit indeces for \"{}\"".format(self.name))
-        sys.exit()
+        sys.exit(1)
 
       indexStr = self.name[indxStart+1:indxEnd]
 
@@ -1004,23 +1021,23 @@ class DebugBusSignal:
       #Check index values
       if ((upperIndx is None) or (lowerIndx is None)):
         g_logger.error("Could not parse bit indeces for \"{}\"".format(self.name))
-        sys.exit()
+        sys.exit(1)
 
       if (upperIndx < lowerIndx):
         g_logger.error("Invalid bit indeces for \"{}\"".format(self.name))
-        sys.exit()
+        sys.exit(1)
 
       if (lowerIndx < 0):
         g_logger.error("Invalid bit indeces for \"{}\"".format(self.name))
-        sys.exit()
+        sys.exit(1)
 
       if (upperIndx >= self.width):
         g_logger.error("Index out of bounds for \"{}\". Signal width is {} bits".format(self.name, self.width))
-        sys.exit()
+        sys.exit(1)
 
       if (lowerIndx >= self.width):
         g_logger.error("Index out of bounds for \"{}\". Signal width is {} bits".format(self.name, self.width))
-        sys.exit()
+        sys.exit(1)
 
       #Modify width and lane indexes
       if isinstance(self.input_mux, DebugMux):
@@ -1114,7 +1131,7 @@ def generateMuxGroupings(nodeDict):
       for eventName in eapObj.event_triggers:
         eventTrigger = eapObj.event_triggers[eventName]
         for triggerCondition in eventTrigger.triggerConditions:
-          if ((triggerCondition.type == TRIGGER_TYPE.EQUAL) or (triggerCondition.type == TRIGGER_TYPE.NOT_EQUAL) or (triggerCondition.type == TRIGGER_TYPE.POSEDGE) or (triggerCondition.type == TRIGGER_TYPE.NEGEDGE) or (triggerCondition.type == TRIGGER_TYPE.TRANSITION)  or (triggerCondition.type == TRIGGER_TYPE.COUNT_ONES) or (triggerCondition.type == TRIGGER_TYPE.ANY_CHANGE)) and (not (triggerCondition.signal in g_claCounterAliases)):
+          if (triggerCondition.type in g_muxSignalTriggerTypes) and (not (triggerCondition.signal in g_claCounterAliases)):
             #This trigger condition requires a debug mux signal. Add to muxGroups dict
             requiredSignals.append(triggerCondition.signal)
 
@@ -1154,11 +1171,11 @@ def generateMuxGroupings(nodeDict):
     if (len(reducedMatches) == 0):
       g_logger.error("Could not find rtl signal \"{}\"".format(signalName))
       if (not g_busConfigProvided):
-        g_logger.error("No debug bus config file was provided. Without a mux config file, you can only use the signal name \"debug_signals\" in your CLA program description, which is the 64b input to the CLA module.".format(signalName))
-      sys.exit()
+        g_logger.error("No debug bus config file was provided. Without a mux config file, you can only use the signal name \"debug_signals\" in your CLA program description, which is the {}b input to the CLA module.".format(g_claDebugInputWidth))
+      sys.exit(1)
     if (len(reducedMatches) > 1):
       g_logger.error("Multiple matches found for signal \"{}\" : {}".format(signalName, reducedMatches))
-      sys.exit()
+      sys.exit(1)
 
     #Generate DebugBusSignal obj
     dbmSignalObj = DebugBusSignal(signalName)
@@ -1186,7 +1203,7 @@ def generateMuxGroupings(nodeDict):
       for eventName in eapObj.event_triggers:
         eventTrigger = eapObj.event_triggers[eventName]
         for triggerCondition in eventTrigger.triggerConditions:
-          if ((triggerCondition.type == TRIGGER_TYPE.EQUAL) or (triggerCondition.type == TRIGGER_TYPE.NOT_EQUAL) or (triggerCondition.type == TRIGGER_TYPE.POSEDGE) or (triggerCondition.type == TRIGGER_TYPE.NEGEDGE) or (triggerCondition.type == TRIGGER_TYPE.TRANSITION)  or (triggerCondition.type == TRIGGER_TYPE.COUNT_ONES) or (triggerCondition.type == TRIGGER_TYPE.ANY_CHANGE)) and (not (triggerCondition.signal in g_claCounterAliases)):
+          if (triggerCondition.type in g_muxSignalTriggerTypes) and (not (triggerCondition.signal in g_claCounterAliases)):
             #This trigger condition requires a debug mux signal. Add to muxGroups dict
             mux_name = signal_obj_dict[triggerCondition.signal].input_mux.name
             specified_muxsel_csr = eapObj.debug_mux_reg
@@ -1246,7 +1263,7 @@ def generateMuxLanes_old(muxSignals):
       for signalName in muxSignals[muxName]:
         dbmSignalObj = muxSignals[muxName][signalName]
         g_logger.error(str(dbmSignalObj))
-      sys.exit()
+      sys.exit(1)
 
     #Assign input lanes to output lanes
     outputLaneMap = {}
@@ -1280,6 +1297,8 @@ def allocateCfgRegisters(nodeDict):
   transitionTriggers = {}
   countOneTriggers = {}
   anyChangeTriggers = {}
+  compareTriggers = {}
+  lfsrTriggers = {}
   for nodeName in nodeDict:
     nodeObj = nodeDict[nodeName]
     for eapName in nodeObj.eaps:
@@ -1306,12 +1325,17 @@ def allocateCfgRegisters(nodeDict):
           if (triggerCondition.type == TRIGGER_TYPE.ANY_CHANGE):
             #This trigger condition requires a count ones match
             anyChangeTriggers[eventTrigger.getHash()] = eventTrigger
+          if (triggerCondition.type in g_compareOperators):
+            #This trigger condition requires an arithmetic compare
+            compareTriggers[eventTrigger.getHash()] = eventTrigger
+          if (triggerCondition.type == TRIGGER_TYPE.LFSR):
+            lfsrTriggers[eventTrigger.getHash()] = eventTrigger
           break
 
   #Allocate event triggers to match regs
   if (len(matchTriggers) > g_availableMatchRegs):
     g_logger.error("{} match/mask registers required to implement program. Only {} available".format(len(matchTriggers), g_availableMatchRegs))
-    sys.exit()
+    sys.exit(1)
 
   matchRegAllocations = {}
   for triggerHash in matchTriggers:
@@ -1328,7 +1352,7 @@ def allocateCfgRegisters(nodeDict):
     eventTrigger = counterTriggers[triggerHash]
     if (len(eventTrigger.triggerConditions) > 1):
       g_logger.error("Multiple counter comparisons used in {}.{}.{}. Only one counter comparison per event is supported".format(eventTrigger.parentEap.parentNode.name, eventTrigger.parentEap.name, eventTrigger.name))
-      sys.exit()
+      sys.exit(1)
 
     triggerCondition = eventTrigger.triggerConditions[0]
     if (counterRegAllocations[triggerCondition.signal]["target"] is None):
@@ -1337,7 +1361,7 @@ def allocateCfgRegisters(nodeDict):
       existingTarget = counterRegAllocations[triggerCondition.signal]["target"]
       if (triggerCondition.value != existingTarget):
         g_logger.error("Multiple target values used for CLA counter \"{}\". Only one target value per counter is supported".format(triggerCondition.signal))
-        sys.exit()
+        sys.exit(1)
 
   #Allocate edge triggers to edge reg
   edgeRegAllocations = {}
@@ -1346,7 +1370,7 @@ def allocateCfgRegisters(nodeDict):
 
   if (len(edgeRegAllocations) > g_availableEdgeDetects):
     g_logger.error("{} edge detects required to implement program. Only {} available".format(len(edgeRegAllocations), g_availableEdgeDetects))
-    sys.exit()
+    sys.exit(1)
 
   #Allocate transition triggers to transition reg
   transitionRegAllocations = {}
@@ -1355,7 +1379,7 @@ def allocateCfgRegisters(nodeDict):
 
   if (len(transitionRegAllocations) > g_availableTransitionDetects):
     g_logger.error("{} transition detects required to implement program. Only {} available".format(len(transitionRegAllocations), g_availableTransitionDetects))
-    sys.exit()
+    sys.exit(1)
 
   #Allocate count ones triggers to count ones reg
   countOneRegAllocations = {}
@@ -1364,7 +1388,7 @@ def allocateCfgRegisters(nodeDict):
 
   if (len(countOneRegAllocations) > g_availableCountOneRegs):
     g_logger.error("{} ones_count registers required to implement program. Only {} available".format(len(countOneRegAllocations), g_availableCountOneRegs))
-    sys.exit()
+    sys.exit(1)
 
   #Allocate anychange triggers to anychange reg
   anyChangeRegAllocations = {}
@@ -1373,9 +1397,28 @@ def allocateCfgRegisters(nodeDict):
 
   if (len(anyChangeRegAllocations) > g_availableAnyChangeRegs):
     g_logger.error("{} any change mask registers required to implement program. Only {} available".format(len(anyChangeRegAllocations), g_availableAnyChangeRegs))
-    sys.exit()
+    sys.exit(1)
 
-  return matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations
+  #Allocate compare triggers to compare regs. Events that compare the same signal against the same value share a compare reg
+  compareRegAllocations = {}
+  compareKeyAllocations = {}
+  for triggerHash in compareTriggers:
+    triggerCondition = compareTriggers[triggerHash].triggerConditions[0]
+    compareKey = (triggerCondition.signal, triggerCondition.value)
+    if not (compareKey in compareKeyAllocations):
+      compareKeyAllocations[compareKey] = len(compareKeyAllocations)
+    compareRegAllocations[triggerHash] = compareKeyAllocations[compareKey]
+
+  if (len(compareKeyAllocations) > g_availableCompareRegs):
+    g_logger.error("{} arithmetic compare registers required to implement program. Only {} available".format(len(compareKeyAllocations), g_availableCompareRegs))
+    sys.exit(1)
+
+  #LFSR is a single shared resource. Every LFSR event uses it
+  lfsrRegAllocations = {}
+  for triggerHash in lfsrTriggers:
+    lfsrRegAllocations[triggerHash] = 0
+
+  return matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, compareRegAllocations, lfsrRegAllocations
 
 ###################################
 # Register Classes
@@ -1398,10 +1441,10 @@ def getRegDict(regObj, fieldList):
       concatBinList += getBinaryList(field.value, width=field.width)
     except TypeError:
       g_logger.error("Could not convert value=\"{}\" into binary for field {}.{}".format(field.value, regObj.name, field.name))
-      sys.exit()
+      sys.exit(1)
     except ValueError:
       g_logger.error("Field {}.{}[{}:0] is not wide enough for value={}".format(regObj.name, field.name, field.width-1, field.value))
-      sys.exit()
+      sys.exit(1)
 
   regDict["value"] = "0x%x" % int("".join([str(i) for i in concatBinList]), 2)
 
@@ -1414,42 +1457,43 @@ class RegField:
     self.value = value
     self.comment = comment
 
-class CounterCfgReg:
+class ClaReg:
+  '''Base class for registers whose fields are listed MSB first in self.fieldList'''
+  isMuxSelect = False
+
   def __init__ (self, name, comment=None):
     self.name = name
     self.comment = comment
-
-    #Register fields
-    self.rsvd = RegField("rsvd", width=1, value=0)
-    self.upper_target = RegField("upper_target", width=15, value=0)
-    self.upper_counter = RegField("upper_counter", width=15, value=0)
-    self.reset_on_target = RegField("reset_on_target", width=1, value=0)
-    self.target = RegField("target", width=16, value=0)
-    self.counter = RegField("counter", width=16, value=0)
+    self.fieldList = []
 
   def getDict(self):
-    fieldList = [self.rsvd, self.upper_target, self.upper_counter, self.reset_on_target, self.target, self.counter]
-    return getRegDict(self, fieldList)
+    return getRegDict(self, self.fieldList)
 
   def getComments(self):
     commentDict = {}
     if not (self.comment is None):
       commentDict[self.name] = self.comment
 
-    fieldList = [self.rsvd, self.upper_target, self.upper_counter, self.reset_on_target, self.target, self.counter]
-
-    for field in fieldList:
+    for field in self.fieldList:
       if not (field.comment is None):
         commentDict[field.name] = field.comment
 
     return commentDict
 
-class EapReg:
+class CounterCfgReg(ClaReg):
   def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
+    ClaReg.__init__(self, name, comment)
+    self.rsvd = RegField("rsvd", width=1, value=0)
+    self.upper_target = RegField("upper_target", width=15, value=0)
+    self.upper_counter = RegField("upper_counter", width=15, value=0)
+    self.reset_on_target = RegField("reset_on_target", width=1, value=0)
+    self.target = RegField("target", width=16, value=0)
+    self.counter = RegField("counter", width=16, value=0)
+    self.fieldList = [self.rsvd, self.upper_target, self.upper_counter, self.reset_on_target, self.target, self.counter]
 
-    #Register fields
+class EapReg(ClaReg):
+  def __init__ (self, name, comment=None):
+    ClaReg.__init__(self, name, comment)
     self.action3 = RegField("action3", width=6, value=0)
     self.action2 = RegField("action2", width=6, value=0)
     self.udf = RegField("udf", width=8, value=0)
@@ -1464,295 +1508,44 @@ class EapReg:
     self.action1 = RegField("action1", width=6, value=0)
     self.action0 = RegField("action0", width=6, value=0)
     self.dest_node = RegField("dest_node", width=2, value=0)
+    self.fieldList = [self.action3, self.action2, self.udf, self.event_type2, self.custom_action1_enable, self.custom_action0_enable, self.custom_action_1, self.custom_action_0, self.event_type1, self.event_type0, self.logical_op, self.action1, self.action0, self.dest_node]
 
-  def getDict(self):
-    fieldList = [
-        self.action3,
-        self.action2,
-        self.udf,
-        self.event_type2,
-        self.custom_action1_enable,
-        self.custom_action0_enable,
-        self.custom_action_1,
-        self.custom_action_0,
-        self.event_type1,
-        self.event_type0,
-        self.logical_op,
-        self.action1,
-        self.action0,
-        self.dest_node
-      ]
-    return getRegDict(self, fieldList)
+class ValueReg(ClaReg):
+  '''Register with a single 64b field. 128b debug bus values are split over a "_lo" and a "_hi" ValueReg'''
+  def __init__ (self, name, fieldName="value", comment=None):
+    ClaReg.__init__(self, name, comment)
+    self.value = RegField(fieldName, width=g_claMmrWidth, value=0)
+    self.fieldList = [self.value]
 
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [
-        self.action3,
-        self.action2,
-        self.event_type2,
-        self.custom_action1_enable,
-        self.custom_action0_enable,
-        self.custom_action_1,
-        self.custom_action_0,
-        self.event_type1,
-        self.event_type0,
-        self.logical_op,
-        self.action1,
-        self.action0,
-        self.dest_node
-      ]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class SignalMaskReg:
+class EdgeDetectCfgReg(ClaReg):
   def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class SignalMatchReg:
-  def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class EdgeDetectCfgReg:
-  def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
+    ClaReg.__init__(self, name, comment)
     self.pos_edge_signal1 = RegField("pos_edge_signal1", width=1, value=0)
-    self.signal1_select = RegField("signal1_select", width=6, value=0)
+    self.signal1_select = RegField("signal1_select", width=7, value=0)
     self.pos_edge_signal0 = RegField("pos_edge_signal0", width=1, value=0)
-    self.signal0_select = RegField("signal0_select", width=6, value=0)
+    self.signal0_select = RegField("signal0_select", width=7, value=0)
+    self.fieldList = [self.pos_edge_signal1, self.signal1_select, self.pos_edge_signal0, self.signal0_select]
 
-  def getDict(self):
-    fieldList = [self.pos_edge_signal1, 
-        self.signal1_select, 
-        self.pos_edge_signal0, 
-        self.signal0_select
-      ]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.pos_edge_signal1, 
-        self.signal1_select, 
-        self.pos_edge_signal0, 
-        self.signal0_select
-      ]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class TransitionMaskReg:
+class LfsrReg(ClaReg):
   def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
+    ClaReg.__init__(self, name, comment)
+    self.lfsr = RegField("lfsr", width=63, value=0)
+    self.lfsr_active = RegField("lfsr_active", width=1, value=0)
+    self.fieldList = [self.lfsr, self.lfsr_active]
 
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class TransitionFromValueReg:
+class LfsrMaskReg(ClaReg):
   def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
+    ClaReg.__init__(self, name, comment)
+    self.mask = RegField("mask", width=63, value=0)
+    self.rsvd0 = RegField("rsvd0", width=1, value=0)
+    self.fieldList = [self.mask, self.rsvd0]
 
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
+class MuxSelectLoReg(ClaReg):
+  '''Lanes 0-7 of the debug mux select, plus the mux ID/mode. Valid must be written after the hi register is programmed'''
+  isMuxSelect = True
 
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class TransitionToValueReg:
   def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class OnesCountMaskReg:
-  def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class OnesCountValueReg:
-  def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.value = RegField("value", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.value]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.value]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class AnyChangeReg:
-  def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.mask = RegField("mask", width=64, value=0)
-
-  def getDict(self):
-    fieldList = [self.mask]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.mask]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class MuxSelectReg:
-  def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
+    ClaReg.__init__(self, name, comment)
     self.Muxselseg7 = RegField("Muxselseg7", width=6, value=0)
     self.Muxselseg6 = RegField("Muxselseg6", width=6, value=0)
     self.Muxselseg5 = RegField("Muxselseg5", width=6, value=0)
@@ -1761,59 +1554,42 @@ class MuxSelectReg:
     self.Muxselseg2 = RegField("Muxselseg2", width=6, value=0)
     self.Muxselseg1 = RegField("Muxselseg1", width=6, value=0)
     self.Muxselseg0 = RegField("Muxselseg0", width=6, value=0)
-    self.rsvd = RegField("rsvd", width=8, value=0)
+    self.rsvd = RegField("rsvd_15_10", width=6, value=0)
+    self.Valid = RegField("Valid", width=1, value=1)  #W1S: select values are only latched when this is written as 1
+    self.FineGrainTime = RegField("FineGrainTime", width=1, value=0)
     self.DbmId = RegField("DbmId", width=6, value=0)
     self.DbmMode = RegField("DbmMode", width=2, value=1)
+    self.fieldList = [self.Muxselseg7, self.Muxselseg6, self.Muxselseg5, self.Muxselseg4, self.Muxselseg3, self.Muxselseg2, self.Muxselseg1, self.Muxselseg0, self.rsvd, self.Valid, self.FineGrainTime, self.DbmId, self.DbmMode]
 
-  def getDict(self):
-    fieldList = [self.Muxselseg7, self.Muxselseg6, self.Muxselseg5, self.Muxselseg4, self.Muxselseg3, self.Muxselseg2, self.Muxselseg1, self.Muxselseg0, self.rsvd, self.DbmId, self.DbmMode]
-    return getRegDict(self, fieldList)
+  @property
+  def muxId(self):
+    return self.DbmId.value
 
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
+class MuxSelectHiReg(ClaReg):
+  '''Lanes 8-15 of the debug mux select. Only needed when the debug bus is wider than 8 lanes'''
+  isMuxSelect = True
 
-    fieldList = [self.Muxselseg7, self.Muxselseg6, self.Muxselseg5, self.Muxselseg4, self.Muxselseg3, self.Muxselseg2, self.Muxselseg1, self.Muxselseg0, self.rsvd, self.DbmId, self.DbmMode]
+  def __init__ (self, name, muxId, comment=None):
+    ClaReg.__init__(self, name, comment)
+    self.muxId = muxId  #Not a field of this register. Used to tell the hi regs of different mux IDs apart
+    self.Muxselseg15 = RegField("Muxselseg15", width=6, value=0)
+    self.Muxselseg14 = RegField("Muxselseg14", width=6, value=0)
+    self.Muxselseg13 = RegField("Muxselseg13", width=6, value=0)
+    self.Muxselseg12 = RegField("Muxselseg12", width=6, value=0)
+    self.Muxselseg11 = RegField("Muxselseg11", width=6, value=0)
+    self.Muxselseg10 = RegField("Muxselseg10", width=6, value=0)
+    self.Muxselseg9 = RegField("Muxselseg9", width=6, value=0)
+    self.Muxselseg8 = RegField("Muxselseg8", width=6, value=0)
+    self.rsvd = RegField("rsvd_15_0", width=16, value=0)
+    self.fieldList = [self.Muxselseg15, self.Muxselseg14, self.Muxselseg13, self.Muxselseg12, self.Muxselseg11, self.Muxselseg10, self.Muxselseg9, self.Muxselseg8, self.rsvd]
 
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
-
-class DebugSignalDelayReg:
+class DebugSignalDelayReg(ClaReg):
   def __init__ (self, name, comment=None):
-    self.name = name
-    self.comment = comment
-
-    #Register fields
-    self.Muxselseg7 = RegField("Muxselseg7", width=2, value=0)
-    self.Muxselseg6 = RegField("Muxselseg6", width=2, value=0)
-    self.Muxselseg5 = RegField("Muxselseg5", width=2, value=0)
-    self.Muxselseg4 = RegField("Muxselseg4", width=2, value=0)
-    self.Muxselseg3 = RegField("Muxselseg3", width=2, value=0)
-    self.Muxselseg2 = RegField("Muxselseg2", width=2, value=0)
-    self.Muxselseg1 = RegField("Muxselseg1", width=2, value=0)
-    self.Muxselseg0 = RegField("Muxselseg0", width=2, value=0)
-    self.rsvd = RegField("rsvd", width=48, value=0)
-
-  def getDict(self):
-    fieldList = [self.rsvd, self.Muxselseg7, self.Muxselseg6, self.Muxselseg5, self.Muxselseg4, self.Muxselseg3, self.Muxselseg2, self.Muxselseg1, self.Muxselseg0]
-    return getRegDict(self, fieldList)
-
-  def getComments(self):
-    commentDict = {}
-    if not (self.comment is None):
-      commentDict[self.name] = self.comment
-
-    fieldList = [self.rsvd, self.Muxselseg7, self.Muxselseg6, self.Muxselseg5, self.Muxselseg4, self.Muxselseg3, self.Muxselseg2, self.Muxselseg1, self.Muxselseg0]
-
-    for field in fieldList:
-      if not (field.comment is None):
-        commentDict[field.name] = field.comment
-
-    return commentDict
+    ClaReg.__init__(self, name, comment)
+    self.rsvd = RegField("rsvd", width=32, value=0)
+    for i in reversed(range(16)):
+      setattr(self, "Muxselseg{}".format(i), RegField("Muxselseg{}".format(i), width=2, value=0))
+    self.fieldList = [self.rsvd] + [getattr(self, "Muxselseg{}".format(i)) for i in reversed(range(16))]
 
 class ClaValues:
   def __init__ (self, name=None):
@@ -1822,24 +1598,46 @@ class ClaValues:
     #Registers
     self.registers = {}
     for i in range(g_availableCounters):
-      self.addRegister(CounterCfgReg("dbg_cla_counter{}_cfg".format(i)))
+      self.addRegister(CounterCfgReg("c_dbg_cla_counter{}_cfg".format(i)))
     
     for i in range(g_availableNodes):
       for j in range(g_availableEapsPerNode):
-        self.addRegister(EapReg("dbg_node{}_eap{}".format(i, j)))
+        self.addRegister(EapReg("c_dbg_node{}_eap{}".format(i, j)))
 
     for i in range(g_availableMatchRegs):
-      self.addRegister(SignalMaskReg("dbg_signal_mask{}".format(i)))
-      self.addRegister(SignalMatchReg("dbg_signal_match{}".format(i)))
+      self.addWideRegister("c_dbg_signal_mask{}".format(i))
+      self.addWideRegister("c_dbg_signal_match{}".format(i))
 
-    self.addRegister(EdgeDetectCfgReg("dbg_signal_edge_detect_cfg"))
-    self.addRegister(TransitionMaskReg("dbg_transition_mask"))
-    self.addRegister(TransitionFromValueReg("dbg_transition_from_value"))
-    self.addRegister(TransitionToValueReg("dbg_transition_to_value"))
-    self.addRegister(OnesCountMaskReg("dbg_ones_count_mask"))
-    self.addRegister(OnesCountValueReg("dbg_ones_count_value"))
-    self.addRegister(AnyChangeReg("dbg_any_change"))
-    self.addRegister(DebugSignalDelayReg("dbg_signal_delay_mux_sel"))
+    for i in range(g_availableCompareRegs):
+      self.addWideRegister("c_dbg_compare{}".format(i))
+      self.addWideRegister("c_dbg_compare{}_mask".format(i))
+
+    self.addRegister(EdgeDetectCfgReg("c_dbg_signal_edge_detect_cfg"))
+    self.addWideRegister("c_dbg_transition_mask")
+    self.addWideRegister("c_dbg_transition_from_value")
+    self.addWideRegister("c_dbg_transition_to_value")
+    self.addWideRegister("c_dbg_ones_count_mask")
+    self.addRegister(ValueReg("c_dbg_ones_count_value"))
+    self.addWideRegister("c_dbg_any_change", fieldName="mask")
+    self.addRegister(DebugSignalDelayReg("c_dbg_signal_delay_mux_sel"))
+    self.addRegister(LfsrReg("c_dbg_lfsr"))
+    self.addRegister(LfsrMaskReg("c_dbg_lfsr_mask"))
+
+  def addWideRegister(self, baseName, fieldName="value"):
+    #The CLA debug bus value is spread over a lo register and (for buses wider than 64b) a hi register
+    self.addRegister(ValueReg("{}_lo".format(baseName), fieldName=fieldName))
+    if (g_claDebugInputWidth > g_claMmrWidth):
+      self.addRegister(ValueReg("{}_hi".format(baseName), fieldName=fieldName))
+
+  def setWideValue(self, baseName, value, comment=None):
+    registerNames = ["{}_lo".format(baseName)]
+    if (g_claDebugInputWidth > g_claMmrWidth):
+      registerNames.append("{}_hi".format(baseName))
+
+    for indx, registerName in enumerate(registerNames):
+      registerObj = self.registers[registerName]
+      registerObj.value.value = (value >> (indx * g_claMmrWidth)) & ((1 << g_claMmrWidth) - 1)
+      registerObj.comment = comment
 
   def addRegister(self, registerObj):
     registerName = registerObj.name
@@ -1847,19 +1645,41 @@ class ClaValues:
       raise ValueError("Empty register name defined for {}".format(registerObj))
 
     #Handle Mux ID overloading
-    if (isinstance(registerObj, MuxSelectReg)):
-      registerName = "{}__ID_{}".format(registerName, registerObj.DbmId.value)
+    if (registerObj.isMuxSelect):
+      registerName = "{}__ID_{}".format(registerName, registerObj.muxId)
       if (registerName in self.registers):
-        g_logger.error("Multiple debug mux instances connected to select csr \"{}\" have the same mux ID \"{}\"".format(registerObj.name, registerObj.DbmId))
-        sys.exit()
+        g_logger.error("Multiple debug mux instances have the same mux ID \"{}\"".format(registerObj.muxId))
+        sys.exit(1)
 
     self.registers[registerName] = registerObj
 
-  def writeToYamlFile(self, outputPath, removeHexQuotes=True):
-    #Generate value dict
+  def getRegisterOffset(self, registerName):
+    #Strip the mux ID overloading suffix to get the spec name
+    specName = registerName.split("__ID_")[0]
+    return getMmrOffset(specName)
+
+  def validateLayouts(self):
+    #Make sure the register field layouts implemented in this compiler match the MMR spec
+    for registerName in self.registers:
+      validateRegisterLayout(registerName.split("__ID_")[0], self.registers[registerName].fieldList)
+
+  def getInstanceBases(self, claBaseAddress, numCla):
+    return [claBaseAddress + (instIndx * g_claMmrWindowSize) for instIndx in range(numCla)]
+
+  def getRegisterDicts(self, instanceBase):
+    #Generate dict of registers (with absolute addresses) for a CLA instance
     valueDict = {}
     for registerName in self.registers:
       valueDict[registerName] = self.registers[registerName].getDict()
+      valueDict[registerName]["address"] = "0x%x" % (instanceBase + self.getRegisterOffset(registerName))
+
+    return valueDict
+
+  def writeToYamlFile(self, outputPath, claBaseAddress=0, numCla=1, removeHexQuotes=True):
+    #Generate value dict
+    valueDict = {}
+    for instIndx, instanceBase in enumerate(self.getInstanceBases(claBaseAddress, numCla)):
+      valueDict["cla{}".format(instIndx)] = {"base_address": "0x%x" % instanceBase, "registers": self.getRegisterDicts(instanceBase)}
 
     #Convert value dict to yaml string
     yamlStr = yaml.dump(valueDict, default_flow_style=False)
@@ -1892,20 +1712,16 @@ class ClaValues:
     outputFile.write(fileTxt)
     outputFile.close()
 
-  def writeToCsvFile(self, outputPath):
-    #Generate value dict
-    valueDict = {}
-    for registerName in self.registers:
-      valueDict[registerName] = self.registers[registerName].getDict()
-
+  def writeToCsvFile(self, outputPath, claBaseAddress=0, numCla=1):
     #Output to file
     outputFile = open(outputPath, "w")
-    header = "mmr_name,hex_value\n"
+    header = "instance,mmr_name,address,hex_value\n"
     outputFile.write(header)
-    for registerName in self.registers:
-      hexValStr = valueDict[registerName]["value"]
-      rowStr = "{},{}\n".format(registerName, hexValStr)
-      outputFile.write(rowStr)
+    for instIndx, instanceBase in enumerate(self.getInstanceBases(claBaseAddress, numCla)):
+      valueDict = self.getRegisterDicts(instanceBase)
+      for registerName in self.registers:
+        rowStr = "{},{},{},{}\n".format(instIndx, registerName, valueDict[registerName]["address"], valueDict[registerName]["value"])
+        outputFile.write(rowStr)
     outputFile.close()
     
 
@@ -1914,73 +1730,58 @@ class ClaValues:
 ###################################
 def compileMuxCsrs(csrValues):
   g_logger.debug("Compiling mux select registers")
+  maxLanes = 16
   for muxName in g_debugMuxes:
     muxObj = g_debugMuxes[muxName]
     muxObj.logPrintMuxInfo()
 
-    for registerName in muxObj.output_lane_mappings:
-      if (len(registerName) == 0):
-        g_logger.error("Invalid CSR name \"{}\" defined for debug mux instance \"{}\"".format(registerName, muxObj.name))
-        sys.exit()
-      
-      laneValues = muxObj.output_lane_mappings[registerName]
+    if (muxObj.output_lanes > maxLanes):
+      g_logger.error("Debug mux \"{}\" has {} output lanes. The mux select registers only support up to {} lanes".format(muxObj.name, muxObj.output_lanes, maxLanes))
+      sys.exit(1)
 
-      #Populate mux reg
-      muxReg = MuxSelectReg(registerName)
-      muxReg.comment = ", ".join([sig.name for sig in muxObj.required_input_sigs[registerName]])
-      if (len(muxReg.comment) == 0):
-        muxReg.comment = None
-      muxReg.DbmId.value = int(muxObj.mux_id)
+    #The CLA has a single mux select register (pair), so only one select CSR of a mux instance can be in use
+    usedCsrs = [csrName for csrName in muxObj.mux_select_csrs if (len(muxObj.required_input_sigs[csrName]) > 0)]
+    if (len(usedCsrs) > 1):
+      g_logger.error("Debug mux \"{}\" has signals routed through multiple mux select CSRs {}. Only one mux select register is available per mux ID".format(muxObj.name, usedCsrs))
+      sys.exit(1)
+    registerName = usedCsrs[0] if (len(usedCsrs) == 1) else muxObj.mux_select_csrs[0]
+    laneValues = muxObj.output_lane_mappings[registerName]
 
-      outputSet = 0
-      for laneNum in laneValues:
-        #Convert lane to set select values
-        # selectValBin = [str(int((indx+4) <= laneNum)) for indx in range(8)]
-        # selectValBin.reverse()
-        # selectVal = int("".join(selectValBin), 2)
-        
-        selectVal = laneNum - muxObj.output_lanes + 1
-        if (selectVal < 0):
-          selectVal = 0
-        
-        #Populate new mux reg with select values
-        if (outputSet == 0):
-          muxReg.Muxselseg0.value = selectVal
-          muxReg.Muxselseg0.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 1):
-          muxReg.Muxselseg1.value = selectVal
-          muxReg.Muxselseg1.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 2):
-          muxReg.Muxselseg2.value = selectVal
-          muxReg.Muxselseg2.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 3):
-          muxReg.Muxselseg3.value = selectVal
-          muxReg.Muxselseg3.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 4):
-          muxReg.Muxselseg4.value = selectVal
-          muxReg.Muxselseg4.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 5):
-          muxReg.Muxselseg5.value = selectVal
-          muxReg.Muxselseg5.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 6):
-          muxReg.Muxselseg6.value = selectVal
-          muxReg.Muxselseg6.comment = "Lane {}".format(laneNum)
-        elif (outputSet == 7):
-          muxReg.Muxselseg7.value = selectVal
-          muxReg.Muxselseg7.comment = "Lane {}".format(laneNum)
+    #Populate mux regs
+    loReg = MuxSelectLoReg("c_dbg_mux_sel_lo")
+    loReg.DbmId.value = int(muxObj.mux_id)
+    hiReg = MuxSelectHiReg("c_dbg_mux_sel_hi", int(muxObj.mux_id))
+    comment = ", ".join([sig.name for sig in muxObj.required_input_sigs[registerName]])
+    if (len(comment) > 0):
+      loReg.comment = comment
+      hiReg.comment = comment
 
-        #Increment output set
-        outputSet += 1
+    for outputLane, laneNum in enumerate(laneValues):
+      #Convert lane to set select values. 0 selects the input lane with the same index as the output lane. N selects input lane (output_lanes + N - 1)
+      selectVal = laneNum - muxObj.output_lanes + 1
+      if (selectVal < 0):
+        selectVal = 0
+      if (selectVal >= (1 << 6)):
+        g_logger.error("Input lane {} of debug mux \"{}\" cannot be selected. Select value {} does not fit in the 6b mux select field".format(laneNum, muxObj.name, selectVal))
+        sys.exit(1)
 
-      #Add register to csrValues
-      csrValues.addRegister(muxReg)
+      #Populate new mux reg with select values
+      targetReg = loReg if (outputLane < 8) else hiReg
+      muxselField = getattr(targetReg, "Muxselseg{}".format(outputLane))
+      muxselField.value = selectVal
+      muxselField.comment = "Lane {}".format(laneNum)
+
+    #Add registers to csrValues. The hi register is only needed when lanes 8-15 are in use
+    if (muxObj.output_lanes > 8):
+      csrValues.addRegister(hiReg)
+    csrValues.addRegister(loReg)
 
 
 def compileCounterCsrs(counterRegAllocations, csrValues):
   g_logger.debug("Compiling counter registers")
   for counterName in counterRegAllocations:
     registerIndx = counterRegAllocations[counterName]["register"]
-    registerName = "dbg_cla_counter{}_cfg".format(registerIndx)
+    registerName = "c_dbg_cla_counter{}_cfg".format(registerIndx)
     target = counterRegAllocations[counterName]["target"]
 
     csrValues.registers[registerName].comment = counterName
@@ -1995,7 +1796,7 @@ def getCustomOpcode(customActStr):
       opcodeVal = str2int(customActStr)
     except:
       g_logger.error("Unkown custom action \"{}\"".format(customActStr))
-      sys.exit()
+      sys.exit(1)
 
   return opcodeVal
 
@@ -2009,7 +1810,7 @@ def getActionOpcode(actionStr, counterRegAllocations):
 
   if not (isinstance(actionStr, str)):
     g_logger.error("Invalid type {} used for actionStr arg \"{}\"".format(type(actionStr), actionStr))
-    sys.exit()
+    sys.exit(1)
 
   #Handle static opcodes
   if (actionStr in g_actionOpcodes):
@@ -2021,7 +1822,7 @@ def getActionOpcode(actionStr, counterRegAllocations):
     counterName = actionStr.replace("CLEAR", "").strip()
     if not (counterName in counterRegAllocations):
       g_logger.error("Unkown counter in action \"{}\"".format(actionStr))
-      sys.exit()
+      sys.exit(1)
     
     counterRegIndx = counterRegAllocations[counterName]["register"]
     linkedOpcode = "CLEAR_COUNTER_{}".format(counterRegIndx)
@@ -2032,7 +1833,7 @@ def getActionOpcode(actionStr, counterRegAllocations):
     counterName = actionStr.replace("STOP_AUTO_INCREMENT", "").strip()
     if not (counterName in counterRegAllocations):
       g_logger.error("Unkown counter in action \"{}\"".format(actionStr))
-      sys.exit()
+      sys.exit(1)
     
     counterRegIndx = counterRegAllocations[counterName]["register"]
     linkedOpcode = "STOP_AUTO_INCREMENT_COUNTER_{}".format(counterRegIndx)
@@ -2043,7 +1844,7 @@ def getActionOpcode(actionStr, counterRegAllocations):
     counterName = actionStr.replace("AUTO_INCREMENT", "").strip()
     if not (counterName in counterRegAllocations):
       g_logger.error("Unkown counter in action \"{}\"".format(actionStr))
-      sys.exit()
+      sys.exit(1)
     
     counterRegIndx = counterRegAllocations[counterName]["register"]
     linkedOpcode = "AUTO_INCREMENT_COUNTER_{}".format(counterRegIndx)
@@ -2054,7 +1855,7 @@ def getActionOpcode(actionStr, counterRegAllocations):
     counterName = actionStr.replace("INCREMENT", "").strip()
     if not (counterName in counterRegAllocations):
       g_logger.error("Unkown counter in action \"{}\"".format(actionStr))
-      sys.exit()
+      sys.exit(1)
     
     counterRegIndx = counterRegAllocations[counterName]["register"]
     linkedOpcode = "INCREMENT_COUNTER_{}".format(counterRegIndx)
@@ -2067,11 +1868,11 @@ def getActionOpcode(actionStr, counterRegAllocations):
     return opcodeVal
   except:
     g_logger.error("Unkown action \"{}\"".format(actionStr))
-    sys.exit()
+    sys.exit(1)
 
   return opcodeVal
 
-def getEventOpcode(eventObj, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations):
+def getEventOpcode(eventObj, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, compareRegAllocations):
   opcodeVal = None
   eventHash = eventObj.getHash()
   triggerCondition = eventObj.triggerConditions[0]
@@ -2085,6 +1886,19 @@ def getEventOpcode(eventObj, matchRegAllocations, counterRegAllocations, edgeReg
   #Period tick
   if (triggerCondition.type == TRIGGER_TYPE.PERIOD_TICK):
     opcodeStr = "PERIOD_TICK"
+    opcodeVal = g_eventOpcodes[opcodeStr]
+    return opcodeVal
+
+  #LFSR
+  if (triggerCondition.type == TRIGGER_TYPE.LFSR):
+    opcodeStr = "LFSR"
+    opcodeVal = g_eventOpcodes[opcodeStr]
+    return opcodeVal
+
+  #Link arithmetic compare events
+  if (eventHash in compareRegAllocations):
+    compareRegIndx = compareRegAllocations[eventHash]
+    opcodeStr = "COMPARE_{}_{}".format(compareRegIndx, {"<": "LESS", "<=": "LESS_EQUAL", ">": "GREATER", ">=": "GREATER_EQUAL"}[g_compareOperators[triggerCondition.type]])
     opcodeVal = g_eventOpcodes[opcodeStr]
     return opcodeVal
 
@@ -2160,32 +1974,24 @@ def getEventOpcode(eventObj, matchRegAllocations, counterRegAllocations, edgeReg
 def compileLogicalUdf(eapObj):
   g_logger.debug("Compiling logic UDF for for EAP \"{}.{}\"".format(eapObj.parentNode.name, eapObj.name))
 
-  #Replace verilog logical operators with bitwise operators for easier parsing
-  logical_expression = str(eapObj.event_logical_op)
-  logical_expression = logical_expression.replace("&&", "&")
-  logical_expression = logical_expression.replace("||", "|")
-  logical_expression = logical_expression.replace("!", "~")
-
-  #Replace verilog operators with python operators
-  logical_expression = logical_expression.replace("&", " and ")
-  logical_expression = logical_expression.replace("|", " or ")
-  logical_expression = logical_expression.replace("~", " not ")
-
-  #Remove double whitespace
-  while ("  " in logical_expression):
-    logical_expression = logical_expression.replace("  ", " ")
-
-  #Check for undefined event names
+  #Tokenize the expression. Event names are matched as whole tokens, so they can contain (or be) any substring of the operators.
+  #Both verilog (&&, ||, !, &, |, ~) and python (and, or, not) operators are supported
   event_indexes = eapObj.event_indexes
-  expression_events = logical_expression.replace("(", "").replace(")", "").split()
-  for eventName in expression_events:
-    if (not (eventName in event_indexes)) and (not (eventName in ["and", "or", "not", "(", ")"])):
-      g_logger.error("Event name \"{}\" used in logical expression \"{}\" not defined for EAP \"{}.{}\"".format(eventName, eapObj.event_logical_op, eapObj.parentNode.name, eapObj.name))
-      sys.exit()
-
-  #Replace user event names with EAP event names
-  for eventName in event_indexes:
-    logical_expression = logical_expression.replace(eventName, "event_{}".format(event_indexes[eventName]))
+  logical_expression = ""
+  for token in re.findall(r"&&|\|\||[()&|!~]|[^\s()&|!~]+", str(eapObj.event_logical_op)):
+    if (token in ["&&", "&", "and"]):
+      logical_expression += " and "
+    elif (token in ["||", "|", "or"]):
+      logical_expression += " or "
+    elif (token in ["!", "~", "not"]):
+      logical_expression += " not "
+    elif (token in ["(", ")"]):
+      logical_expression += token
+    elif (token in event_indexes):
+      logical_expression += " event_{} ".format(event_indexes[token])
+    else:
+      g_logger.error("Event name \"{}\" used in logical expression \"{}\" not defined for EAP \"{}.{}\"".format(token, eapObj.event_logical_op, eapObj.parentNode.name, eapObj.name))
+      sys.exit(1)
 
   #Determine UDF bits
   udf_table_str = "E2\tE1\tE0\tUDF Bit\tUDF Bit Value"
@@ -2199,7 +2005,7 @@ def compileLogicalUdf(eapObj):
           udf_bits.append(udf_bit_val)
         except:
           g_logger.error("Could not evaluate python expression \"{}\" generated from verilog expression \"{}\"".format(logical_expression, eapObj.event_logical_op))
-          sys.exit()
+          sys.exit(1)
 
   #Conver bit list into int
   udf_bits.reverse()
@@ -2213,7 +2019,7 @@ def compileLogicalUdf(eapObj):
 
   return udf_value
 
-def compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, csrValues):
+def compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, compareRegAllocations, csrValues):
   g_logger.debug("Compiling EAP registers")
   #Allocate node indexes
   freeNodes = [i for i in range(1,g_availableNodes)]
@@ -2238,7 +2044,7 @@ def compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocatio
       #Allocate EAP register
       eapObj = nodeObj.eaps[eapName]
       eapInx = freeEaps.pop(0)
-      registerName = "dbg_node{}_eap{}".format(nodeIndex, eapInx)
+      registerName = "c_dbg_node{}_eap{}".format(nodeIndex, eapInx)
 
       eapReg = csrValues.registers[registerName]
       eapReg.comment = "{}.{}".format(eapObj.parentNode.name, eapObj.name)
@@ -2246,7 +2052,7 @@ def compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocatio
       #Populate destination node
       if not (eapObj.next_state_node in nodeAllocations):
         g_logger.error("Unkown destination node \"{}\" in {}.{}".format(eapObj.next_state_node, eapObj.parentNode.name, eapObj.name))
-        sys.exit()
+        sys.exit(1)
 
       destinationNodeIndx = nodeAllocations[eapObj.next_state_node]
       eapReg.dest_node.value = destinationNodeIndx
@@ -2264,7 +2070,7 @@ def compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocatio
         #Determine opcode value
         eventObj = eapObj.event_triggers[eventName]
         eventIndx = eapObj.event_indexes[eventName]
-        opcodeVal = getEventOpcode(eventObj, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations)
+        opcodeVal = getEventOpcode(eventObj, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, compareRegAllocations)
 
         #Set field values
         if (eventIndx == 0):
@@ -2344,13 +2150,13 @@ class DbmBitIndex:
         break
       if (len(self.output_signal_obj.loaded_signals) > 1):
         g_logger.error("Too many loaded signals found for edge detect signal \"{}\"->\"{}\". Loaded signals = {}. Only single bit signals are supported for edge events".format(inputSignalObj.name, output_signal_obj.name, output_signal_obj.loaded_signals))
-        sys.exit()
+        sys.exit(1)
 
       self.output_signal_obj = self.output_signal_obj.loaded_signals[0]
 
     if (self.output_signal_obj == inputSignalObj):
       g_logger.error("Could not find loaded output signal of \"{}\"".format(inputSignalObj.name))
-      sys.exit()
+      sys.exit(1)
     
     self.outputBitIndx = self.output_signal_obj.lower_signal_index
 
@@ -2389,7 +2195,7 @@ def expandBitwise(triggerCondition, muxSignals, from_value=False):
       targetBitList = getBinaryList(triggerCondition.value, width=dbmSignalObj.width)
   except ValueError:
     g_logger.error("Signal \"{}\" is not wide enough to compare to value \"{}\"".format(triggerCondition.signal, triggerCondition.value))
-    sys.exit()
+    sys.exit(1)
 
   targetBitList.reverse()
 
@@ -2447,15 +2253,11 @@ def compileMatchMaskCsrs(nodeDict, matchRegAllocations, muxSignals, csrValues):
     matchValue = int("".join([str(i) for i in matchBinList]), 2)
 
     #Populate CSR values
-    maskRegisterName = "dbg_signal_mask{}".format(regIndx)
-    csrValues.registers[maskRegisterName].value.value = maskValue
     maskComment = ", ".join([triggerCondition.signal for triggerCondition in matchRegEvents[regIndx].triggerConditions])
-    csrValues.registers[maskRegisterName].comment = maskComment
+    csrValues.setWideValue("c_dbg_signal_mask{}".format(regIndx), maskValue, maskComment)
 
-    matchRegisterName = "dbg_signal_match{}".format(regIndx)
     matchComment = matchRegEvents[regIndx].generateComment()
-    csrValues.registers[matchRegisterName].value.value = matchValue
-    csrValues.registers[matchRegisterName].comment = matchComment
+    csrValues.setWideValue("c_dbg_signal_match{}".format(regIndx), matchValue, matchComment)
 
 
 def compileEdgeDetectCsrs(nodeDict, edgeRegAllocations, muxSignals, csrValues):
@@ -2494,15 +2296,15 @@ def compileEdgeDetectCsrs(nodeDict, edgeRegAllocations, muxSignals, csrValues):
 
     #Populate CSR value
     if (regIndx == 0):
-      csrValues.registers["dbg_signal_edge_detect_cfg"].signal0_select.value = edgeBitObj.outputBitIndx
-      csrValues.registers["dbg_signal_edge_detect_cfg"].signal0_select.comment = inputSignalObj.name
+      csrValues.registers["c_dbg_signal_edge_detect_cfg"].signal0_select.value = edgeBitObj.outputBitIndx
+      csrValues.registers["c_dbg_signal_edge_detect_cfg"].signal0_select.comment = inputSignalObj.name
 
-      csrValues.registers["dbg_signal_edge_detect_cfg"].pos_edge_signal0.value = int(triggerCondition.type == TRIGGER_TYPE.POSEDGE)
+      csrValues.registers["c_dbg_signal_edge_detect_cfg"].pos_edge_signal0.value = int(triggerCondition.type == TRIGGER_TYPE.POSEDGE)
     elif (regIndx == 1):
-      csrValues.registers["dbg_signal_edge_detect_cfg"].signal1_select.value = edgeBitObj.outputBitIndx
-      csrValues.registers["dbg_signal_edge_detect_cfg"].signal1_select.comment = inputSignalObj.name
+      csrValues.registers["c_dbg_signal_edge_detect_cfg"].signal1_select.value = edgeBitObj.outputBitIndx
+      csrValues.registers["c_dbg_signal_edge_detect_cfg"].signal1_select.comment = inputSignalObj.name
 
-      csrValues.registers["dbg_signal_edge_detect_cfg"].pos_edge_signal1.value = int(triggerCondition.type == TRIGGER_TYPE.POSEDGE)
+      csrValues.registers["c_dbg_signal_edge_detect_cfg"].pos_edge_signal1.value = int(triggerCondition.type == TRIGGER_TYPE.POSEDGE)
     else:
       raise ValueError("Out of bounds index {}".format(regIndx))
 
@@ -2556,15 +2358,11 @@ def compileTransitionCsrs(nodeDict, transitionRegAllocations, muxSignals, csrVal
     matchValue = int("".join([str(i) for i in matchBinList]), 2)
 
     #Populate CSR values
-    maskRegisterName = "dbg_transition_mask"
-    csrValues.registers[maskRegisterName].value.value = maskValue
     maskComment = ", ".join([triggerCondition.signal for triggerCondition in matchRegEvents[regIndx].triggerConditions])
-    csrValues.registers[maskRegisterName].comment = maskComment
+    csrValues.setWideValue("c_dbg_transition_mask", maskValue, maskComment)
 
-    matchRegisterName = "dbg_transition_to_value"
     matchComment = " & ".join(["({} == {})".format(triggerCondition.signal, triggerCondition.value) for triggerCondition in matchRegEvents[regIndx].triggerConditions])
-    csrValues.registers[matchRegisterName].value.value = matchValue
-    csrValues.registers[matchRegisterName].comment = matchComment
+    csrValues.setWideValue("c_dbg_transition_to_value", matchValue, matchComment)
 
   for regIndx in fromMatchMaskLists:
     matchBinList = [0 for i in range(g_claDebugInputWidth)]
@@ -2576,10 +2374,8 @@ def compileTransitionCsrs(nodeDict, transitionRegAllocations, muxSignals, csrVal
     matchValue = int("".join([str(i) for i in matchBinList]), 2)
 
     #Populate CSR values
-    matchRegisterName = "dbg_transition_from_value"
     matchComment = " & ".join(["({} == {})".format(triggerCondition.signal, triggerCondition.from_value) for triggerCondition in matchRegEvents[regIndx].triggerConditions])
-    csrValues.registers[matchRegisterName].value.value = matchValue
-    csrValues.registers[matchRegisterName].comment = matchComment
+    csrValues.setWideValue("c_dbg_transition_from_value", matchValue, matchComment)
 
 
 def compileAnyChangeMaskCsrs(nodeDict, anyChangeRegAllocations, muxSignals, csrValues):
@@ -2621,10 +2417,8 @@ def compileAnyChangeMaskCsrs(nodeDict, anyChangeRegAllocations, muxSignals, csrV
     maskValue = int("".join([str(i) for i in maskBinList]), 2)
 
     #Populate CSR values
-    maskRegisterName = "dbg_any_change"
-    csrValues.registers[maskRegisterName].mask.value = maskValue
     maskComment = ", ".join([triggerCondition.signal for triggerCondition in anyChangeRegEvents[regIndx].triggerConditions])
-    csrValues.registers[maskRegisterName].comment = maskComment
+    csrValues.setWideValue("c_dbg_any_change", maskValue, maskComment)
 
 
 def compileOnesCountCsrs(nodeDict, countOneRegAllocations, muxSignals, csrValues):
@@ -2666,15 +2460,84 @@ def compileOnesCountCsrs(nodeDict, countOneRegAllocations, muxSignals, csrValues
     maskValue = int("".join([str(i) for i in maskBinList]), 2)
 
     #Populate CSR values
-    maskRegisterName = "dbg_ones_count_mask"
-    csrValues.registers[maskRegisterName].value.value = maskValue
     maskComment = ", ".join([triggerCondition.signal for triggerCondition in countOnesRegEvents[regIndx].triggerConditions])
-    csrValues.registers[maskRegisterName].comment = maskComment
+    csrValues.setWideValue("c_dbg_ones_count_mask", maskValue, maskComment)
 
-    valueRegisterName = "dbg_ones_count_value"
+    valueRegisterName = "c_dbg_ones_count_value"
     valueComment = " & ".join(["(countones({}) == {})".format(triggerCondition.signal, triggerCondition.value) for triggerCondition in countOnesRegEvents[regIndx].triggerConditions])
     csrValues.registers[valueRegisterName].value.value = int(triggerCondition.value)
     csrValues.registers[valueRegisterName].comment = valueComment
+
+
+def compileCompareCsrs(nodeDict, compareRegAllocations, muxSignals, csrValues):
+  g_logger.debug("Compiling arithmetic compare registers")
+  #Get event objects. Events sharing a compare register compare the same signal against the same value
+  compareRegEvents = {}
+  for nodeName in nodeDict:
+    nodeObj = nodeDict[nodeName]
+    for eapName in nodeObj.eaps:
+      eapObj = nodeObj.eaps[eapName]
+      for eventName in eapObj.event_triggers:
+        eventObj = eapObj.event_triggers[eventName]
+        eventHash = eventObj.getHash()
+
+        if (eventHash in compareRegAllocations):
+          compareRegEvents[compareRegAllocations[eventHash]] = eventObj
+
+  for regIndx in compareRegEvents:
+    triggerCondition = compareRegEvents[regIndx].triggerConditions[0]
+    bitList = expandBitwise(triggerCondition, muxSignals)  #bitList[i] is bit i (LSB first) of the signal
+
+    #The CLA compares the whole masked debug bus numerically, so the signal bits must keep their order on the bus
+    bitPositions = [bitObj.outputBitIndx for bitObj in bitList]
+    if (bitPositions != sorted(set(bitPositions))):
+      g_logger.error("Signal \"{}\" is not placed in ascending bit order on the CLA debug bus (bit positions LSB first = {}). Arithmetic compare requires the signal bits to keep their order".format(triggerCondition.signal, bitPositions))
+      sys.exit(1)
+
+    maskValue = 0
+    compareValue = 0
+    for bitObj in bitList:
+      maskValue |= (1 << bitObj.outputBitIndx)
+      compareValue |= (int(bitObj.target) << bitObj.outputBitIndx)
+
+    csrValues.setWideValue("c_dbg_compare{}_mask".format(regIndx), maskValue, triggerCondition.signal)
+    csrValues.setWideValue("c_dbg_compare{}".format(regIndx), compareValue, "{} compared against {}".format(triggerCondition.signal, triggerCondition.value))
+
+
+def compileLfsrCsrs(lfsrRegAllocations, csrValues):
+  g_logger.debug("Compiling LFSR registers")
+  if (len(lfsrRegAllocations) > 0) and (g_lfsrConfig is None):
+    g_logger.error("LFSR event used, but no \"LFSR\" section (with \"seed\" and \"mask\") is defined in the program")
+    sys.exit(1)
+
+  if (g_lfsrConfig is None):
+    return
+
+  lfsrWidth = csrValues.registers["c_dbg_lfsr"].lfsr.width
+  for key in ["seed", "mask"]:
+    if not (key in g_lfsrConfig):
+      g_logger.error("Required field \"{}\" not defined in the \"LFSR\" section".format(key))
+      sys.exit(1)
+
+  try:
+    seed = str2int(g_lfsrConfig["seed"])
+    mask = str2int(g_lfsrConfig["mask"])
+  except:
+    g_logger.error("LFSR \"seed\" and \"mask\" must be int or hex values")
+    sys.exit(1)
+
+  if (seed == 0) or (seed >= (1 << lfsrWidth)):
+    g_logger.error("LFSR seed must be a non-zero value that fits in {} bits".format(lfsrWidth))
+    sys.exit(1)
+  if (mask == 0) or (mask >= (1 << lfsrWidth)):
+    g_logger.error("LFSR mask must be a non-zero value that fits in {} bits".format(lfsrWidth))
+    sys.exit(1)
+
+  csrValues.registers["c_dbg_lfsr"].lfsr.value = seed
+  csrValues.registers["c_dbg_lfsr"].lfsr_active.value = 1
+  csrValues.registers["c_dbg_lfsr"].comment = "LFSR seed"
+  csrValues.registers["c_dbg_lfsr_mask"].mask.value = mask
+  csrValues.registers["c_dbg_lfsr_mask"].comment = "LFSR feedback taps"
 
 
 def compileSignalDelayCsr(nodeDict, countOneRegAllocations, muxSignals, csrValues):
@@ -2692,7 +2555,7 @@ def compileSignalDelayCsr(nodeDict, countOneRegAllocations, muxSignals, csrValue
 
   if (not muxInstanceFound):
     g_logger.error("Unable to find final mux instance that feeds CLA debug bus")
-    sys.exit()
+    sys.exit(1)
 
   #Get per-lane propogation delays
   laneDelays = {}
@@ -2744,30 +2607,19 @@ def compileSignalDelayCsr(nodeDict, countOneRegAllocations, muxSignals, csrValue
   #Update CSR values
   for laneIndx in laneDelays:
     requiredStaging = laneDelays[laneIndx]["Required staging"]
+    if (requiredStaging >= (1 << 2)):
+      g_logger.error("CLA input lane #{} requires {} cycles of staging. Only up to {} cycles can be set in the signal delay register".format(laneIndx, requiredStaging, (1 << 2) - 1))
+      sys.exit(1)
 
-    if (laneIndx == 0):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg0.value = requiredStaging
-    if (laneIndx == 1):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg1.value = requiredStaging
-    if (laneIndx == 2):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg2.value = requiredStaging
-    if (laneIndx == 3):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg3.value = requiredStaging
-    if (laneIndx == 4):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg4.value = requiredStaging
-    if (laneIndx == 5):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg5.value = requiredStaging
-    if (laneIndx == 6):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg6.value = requiredStaging
-    if (laneIndx == 7):
-      csrValues.registers["dbg_signal_delay_mux_sel"].Muxselseg7.value = requiredStaging
+    getattr(csrValues.registers["c_dbg_signal_delay_mux_sel"], "Muxselseg{}".format(laneIndx)).value = requiredStaging
 
 
 def compileCsrValues(nodeDict, startNode):
   csrValues = ClaValues()
+  csrValues.validateLayouts()
 
   #Allocate match/mask, counter, edge cfg, and transition registers
-  matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations = allocateCfgRegisters(nodeDict)
+  matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, compareRegAllocations, lfsrRegAllocations = allocateCfgRegisters(nodeDict)
 
   #Determine mux select lanes
   muxSignals = generateMuxGroupings(nodeDict)
@@ -2787,7 +2639,13 @@ def compileCsrValues(nodeDict, startNode):
   compileMatchMaskCsrs(nodeDict, matchRegAllocations, muxSignals, csrValues)
 
   #Compile EAP register values
-  compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, csrValues)
+  compileEapCsrs(nodeDict, startNode, matchRegAllocations, counterRegAllocations, edgeRegAllocations, transitionRegAllocations, countOneRegAllocations, anyChangeRegAllocations, compareRegAllocations, csrValues)
+
+  #Compile arithmetic compare register values
+  compileCompareCsrs(nodeDict, compareRegAllocations, muxSignals, csrValues)
+
+  #Compile LFSR register values
+  compileLfsrCsrs(lfsrRegAllocations, csrValues)
 
   #Compile transition mask/match register values
   compileTransitionCsrs(nodeDict, transitionRegAllocations, muxSignals, csrValues)
@@ -2846,39 +2704,96 @@ def escapeBazelSandbox(filePath):
   return absolutePath
   
 
-def getMmrSpecVersion(specPath):
-  #Returns the (major, minor, patch) reset values of the c_dbg_version MMR
+def loadMmrSpec(specPath):
+  #Loads the CLA MMR spec. It is the source of the register offsets and is used to check the register layouts
+  global g_mmrSpecDict
+  if (not os.path.exists(specPath)):
+    g_logger.error("MMR spec \"{}\" not found. Use --mmrSpecPath to specify the CLA MMR spec yaml".format(specPath))
+    sys.exit(1)
+
   specFile = open(specPath, "r")
-  specDict = yaml.load(specFile, Loader=yaml.SafeLoader)
+  g_mmrSpecDict = yaml.load(specFile, Loader=yaml.SafeLoader)
   specFile.close()
-  versionDict = specDict["c_dbg_version"]
+
+
+def getMmrSpecVersion():
+  #Returns the (major, minor, patch) reset values of the c_dbg_version MMR
+  versionDict = g_mmrSpecDict["c_dbg_version"]
   return tuple(str2int(versionDict[field]["RESET_VALUE"]) for field in ["major", "minor", "patch"])
 
 
 def checkMmrVersion(specPath):
-  if (not os.path.exists(specPath)):
-    g_logger.warning("MMR spec \"{}\" not found. Skipping MMR version check".format(specPath))
-    return
-  major, minor, patch = getMmrSpecVersion(specPath)
+  major, minor, patch = getMmrSpecVersion()
   g_logger.info("CLA MMR version (c_dbg_version) = {}.{}.{}".format(major, minor, patch))
-  if (major >= 2):
-    g_logger.error("CLA MMR version {}.{}.{} detected in \"{}\". v2.0 compatibility is not available in this compiler".format(major, minor, patch, specPath))
+  if (major != 2):
+    g_logger.error("CLA MMR version {}.{}.{} detected in \"{}\". This compiler only supports CLA MMR v2.x".format(major, minor, patch, specPath))
     sys.exit(1)
 
 
+def getMmrOffset(specName):
+  #Returns the offset of a register inside the 4KB MMR window of a CLA instance
+  if not (specName in g_mmrSpecDict):
+    g_logger.error("Register \"{}\" not found in the CLA MMR spec".format(specName))
+    sys.exit(1)
+
+  offset = int(str(g_mmrSpecDict[specName]["common_data"]["ADDRESS"]), 16)
+  if (offset >= g_claMmrWindowSize):
+    g_logger.error("Register \"{}\" offset 0x{:x} is outside the 0x{:x} byte CLA MMR window".format(specName, offset, g_claMmrWindowSize))
+    sys.exit(1)
+
+  return offset
+
+
+def validateRegisterLayout(specName, fieldList):
+  #Check that every (non-reserved) field implemented by the compiler sits at the same bit range as in the spec
+  getMmrOffset(specName)  #Checks that the register exists
+  specRanges = set()
+  for fieldName in g_mmrSpecDict[specName]:
+    if (fieldName == "common_data"):
+      continue
+    msb, lsb = [int(i) for i in str(g_mmrSpecDict[specName][fieldName]["FIELDS_RANGE"]).split(":")]
+    specRanges.add((msb, lsb))
+
+  lsb = 0
+  for field in reversed(fieldList):
+    msb = lsb + field.width - 1
+    if (not field.name.startswith("rsvd")) and (not ((msb, lsb) in specRanges)):
+      g_logger.error("Field \"{}.{}\" is implemented at [{}:{}], which does not match the MMR spec (spec ranges = {})".format(specName, field.name, msb, lsb, sorted(specRanges, reverse=True)))
+      sys.exit(1)
+    lsb = msb + 1
+
+
 def main():
+  global g_logger, g_claDebugInputWidth
+
   #Get args 
   parser = argparse.ArgumentParser(description='(Version {}) Compile CLA program description into CSR field values'.format(g_program_version))
   parser.add_argument("programPath", type=str, help='Path to the yaml file that describes the desired CLA program')
   parser.add_argument('--busInfoPath', type=str, help='Path to the json file that contains information on the debug bus implementation. This json can be generated using generateClaDoc.py')
   parser.add_argument("--outputPath", type=str, help="Output path for where CSR fields will be dumped in a yaml file")
   parser.add_argument("--logName", type=str, default="compileClaProgram.log", help="Name of output log file")
-  parser.add_argument("--mmrSpecPath", type=str, default=g_defaultMmrSpecPath, help="Path to the CLA MMR spec yaml. The reset value of c_dbg_version is checked for compatibility")
+  parser.add_argument("--mmrSpecPath", type=str, default=g_defaultMmrSpecPath, help="Path to the CLA MMR spec yaml. Provides the register offsets. The reset value of c_dbg_version is checked for compatibility")
+  parser.add_argument("--claBaseAddress", type=str, default="0x0", help="Address of the first CLA instance (CLA instance 0). Depends on the MMR base address and which blocks precede the CLA (DST Sink, NTR Sink, Funnel). Can be calculated with claBaseAddress.sh. Default: 0x0")
+  parser.add_argument("--numCla", type=int, default=1, help="Number of CLA instances. The program is compiled for every instance, with the instances placed contiguously (0x1000 apart) from claBaseAddress. Default: 1")
+  parser.add_argument("--debugBusWidth", type=int, default=g_claDebugInputWidth, choices=[64, 128], help="Width of the CLA debug bus input. Default: {}".format(g_claDebugInputWidth))
   args = parser.parse_args()
 
-  global g_logger
   g_logger = getLogger(args.logName)
+  loadMmrSpec(args.mmrSpecPath)
   checkMmrVersion(args.mmrSpecPath)
+
+  try:
+    claBaseAddress = str2int(args.claBaseAddress)
+  except:
+    g_logger.error("Invalid --claBaseAddress \"{}\". Must be an int or hex value".format(args.claBaseAddress))
+    sys.exit(1)
+  if (args.numCla < 1):
+    g_logger.error("--numCla must be at least 1")
+    sys.exit(1)
+  if ((claBaseAddress % g_claMmrWindowSize) != 0):
+    g_logger.warning("CLA base address 0x{:x} is not aligned to the 0x{:x} byte CLA MMR window".format(claBaseAddress, g_claMmrWindowSize))
+
+  g_claDebugInputWidth = args.debugBusWidth
 
   try:
     claInfoPath = args.busInfoPath
@@ -2895,7 +2810,7 @@ def main():
       if (absolutePath is None):
         g_logger.error("Path \"{}\" does not exist".format(programPath))
         g_logger.error("CWD={}".format(os.getcwd()))
-        sys.exit()
+        sys.exit(1)
       g_logger.info("\"{}\" found at \"{}\"".format(programPath, absolutePath))
       programPath = absolutePath
 
@@ -2909,18 +2824,27 @@ def main():
       counterNameList = programDict["COUNTERS"]
       if (not isinstance(counterNameList, list)):
         g_logger.error("\"COUNTERS\" must be a list of strings")
-        sys.exit()
+        sys.exit(1)
 
       for counterName in counterNameList:
         if (not isinstance(counterName, str)):
           g_logger.error("\"COUNTERS\" must be a list of strings")
-          sys.exit()
+          sys.exit(1)
 
         g_claCounterAliases.append(counterName)
 
     if (len(g_claCounterAliases) > g_availableCounters):
       g_logger.error("{} counters defined. Only {} supported".format(len(g_claCounterAliases), g_availableCounters))
-      sys.exit()
+      sys.exit(1)
+
+    #Extract LFSR config
+    global g_lfsrConfig
+    if ("LFSR" in programDict):
+      g_logger.info("Parsing LFSR config")
+      if (not isinstance(programDict["LFSR"], dict)):
+        g_logger.error("\"LFSR\" must be a dict with the fields \"seed\" and \"mask\"")
+        sys.exit(1)
+      g_lfsrConfig = programDict["LFSR"]
 
     #Extract custom opcodes
     if ("CUSTOM_ACTIONS" in programDict):
@@ -2932,7 +2856,7 @@ def main():
         except:
           g_logger.error("Could not parse custom action \"{}\"".format(actionNames))
           g_logger.error("Field value must be either int or hex")
-          sys.exit()
+          sys.exit(1)
 
     #Generate state node objs
     g_logger.info("Constructing node dictionary")
@@ -2956,16 +2880,16 @@ def main():
                           "DbgMuxSelCsr": "default_dummy_mux", 
                           "Debug Bus Inputs": [
                             {
-                              "Bit Width": 64, 
+                              "Bit Width": g_claDebugInputWidth, 
                               "Bus Lower Index": 0, 
-                              "Bus Upper Index": 63, 
+                              "Bus Upper Index": g_claDebugInputWidth-1, 
                               "Lane Lower": 0, 
                               "Lane Lower Index": 0, 
-                              "Lane Upper": 3, 
+                              "Lane Upper": int(g_claDebugInputWidth/16)-1, 
                               "Lane Upper Index": 15, 
                               "Name": "debug_signals", 
                               "Sub Buses": [], 
-                              "Type": "logic [63:0]"
+                              "Type": "logic [{}:0]".format(g_claDebugInputWidth-1)
                             }
                           ], 
                           "Debug Bus Output": "dbm_out", 
@@ -2984,7 +2908,7 @@ def main():
         if (absolutePath is None):
           g_logger.error("Path \"{}\" does not exist".format(claInfoPath))
           g_logger.error("CWD={}".format(os.getcwd()))
-          sys.exit()
+          sys.exit(1)
         g_logger.info("\"{}\" found at \"{}\"".format(claInfoPath, absolutePath))
         claInfoPath = absolutePath
 
@@ -3000,7 +2924,7 @@ def main():
       claInputSignalName = str(claInputSignalName).strip()
       if (len(claInputSignalName) == 0):
         g_logger.error("Invalid \"CLA Input\" \"\" defined in \"{}\"".format(claInfoPath))
-        sys.exit()
+        sys.exit(1)
 
       g_debugSignals[claInputSignalName] = DebugBusSignal(claInputSignalName, busDict={
                                                                                         "Bit Width": g_claDebugInputWidth, 
@@ -3022,36 +2946,49 @@ def main():
         if ("additional_output_stages" in mux_info):
           additional_output_stages = mux_info["additional_output_stages"]
 
-        muxObj = DebugMux(mux_name, output_signalname=mux_info["Debug Bus Output"], mux_select_csr=mux_info["DbgMuxSelCsr"], mux_id=mux_info["DEBUG_MUX_ID"], lane_width=mux_info["LANE_WIDTH"], output_width=64, cla_input_signalname=claInputSignalName, additional_output_stages=additional_output_stages)
+        muxObj = DebugMux(mux_name, output_signalname=mux_info["Debug Bus Output"], mux_select_csr=mux_info["DbgMuxSelCsr"], mux_id=mux_info["DEBUG_MUX_ID"], lane_width=mux_info["LANE_WIDTH"], output_width=g_claDebugInputWidth, cla_input_signalname=claInputSignalName, additional_output_stages=additional_output_stages)
         g_debugMuxes[mux_name] = muxObj
 
         flattenDebuBusSignals(muxObj, claInfoDict["Debug Mux Instances"][mux_name]["Debug Bus Inputs"])
+
+      #Muxes that feed other muxes have an output width given by the width of the signal they drive. The final mux drives the CLA debug bus
+      for mux_name in g_debugMuxes:
+        muxObj = g_debugMuxes[mux_name]
+        if (muxObj.final_mux):
+          muxObj.setOutputWidth(g_claDebugInputWidth)
+        elif (muxObj.output in g_debugSignals):
+          muxObj.setOutputWidth(g_debugSignals[muxObj.output].width)
+        else:
+          g_logger.error("Debug mux \"{}\" drives \"{}\", which is neither the CLA input \"{}\" nor an input of another mux".format(mux_name, muxObj.output, claInputSignalName))
+          sys.exit(1)
     except:
       g_logger.error(traceback.format_exc())
       g_logger.error("Error while parsing \"{}\"".format(claInfoPath))
-      sys.exit()
+      sys.exit(1)
 
     #Calculate CSR values
     if not ("START_NODE" in programDict):
       g_logger.error("Required field \"START_NODE\" is not defined")
-      sys.exit()
+      sys.exit(1)
     startNode = programDict["START_NODE"]
     g_logger.info("Compiling CLA CSR field values")
     csrValues = compileCsrValues(nodeDict, startNode)
 
     #Output CSR values to file
     g_logger.info("Writing field values to \"{}\"".format(outputPath))
-    csrValues.writeToYamlFile(outputPath)
+    csrValues.writeToYamlFile(outputPath, claBaseAddress=claBaseAddress, numCla=args.numCla)
 
     csvOutputPath = outputPath.replace(".yaml", ".csv")
+    if (csvOutputPath == outputPath):
+      csvOutputPath = "{}.csv".format(outputPath)
     g_logger.info("Writing field values to \"{}\"".format(csvOutputPath))
-    csrValues.writeToCsvFile(csvOutputPath)
+    csrValues.writeToCsvFile(csvOutputPath, claBaseAddress=claBaseAddress, numCla=args.numCla)
 
     g_logger.info("Compilation success")
   except Exception as e:
       g_logger.error(traceback.format_exc())
       g_logger.critical("UNHANDLED ERROR!")
-      sys.exit()
+      sys.exit(1)
 
   
 if __name__ == "__main__":

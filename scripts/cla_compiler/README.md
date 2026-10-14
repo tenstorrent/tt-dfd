@@ -4,8 +4,11 @@ This script compiles an abstract description of a CLA program into csr register 
 ## Usage
 ```
 compileClaProgram.py [-h] [--busInfoPath BUSINFOPATH]
-                          [--outputPath OUTPUTPATH] [--logName LOGNAME]
-                          programPath
+                     [--outputPath OUTPUTPATH] [--logName LOGNAME]
+                     [--mmrSpecPath MMRSPECPATH]
+                     [--claBaseAddress CLABASEADDRESS] [--numCla NUMCLA]
+                     [--debugBusWidth {64,128}]
+                     programPath
 
 Compile CLA program description into CSR field values
 
@@ -23,11 +26,59 @@ optional arguments:
                         Output path for where CSR fields will be dumped in a
                         yaml file
   --logName LOGNAME     Name of output log file
+  --mmrSpecPath MMRSPECPATH
+                        Path to the CLA MMR spec yaml. Provides the register
+                        offsets. The reset value of c_dbg_version is checked
+                        for compatibility (only v2.x is supported)
+  --claBaseAddress CLABASEADDRESS
+                        Address of the first CLA instance (CLA instance 0).
+                        Can be calculated with claBaseAddress.sh. Default: 0x0
+  --numCla NUMCLA       Number of CLA instances. The program is compiled for
+                        every instance, with the instances placed contiguously
+                        (0x1000 apart) from claBaseAddress. Default: 1
+  --debugBusWidth {64,128}
+                        Width of the CLA debug bus input. Default: 128
 ```
 
-The script will output the CSR register values into a yaml file. It lists both the value of the entire 64 bit register, as well as all the individual field values.
+The script will output the CSR register values into a yaml file (and a csv file with the same content). The compiler targets the CLA MMR v2.x spec ([../../rtl/mmr/spec/cla_mmrs.yml](../../rtl/mmr/spec/cla_mmrs.yml)). Register names are the spec register names, and 128b debug bus values (match/mask, transition, ones count, any change, compare) are split over a `_lo` and a `_hi` register.\
 This file will also have comments to help you relate the compiled values to the original program description.\
-Example program: [example/README.md](example/README.md)
+Example program: [examples/README.md](examples/README.md)
+
+### Output format
+The program is compiled for every CLA instance (`--numCla`). Each instance lists all of its registers with their absolute address (instance base + the register offset from the MMR spec), the individual field values and the value of the entire 64 bit register:
+```yaml
+cla0:
+  base_address: 0x3000
+  registers:
+    c_dbg_node0_eap0:  # NODE_0.EXAMPLE_ALWAYS
+      address: 0x3120
+      fields:
+        ...
+      value: 0x...
+cla1:
+  base_address: 0x4000
+  ...
+```
+The csv has the columns `instance,mmr_name,address,hex_value`.
+
+Notes:
+* The compiler checks that the bit ranges of the fields it programs match the MMR spec, and fails if they do not.
+* All debug mux instances share the single `c_dbg_mux_sel_lo`/`c_dbg_mux_sel_hi` register pair. The mux a write applies to is chosen by its `DbmId`, so the registers of the mux instances are listed as `c_dbg_mux_sel_lo__ID_<n>` (same address). Write them in order. For each mux, write the `_hi` register (only present when the mux has more than 8 output lanes) before the `_lo` register: the select values are only latched when `Valid` (in the `_lo` register) is written. Every 64-bit register is accessed as two 4-byte aligned 32-bit words and must be written high word (address + 4) first, then low word (address); `dv/dfd/yamlToApbTraffic.py` emits them in this order.
+* Instances are placed 0x1000 apart, which matches how the CLA, DST and NTrace instances are laid out in the DFD MMR space.
+
+### CLA base address
+The MMR space of the DFD is laid out in the following order: DST Sink, NTR Sink, Funnel, CLA, DST, NTR. DST Sink, NTR Sink and Funnel take one 0x1000 window each (if present), and each CLA/DST/NTrace instance takes one 0x1000 window. The CLA base address therefore depends on the MMR base address and on which of the DST Sink/NTR Sink/Funnel are present:
+```
+CLA base = MMR_BASE_ADDRESS + 0x1000 * (DST_SINK_PRESENT + NTR_SINK_PRESENT + FUNNEL_PRESENT)
+```
+[claBaseAddress.sh](claBaseAddress.sh) calculates this (and the DST/NTR start addresses):
+```console
+$ ./claBaseAddress.sh -b 0x10000 -n 0 -c 4     # MMR base 0x10000, no NTR Sink, 4 CLAs
+CLA_BASE_ADDRESS=0x12000
+...
+$ python compileClaProgram.py prog.yaml --claBaseAddress $(./claBaseAddress.sh -q -b 0x10000 -n 0) --numCla 4
+```
+Run `./claBaseAddress.sh -h` for all options.
 
 ## CLA Program Description
 CLA programs are described using a yaml file.\
@@ -102,6 +153,7 @@ NODES:
 | CUSTOM_ACTIONS | optional  | A set of custom action opcode aliases. Allows you to use these action names rather than explicity defining opcode values | \<dict\> |
 | START_NODE | required  | Tells the compiler which node should be assigned to Node 0 (initial state) | \<str\> |
 | NODES | required  | Each member of the NODES object is a CLA node. Each of these nodes can contain up to 4 event action pairs (EAPs) | \<dict\> |
+| LFSR | optional (required when the LFSR event is used) | Configuration of the CLA LFSR: `seed` (non-zero initial value, up to 63 bits) and `mask` (feedback taps, up to 63 bits). The LFSR is enabled when this section is present | \<dict\> |
 
 ### EAP Fields
 
@@ -134,6 +186,8 @@ NODES:
 | anychange(*rtl_signal_name*) | Will trigger when *rtl_signal_name* changes value |
 | countones(*rtl_signal_name*) == *value* | Will trigger when the total number of 1 bits in *rtl_signal_name* equals *value*. Useful for one-hot rules. *rtl_signal_name* must be defined in the dbm info json. |
 | PERIOD_TICK | Will trigger when a periodic tick occurs |
+| *rtl_signal_name* < *value* | Will trigger when (*rtl_signal_name* < *value*) (arithmetic compare, unsigned). *rtl_signal_name* must be defined in the dbm info json. Also supports `<=`, `>` and `>=`. At most 4 distinct (signal, value) pairs per program. Only one signal per event, and the signal bits must keep their order on the CLA debug bus |
+| LFSR | Will trigger when the LFSR output bit is set. Requires the LFSR section in the program |
 
 #### Signal Names
 RTL signal names can be used directly in your program description if you have provided a debug bus config file.\
@@ -219,4 +273,10 @@ event_triggers:
 | AUTO_INCREMENT *counter_alias* | Will start to auto increment *counter_alias* every cycle. *counter_alias* must be defined in COUNTERS field |
 | STOP_AUTO_INCREMENT *counter_alias* | Will stop incrementing *counter_alias* every cycle. *counter_alias* must be defined in COUNTERS field |
 
-
+### Changes in v2.0
+* Targets CLA MMR v2.x (the v1 register layouts are no longer supported).
+* Output is organised per CLA instance and contains absolute register addresses.
+* Register names follow the MMR spec (`c_dbg_*`, with `_lo`/`_hi` for 128b values). The edge detect signal select fields are 7 bits wide, and the signal delay register has 16 lane fields.
+* The debug bus is 128b by default (`--debugBusWidth 64` for 64b configurations). Muxes that feed another mux take their output width from the downstream mux input; only the final mux is as wide as the CLA debug bus.
+* New events: arithmetic compare (`<`, `<=`, `>`, `>=` on debug signals) and LFSR.
+* The compiler exits with code 1 on any error. Event names can be any string (they are matched as whole tokens in `event_logical_op`, so names like `a` or `order` do not clash with `and`/`or`).

@@ -7,6 +7,7 @@ import dst_pkg::*;
 #(
   parameter CORE_INSTANCE = 1'b0,
   parameter DEBUG_SIGNAL_WIDTH = 128,
+  parameter LANE_WIDTH = 8,
   parameter bit TIMESTAMP_SYNC_SCHEME = 0,
 
   localparam TIMESTAMP_UPPER_WIDTH = 56,
@@ -182,7 +183,8 @@ logic   [DEBUG_SIGNAL_WIDTH-1:0] debug_signals_d1;
 logic   [63:0] cla_sync_timestamp;
 
 debug_signal_shift_mux #(
-  .DEBUG_MUX_OUTPUT_WIDTH(DEBUG_SIGNAL_WIDTH)
+  .DEBUG_MUX_OUTPUT_WIDTH(DEBUG_SIGNAL_WIDTH),
+  .LANE_WIDTH(LANE_WIDTH)
 ) debug_signal_shift_mux_inst (
   .clock(clock),
   .reset_n(i_reset_n),
