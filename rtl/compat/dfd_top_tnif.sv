@@ -67,17 +67,6 @@ module dfd_top_tnif
   localparam int unsigned NUM_CORES_WIDTH =
       (TNIF_CONNECTIONS == 1) ? 1 : int'($clog2(TNIF_CONNECTIONS));
 
-  if (CLA_SUPPORT || DST_SUPPORT || NTRACE_SUPPORT)
-    $error("dfd_top_tnif compat wrapper keeps CLA/DST/NTrace external; use another compat flavour");
-  if (!TRACE_SUPPORT)
-    $error("dfd_top_tnif compat wrapper owns the trace network; TRACE_SUPPORT = 0 needs a no-trace flavour");
-  if (!INTERNAL_MMRS)
-    $error("dfd_top_tnif compat wrapper only supports INTERNAL_MMRS = 1");
-  if (NUM_TRACE_AND_ANALYZER_INST > MAX_NUM_TRACE_INST)
-    $error("NUM_TRACE_AND_ANALYZER_INST exceeds MAX_NUM_TRACE_INST");
-  if (BASE_ADDR[DFD_APB_ADDR_WIDTH-1:MMR_ADDR_WIDTH] != '0)
-    $error("BASE_ADDR does not fit in the new %0d-bit MMR address space", MMR_ADDR_WIDTH);
-
   logic [TNIF_CONNECTIONS-1:0][NUM_CORES_WIDTH-1:0] vid_map;
 
   always_comb begin

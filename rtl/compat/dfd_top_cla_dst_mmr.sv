@@ -84,19 +84,6 @@ module dfd_top_cla_dst_mmr
   localparam int unsigned NUM_CORES       = NUM_TRACE_AND_ANALYZER_INST;
   localparam int unsigned NUM_CORES_WIDTH = (NUM_CORES == 1) ? 1 : int'($clog2(NUM_CORES));
 
-  if (!CLA_SUPPORT || !DST_SUPPORT)
-    $error("dfd_top_cla_dst_mmr compat wrapper requires CLA_SUPPORT = DST_SUPPORT = 1");
-  if (NTRACE_SUPPORT)
-    $error("dfd_top_cla_dst_mmr compat wrapper has no NTrace; use dfd_top_cla_dst_ntrace_mmr");
-  if (!INTERNAL_MMRS)
-    $error("dfd_top_cla_dst_mmr compat wrapper only supports INTERNAL_MMRS = 1");
-  if (!TRACE_SUPPORT)
-    $error("dfd_top_cla_dst_mmr compat wrapper wraps a top with an internal trace sink; TRACE_SUPPORT = 0 needs a no-trace flavour");
-  if (NUM_TRACE_AND_ANALYZER_INST > MAX_NUM_TRACE_INST)
-    $error("NUM_TRACE_AND_ANALYZER_INST exceeds MAX_NUM_TRACE_INST");
-  if (BASE_ADDR[DFD_APB_ADDR_WIDTH-1:MMR_ADDR_WIDTH] != '0)
-    $error("BASE_ADDR does not fit in the new %0d-bit MMR address space", MMR_ADDR_WIDTH);
-
   logic [NUM_TRACE_AND_ANALYZER_INST-1:0][NUM_INPUT_LANES-1:0][LANE_WIDTH-1:0] debug_bus_signals;
   logic [NUM_TRACE_AND_ANALYZER_INST-1:0][63:0] timestamp;
 

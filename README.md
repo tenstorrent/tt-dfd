@@ -39,7 +39,6 @@ make build
 This produces `tt_dfd.f`, which can be consumed by your simulator or synthesis flow.
 
 The supported generated topology variants are checked in under `rtl/top/`;
-their JSON configuration inputs are under `rtl/cfg/`.
 
 ## Register map (MMRs)
 

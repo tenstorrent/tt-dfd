@@ -115,11 +115,28 @@ sources:
   - rtl/top/dfd_top_cla_dst_ntrace_axi_no_trace_top.sv
   - rtl/top/dfd_top_dstx_ntracex_apb.sv
   - rtl/top/dfd_top_dstx_ntracex_axi.sv
+  - rtl/top/dfd_top_cla_dst_apb_no_trace_top.sv
+  - rtl/top/dfd_top_cla_ntrace_apb_no_trace_top.sv
+  - rtl/top/dfd_top_dst_apb.sv
+  - rtl/top/dfd_top_dst_apb_no_trace_top.sv
+  - rtl/top/dfd_top_dst_ntrace_apb.sv
+  - rtl/top/dfd_top_dst_ntrace_apb_no_trace_top.sv
+  - rtl/top/dfd_top_ntrace_apb.sv
+  - rtl/top/dfd_top_ntrace_apb_no_trace_top.sv
   - rtl/compat/dfd_compat_pkg.svh
   - rtl/compat/dfd_top_cla_dst_mmr.sv
   - rtl/compat/dfd_top_cla_ntrace_mmr.sv
   - rtl/compat/dfd_top_cla_dst_ntrace_mmr.sv
   - rtl/compat/dfd_top_tnif.sv
   - rtl/compat/dfd_top_cla_tnif.sv
+  - rtl/compat/dfd_top_cla_dst_notrace_mmr.sv
+  - rtl/compat/dfd_top_cla_dst_ntrace_notrace_mmr.sv
+  - rtl/compat/dfd_top_cla_ntrace_notrace_mmr.sv
+  - rtl/compat/dfd_top_dst_mmr.sv
+  - rtl/compat/dfd_top_dst_notrace_mmr.sv
+  - rtl/compat/dfd_top_dst_ntrace_mmr.sv
+  - rtl/compat/dfd_top_dst_ntrace_notrace_mmr.sv
+  - rtl/compat/dfd_top_ntrace_mmr.sv
+  - rtl/compat/dfd_top_ntrace_notrace_mmr.sv
 workspace:
   checkout_dir: dependencies
