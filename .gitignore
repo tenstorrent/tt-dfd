@@ -24,3 +24,4 @@ deps/
 .bender
 simv.daidir
 csrc/
+check.py
