@@ -574,6 +574,7 @@ module dfd_top_cla_ntrace_apb
     .tr_tnif_ntr_flush(tr_tnif_ntr_flush),
     .tnif_gated_reset_n(tnif_gated_reset_n),
     .ntr_gated_func_clamp(ntr_gated_func_clamp),
+    .dst_gated_func_clamp(dst_gated_func_clamp),
     .dst_tnif_req('0),
     .dst_tnif_data('0),
     .tnif_tr_data(tnif_tr_data),
