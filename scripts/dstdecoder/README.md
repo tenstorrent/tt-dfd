@@ -9,8 +9,8 @@ cmake ..;
 make clean;
 make;
 
-Integeration Tests
-------------------
+Integration Tests
+-----------------
 cd ../test;
 g++ -o app Main.cpp ../build/lib/libdstdecoder.so -std=c++11 -I ../include;
 bash; export LD_LIBRARY_PATH=../build/lib:$LD_LIBRARY_PATH;
